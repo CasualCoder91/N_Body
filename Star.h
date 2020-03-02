@@ -1,3 +1,10 @@
+/**
+ * Star containing information about mass, position, velocity and acceleration.
+ *
+ * @author Alarich Herzner
+ * @version 0.9 02.03.2020
+*/
+
 #pragma once
 #include "Vec3D.h"
 class Star{
@@ -11,7 +18,7 @@ public:
 	Vec3D velocity;
 	Vec3D acceleration;
 
-	std::string Dump();//returns all stored data as string
-	void Reset(); // set all variables to 0
+	std::string dump();//returns all stored data as string
+	void reset(); // set all variables to 0
 };
 

@@ -4,7 +4,7 @@ double Analysis::PotentialEnergy(std::vector<Star*>& stars){
 	double potentialEnergy = 0;
 	for (unsigned int i = 0; i < stars.size()-1;++i) {
 		for (int j = i+1; j < stars.size(); ++j) {
-			potentialEnergy -= Parameters::G * stars.at(i)->mass * stars.at(j)->mass / Vec3D::Distance(&stars.at(i)->position, &stars.at(j)->position);
+			potentialEnergy -= Parameters::G * stars.at(i)->mass * stars.at(j)->mass / Vec3D::distance(&stars.at(i)->position, &stars.at(j)->position);
 		}
 	}
 	return potentialEnergy;

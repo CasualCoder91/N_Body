@@ -22,7 +22,7 @@ void InOut::WriteAll(std::vector<Star*> stars, std::string filename){
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size(); ++i) {
 		file << "Star: " << i << '\n';
-		file << stars.at(i)->Dump() << '\n';
+		file << stars.at(i)->dump() << '\n';
 		++i;
 	}
 	file.close();

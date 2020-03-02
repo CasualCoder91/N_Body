@@ -33,7 +33,7 @@ void InitialConditions::PlummerSphere(std::vector<Star*>& stars, double structur
 	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
 	for (Star* star : stars) {
 		double distance = structuralLength / sqrt(pow(dis(gen), -2. / 3.) - 1);
-		star->position = Vec3D::RandomVector(distance);
+		star->position = Vec3D::randomVector(distance);
 		PlummerVelocity(star, structuralLength, distance, totalMass);
 	}
 }
@@ -57,5 +57,5 @@ void InitialConditions::PlummerVelocity(Star* star, double structuralLength, dou
 		g = dis_g(gen);
 	}
 	double velocity = q * PlummerEscapeVelocity(distance, structuralLength, totalMass)/1.01;
-	star->velocity = Vec3D::RandomAngles(velocity);
+	star->velocity = Vec3D::randomAngles(velocity);
 }

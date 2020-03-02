@@ -29,20 +29,20 @@ Star::Star(double mass, double x, double y, double z){
 	this->acceleration = Vec3D();
 }
 
-std::string Star::Dump()
+std::string Star::dump()
 {
 	return "mass: " + std::to_string(mass) + '\n'
-		+ "position: " + position.Print() + '\n'
-		+ "velocity: " + velocity.Print() + '\n'
-		+ "acceleration: " + acceleration.Print()+'\n';
+		+ "position: " + position.print() + '\n'
+		+ "velocity: " + velocity.print() + '\n'
+		+ "acceleration: " + acceleration.print()+'\n';
 }
 
-void Star::Reset(){
+void Star::reset(){
 	this->mass = 0; 
 	if(this->position.x)
-		this->position.Reset(); 
+		this->position.reset(); 
 	if(this->velocity.x)
-		this->velocity.Reset(); 
+		this->velocity.reset(); 
 	if(this->acceleration.x)
-		this->acceleration.Reset();
+		this->acceleration.reset();
 }

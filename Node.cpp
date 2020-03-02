@@ -5,7 +5,7 @@ double Node::precission = 0.9;
 Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent){
 	this->top_left_front = top_left_front;
 	this->bottom_right_back = bottom_right_back;
-	this->center = Vec3D::Center(top_left_front, bottom_right_back);
+	this->center = Vec3D::center(top_left_front, bottom_right_back);
 	this->parent = parent;
 	this->n_stars = 0;
 	this->star = nullptr; //needed?
@@ -148,7 +148,7 @@ bool Node::IsRoot(){
 }
 
 std::string Node::Print(){
-	return this->top_left_front.Print() + ',' + this->bottom_right_back.Print() + '\n';
+	return this->top_left_front.print() + ',' + this->bottom_right_back.print() + '\n';
 }
 
 void Node::CalculateMassDistribution(){
@@ -191,7 +191,7 @@ void Node::ApplyForce(Star* star){
 		}
 		return;
 	}
-	double distStarCOM = Vec3D::Distance(&(star->position), &(this->centerOfMass));
+	double distStarCOM = Vec3D::distance(&(star->position), &(this->centerOfMass));
 	if((this->bottom_right_back.x - this->top_left_front.x) / distStarCOM < precission && this->star != star&& distStarCOM>0) {
 		temp = Parameters::G *this->mass / pow(distStarCOM + softening, 3);
 		//star->acceleration += Vec3D(temp * (star->position.x - this->centerOfMass.x), temp * (star->position.y - this->centerOfMass.y), temp * (star->position.z - this->centerOfMass.z));
