@@ -339,4 +339,6 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /doc
-/Output
+!Output/
+Output/*
+!Output/empty.txt
