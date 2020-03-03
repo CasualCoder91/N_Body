@@ -2,7 +2,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
-//#include <Windows.h>
+#include <chrono> //for timer
 #include <string.h>
 
 #include "Star.h"
@@ -13,6 +13,8 @@
 #include "Analysis.h"
 //#include "Window.h"
 //#include "ShaderProgram.h"
+
+using namespace std::chrono;
 
 int main() {
 
@@ -25,6 +27,7 @@ int main() {
 	double boxLength = 1; //[]?
 	double dt = 1;
 	int NTimesteps = 100000;
+	steady_clock::time_point startTime = steady_clock::now();
 	//Window window = Window(n_Stars,boxLength*10);
 	//window.createWindow();
 	//window.initOpenGL();
@@ -109,7 +112,7 @@ int main() {
 
 		if (i % 100 == 0) {
 			InOut::WriteWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
-			InOut::WriteAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
+			//InOut::WriteAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
 			//double potentialEnergy = Analysis::PotentialEnergy(stars);
 			//double kineticEnergy = Analysis::KineticEnergy(stars);
 			//std::cout<< "Kinetic Energy: " + std::to_string(kineticEnergy) << std::endl;
@@ -117,10 +120,11 @@ int main() {
 			//std::cout << "Total Energy: " + std::to_string(kineticEnergy+potentialEnergy) << std::endl << std::endl;
 		}
 	}
-
-
+	steady_clock::time_point endTime = steady_clock::now();
+	duration<double> time_span = duration_cast<duration<double>>(startTime - endTime);
 	//InOut::Write(stars,"stars.dat");
 	//InOut::Write(&root);
+	std::cout << "Time needed" << time_span.count();
 	std::cout << "done" << std::endl;
 	std::cin.get();
 	return 0;

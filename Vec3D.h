@@ -44,9 +44,27 @@ public:
      @see randomAngles()
      */
     static Vec3D randomAngles(double r);
+    /**
+     @brief Calculates lenght (euclidean norm).
+     @return lenght of the vector.
+     */
     double length();
+    /**
+     @brief Calculates normalized vector with direction of caller.
+     @return Vector with lenght=1 and direction of caller.
+     */
     Vec3D normalize();
+    /**
+     @static
+     @brief Calculates the cross product of two vectors.
+     @param v1, v2 Vectors of which the cross product is calculated.
+     @return cross product.
+     */
     static Vec3D crossProduct(Vec3D v1, Vec3D v2);
+    /**
+     @brief creates string containing coordinates of the vector. Used for output.
+     @return coordinates of vector as sting in format: x,y,z.
+     */
     std::string print();
     static double distance(Vec3D* a, Vec3D* b);
     void reset();
