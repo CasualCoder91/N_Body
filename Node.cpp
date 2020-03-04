@@ -21,7 +21,7 @@ Node::~Node(){
 	//no NOT delete star pointer ^^
 }
 
-void Node::FindCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>& stars){
+void Node::findCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>& stars){
 	tlf = stars.at(0)->position;
 	brb = stars.at(0)->position;
 	for (Star* star : stars) {
@@ -47,27 +47,27 @@ void Node::FindCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>& stars){
 	brb.z += abs(brb.z) * 0.1;
 }
 
-void Node::Insert(Star* star)
+void Node::insert(Star* star)
 {
 	if (this->n_stars > 1) {
-		Octant octant = this->GetOctant(star);
+		Octant octant = this->getOctant(star);
 		if (!this->children[static_cast<int>(octant)]) {//if child node does not exist yet create it
-			this->children[static_cast<int>(octant)] = this->Create(octant);
+			this->children[static_cast<int>(octant)] = this->create(octant);
 		}
-		this->children[static_cast<int>(octant)]->Insert(star);
+		this->children[static_cast<int>(octant)]->insert(star);
 		this->internalNode = true;
 	}
 	else if (this->n_stars == 1) {
-		Octant octant = this->GetOctant(star);
+		Octant octant = this->getOctant(star);
 		if (!this->children[static_cast<int>(octant)]) {//if child node does not exist yet create it
-			this->children[static_cast<int>(octant)] = this->Create(octant);
+			this->children[static_cast<int>(octant)] = this->create(octant);
 		}
-		this->children[static_cast<int>(octant)]->Insert(star);
-		octant = this->GetOctant(this->star);
+		this->children[static_cast<int>(octant)]->insert(star);
+		octant = this->getOctant(this->star);
 		if (!this->children[static_cast<int>(octant)]) {//if child node does not exist yet create it
-			this->children[static_cast<int>(octant)] = this->Create(octant);
+			this->children[static_cast<int>(octant)] = this->create(octant);
 		}
-		this->children[static_cast<int>(octant)]->Insert(this->star);
+		this->children[static_cast<int>(octant)]->insert(this->star);
 		if(this->star)
 			this->star=nullptr;
 		this->internalNode = true;
@@ -80,7 +80,7 @@ void Node::Insert(Star* star)
 	this->n_stars++;
 }
 
-Node* Node::Create(Octant octant){
+Node* Node::create(Octant octant){
 	switch(static_cast<int>(octant)) {
 		case 0: return new Node(top_left_front, center, this);
 		case 1: return new Node(Vec3D(center.x, top_left_front.y, top_left_front.z), Vec3D(bottom_right_back.x, center.y, center.z),this);
@@ -94,7 +94,7 @@ Node* Node::Create(Octant octant){
 	return nullptr;
 }
 
-Octant Node::GetOctant(Star* star)
+Octant Node::getOctant(Star* star)
 {
 	//if (star->position.x<top_left_front.x || star->position.x>bottom_right_back.x ||
 	//	star->position.y<bottom_right_back.y || star->position.y>top_left_front.y ||
@@ -143,21 +143,21 @@ Octant Node::GetOctant(Star* star)
 	return Octant::Invalid;//error: no Octant found
 }
 
-bool Node::IsRoot(){
+bool Node::isRoot(){
 	return parent==nullptr;
 }
 
-std::string Node::Print(){
+std::string Node::print(){
 	return this->top_left_front.print() + ',' + this->bottom_right_back.print() + '\n';
 }
 
-void Node::CalculateMassDistribution(){
+void Node::calculateMassDistribution(){
 	if (this->internalNode) {
 		this->mass = 0;
 		this->centerOfMass = Vec3D();
 		for (Node* child : this->children) {
 			if (child) {
-				child->CalculateMassDistribution();
+				child->calculateMassDistribution();
 				this->mass += child->mass;
 				this->centerOfMass = centerOfMass + child->centerOfMass*child->mass;
 			}
@@ -170,10 +170,10 @@ void Node::CalculateMassDistribution(){
 	//std::cout << "Node: " << this << std::endl;
 	//std::cout << "Star: " << this->star << std::endl;
 	//std::cout << star->Dump();
-	//std::cout << "Center of Mass: " + this->centerOfMass.Print() << std::endl<<std::endl;
+	//std::cout << "Center of Mass: " + this->centerOfMass.print() << std::endl<<std::endl;
 }
 
-void Node::ApplyForce(Star* star){
+void Node::applyForce(Star* star){
 	double temp = 0;
 	double softening = 0.1;
 	if (!this->internalNode && this->star != star) {
@@ -202,7 +202,7 @@ void Node::ApplyForce(Star* star){
 	else {
 		for (Node* child : children) {
 			if (child) {
-				child->ApplyForce(star);
+				child->applyForce(star);
 			}
 		}
 	}

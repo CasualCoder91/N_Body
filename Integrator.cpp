@@ -4,7 +4,7 @@ Integrator::Integrator(double dt){
 	this->dt = dt;
 }
 
-void Integrator::Euler(std::vector<Star*> stars,double dt){
+void Integrator::euler(std::vector<Star*> stars,double dt){
 	if (dt != 0) {
 		this->dt = dt;
 	}

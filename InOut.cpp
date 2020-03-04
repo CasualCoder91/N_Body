@@ -8,7 +8,7 @@ void InOut::write(std::vector<Star*> stars, std::string filename) {
 	file.close();
 }
 
-void InOut::WriteWithLabel(std::vector<Star*> stars, std::string filename){
+void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
 	std::ofstream file(filename);
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
@@ -17,7 +17,7 @@ void InOut::WriteWithLabel(std::vector<Star*> stars, std::string filename){
 	file.close();
 }
 
-void InOut::WriteAll(std::vector<Star*> stars, std::string filename){
+void InOut::writeAll(std::vector<Star*> stars, std::string filename){
 	std::ofstream file(filename);
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size(); ++i) {
@@ -29,24 +29,24 @@ void InOut::WriteAll(std::vector<Star*> stars, std::string filename){
 }
 
 void InOut::write(Node* tree){
-	if (!tree->IsRoot()) {
+	if (!tree->isRoot()) {
 		throw "Write function may only be called on root node";
 	}
 	else {
 		std::ofstream file("tree.dat");
-		WriteRecursively(&file, tree);
+		writeRecursively(&file, tree);
 		file.close();
 	}
 	return;
 }
 
-void InOut::WriteRecursively(std::ofstream* file_ptr,Node* node_ptr) {
+void InOut::writeRecursively(std::ofstream* file_ptr,Node* node_ptr) {
 	for (Node* child : node_ptr->children) {
 		if (child) {
-			InOut::WriteRecursively(file_ptr, child);
+			InOut::writeRecursively(file_ptr, child);
 		}
 	}
-	*file_ptr << node_ptr->Print();
+	*file_ptr << node_ptr->print();
 	return;
 }
 

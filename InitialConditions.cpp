@@ -1,6 +1,6 @@
 #include "InitialConditions.h"
 
-double InitialConditions::InitialMass(std::vector<Star*> &stars,int n_Stars)
+double InitialConditions::initialMass(std::vector<Star*> &stars,int n_Stars)
 {
 	double mass = 0;
 	double totalMass = 0;
@@ -27,24 +27,24 @@ double InitialConditions::InitialMass(std::vector<Star*> &stars,int n_Stars)
 	return totalMass;
 }
 
-void InitialConditions::PlummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
+void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
 	for (Star* star : stars) {
 		double distance = structuralLength / sqrt(pow(dis(gen), -2. / 3.) - 1);
 		star->position = Vec3D::randomVector(distance);
-		PlummerVelocity(star, structuralLength, distance, totalMass);
+		plummerVelocity(star, structuralLength, distance, totalMass);
 	}
 }
 
-double InitialConditions::PlummerEscapeVelocity(double distance, double structuralLength, double totalMass){
+double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass){
 	//return sqrt(2.) * pow(distance * distance + structuralLength, -0.25);
 	//https://github.com/bacook17/behalf/blob/master/behalf/initialConditions.py
 	return sqrt(2. * Parameters::G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
 }
 
-void InitialConditions::PlummerVelocity(Star* star, double structuralLength, double distance, double totalMass){
+void InitialConditions::plummerVelocity(Star* star, double structuralLength, double distance, double totalMass){
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 1.0);
@@ -56,6 +56,6 @@ void InitialConditions::PlummerVelocity(Star* star, double structuralLength, dou
 		q = dis(gen);
 		g = dis_g(gen);
 	}
-	double velocity = q * PlummerEscapeVelocity(distance, structuralLength, totalMass)/1.01;
+	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass)/1.01;
 	star->velocity = Vec3D::randomAngles(velocity);
 }

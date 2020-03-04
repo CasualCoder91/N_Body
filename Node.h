@@ -24,13 +24,13 @@ public:
 	Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent);
 	~Node();
 
-	static void FindCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>&stars);
-	void Insert(Star* star);
-	Node* Create(Octant octant);
-	Octant GetOctant(Star* star);
-	bool IsRoot();
-	std::string Print();
-	void CalculateMassDistribution();
-	void ApplyForce(Star* star); //Update force applied to star from Node
+	static void findCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>&stars);
+	void insert(Star* star);
+	Node* create(Octant octant);
+	Octant getOctant(Star* star);
+	bool isRoot();
+	std::string print();
+	void calculateMassDistribution();
+	void applyForce(Star* star); //Update force applied to star from Node
 };
 

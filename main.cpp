@@ -31,8 +31,8 @@ int main() {
 	std::vector<Star*> stars = {};
 
 	//Init
-	double totalMass = InitialConditions::InitialMass(stars,n_Stars);
-	InitialConditions::PlummerSphere(stars, 1, totalMass);
+	double totalMass = InitialConditions::initialMass(stars,n_Stars);
+	InitialConditions::plummerSphere(stars, 1, totalMass);
 	//stars.push_back(new Star(1000, 0, 0, 0));
 	//totalMass += 1000;
 
@@ -43,24 +43,24 @@ int main() {
 	/*for (int i = 0; i < nTimesteps; i++) {
 
 		Vec3D tlf = Vec3D(), brb = Vec3D();
-		Node::FindCorners(tlf, brb, stars);
+		Node::findCorners(tlf, brb, stars);
 		Node root = Node(tlf, brb, nullptr);
 		for (Star* star : stars) {
-			root.Insert(star);
+			root.insert(star);
 		}
-		root.CalculateMassDistribution();
+		root.calculateMassDistribution();
 		#pragma omp parallel for //1:10
 		for (int i = 0; i < stars.size();++i){
 			stars.at(i)->acceleration.reset();
-			root.ApplyForce(stars.at(i));
+			root.applyForce(stars.at(i));
 		}
-		euler.Euler(stars,dt);
+		euler.euler(stars,dt);
 
 		if (i % 100 == 0) {
-			InOut::WriteWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
-			//InOut::WriteAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
-			//double potentialEnergy = Analysis::PotentialEnergy(stars);
-			//double kineticEnergy = Analysis::KineticEnergy(stars);
+			InOut::writeWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
+			//InOut::writeAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
+			//double potentialEnergy = Analysis::potentialEnergy(stars);
+			//double kineticEnergy = Analysis::kineticEnergy(stars);
 			//std::cout<< "Kinetic Energy: " + std::to_string(kineticEnergy) << std::endl;
 			//std::cout << "Potential Energy: " + std::to_string(potentialEnergy) << std::endl;
 			//std::cout << "Total Energy: " + std::to_string(kineticEnergy+potentialEnergy) << std::endl << std::endl;

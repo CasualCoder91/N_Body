@@ -12,8 +12,8 @@
 class Analysis : Parameters
 {
 public:
-	double static PotentialEnergy(std::vector<Star*>& stars);
-	double static KineticEnergy(std::vector<Star*>& stars);
+	double static potentialEnergy(std::vector<Star*>& stars);
+	double static kineticEnergy(std::vector<Star*>& stars);
 	void static scaling(int maxN, int nTimesteps, std::vector<Star*>& stars, Integrator& integrator);
 };
 
