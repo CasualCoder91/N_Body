@@ -50,8 +50,8 @@ Vec3D Vec3D::normalize(){
 	return Vec3D(x/n,y/n,z/n);
 }
 
-Vec3D Vec3D::crossProduct(Vec3D v1, Vec3D v2){
-	return Vec3D(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
+Vec3D Vec3D::crossProduct(Vec3D* v1, Vec3D* v2){
+	return Vec3D(v1->y * v2->z - v1->z * v2->y, v1->z * v2->x - v1->x * v2->z, v1->x * v2->y - v1->y * v2->x);
 }
 
 std::string Vec3D::print()
@@ -67,20 +67,26 @@ void Vec3D::reset(){
 	this->x = 0; this->y = 0; this->z = 0;
 }
 
-Vec3D Vec3D::operator/(double& rhs){
-	return Vec3D(this->x/rhs,this->y/rhs,this->z/rhs);
+Vec3D operator/(const Vec3D& lhs, double& rhs){
+	return Vec3D(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 }
 
-Vec3D Vec3D::operator*(double& rhs){
-	return Vec3D(this->x * rhs, this->y * rhs, this->z * rhs);
+Vec3D operator*(const Vec3D& lhs, double& rhs){
+	return Vec3D(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 }
 
-double Vec3D::operator*(Vec3D& rhs){
-	return this->x * rhs.x + this->y* rhs.y + this->z* rhs.z;
+Vec3D operator*(double& lhs, const Vec3D& rhs){
+	return rhs*lhs;
 }
 
-Vec3D Vec3D::operator+(Vec3D const& rhs){
-	return Vec3D(this->x+rhs.x, this->y + rhs.y, this->z + rhs.z);
+Vec3D operator+(Vec3D lhs, Vec3D const& rhs){
+	lhs += rhs;
+	return lhs;
+}
+
+
+double Vec3D::operator*(const Vec3D& rhs){
+	return this->x * rhs.x + this->y * rhs.y + rhs.z * rhs.z;
 }
 
 Vec3D& Vec3D::operator+=(const Vec3D & rhs){

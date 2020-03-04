@@ -52,7 +52,7 @@ int main() {
 			stars.at(i)->acceleration = Vec3D(); // reset acceleration to 0,0,0
 			root.ApplyForce(stars.at(i));
 		}
-		euler.Euler(stars);
+		euler.Euler(stars,dt);
 
 		if (i % 100 == 0) {
 			InOut::WriteWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");

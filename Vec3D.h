@@ -4,6 +4,7 @@
  * Position, velocity and acceleration of stars are stored as Vec3D.
  * All neccesary operations are supported via methods/operator overloading.
  *
+ * @attention All member variables are public.
  * @author Alarich Herzner
  * @version 0.9 02.03.2020
 */
@@ -15,8 +16,11 @@
 
 class Vec3D{
 public:
+    /** @brief x value of the vector */
     double x;
+    /** @brief y value of the vector */
     double y;
+    /** @brief z value of the vector */
     double z;
 
     Vec3D();
@@ -60,19 +64,50 @@ public:
      @param v1, v2 Vectors of which the cross product is calculated.
      @return cross product.
      */
-    static Vec3D crossProduct(Vec3D v1, Vec3D v2);
+    static Vec3D crossProduct(Vec3D* a, Vec3D* b);
     /**
      @brief creates string containing coordinates of the vector. Used for output.
      @return coordinates of vector as sting in format: x,y,z.
      */
     std::string print();
+    /**
+     @static
+     @brief Calculates distance (euclidean norm) between given vectors.
+     @param a, b Vectors of which the cross product is calculated.
+     @return distance between given vectors.
+     */
     static double distance(Vec3D* a, Vec3D* b);
+    /**
+    @brief Sets all member variables to 0.
+    */
     void reset();
-    Vec3D operator / (double& rhs);
-    Vec3D operator * (double& rhs);
-    friend Vec3D operator*(float f, const Vec3D& v);
-    double operator * (Vec3D& rhs);
-    Vec3D operator + (Vec3D const& rhs);
-    Vec3D& operator += (const Vec3D &rhs);
+    /**
+     @brief Operator overloading for division of a vector by a double value.
+     */
+    friend Vec3D operator / (const Vec3D& lhs, double& rhs);
+    /**
+    @brief Operator overloading for multiplication of a vector by a double value.
+    @see Vec3D operator * (double& lhs, const Vec3D& rhs)
+    */
+    friend Vec3D operator * (const Vec3D& lhs, double& rhs);
+    /**
+    @brief Operator overloading for multiplication of a double value by a vector.
+    @see Vec3D operator * (const Vec3D& lhs, double& rhs)
+    */
+    friend Vec3D operator * (double& lhs, const Vec3D& rhs);
+    /**
+    @brief Operator overloading for multiplication of a vector with a vector.
+    */
+    double operator * (const Vec3D& rhs);
+    /**
+    @brief Operator overloading for addition of two vectors.
+    @see friend Vec3D operator + (Vec3D lhs, Vec3D const& rhs);
+    */
+    Vec3D& operator += (const Vec3D& rhs);
+    /**
+    @brief Operator overloading for addition of two vectors.
+    @see Vec3D& operator += (const Vec3D& rhs);
+    */
+    friend Vec3D operator + (Vec3D lhs, Vec3D const& rhs);
 };
 
