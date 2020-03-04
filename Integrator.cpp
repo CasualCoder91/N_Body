@@ -5,7 +5,9 @@ Integrator::Integrator(double dt){
 }
 
 void Integrator::Euler(std::vector<Star*> stars,double dt){
-	this->dt = dt;
+	if (dt != 0) {
+		this->dt = dt;
+	}
 	#pragma omp parallel for //1:10
 	for (int i = 0; i < stars.size(); ++i){
 		stars.at(i)->velocity += (stars.at(i)->acceleration * dt);

@@ -22,12 +22,12 @@ int main() {
 	int n_Stars = 2;
 	double boxLength = 1; //[pc]
 	double dt = 1;
-	int NTimesteps = 10;
+	int nTimesteps = 10;
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_real_distribution<> dis(0.0, boxLength);
+	//std::random_device rd;  //Will be used to obtain a seed for the random number engine
+	//std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	//std::uniform_real_distribution<> dis(0.0, boxLength);
 	std::vector<Star*> stars = {};
 
 	//Init
@@ -38,7 +38,9 @@ int main() {
 
 	//Integrate
 	Integrator euler = Integrator(dt);
-	for (int i = 0; i < NTimesteps; i++) {
+
+	Analysis::scaling(10000, 10000, stars, euler); //WiP
+	/*for (int i = 0; i < nTimesteps; i++) {
 
 		Vec3D tlf = Vec3D(), brb = Vec3D();
 		Node::FindCorners(tlf, brb, stars);
@@ -48,8 +50,8 @@ int main() {
 		}
 		root.CalculateMassDistribution();
 		#pragma omp parallel for //1:10
-		for (int i = 0; i < stars.size();++i){//(Star* star : stars) {
-			stars.at(i)->acceleration = Vec3D(); // reset acceleration to 0,0,0
+		for (int i = 0; i < stars.size();++i){
+			stars.at(i)->acceleration.reset();
 			root.ApplyForce(stars.at(i));
 		}
 		euler.Euler(stars,dt);
@@ -66,9 +68,9 @@ int main() {
 	}
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
-	//InOut::Write(stars,"stars.dat");
-	//InOut::Write(&root);
-	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
+	//InOut::write(stars,"stars.dat");
+	//InOut::write(&root);
+	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;*/
 	std::cout << "done" << std::endl;
 	std::cin.get();
 	return 0;

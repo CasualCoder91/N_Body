@@ -7,10 +7,11 @@
 #include "Node.h"
 
 namespace InOut{
-	void Write(std::vector<Star*> stars,std::string filename);
+	void write(std::vector<Star*> stars,std::string filename);
 	void WriteWithLabel(std::vector<Star*> stars, std::string filename);
 	void WriteAll(std::vector<Star*> stars, std::string filename);
-	void Write(Node* tree);
+	void write(Node* tree);
 	void WriteRecursively(std::ofstream* file_ptr, Node* node_ptr);
+	void write(std::vector<double> x, std::vector<double> y, std::string filename);
 };
 

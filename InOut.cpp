@@ -1,6 +1,6 @@
 #include "InOut.h"
 
-void InOut::Write(std::vector<Star*> stars, std::string filename) {
+void InOut::write(std::vector<Star*> stars, std::string filename) {
 	std::ofstream file(filename);
 	for (Star* star : stars) {
 		file << star->position.x << ',' << star->position.y << ',' << star->position.z << '\n';
@@ -28,7 +28,7 @@ void InOut::WriteAll(std::vector<Star*> stars, std::string filename){
 	file.close();
 }
 
-void InOut::Write(Node* tree){
+void InOut::write(Node* tree){
 	if (!tree->IsRoot()) {
 		throw "Write function may only be called on root node";
 	}
@@ -48,4 +48,16 @@ void InOut::WriteRecursively(std::ofstream* file_ptr,Node* node_ptr) {
 	}
 	*file_ptr << node_ptr->Print();
 	return;
+}
+
+void InOut::write(std::vector<double> x, std::vector<double> y, std::string filename){
+	if (x.size() != y.size()) {
+		throw  "Vector size must be equal";
+	}
+	std::ofstream file(filename);
+	#pragma omp parallel for
+	for (int i = 0; i < x.size(); ++i) {
+		file << x.at(i) <<','<< y.at(i) << '\n';
+	}
+	file.close();
 }
