@@ -1,0 +1,256 @@
+J/ApJ/842/6  Astro-photometric catalog of the core of NGC 5139  (Bellini+, 2017)
+================================================================================
+The state-of-the-art HST astro-photometric analysis of the core
+of {omega} Centauri.
+I. The catalog.
+    Bellini A., Anderson J., Bedin L.R., King I.R., van der Marel R.P.,
+    Piotto G., Cool A.
+   <Astrophys. J., 842, 6-6 (2017)>
+   =2017ApJ...842....6B    (SIMBAD/NED BibCode)
+================================================================================
+ADC_Keywords: Clusters, globular ; Photometry, HST ; Proper motions
+Keywords: globular clusters: individual: NGC 5139;
+          Hertzsprung-Russell and C-M diagrams; proper motions;
+          stars: Population II; techniques: photometric
+
+Abstract:
+    We have constructed the most comprehensive catalog of photometry and
+    proper motions ever assembled for a globular cluster (GC). The core of
+    {omega}Cen (NGC 5139) has been imaged over 650 times through WFC3's
+    UVIS and IR channels for the purpose of detector calibration. There
+    exist from 4 to over 60 exposures through each of 26 filters
+    stretching continuously from F225W in the UV to F160W in the infrared.
+    Furthermore, the 11yr baseline between these data and a 2002 ACS
+    survey has allowed us to more than double the proper-motion accuracy
+    and triple the number of well-measured stars compared to our previous
+    groundbreaking effort. This totally unprecedented complete spectral
+    coverage of over 470000 stars within the cluster's core, from the tip
+    of the red giant branch down to the white dwarfs, provides the best
+    astro-photometric observational database yet to understand the
+    multiple-population phenomenon in any GC. In this first paper of the
+    series, we describe in detail the data-reduction processes and deliver
+    the astro-photometric catalog to the astronomical community.
+
+Description:
+    The core of {omega} Cen (NGC 5139) has been observed through many of
+    the WFC3 filters since 2009 for calibration purposes, and new
+    observations continue to be scheduled. Table 1 summarizes the massive
+    archive of data, organized in a camera/filter fashion. We downloaded
+    from the archive a total of 655 exposures (~205Ks) taken through 26
+    HST different bands: 18 for WFC3/UVIS (385 exposures) and 8 for
+    WFC3/IR (270 exposures); spanning 2009 July to 2013 March. This data
+    set can be accessed at MAST via this link:
+    http://archive.stsci.edu/doi/resolve/resolve.html?doi=10.17909/T9WG6S
+
+File Summary:
+--------------------------------------------------------------------------------
+ FileName     Lrecl  Records   Explanations
+--------------------------------------------------------------------------------
+ReadMe           80        .   This file
+table1.dat      131       26   List of HST WFC3 observations of the core
+                                of NGC5139
+table3.dat      214   478477   Proper motion information
+                                from Bellini+, 2014, J/ApJ/797/115
+table4.dat       61 12440402  *The Method-one photometric file
+table5.dat       49 16633268  *The Method-two and Method-three photometric file
+table6.dat      107   550000   Artificial-star-tests file
+--------------------------------------------------------------------------------
+Note on table4.dat, table5.dat, table6.dat: 
+  KS2 (FORTRAN software package kitchen_sync2, J. Anderson 2017, in preparation;
+  see also Section 3 of Sabbi+ 2016,J/ApJS/222/11 for an in-depth description of
+  the software) has three approaches for measuring stars.
+  The first approach can only be applied when a star generates a distinct peak
+  within its local 5x5pixel, neighbor-subtracted raster. When that happens, we
+  can measure a position and flux for the star using the PSF appropriate for 
+  that location in that exposure.
+  Method two takes the position determined in the finding stage and uses that
+  position and the PSF to determine a best-fit flux from the inner 3x3 pixels.
+  Method three is similar, but it uses the brightest four pixels and weights
+  them by the expected values of the PSF in those pixels, which is appropriate
+  when the source is much fainter than the background noise.
+  See section 3.3 for further explanations.
+--------------------------------------------------------------------------------
+
+See also:
+ B/hst   : HST Archived Exposures Catalog (STScI, 2007)
+ VII/202 : Globular Clusters in the Milky Way (Harris, 1997)
+ J/A+AS/115/297 : BVRI photometry of Central Field of {omega} Cen (Lynga+, 1996)
+ J/ApJ/654/915  : Deep FORS1 BR photometry of omega Cen (Sollima+, 2007)
+ J/ApJ/663/296  : omega Cen (NGC5139) subgiants UBVRIc phot. (Villanova+, 2007)
+ J/A+A/493/959  : UBV(RI)cHalpha photometry in omega Cen (Bellini+, 2009)
+ J/ApJ/710/1032 : Proper motions in {omega} Cen (Anderson+, 2010)
+ J/AJ/140/631   : HST WFC3/UVIS photometry of omega Cen core (Bellini+, 2010)
+ J/ApJ/751/6    : Radial velocities in {omega} Cen (Da Costa, 2012)
+ J/ApJ/797/115  : HSTPROMO I. Observations and NGC7078 results (Bellini+, 2014)
+ J/ApJ/844/164  : HST astro-photometric data for NGC5139. III. (Bellini+, 2017)
+
+Byte-by-byte Description of file: table1.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label     Explanations
+--------------------------------------------------------------------------------
+   1-  9  A9    ---     Inst      Instrument (WFC3/UVIS or WFC3/IR)
+  11- 16  A6    ---     Filt      Filter name (1)
+  18- 39  A22   s       Exp       Exposures
+  41- 45  I5    s       Time      [908/27600] Total time
+  47- 51  I5    ---     PID1      Program ID 
+  53- 57  I5    ---     PID2      ? Second program ID if any
+  59- 63  I5    ---     PID3      ? Third program ID if any
+  65- 69  I5    ---     PID4      ? Fourth program ID if any
+  71- 75  I5    ---     PID5      ? Fifth program ID if any
+  77- 81  I5    ---     PID6      ? Sixth program ID if any
+  83- 87  I5    ---     PID7      ? Seventh program ID if any
+  89- 93  I5    ---     PID8      ? Eighth program ID if any
+  95-121  A27   ---     Comm      Description
+ 123-131  A9    ---     Date      Epoch
+--------------------------------------------------------------------------------
+Note (1): Photometric-calibration Zero Points (table 2):
+      ------------------------------------------------------
+      Filter     Delmag                           ZP (VEGA)
+                 (mag)                            (mag)
+      ------------------------------------------------------
+                             WFC3/UVIS
+      ------------------------------------------------------
+      F225W      +7.0889 (+7.3856 -0.2967)       +22.3808
+      F275W      +7.0240 (+7.2577 -0.2337)       +22.6322
+      F336W      +6.1648 (+6.3602 -0.1954)       +23.4836
+      F350LP     +6.1925 (+6.3602 -0.1677)       +26.7874
+      F390M      +6.1867 (+6.3602 -0.1735)       +23.5377
+      F390W      +6.2007 (+6.3602 -0.1595)       +25.1413
+      F438W      +6.1961 (+6.3602 -0.1641)       +24.9738
+      F467M      +6.4827 (+6.6330 -0.1503)       +23.8362
+      F555W      +3.8302 (+4.0051 -0.1749)       +25.8160
+      F606W      +3.8517 (+4.0051 -0.1534)       +25.9866
+      F621M      +6.9822 (+7.1251 -0.1429)       +24.4539
+      F656N      +6.6090 (+6.7474 -0.1384)       +19.8215
+      F658N      +6.2200 (+6.3602 -0.1402)       +20.6795
+      F673N      +6.2313 (+6.3602 -0.1289)       +22.3297
+      F775W      +6.4621 (+6.6330 -0.1709)       +24.4747
+      F814W      +3.8445 (+4.0051 -0.1616)       +24.6803
+      F850LP     +4.2503 (+4.4454 -0.1951)       +23.3130
+      F953N      +7.1632 (+7.3235 -0.1603)       +19.7549
+      ------------------------------------------------------
+                             WFC3/IR   
+      ------------------------------------------------------
+      F098M        -0.0736 +25.1057        
+      F105W        -0.0335 +25.6236        
+      F110W        -0.0743 +26.0628        
+      F125W        -0.0844 +25.3293        
+      F139M        -0.0633 +23.4006        
+      F140W        -0.1262 +25.3761        
+      F153M        -0.0636 +23.2098        
+      F160W        -0.0756 +24.6949        
+      ------------------------------------------------------
+--------------------------------------------------------------------------------
+
+Byte-by-byte Description of file: table3.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label    Explanations
+--------------------------------------------------------------------------------
+   1-  6  I6    ---     ID       [1/478477] Identification number
+   8- 14  F7.2  pix     Xpix     X-position on the master frame
+  16- 22  F7.2  pix     Ypix     Y-position on the master frame
+  24- 25  I2    h       RAh      [13] Hour of Right Ascension (J2000)
+  27- 28  I2    min     RAm      [26/27] Minute of Right Ascension (J2000)
+  30- 35  F6.3  s       RAs      Second of Right Ascension (J2000)
+      37  A1    ---     DE-      [-] Sign of the Declination (J2000)
+  38- 39  I2    deg     DEd      [47] Degree of Declination (J2000)
+  41- 42  I2    arcmin  DEm      [25/31] Arcminute of Declination (J2000)
+  44- 48  F5.2  arcsec  DEs      Arcsecond of Declination (J2000)
+  50- 58  F9.4  mas/yr  pmRA     [-18/12]?=-999.999 Proper motion along RA
+                                  times cos(DE)
+  60- 68  F9.4  mas/yr  pmDE     [-14/16]?=-999.999 Proper motion along DE
+  70- 78  F9.4  mas/yr  e_pmRA   [0.003/4]?=-999.999 1{sigma} uncertainty
+                                  in pmRA (1)
+  80- 88  F9.4  mas/yr  e_pmDE   [0.005/4]?=-999.999 1{sigma} uncertainty
+                                  in pmDE (1)
+  90- 98  F9.4  mas/yr  epmRA    [0.004/4]?=-999.999 The 1{sigma} uncertainty
+                                  in pmRA (2)
+ 100-108  F9.4  mas/yr  epmDE    [0.004/4]?=-999.999 The 1{sigma} uncertainty
+                                  in pmDE (2)
+ 110-118  F9.4  ---     QpmRA   [0.1/67]?=-999.999 Reduced {chi}^2^ of fit
+                                  to pmRA
+ 120-128  F9.4  ---     QpmDE   [0.1/87]?=-999.999 Reduced {chi}^2^ of fit
+                                  to pmDE
+ 130-138  F9.4  pix     sigmaX   [0.0005/0.4]?=-999.999 The 1{sigma} uncertainty
+                                  in intercept of PM fit for RA component (1)
+ 140-148  F9.4  pix     sigmaY   [0.0005/0.4]?=-999.999 The 1{sigma} uncertainty
+                                  in intercept of PM fit for DE component (1)
+ 150-159  F10.5 yr      Time     [0.7/11]?=-999.999 Time baseline; Julian years
+ 161-169  F9.4  pix     errX     [0.0006/0.3]?=-999.999 The 1{sigma} uncertainty
+                                  in intercept of PM fit for RA component (3)
+ 171-179  F9.4  pix     errY     [0.0005/0.4]?=-999.999 The 1{sigma} uncertainty
+                                  in intercept of PM fit for DE component (3)
+ 181-184  I4    ---     Uref     [0/1]?=-999 Reference star flag; 1=Yes, 0=No
+ 186-189  I4    ---     Nfound   [7/281]?=-999 Total number of data points
+                                  available for PM fits
+ 191-194  I4    ---     Nused    [5/281]?=-999 Final number of data points used
+                                  for PM fits
+ 196-204  F9.4  mas/yr  DelpmRA  [-0.5/0.5]?=-999.999 Difference in pmRA (4)
+ 206-214  F9.4  mas/yr  DelpmDE  [-0.5/0.6]?=-999.999 Difference in pmDE (4)
+--------------------------------------------------------------------------------
+Note (1): Computed using actual residuals.
+Note (2): Computed using expected errors.
+Note (3): Using expected errors.
+Note (4): Between locally-corrected and amplifier-based PMs.
+--------------------------------------------------------------------------------
+
+Byte-by-byte Description of file: table4.dat
+--------------------------------------------------------------------------------
+  Bytes Format Units   Label  Explanations
+--------------------------------------------------------------------------------
+  1-  6  A6    ---     Filt   Filter identifier; see Table 1
+  8- 15  F8.4  mag     mag    [9/33]?=-99.999 Apparent Vega magnitude in Filt
+ 17- 26  F10.4 mag   e_mag    [0/94177]?=-99.999 RMS uncertainty in mag
+ 28- 29  I2    ---     Nf     [0/71] Number of exposures a star found in
+ 31- 32  I2    ---     Ng     [0/71] Number of good measurements
+ 34- 38  F5.3  ---     QFIT   [0/1] Quality-of-fit parameter
+ 40- 47  F8.2  ---     fL     [-2/20124] Fraction of light in aperture
+                               from neighbors
+ 49- 53  F5.1  ct      sky    [0/999.9] Local sky-background value
+ 55- 59  F5.1  ct      RMS    [0/999.9] RMS of sky
+     61  I1    ---     Sat    ? Saturation flag, UVIS Filters only (1=saturated)
+--------------------------------------------------------------------------------
+
+Byte-by-byte Description of file: table5.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label   Explanations
+--------------------------------------------------------------------------------
+   1-  6  A6    ---     Filt    Filter identifier; see Table 1
+   8-  9  A2    ---     Meth    Measurement method
+  11- 18  F8.4  mag     mag     [9/33]?=-99.999 Apparent Vega magnitude in Filt
+  20- 29  F10.4 mag   e_mag     [0/96973]?=-99.999 RMS uncertainty in mag
+  31- 32  I2    ---     Nf      [0/71]? Number of exposures a star found in
+  34- 35  I2    ---     Ng      [0/71]? Number of good measurements
+  37- 41  F5.3  ---     QFIT    [0/1]? Quality-of-fit parameter
+  43- 49  F7.2  ---     fL      [-19/4806]? Fraction of light in aperture
+                                 from neighbors
+--------------------------------------------------------------------------------
+
+Byte-by-byte Description of file: table6.dat
+--------------------------------------------------------------------------------
+   Bytes Format Units   Label     Explanations
+--------------------------------------------------------------------------------
+   1-  9  F9.4  pix     XInpix    Input X pixel position
+  11- 19  F9.4  pix     YInpix    Input Y pixel position
+  21- 28  F8.4  mag   F606WInmag  [-14/-3] Input F606W instrumental magnitude
+  30- 37  F8.4  mag   F438WInmag  [-14/-0.08] Input F438W instrumental magnitude
+  39- 45  F7.2  pix     XRecpix   Recovered X pixel position
+  47- 53  F7.2  pix     YRecpix   Recovered Y pixel position
+  55- 62  F8.4  mag   F606WM1mag  [-90.1/-0] Recovered method 1 F606W magnitude
+  64- 71  F8.4  mag   F438WM1mag  [-90.1/-0] Recovered method 1 F438W magnitude
+  73- 80  F8.4  mag   F606WM2mag  [-90.1/-0] Recovered method 2 F606W magnitude
+  82- 89  F8.4  mag   F438WM2mag  [-90.1/-0] Recovered method 2 F438W magnitude
+  91- 98  F8.4  mag   F606WM3mag  [-90.1/-0] Recovered method 3 F606W magnitude
+ 100-107  F8.4  mag   F438WM3mag  [-90.1/-0] Recovered method 3 F438W magnitude
+--------------------------------------------------------------------------------
+
+History:
+    From electronic version of the journal
+
+References:
+    Bellini et al.   Paper I.     2017ApJ...842....6B   This catalog
+    Bellini et al.   Paper II.    2017ApJ...842....7B
+    Bellini et al.   Paper III.   2017ApJ...844..164B   Cat. J/ApJ/844/164
+
+================================================================================
+(End)                  Prepared by [AAS], Emmanuelle Perret [CDS]    25-Jan-2018
