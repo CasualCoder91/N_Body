@@ -13,12 +13,24 @@ public:
 	Star(double mass);
 	Star(double mass, Vec3D position);
 	Star(double mass, double x, double y, double z);
+	/** @brief Mass of the star in solar mass units */
 	double mass;
+	/** @brief Position of the star in parsec */
 	Vec3D position;
+	/** @brief Velocity of the star in km/s */
 	Vec3D velocity;
+	/** @brief Acceleration of the star in km^2/(parsec*s^2)
+	@note Reason for this choice of units: dt is in parsec*s/km*/
 	Vec3D acceleration;
-
-	std::string dump();//returns all stored data as string
-	void reset(); // set all variables to 0
+	/**
+	 @brief creates string containing all member variables.
+	 @return created string
+	 */
+	std::string dump();
+	/**
+	 @brief set all member variables to 0.
+	 @return created string
+	 */
+	void reset();
 };
 
