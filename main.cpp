@@ -39,7 +39,7 @@ int main() {
 	//Integrate
 	Integrator euler = Integrator(dt);
 
-	Analysis::scaling(10000, 10000, stars, euler); //WiP
+	Analysis::scaling(1000, 10000, euler); //WiP
 	/*for (int i = 0; i < nTimesteps; i++) {
 
 		Vec3D tlf = Vec3D(), brb = Vec3D();

@@ -23,7 +23,6 @@ void InOut::writeAll(std::vector<Star*> stars, std::string filename){
 	for (int i = 0; i < stars.size(); ++i) {
 		file << "Star: " << i << '\n';
 		file << stars.at(i)->dump() << '\n';
-		++i;
 	}
 	file.close();
 }
@@ -55,7 +54,7 @@ void InOut::write(std::vector<double> x, std::vector<double> y, std::string file
 		throw  "Vector size must be equal";
 	}
 	std::ofstream file(filename);
-	#pragma omp parallel for
+	//no NOT parallel this one
 	for (int i = 0; i < x.size(); ++i) {
 		file << x.at(i) <<','<< y.at(i) << '\n';
 	}
