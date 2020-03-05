@@ -27,7 +27,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 
 	std::vector<double> x, y;
-	for (int n = 2; n < maxNStars; ++n) {
+	for (int n = 2; n <= maxNStars; ++n) {
 
 		//init
 		std::vector<Star*> stars = {};
