@@ -1,4 +1,15 @@
-//#include <cstdlib>
+/**
+ * Barnes–Hut simulation.
+ *
+ * Stars are initialized (mass, possition- and velocity distribution). Octree is initialized based on the stars. 
+ * Stars accelerations are updated via the octree. Velocity and possition of the stars are updated via an integrator.
+ * Parts of the code can be run in parallel via OpenMP
+ *
+ * @author Alarich Herzner
+ * @version 0.9 05.03.2020
+*/
+
+
 #include <iostream>
 #include <random>
 #include <vector>
