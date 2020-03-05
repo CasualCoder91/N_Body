@@ -3,7 +3,7 @@
 void InOut::write(std::vector<Star*> stars, std::string filename) {
 	std::ofstream file(filename);
 	for (Star* star : stars) {
-		file << star->position.x << ',' << star->position.y << ',' << star->position.z << '\n';
+		file << star->position.print() << '\n';
 	}
 	file.close();
 }
@@ -27,12 +27,12 @@ void InOut::writeAll(std::vector<Star*> stars, std::string filename){
 	file.close();
 }
 
-void InOut::write(Node* tree){
+void InOut::write(Node* tree, std::string filename){
 	if (!tree->isRoot()) {
 		throw "Write function may only be called on root node";
 	}
 	else {
-		std::ofstream file("tree.dat");
+		std::ofstream file(filename);
 		writeRecursively(&file, tree);
 		file.close();
 	}
