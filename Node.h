@@ -100,5 +100,7 @@ public:
 	@note Should be called by root node only. Star does not have to be "part" of the tree.
 	*/
 	void applyForce(Star* star);
+
+	void Node::applyForce(const Vec3D position, Vec3D* acceleration);
 };
 

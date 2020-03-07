@@ -25,6 +25,7 @@ public:
 
     Vec3D();
     Vec3D(double x, double y, double z);
+    ~Vec3D();
     /** 
     @static
     @brief Calculates vector halve way between input vectors @p a and @p b. 
@@ -76,7 +77,7 @@ public:
      @param a, b Vectors of which the cross product is calculated.
      @return distance between given vectors.
      */
-    static double distance(Vec3D* a, Vec3D* b);
+    static double distance(const Vec3D* a, Vec3D* b);
     /**
     @brief Sets all member variables to 0.
     */
@@ -89,12 +90,12 @@ public:
     @brief Operator overloading for multiplication of a vector by a double value.
     @see Vec3D operator * (double& lhs, const Vec3D& rhs)
     */
-    friend Vec3D operator * (const Vec3D& lhs, double& rhs);
+    friend Vec3D operator * (const Vec3D& lhs, const double& rhs);
     /**
     @brief Operator overloading for multiplication of a double value by a vector.
     @see Vec3D operator * (const Vec3D& lhs, double& rhs)
     */
-    friend Vec3D operator * (double& lhs, const Vec3D& rhs);
+    friend Vec3D operator * (const double& lhs, const Vec3D& rhs);
     /**
     @brief Operator overloading for multiplication of a vector with a vector.
     */

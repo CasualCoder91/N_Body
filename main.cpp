@@ -30,15 +30,12 @@ int main() {
 //		std::cout<<"test\n";
 //	}
 	//init stars
-	int n_Stars = 2;
+	int n_Stars = 3;
 	double boxLength = 1; //[pc]
-	double dt = 1;
-	int nTimesteps = 10;
+	double dt = 0.01;
+	int nTimesteps = 2;
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
-	//std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	//std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	//std::uniform_real_distribution<> dis(0.0, boxLength);
 	std::vector<Star*> stars = {};
 
 	//Init
@@ -48,10 +45,14 @@ int main() {
 	//totalMass += 1000;
 
 	//Integrate
-	Integrator euler = Integrator(dt);
+	Integrator rk4 = Integrator(dt);
 
-	Analysis::scaling(5, 5, euler);
-	/*for (int i = 0; i < nTimesteps; i++) {
+	std::vector<double> time;
+	std::vector<double> energy;
+	std::vector<double> potE;
+	std::vector<double> kinE;
+	//Analysis::scaling(5, 5, euler);
+	for (int i = 0; i < nTimesteps; i++) {
 
 		Vec3D tlf = Vec3D(), brb = Vec3D();
 		Node::findCorners(tlf, brb, stars);
@@ -65,23 +66,31 @@ int main() {
 			stars.at(i)->acceleration.reset();
 			root.applyForce(stars.at(i));
 		}
-		euler.euler(stars,dt);
+		rk4.RK4(stars,&root,dt);
 
-		if (i % 100 == 0) {
-			InOut::writeWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
+		if (i % 10 == 0) {
+			//InOut::writeWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
 			//InOut::writeAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
-			//double potentialEnergy = Analysis::potentialEnergy(stars);
-			//double kineticEnergy = Analysis::kineticEnergy(stars);
-			//std::cout<< "Kinetic Energy: " + std::to_string(kineticEnergy) << std::endl;
-			//std::cout << "Potential Energy: " + std::to_string(potentialEnergy) << std::endl;
-			//std::cout << "Total Energy: " + std::to_string(kineticEnergy+potentialEnergy) << std::endl << std::endl;
+			double potentialEnergy = Analysis::potentialEnergy(stars);
+			double kineticEnergy = Analysis::kineticEnergy(stars);
+			std::cout << "stepnr: " << i << std::endl;
+			std::cout<< "Kinetic Energy: " + std::to_string(kineticEnergy) << std::endl;
+			std::cout << "Potential Energy: " + std::to_string(potentialEnergy) << std::endl;
+			std::cout << "Total Energy: " + std::to_string(kineticEnergy+potentialEnergy) << std::endl << std::endl;
+			time.push_back(i);
+			energy.push_back(kineticEnergy + potentialEnergy);
+			potE.push_back(potentialEnergy);
+			kinE.push_back(kineticEnergy);
 		}
 	}
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	//InOut::write(stars,"stars.dat");
 	//InOut::write(&root);
-	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;*/
+	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
+	InOut::write(time, energy, "TotalEnergy.dat");
+	InOut::write(time, kinE, "KinetikEnergy.dat");
+	InOut::write(time, potE, "PotentialEnergy.dat");
 	std::cout << "done" << std::endl;
 	std::cin.get();
 	return 0;

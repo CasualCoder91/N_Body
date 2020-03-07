@@ -6,14 +6,21 @@
 */
 
 #pragma once
-#include "Star.h"
+
 #include <vector>
+
+#include "Star.h"
+#include "Node.h"
 
 class Integrator
 {
 public:
     /** @brief Timestepsize used for integration. Dimension is pc*s/km to minimize cutoff error caused by big differences in orders of magnetude */
-	double dt = 0.1; //timestepsize
+	double dt = 0.1;
+    double dt2 = 0.05; //dt/2
+
+    Vec3D* C[4]; //RK4
+    Vec3D* K[4]; //RK4
 
 	Integrator(double dt = 0.01);
 
@@ -22,6 +29,8 @@ public:
      @param stars Vector of star pointers. All elements are updated
      @param dt Optional parameter timestepsize (only use this if timestepsize varies during simulation). If not passed, the timestepsize given on construction of the class instance is used.
      */
-	void euler(std::vector<Star*> stars,double dt= 0); // one timestep with euler algorithm
+	void euler(std::vector<Star*> stars,double dt= 0);
+    //https://math.stackexchange.com/questions/2023819/using-the-runge-kuttas-method-to-solve-a-2nd-derivative-question
+    void RK4(std::vector<Star*> stars, Node* root, double dt = 0);
 };
 

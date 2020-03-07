@@ -11,5 +11,6 @@ class Parameters
 protected:
     /** @brief Gravitational constant in astronomical units: parsec*solar mass*km^2/s^2*/
 	static double G;
+    static double softening;
 };
 

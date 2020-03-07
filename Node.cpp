@@ -1,6 +1,6 @@
 #include "Node.h"
 
-double Node::precission = 0.9;
+double Node::precission = 0.5;
 
 Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent){
 	this->top_left_front = top_left_front;
@@ -175,7 +175,6 @@ void Node::calculateMassDistribution(){
 
 void Node::applyForce(Star* star){
 	double temp = 0;
-	double softening = 0.1;
 	if (!this->internalNode && this->star != star) {
 		//attractive force -> pointing towars center of mass
 		double dx = this->star->position.x - star->position.x;
@@ -183,7 +182,7 @@ void Node::applyForce(Star* star){
 		double dz = this->star->position.z - star->position.z;
 		temp = dx * dx + dy * dy + dz * dz;
 		if (temp > 0) {
-			temp = Parameters::G * this->star->mass / pow(temp+ softening* softening, 3 / 2);
+			temp = Parameters::G * this->star->mass / pow(temp+ Parameters::softening* Parameters::softening, 3 / 2);
 			//star->acceleration += Vec3D(temp * dx, temp * dy, temp * dz);
 			star->acceleration.x += temp * dx;
 			star->acceleration.y += temp * dy;
@@ -203,6 +202,42 @@ void Node::applyForce(Star* star){
 		for (Node* child : children) {
 			if (child) {
 				child->applyForce(star);
+			}
+		}
+	}
+}
+
+void Node::applyForce(const Vec3D position,Vec3D* acceleration){
+	//if (!this->isRoot())
+	//	throw "Only root may call this one.";
+	double temp = 0;
+	if (!this->internalNode && this->star != star) {
+		//attractive force -> pointing towars center of mass
+		double dx = this->star->position.x - position.x;
+		double dy = this->star->position.y - position.y;
+		double dz = this->star->position.z - position.z;
+		temp = dx * dx + dy * dy + dz * dz;
+		if (temp > 0) {
+			temp = Parameters::G * this->star->mass / pow(temp + Parameters::softening * Parameters::softening, 3 / 2);
+			//star->acceleration += Vec3D(temp * dx, temp * dy, temp * dz);
+			acceleration->x += temp * dx;
+			acceleration->y += temp * dy;
+			acceleration->z += temp * dz;
+		}
+		return;
+	}
+	double distStarCOM = Vec3D::distance(&(position), &(this->centerOfMass));
+	if ((this->bottom_right_back.x - this->top_left_front.x) / distStarCOM < precission && this->star != star && distStarCOM>0) {
+		temp = Parameters::G * this->mass / pow(distStarCOM + softening, 3);
+		//star->acceleration += Vec3D(temp * (star->position.x - this->centerOfMass.x), temp * (star->position.y - this->centerOfMass.y), temp * (star->position.z - this->centerOfMass.z));
+		acceleration->x += temp * (this->centerOfMass.x - position.x);
+		acceleration->y += temp * (this->centerOfMass.y - position.y);
+		acceleration->z += temp * (this->centerOfMass.z - position.z);
+	}
+	else {
+		for (Node* child : children) {
+			if (child) {
+				child->applyForce(position, acceleration);
 			}
 		}
 	}

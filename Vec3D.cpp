@@ -10,6 +10,8 @@ Vec3D::Vec3D(double x, double y, double z){
 	this->z = z;
 }
 
+Vec3D::~Vec3D(){}
+
 Vec3D Vec3D::center(Vec3D a, Vec3D b)
 {
 	return Vec3D((a.x+b.x)/2, (a.y + b.y)/2, (a.y + b.y)/2);
@@ -59,7 +61,7 @@ std::string Vec3D::print()
 	return std::to_string(this->x) +','+ std::to_string(this->y) + ',' + std::to_string(this->z);
 }
 
-double Vec3D::distance(Vec3D* a, Vec3D* b){
+double Vec3D::distance(const Vec3D* a, Vec3D* b){
 	return sqrt(pow(a->x-b->x,2)+ pow(a->y - b->y, 2)+ pow(a->z - b->z, 2));
 }
 
@@ -71,11 +73,11 @@ Vec3D operator/(const Vec3D& lhs, double& rhs){
 	return Vec3D(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 }
 
-Vec3D operator*(const Vec3D& lhs, double& rhs){
+Vec3D operator*(const Vec3D& lhs, const double& rhs){
 	return Vec3D(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 }
 
-Vec3D operator*(double& lhs, const Vec3D& rhs){
+Vec3D operator*(const double& lhs, const Vec3D& rhs){
 	return rhs*lhs;
 }
 
