@@ -53,7 +53,7 @@ void InOut::write(std::vector<double> x, std::vector<double> y, std::string file
 	if (x.size() != y.size()) {
 		throw  "Vector size must be equal";
 	}
-	std::ofstream file(filename);
+	std::ofstream file(InOut::outputDirectory+filename);
 	//no NOT parallel this one
 	for (int i = 0; i < x.size(); ++i) {
 		file << x.at(i) <<','<< y.at(i) << '\n';

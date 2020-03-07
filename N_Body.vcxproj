@@ -103,16 +103,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>\include;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,8 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
@@ -153,32 +150,31 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>\include;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Analysis.cpp" />
-    <ClCompile Include="InitialConditions.cpp" />
-    <ClCompile Include="InOut.cpp" />
-    <ClCompile Include="Integrator.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Node.cpp" />
-    <ClCompile Include="Parameters.cpp" />
-    <ClCompile Include="Star.cpp" />
-    <ClCompile Include="tests.cpp" />
-    <ClCompile Include="Vec3D.cpp" />
+    <ClInclude Include="include\Analysis.h" />
+    <ClInclude Include="include\InitialConditions.h" />
+    <ClInclude Include="include\InOut.h" />
+    <ClInclude Include="include\Integrator.h" />
+    <ClInclude Include="include\Node.h" />
+    <ClInclude Include="include\Parameters.h" />
+    <ClInclude Include="include\Star.h" />
+    <ClInclude Include="include\Structs.h" />
+    <ClInclude Include="include\Vec3D.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Analysis.h" />
-    <ClInclude Include="InitialConditions.h" />
-    <ClInclude Include="InOut.h" />
-    <ClInclude Include="Integrator.h" />
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="Parameters.h" />
-    <ClInclude Include="Star.h" />
-    <ClInclude Include="Structs.h" />
-    <ClInclude Include="Vec3D.h" />
+    <ClCompile Include="src\Analysis.cpp" />
+    <ClCompile Include="src\InitialConditions.cpp" />
+    <ClCompile Include="src\InOut.cpp" />
+    <ClCompile Include="src\Integrator.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Node.cpp" />
+    <ClCompile Include="src\Parameters.cpp" />
+    <ClCompile Include="src\Star.cpp" />
+    <ClCompile Include="src\tests.cpp" />
+    <ClCompile Include="src\Vec3D.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

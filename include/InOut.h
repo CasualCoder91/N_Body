@@ -14,6 +14,8 @@
 #include "Node.h"
 
 namespace InOut{
+
+    static std::string outputDirectory = "Output/";
     /**
      @brief Writes all star coordinates into a file. Format according to Vec3D::print()
      @param stars Vector of star pointers. All elements are written to file

@@ -15,7 +15,7 @@
 #include <vector>
 #include <chrono> //for timer
 
-#include "Star.h"
+#include  "Star.h"
 #include "Node.h"
 #include "InOut.h"
 #include "Integrator.h"
