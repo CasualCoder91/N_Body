@@ -15,6 +15,7 @@
 
 namespace InOut{
 
+    /**@brief All files are writen within this directory */
     static std::string outputDirectory = "Output/";
     /**
      @brief Writes all star coordinates into a file. Format according to Vec3D::print()
@@ -53,5 +54,7 @@ namespace InOut{
      @attention do **not** call this function
      */
     void writeRecursively(std::ofstream* file_ptr, Node* node_ptr);
+
+    std::vector<Vec3D> readVectors(std::string filename);
 };
 

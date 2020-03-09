@@ -11,7 +11,7 @@ double InitialConditions::initialMass(std::vector<Star*> &stars,int n_Stars)
 		for (int i = 0; i < n_Stars; i++) {
 			mass = dis(gen);
 			mass = 0.08 + (0.19 * pow(mass, 1.55) + 0.05 * pow(mass, 0.6)) / pow(1 - mass, 0.58);
-			Star* star = new Star(mass);
+			Star* star = new Star(stars.size(),mass);
 			stars.push_back(star);
 			totalMass += mass;
 		}

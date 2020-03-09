@@ -9,10 +9,12 @@
 #include "Vec3D.h"
 class Star{
 public:
-	Star();
-	Star(double mass);
-	Star(double mass, Vec3D position);
-	Star(double mass, double x, double y, double z);
+	Star(int id);
+	Star(int id, double mass);
+	Star(int id, double mass, Vec3D position);
+	Star(int id, double mass, double x, double y, double z);
+	/** @brief ID of the star, needed for database. */
+	int id;
 	/** @brief Mass of the star in solar mass units */
 	double mass;
 	/** @brief Position of the star in parsec */

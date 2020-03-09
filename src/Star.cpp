@@ -1,28 +1,31 @@
 #include "Star.h"
 
-Star::Star(){
+Star::Star(int id){
+	this->id = id;
 	this->mass = 1;
 	this->position = Vec3D();
 	this->velocity = Vec3D();
 	this->acceleration = Vec3D();
 }
 
-Star::Star(double mass)
-{
+Star::Star(int id, double mass){
+	this->id = id;
 	this->mass = mass;
 	this->position = Vec3D();
 	this->velocity = Vec3D();
 	this->acceleration = Vec3D();
 }
 
-Star::Star(double mass, Vec3D position){
+Star::Star(int id, double mass, Vec3D position){
+	this->id = id;
 	this->mass = mass;
 	this->position = position;
 	this->velocity = Vec3D();
 	this->acceleration = Vec3D();
 }
 
-Star::Star(double mass, double x, double y, double z){
+Star::Star(int id, double mass, double x, double y, double z){
+	this->id = id;
 	this->mass = mass;
 	this->position = Vec3D(x, y, z);
 	this->velocity = Vec3D();

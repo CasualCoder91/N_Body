@@ -1,7 +1,7 @@
 #include "InOut.h"
 
 void InOut::write(std::vector<Star*> stars, std::string filename) {
-	std::ofstream file(filename);
+	std::ofstream file(InOut::outputDirectory + filename);
 	for (Star* star : stars) {
 		file << star->position.print() << '\n';
 	}
@@ -9,7 +9,7 @@ void InOut::write(std::vector<Star*> stars, std::string filename) {
 }
 
 void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
-	std::ofstream file(filename);
+	std::ofstream file(InOut::outputDirectory + filename);
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
 		file << stars.at(i)->position.x << ',' << stars.at(i)->position.y << ',' << stars.at(i)->position.z << ',' << i << '\n';
@@ -18,7 +18,7 @@ void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
 }
 
 void InOut::writeAll(std::vector<Star*> stars, std::string filename){
-	std::ofstream file(filename);
+	std::ofstream file(InOut::outputDirectory + filename);
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size(); ++i) {
 		file << "Star: " << i << '\n';
@@ -32,7 +32,7 @@ void InOut::write(Node* tree, std::string filename){
 		throw "Write function may only be called on root node";
 	}
 	else {
-		std::ofstream file(filename);
+		std::ofstream file(InOut::outputDirectory + filename);
 		writeRecursively(&file, tree);
 		file.close();
 	}
@@ -47,6 +47,19 @@ void InOut::writeRecursively(std::ofstream* file_ptr,Node* node_ptr) {
 	}
 	*file_ptr << node_ptr->print();
 	return;
+}
+
+std::vector<Vec3D> InOut::readVectors(std::string filename){
+	std::vector<Vec3D> vectors;
+	std::string line;
+	std::ifstream sVectors("filename");
+	if (sVectors.is_open()){
+		while (std::getline(sVectors, line)){
+			std::cout << line << '\n';
+		}
+		sVectors.close();
+	}
+	return vectors;
 }
 
 void InOut::write(std::vector<double> x, std::vector<double> y, std::string filename){

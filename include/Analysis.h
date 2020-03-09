@@ -19,21 +19,29 @@
 
 class Analysis : Parameters
 {
+    bool bEnergy;
+    bool bAverageVelocity;
 public:
+
+    Analysis(bool doEnergyAnalysis);
+
+    std::vector<double> totE;
+    std::vector<double> potE;
+    std::vector<double> kinE;
+    std::vector<double> time;
+
     /**
-     @static
      @brief The total potential energy of the given stars is calculated.
      @param stars Vector of star pointers of which the potential energy is calculated.
      @return The potential energy of the given stars
      */
-	double static potentialEnergy(std::vector<Star*>& stars);
+	double potentialEnergy(std::vector<Star*>& stars);
     /**
-     @static
      @brief The total kinetic energy of the given stars is calculated.
      @param stars Vector of star pointers of which the kinetic energy is calculated.
      @return The kinetic energy of the given stars
      */
-	double static kineticEnergy(std::vector<Star*>& stars);
+	double kineticEnergy(std::vector<Star*>& stars);
     /**
      @static
      @brief The scaling of the running time is tracked given a specific integrator depending on the number of stars and output into Output/NlogNtest.dat.
@@ -42,5 +50,11 @@ public:
      @param integrator the integrator used for integration over time.
      */
 	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator);
+
+    bool getbEnergy();
+
+    bool getbAverageVelocity();
+
+    void write();
 };
 

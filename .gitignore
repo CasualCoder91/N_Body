@@ -342,3 +342,7 @@ healthchecksdb
 !Output/
 Output/*
 !Output/empty.txt
+
+!build/
+build/*
+!build/.gitignore

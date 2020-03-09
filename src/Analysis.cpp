@@ -1,5 +1,9 @@
 #include "Analysis.h"
 
+Analysis::Analysis(bool doEnergyAnalysis){
+	this->bEnergy = doEnergyAnalysis;
+}
+
 double Analysis::potentialEnergy(std::vector<Star*>& stars){
 	double potentialEnergy = 0;
 	#pragma omp parallel for
@@ -8,6 +12,7 @@ double Analysis::potentialEnergy(std::vector<Star*>& stars){
 			potentialEnergy -= Parameters::G * stars.at(i)->mass * stars.at(j)->mass / Vec3D::distance(&stars.at(i)->position, &stars.at(j)->position);
 		}
 	}
+	this->potE.push_back(potentialEnergy);
 	return potentialEnergy;
 }
 
@@ -18,6 +23,7 @@ double Analysis::kineticEnergy(std::vector<Star*>& stars){
 		kineticEnergy += stars.at(i)->mass * (stars.at(i)->velocity * stars.at(i)->velocity);
 	}
 	kineticEnergy *= 0.5;
+	this->kinE.push_back(kineticEnergy);
 	return kineticEnergy;
 }
 
@@ -50,11 +56,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 				stars.at(i)->acceleration.reset(); // reset acceleration to 0,0,0
 				root.applyForce(stars.at(i));
 			}
-			integrator.euler(stars);
-
-			//std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
-			//std::cout << "done" << std::endl;
-			//std::cin.get();
+			integrator.euler(stars,&root);
 		}
 		endTime = std::chrono::steady_clock::now();
 		time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
@@ -62,5 +64,21 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 		y.push_back(time_span.count());
 		std::cout << "n: " << n << " N: " << maxNStars << std::endl;
 	}
-	InOut::write(x,y,"Output/NlogNtest.dat");
+	InOut::write(x,y,"NlogNtest.dat");
+}
+
+bool Analysis::getbEnergy(){
+	return this->bEnergy;
+}
+
+bool Analysis::getbAverageVelocity(){
+	return this->bAverageVelocity;
+}
+
+void Analysis::write(){
+	if (bEnergy) {
+		InOut::write(time, totE, "TotalEnergy.dat");
+		InOut::write(time, kinE, "KinetikEnergy.dat");
+		InOut::write(time, potE, "PotentialEnergy.dat");
+	}
 }

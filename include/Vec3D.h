@@ -110,5 +110,7 @@ public:
     @see Vec3D& operator += (const Vec3D& rhs);
     */
     friend Vec3D operator + (Vec3D lhs, Vec3D const& rhs);
+    friend Vec3D operator - (Vec3D lhs, Vec3D const& rhs);
+    static Vec3D projection(Vec3D& target, Vec3D& normalVector);
 };
 

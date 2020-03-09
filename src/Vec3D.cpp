@@ -86,9 +86,13 @@ Vec3D operator+(Vec3D lhs, Vec3D const& rhs){
 	return lhs;
 }
 
+Vec3D operator-(Vec3D lhs, Vec3D const& rhs){
+	return Vec3D(lhs.x-rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+}
+
 
 double Vec3D::operator*(const Vec3D& rhs){
-	return this->x * rhs.x + this->y * rhs.y + rhs.z * rhs.z;
+	return this->x * rhs.x + this->y * rhs.y + this->z * rhs.z;
 }
 
 Vec3D& Vec3D::operator+=(const Vec3D & rhs){
@@ -96,6 +100,10 @@ Vec3D& Vec3D::operator+=(const Vec3D & rhs){
 	y += rhs.y;
 	z += rhs.z;
 	return *this;
+}
+
+Vec3D Vec3D::projection(Vec3D& target, Vec3D& normalVector){
+	return target - (target * normalVector) * normalVector;
 }
 
 Vec3D operator*(float f, const Vec3D& v){
