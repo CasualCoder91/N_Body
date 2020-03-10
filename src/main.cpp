@@ -22,6 +22,9 @@
 #include "InitialConditions.h"
 #include "Analysis.h"
 #include "Database.h"
+#include "Simulation.h"
+
+void runSimulation(Simulation& simulation);
 
 int main() {
 
@@ -34,17 +37,34 @@ int main() {
 	Parameters parameters = Parameters();
 	std::cout << "[1] Load Simulation (coming soon)\n[2] New Simulation" << std::endl;
 	std::cin >> selection;
-	if (selection == 2) {
+	if (selection == 1) {
+		std::vector<Simulation> simulations = db.selectSimulations();
+		std::cout << "Available Simulations:" << std::endl;
+		for (Simulation sim : simulations) {
+			std::cout << sim.print();
+		}
+		std::cout << "Input ID to select simulation" << std::endl;
+		std::cin >> selection;
+		std::cout << "Running analysis on selected simulation" << std::endl;
+		Analysis analysis = Analysis();
+		if (analysis.getbEnergy()) {
+			std::vector<int> timeSteps = db.selectTimesteps();
+			for (int timeStep : timeSteps) {
+				std::vector<Star*> stars = db.selectStars(selection,timeStep);
+				std::cout << analysis.kineticEnergy(stars) << std::endl;
+			}
+		}
+	}
+	else if(selection == 2){
 		simulationID = db.insert(parameters);
-		std::cout << "New Simulation created: " << simulationID << std::endl;
+		Simulation simulation = Simulation(simulationID);
+		std::cout << "New simulation created: " << simulationID << std::endl;
+		std::cout << "Starting simulation" << std::endl;
+		runSimulation(simulation);
 	}
 
-	//Init stars
-	std::vector<Star*> stars = {};
-	double totalMass = InitialConditions::initialMass(stars, parameters.getN_Stars());
-	InitialConditions::plummerSphere(stars, 1, totalMass);
-	db.insert(simulationID, stars);
-	std::cin.get();
+	
+
 	//Vec3D test = Vec3D(2, 3, 4);
 	//Vec3D normalVector = Vec3D(0, 0, 1);
 	//Vec3D xy = Vec3D::projection(test,normalVector);
@@ -52,25 +72,37 @@ int main() {
 	//std::cout << xy.print() << std::endl;
 	return 0;
 
-	//Parameters
+	//Simulation
 	//int n_Stars = 100;
 	//double boxLength = 1; //[pc]
 	//double dt = 0.01;
 	//int nTimesteps = 100;
 	//bool energyAnalysis = true;
 
-	Analysis analysis = Analysis(parameters.getEnergyAnalysis());
+	Analysis analysis = Analysis();
 
 
 	//stars.push_back(new Star(1000, 0, 0, 0));
 	//totalMass += 1000;
 
-	//Integrate
-	Integrator rk4 = Integrator(parameters.getdt());
+	
+	std::cin.get();
+	return 0;
+}
 
-	//Analysis::scaling(5, 5, euler);
+void runSimulation(Simulation& simulation){
+	Database database = Database();
+	//Init stars
+	std::vector<Star*> stars = {};
+	InitialConditions initialConditions = InitialConditions();
+	double totalMass = initialConditions.initialMass(stars, simulation.getN_Stars());
+	initialConditions.plummerSphere(stars, 1, totalMass);
+	database.insertStars(simulation.getID(), stars, 0);
+
+	//Integrate
+	Integrator rk4 = Integrator(simulation.getdt());
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
-	for (int i = 0; i < parameters.getNTimesteps(); i++) {
+	for (int i = 0; i < simulation.getNTimesteps(); i++) {
 
 		Vec3D tlf = Vec3D(), brb = Vec3D();
 		Node::findCorners(tlf, brb, stars);
@@ -78,26 +110,15 @@ int main() {
 		for (Star* star : stars) {
 			root.insert(star);
 		}
+
 		root.calculateMassDistribution();
-		//#pragma omp parallel for //1:10
-		//for (int i = 0; i < stars.size();++i){
-		//	stars.at(i)->acceleration.reset();
-		//	root.applyForce(stars.at(i));
-		//}
-		rk4.euler(stars,&root,parameters.getdt());
+
+		rk4.euler(stars, &root);
 
 		if (i % 10 == 0) {
 			//InOut::writeWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
 			//InOut::writeAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
-			analysis.time.push_back(i);
-			if (analysis.getbEnergy()) {
-				double potentialEnergy = analysis.potentialEnergy(stars);
-				double kineticEnergy = analysis.kineticEnergy(stars);
-				std::cout << "stepnr: " << i << std::endl;
-				std::cout << "Kinetic Energy: " + std::to_string(kineticEnergy) << std::endl;
-				std::cout << "Potential Energy: " + std::to_string(potentialEnergy) << std::endl;
-				std::cout << "Total Energy: " + std::to_string(kineticEnergy + potentialEnergy) << std::endl << std::endl;
-			}
+			database.timestep(i, stars);
 		}
 	}
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
@@ -106,6 +127,5 @@ int main() {
 	//InOut::write(&root);
 	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
 	std::cout << "done" << std::endl;
-	std::cin.get();
-	return 0;
+
 }

@@ -8,10 +8,10 @@
 
 class InitialConditions: Parameters {
 public:
-	static double initialMass(std::vector<Star*> &stars,int n_Stars=0);
-	static void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
+	double initialMass(std::vector<Star*> &stars,int n_Stars=0);
+	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
 private:
-	static double plummerEscapeVelocity(double distance, double structuralLength, double totalMass);
-	static void plummerVelocity(Star* star, double structuralLength, double distance, double totalMass);
+	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass);
+	void plummerVelocity(Star* star, double structuralLength, double distance, double totalMass);
 };
 

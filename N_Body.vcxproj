@@ -164,6 +164,7 @@
     <ClInclude Include="include\Integrator.h" />
     <ClInclude Include="include\Node.h" />
     <ClInclude Include="include\Parameters.h" />
+    <ClInclude Include="include\Simulation.h" />
     <ClInclude Include="include\Star.h" />
     <ClInclude Include="include\Structs.h" />
     <ClInclude Include="include\Vec3D.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Node.cpp" />
     <ClCompile Include="src\Parameters.cpp" />
+    <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\Star.cpp" />
     <ClCompile Include="src\tests.cpp" />
     <ClCompile Include="src\Vec3D.cpp" />

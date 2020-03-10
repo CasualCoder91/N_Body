@@ -41,7 +41,7 @@ void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structur
 double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass){
 	//return sqrt(2.) * pow(distance * distance + structuralLength, -0.25);
 	//https://github.com/bacook17/behalf/blob/master/behalf/initialConditions.py
-	return sqrt(2. * Parameters::G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
+	return sqrt(2. * this->getG() * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
 }
 
 void InitialConditions::plummerVelocity(Star* star, double structuralLength, double distance, double totalMass){

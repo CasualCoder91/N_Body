@@ -13,6 +13,7 @@ public:
 	Star(int id, double mass);
 	Star(int id, double mass, Vec3D position);
 	Star(int id, double mass, double x, double y, double z);
+	Star(int id, double mass, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel);
 	/** @brief ID of the star, needed for database. */
 	int id;
 	/** @brief Mass of the star in solar mass units */

@@ -19,11 +19,13 @@
 
 class Analysis : Parameters
 {
+private:
     bool bEnergy;
     bool bAverageVelocity;
+    bool bAverage2DVelocity;
 public:
 
-    Analysis(bool doEnergyAnalysis);
+    Analysis();
 
     std::vector<double> totE;
     std::vector<double> potE;
@@ -54,6 +56,8 @@ public:
     bool getbEnergy();
 
     bool getbAverageVelocity();
+
+    bool getbAverage2DVelocity();
 
     void write();
 };

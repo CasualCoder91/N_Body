@@ -1,7 +1,19 @@
 #include "Analysis.h"
 
-Analysis::Analysis(bool doEnergyAnalysis){
-	this->bEnergy = doEnergyAnalysis;
+Analysis::Analysis(){
+	Parameters::config.Load(filePath);
+	if (!config.Get("bEnergy", bEnergy)) {
+		bEnergy = false;
+		std::cout << "bEnergy missing in " + filePath + "add bEnergy = true to activate energy analysis."<< std::endl;
+	}
+	if (!config.Get("bAverageVelocity", bAverageVelocity)) {
+		bAverageVelocity = false;
+		std::cout << "bAverageVelocity missing in " + filePath + "add bAverageVelocity = true to activate 3d velocity analysis." << std::endl;
+	}
+	if (!config.Get("bAverage2DVelocity", bAverage2DVelocity)) {
+		bAverageVelocity = false;
+		std::cout << "bAverage2DVelocity missing in " + filePath + "add bAverage2DVelocity = true to activate 2d velocity analysis." << std::endl;
+	}
 }
 
 double Analysis::potentialEnergy(std::vector<Star*>& stars){
@@ -39,8 +51,9 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 
 		//init
 		std::vector<Star*> stars = {};
-		double totalMass = InitialConditions::initialMass(stars, n);
-		InitialConditions::plummerSphere(stars, 1, totalMass);
+		InitialConditions initialConditions = InitialConditions();
+		double totalMass = initialConditions.initialMass(stars, n);
+		initialConditions.plummerSphere(stars, 1, totalMass);
 
 		startTime = std::chrono::steady_clock::now();
 		for (int i = 0; i < nTimesteps; i++) {
@@ -73,6 +86,10 @@ bool Analysis::getbEnergy(){
 
 bool Analysis::getbAverageVelocity(){
 	return this->bAverageVelocity;
+}
+
+bool Analysis::getbAverage2DVelocity(){
+	return this->bAverage2DVelocity;
 }
 
 void Analysis::write(){

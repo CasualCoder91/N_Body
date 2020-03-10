@@ -32,6 +32,14 @@ Star::Star(int id, double mass, double x, double y, double z){
 	this->acceleration = Vec3D();
 }
 
+Star::Star(int id, double mass, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel){
+	this->id = id;
+	this->mass = mass;
+	this->position = Vec3D(xPos, yPos, zPos);
+	this->velocity = Vec3D(xVel, yVel, zVel);
+	this->acceleration = Vec3D();
+}
+
 std::string Star::dump()
 {
 	return "mass: " + std::to_string(mass) + '\n'

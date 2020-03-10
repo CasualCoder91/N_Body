@@ -13,7 +13,7 @@ public:
     // clear all values
     void Clear();
 
-    // load a configuration file
+    // load a configuration filePath
     bool Load(const std::string& File);
 
     // check if value associated with given key exists
