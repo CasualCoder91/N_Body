@@ -51,7 +51,7 @@ void Database::setup(){
 		"id INTEGER NOT NULL,"
 		"mass REAL NOT NULL,"
 		"id_simulation INTEGER NOT NULL,"
-		"PRIMARY KEY (id,id_simulation),"
+		"PRIMARY KEY (id),"
 		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
 			"ON DELETE CASCADE "
@@ -64,9 +64,8 @@ void Database::setup(){
 		"z REAL NOT NULL,"
 		"timestep INTEGER NOT NULL,"
 		"id_star INTEGER NOT NULL,"
-		"id_simulation INTEGER NOT NULL,"
-		"FOREIGN KEY (id_star,id_simulation) "
-			"REFERENCES star(id,id_simulation) "
+		"FOREIGN KEY (id_star) "
+			"REFERENCES star(id) "
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
@@ -88,34 +87,57 @@ void Database::setup(){
 		"z REAL NOT NULL,"
 		"timestep INTEGER NOT NULL,"
 		"id_star INTEGER NOT NULL,"
-		"id_simulation INTEGER NOT NULL,"
-		"FOREIGN KEY (id_star,id_simulation) "
-			"REFERENCES star(id,id_simulation) "
+		"FOREIGN KEY (id_star) "
+			"REFERENCES star(id) "
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS analysis("
-		"fk_simulation INTEGER PRIMARY KEY,"
+		"id_simulation INTEGER PRIMARY KEY,"
 		"doEnergy INTEGER NOT NULL,"
 		"doVelocity INTEGER NOT NULL,"
 		"doVelocity2D INTEGER NOT NULL,"
-		"FOREIGN KEY (fk_simulation) "
+		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS timeStepAnalysis("
-		"id INTEGER PRIMARY KEY,"
+		"dt INTEGER NOT NULL,"
 		"averageVelocity REAL,"
 		"kinE REAL,"
 		"potE REAL,"
 		"totE REAL,"
-		"fk_analysis INTEGER NOT NULL,"
-		"FOREIGN KEY (fk_analysis) "
-			"REFERENCES analysis(id) "
+		"id_analysis INTEGER NOT NULL,"
+		"PRIMARY KEY(dt,id_analysis),"
+		"FOREIGN KEY (id_analysis) "
+			"REFERENCES analysis(id_simulation) "
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
+}
+
+int Database::getLastID(){
+	std::string sql = "SELECT Last_Insert_Rowid()";
+	sqlite3_stmt* st;
+	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
+	int returnCode = sqlite3_step(st);
+	int ID = -1;
+	if (returnCode == SQLITE_ROW) {
+		ID = sqlite3_column_int(st, 0);
+	}
+	sqlite3_finalize(st);
+	return ID;
+}
+
+int Database::selectLastID(std::string table){
+	std::string sql = "select id from "+table+" order by id desc LIMIT 1";
+	sqlite3_stmt* st;
+	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
+	int returnCode = sqlite3_step(st);
+	int ID = sqlite3_column_int(st, 0);
+	sqlite3_finalize(st);
+	return ID;
 }
 
 int Database::insert(Parameters& parameters){
@@ -135,36 +157,49 @@ int Database::insert(Parameters& parameters){
 	if (returnCode != SQLITE_DONE){
 		throw "Could not insert new simulation";
 	}
-	sql = "SELECT Last_Insert_Rowid()";
-	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
-	returnCode = sqlite3_step(st);
-	int simulationID = -1;
-	if (returnCode == SQLITE_ROW){
-		simulationID = sqlite3_column_int(st, 0);
-	}
 	sqlite3_finalize(st);
-	//sqlite3_close(db);
-	//parameters.setID(simulationID);
+	int simulationID = getLastID();
 	return simulationID;
 }
 
 void Database::insertStars(int simulationID, std::vector<Star*>& stars, int timestep){
 	if (!this->isOpen)
 		this->open();
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
 		insertStar(simulationID, stars.at(i), timestep);
 	}
 }
 
-void Database::insertAnalysis(int simulationID, Analysis analysis){
-	std::string sql = "INSERT INTO analysis (fk_simulation,doEnergy,doVelocity) VALUES (?1,?2,?3,?4)";
+int Database::insertAnalysis(int simulationID, Analysis analysis){
+	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,doEnergy,doVelocity,doVelocity2D) VALUES " 
+		"((select id_simulation from analysis where id_simulation = ?1),?2,?3,?4)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, simulationID);
 	sqlite3_bind_int(st, 2, analysis.getbEnergy());
 	sqlite3_bind_int(st, 3, analysis.getbAverageVelocity());
 	sqlite3_bind_int(st, 4, analysis.getbAverage2DVelocity());
+	int returnCode = sqlite3_step(st);
+	sqlite3_finalize(st);
+	return getLastID();
+}
+
+void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, double potE){
+	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,averageVelocity,kinE,potE,totE,id_analysis) VALUES "
+		"(?1,"
+		"(select averageVelocity from timeStepAnalysis where dt = ?1),"
+		"?2,"
+		"?3,"
+		"?4,"
+		"?5)";
+	sqlite3_stmt* st;
+	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
+	sqlite3_bind_int(st, 1, dt);
+	sqlite3_bind_double(st, 2, kinE);
+	sqlite3_bind_double(st, 3, potE);
+	sqlite3_bind_double(st, 4, kinE+potE);
+	sqlite3_bind_int(st, 5, analysisID);
 	int returnCode = sqlite3_step(st);
 	sqlite3_finalize(st);
 }
@@ -279,9 +314,9 @@ std::vector<Star*> Database::selectStars(int simulationID, int timeStep){
 	if (!this->isOpen)
 		this->open();
 	std::string query = "SELECT star.id,mass,position.x,position.y,position.z,velocity.x,velocity.y,velocity.z " 
-		"FROM star INNER JOIN velocity on velocity.fk_star = star.id"
-		"INNER JOIN position on position.fk_star = star.id"
-		"where position.timestep = ?1 AND velocity.timestep = ?1 AND star.fk_simulation = ?2";
+		"FROM star INNER JOIN velocity on velocity.id_star = star.id "
+		"INNER JOIN position on position.id_star = star.id "
+		"where position.timestep = ?1 AND velocity.timestep = ?1 AND star.id_simulation = ?2";
 	sqlite3_stmt* stmt;
 	if (sqlite3_prepare_v2(db, query.c_str(), query.size(), &stmt, nullptr) != SQLITE_OK) {
 		// Error reporting and handling

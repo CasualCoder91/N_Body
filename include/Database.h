@@ -24,9 +24,12 @@ public:
 	bool open(const char* name ="");
 	bool exec(char* sql);
 	void setup();
+	int getLastID();
+	int selectLastID(std::string table);
 	int insert(Parameters& parameters);
 	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0);
-	void insertAnalysis(int simulationID, Analysis analysis);
+	int insertAnalysis(int simulationID, Analysis analysis);
+	void insertAnalysisdtEnergy(int analysisID,int dt, double kinE, double potE);
 	void timestep(int timestep, std::vector<Star*>& stars);
 	void insertStar(int simulationID, Star* star, int& timestep);
 	void insertPosition(int& idStar, Vec3D& position, int& timestep);

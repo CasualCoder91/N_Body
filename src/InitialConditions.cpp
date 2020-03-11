@@ -1,28 +1,25 @@
 #include "InitialConditions.h"
 
-double InitialConditions::initialMass(std::vector<Star*> &stars,int n_Stars)
-{
+std::vector<Star*> InitialConditions::initStars(int firstID, int n_Stars){
+	std::vector<Star*> stars = {};
+	for (int i = 0; i < n_Stars; i++) {
+		Star* star = new Star(firstID+i);
+		stars.push_back(star);
+	}
+	return stars;
+}
+
+double InitialConditions::initialMass(std::vector<Star*> &stars){
 	double mass = 0;
 	double totalMass = 0;
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 0.1);
-	if (n_Stars > 0) {
-		for (int i = 0; i < n_Stars; i++) {
-			mass = dis(gen);
-			mass = 0.08 + (0.19 * pow(mass, 1.55) + 0.05 * pow(mass, 0.6)) / pow(1 - mass, 0.58);
-			Star* star = new Star(stars.size(),mass);
-			stars.push_back(star);
-			totalMass += mass;
-		}
-	}
-	else {
-		for (Star* star : stars) {
-			mass = dis(gen);
-			mass = 0.08 + (0.19 * pow(mass, 1.55) + 0.05 * pow(mass, 0.6)) / pow(1 - mass, 0.58);
-			star->mass = mass;
-			totalMass += mass;
-		}
+	for (Star* star : stars) {
+		mass = dis(gen);
+		mass = 0.08 + (0.19 * pow(mass, 1.55) + 0.05 * pow(mass, 0.6)) / pow(1 - mass, 0.58);
+		star->mass = mass;
+		totalMass += mass;
 	}
 	return totalMass;
 }

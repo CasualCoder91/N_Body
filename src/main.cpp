@@ -34,9 +34,9 @@ int main() {
 
 	int selection;
 	int simulationID = -1;
-	Parameters parameters = Parameters();
 	std::cout << "[1] Load Simulation (coming soon)\n[2] New Simulation" << std::endl;
 	std::cin >> selection;
+	std::cin.clear();
 	if (selection == 1) {
 		std::vector<Simulation> simulations = db.selectSimulations();
 		std::cout << "Available Simulations:" << std::endl;
@@ -45,17 +45,21 @@ int main() {
 		}
 		std::cout << "Input ID to select simulation" << std::endl;
 		std::cin >> selection;
+		std::cin.clear();
 		std::cout << "Running analysis on selected simulation" << std::endl;
 		Analysis analysis = Analysis();
+		int analysisID = db.insertAnalysis(selection, analysis);
 		if (analysis.getbEnergy()) {
 			std::vector<int> timeSteps = db.selectTimesteps();
 			for (int timeStep : timeSteps) {
 				std::vector<Star*> stars = db.selectStars(selection,timeStep);
-				std::cout << analysis.kineticEnergy(stars) << std::endl;
+				db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars),analysis.potentialEnergy(stars));
 			}
+			std::cout << "Energy analysis done" << std::endl;
 		}
 	}
 	else if(selection == 2){
+		Parameters parameters = Parameters();
 		simulationID = db.insert(parameters);
 		Simulation simulation = Simulation(simulationID);
 		std::cout << "New simulation created: " << simulationID << std::endl;
@@ -92,17 +96,18 @@ int main() {
 
 void runSimulation(Simulation& simulation){
 	Database database = Database();
+	int nextStarIndex = database.selectLastID("star")+1;
 	//Init stars
-	std::vector<Star*> stars = {};
 	InitialConditions initialConditions = InitialConditions();
-	double totalMass = initialConditions.initialMass(stars, simulation.getN_Stars());
+	std::vector<Star*> stars = initialConditions.initStars(nextStarIndex,simulation.getN_Stars());
+	double totalMass = initialConditions.initialMass(stars);
 	initialConditions.plummerSphere(stars, 1, totalMass);
 	database.insertStars(simulation.getID(), stars, 0);
 
 	//Integrate
 	Integrator rk4 = Integrator(simulation.getdt());
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
-	for (int i = 0; i < simulation.getNTimesteps(); i++) {
+	for (int i = 1; i < simulation.getNTimesteps(); i++) {
 
 		Vec3D tlf = Vec3D(), brb = Vec3D();
 		Node::findCorners(tlf, brb, stars);

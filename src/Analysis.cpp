@@ -50,9 +50,9 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 	for (int n = 2; n <= maxNStars; ++n) {
 
 		//init
-		std::vector<Star*> stars = {};
 		InitialConditions initialConditions = InitialConditions();
-		double totalMass = initialConditions.initialMass(stars, n);
+		std::vector<Star*> stars = initialConditions.initStars(0,n);
+		double totalMass = initialConditions.initialMass(stars);
 		initialConditions.plummerSphere(stars, 1, totalMass);
 
 		startTime = std::chrono::steady_clock::now();
