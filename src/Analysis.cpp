@@ -4,15 +4,15 @@ Analysis::Analysis(){
 	Parameters::config.Load(filePath);
 	if (!config.Get("bEnergy", bEnergy)) {
 		bEnergy = false;
-		std::cout << "bEnergy missing in " + filePath + "add bEnergy = true to activate energy analysis."<< std::endl;
+		std::cout << "bEnergy missing in " + filePath + " add bEnergy = true to activate energy analysis."<< std::endl;
 	}
 	if (!config.Get("bAverageVelocity", bAverageVelocity)) {
 		bAverageVelocity = false;
-		std::cout << "bAverageVelocity missing in " + filePath + "add bAverageVelocity = true to activate 3d velocity analysis." << std::endl;
+		std::cout << "bAverageVelocity missing in " + filePath + " add bAverageVelocity = true to activate 3d velocity analysis." << std::endl;
 	}
 	if (!config.Get("bAverage2DVelocity", bAverage2DVelocity)) {
-		bAverageVelocity = false;
-		std::cout << "bAverage2DVelocity missing in " + filePath + "add bAverage2DVelocity = true to activate 2d velocity analysis." << std::endl;
+		bAverage2DVelocity = false;
+		std::cout << "bAverage2DVelocity missing in " + filePath + " add bAverage2DVelocity = true to activate 2d velocity analysis." << std::endl;
 	}
 }
 
@@ -90,6 +90,14 @@ bool Analysis::getbAverageVelocity(){
 
 bool Analysis::getbAverage2DVelocity(){
 	return this->bAverage2DVelocity;
+}
+
+double Analysis::average(std::vector<Vec3D*>& vectors){
+	double average = 0;
+	for (Vec3D* vector : vectors) {
+		average += vector->length();
+	}
+	return average/vectors.size();
 }
 
 void Analysis::write(){

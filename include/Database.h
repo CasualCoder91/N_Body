@@ -30,6 +30,7 @@ public:
 	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0);
 	int insertAnalysis(int simulationID, Analysis analysis);
 	void insertAnalysisdtEnergy(int analysisID,int dt, double kinE, double potE);
+	void insertAnalysisdtVelocity(int analysisID, int dt, double velocity);
 	void timestep(int timestep, std::vector<Star*>& stars);
 	void insertStar(int simulationID, Star* star, int& timestep);
 	void insertPosition(int& idStar, Vec3D& position, int& timestep);

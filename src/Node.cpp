@@ -181,7 +181,7 @@ void Node::applyForce(const Vec3D position,Vec3D* acceleration){
 	//if (!this->isRoot())
 	//	throw "Only root may call this one.";
 	double temp = 0;
-	if (!this->internalNode && this->star != star) {
+	if (!this->internalNode) { //&& this->star != star
 		//attractive force -> pointing towars center of mass
 		double dx = this->star->position.x - position.x;
 		double dy = this->star->position.y - position.y;
@@ -197,7 +197,7 @@ void Node::applyForce(const Vec3D position,Vec3D* acceleration){
 		return;
 	}
 	double distStarCOM = Vec3D::distance(&(position), &(this->centerOfMass));
-	if (false){//((this->bottom_right_back.x - this->top_left_front.x) / distStarCOM < precission && this->star != star && distStarCOM>0) {
+	if ((this->bottom_right_back.x - this->top_left_front.x) / distStarCOM < precission && this->star != star && distStarCOM>0) {
 		temp = Parameters::G * this->mass / pow(distStarCOM + softening, 3);
 		//star->acceleration += Vec3D(temp * (star->position.x - this->centerOfMass.x), temp * (star->position.y - this->centerOfMass.y), temp * (star->position.z - this->centerOfMass.z));
 		acceleration->x += temp * (this->centerOfMass.x - position.x);

@@ -21,8 +21,8 @@ void Integrator::euler(std::vector<Star*> stars, Node* root, double dt){
 	for (int i = 0; i < stars.size(); ++i){
 		stars.at(i)->acceleration.reset();
 		root->applyForce(stars.at(i)->position, &stars.at(i)->acceleration);
-		stars.at(i)->velocity += (stars.at(i)->acceleration * dt);
-		stars.at(i)->position += (stars.at(i)->velocity * dt);
+		stars.at(i)->velocity += (stars.at(i)->acceleration * this->dt);
+		stars.at(i)->position += (stars.at(i)->velocity * this->dt);
 	}
 }
 

@@ -59,6 +59,8 @@ public:
 
     bool getbAverage2DVelocity();
 
+    double average(std::vector<Vec3D*>& vectors);
+
     void write();
 };
 

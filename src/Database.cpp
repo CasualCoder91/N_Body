@@ -204,6 +204,23 @@ void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, doubl
 	sqlite3_finalize(st);
 }
 
+void Database::insertAnalysisdtVelocity(int analysisID, int dt, double velocity){
+	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,averageVelocity,kinE,potE,totE,id_analysis) VALUES "
+		"(?1,"
+		"?2,"
+		"(select kinE from timeStepAnalysis where dt = ?1),"
+		"(select potE from timeStepAnalysis where dt = ?1),"
+		"(select totE from timeStepAnalysis where dt = ?1),"
+		"?3)";
+	sqlite3_stmt* st;
+	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
+	sqlite3_bind_int(st, 1, dt);
+	sqlite3_bind_double(st, 2, velocity);
+	sqlite3_bind_int(st, 3, analysisID);
+	int returnCode = sqlite3_step(st);
+	sqlite3_finalize(st);
+}
+
 void Database::timestep(int timestep, std::vector<Star*>& stars){
 	if (!this->isOpen)
 		this->open();

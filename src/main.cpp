@@ -49,14 +49,22 @@ int main() {
 		std::cout << "Running analysis on selected simulation" << std::endl;
 		Analysis analysis = Analysis();
 		int analysisID = db.insertAnalysis(selection, analysis);
-		if (analysis.getbEnergy()) {
-			std::vector<int> timeSteps = db.selectTimesteps();
-			for (int timeStep : timeSteps) {
-				std::vector<Star*> stars = db.selectStars(selection,timeStep);
-				db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars),analysis.potentialEnergy(stars));
+		std::vector<int> timeSteps = db.selectTimesteps();
+		for (int timeStep : timeSteps) {
+			std::vector<Star*> stars = db.selectStars(selection, timeStep);
+			if (analysis.getbEnergy()) {
+				db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
 			}
-			std::cout << "Energy analysis done" << std::endl;
+			if (analysis.getbAverageVelocity()) {
+				std::vector<Vec3D*> velocities = {};
+				for (Star* star : stars) {
+					velocities.push_back(&star->velocity);
+				}
+				double test = analysis.average(velocities);
+				db.insertAnalysisdtVelocity(analysisID,timeStep, analysis.average(velocities));
+			}
 		}
+		std::cout << "Energy analysis done" << std::endl;
 	}
 	else if(selection == 2){
 		Parameters parameters = Parameters();

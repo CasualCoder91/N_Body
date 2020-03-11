@@ -96,9 +96,9 @@ double Vec3D::operator*(const Vec3D& rhs){
 }
 
 Vec3D& Vec3D::operator+=(const Vec3D & rhs){
-	x += rhs.x;
-	y += rhs.y;
-	z += rhs.z;
+	this->x += rhs.x;
+	this->y += rhs.y;
+	this->z += rhs.z;
 	return *this;
 }
 
