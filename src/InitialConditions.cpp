@@ -24,6 +24,20 @@ double InitialConditions::initialMass(std::vector<Star*> &stars){
 	return totalMass;
 }
 
+double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha){
+	std::random_device rd;  //Will be used to obtain a seed for the random number engine
+	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	std::uniform_real_distribution<> dis(0.0, 1.0);//avoid close to singularity
+	double totalMass = 0.0;
+	double temp = alpha + 1.0;
+	double factor = (pow(maxMass / minMass, temp) - 1.0);
+	for (Star* star : stars) {
+		star->mass = minMass * pow(1.0 + factor * dis(gen), 1.0 / temp);
+		totalMass += star->mass;
+	}
+	return totalMass;
+}
+
 void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
