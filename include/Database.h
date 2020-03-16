@@ -1,3 +1,10 @@
+/**
+ * SQLite Helper. Link between Database and Objects like Stars, Analysis, Simulation.
+ *
+ * @author Alarich Herzner
+ * @version 0.9 05.03.2020
+*/
+
 #ifndef DATABASE_H
 #define DATABASE_H
 

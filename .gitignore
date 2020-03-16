@@ -338,7 +338,11 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/doc
+!docs/
+docs/*
+!docs/source/*
+!docs/CMakeList.txt
+!Doxyfile.in
 !Output/
 Output/*
 !Output/empty.txt
