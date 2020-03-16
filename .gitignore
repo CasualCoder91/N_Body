@@ -339,8 +339,12 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 !docs/
-docs/*
-!docs/source/*
+docs/CMakeFiles
+docs/html
+docs/latex
+docs/Doxyfile
+!docs/source/conf.py
+!doc/Doxyfile.in
 !docs/CMakeList.txt
 !Doxyfile.in
 !Output/
