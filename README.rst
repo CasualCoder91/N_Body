@@ -7,7 +7,8 @@ Windows
 
 Navigate into the build directory and use Microsoft Build Engine to build the application
 
-.. code-block:: console
+```console
   cd build
   cmake ..
   "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" ALL_BUILD.vcxproj
+```
