@@ -343,6 +343,7 @@ docs/CMakeFiles
 docs/html
 docs/latex
 docs/Doxyfile
+!docs/N-Body-Simulation
 !docs/source/conf.py
 !doc/Doxyfile.in
 !docs/CMakeList.txt
