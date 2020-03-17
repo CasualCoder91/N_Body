@@ -1,2 +1,2 @@
 breathe
-Sphinx>=1.4.3
+Sphinx>=2.0.1
