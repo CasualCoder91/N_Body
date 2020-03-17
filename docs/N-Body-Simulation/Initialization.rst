@@ -19,4 +19,5 @@ Then one has to take the inverse of the ncpf. Since Salpeter is a power-law dist
  https://local.strw.leidenuniv.nl/events/phdtheses/haas/05.pdf
 
 .. math::
-    n_{\mathrm{offset}} = \sum_{k=0}^{N-1} s_k n_k
+    \frac{dN}{dm}=A*m^{-\alpha }
+    \int_{m_{min}}^{m}

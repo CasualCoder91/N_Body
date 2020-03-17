@@ -10,6 +10,8 @@ Welcome to N_Body's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   N-Body-Simulation/Initialization
+
 
 
 Indices and tables
