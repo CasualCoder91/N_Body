@@ -15,7 +15,7 @@ include_directories(include)
 #add_subdirectory(lib)
 
 #add_executable(main main.cpp)
-add_executable(N_Body ${SOURCES}) 
+add_executable(N_Body ${SOURCES})
 
 SET( LIBS OpenMP::OpenMP_CXX sqlite3 )
 target_link_libraries(N_Body ${LIBS}  )
@@ -23,6 +23,6 @@ target_link_libraries(N_Body ${LIBS}  )
 add_subdirectory (docs)
 
 configure_file("${PROJECT_SOURCE_DIR}/docs/stars0.jpg" "${PROJECT_SOURCE_DIR}/build/docs/stars0.jpg" COPYONLY)
-configure_file("${PROJECT_SOURCE_DIR}/docs/source/conf.py" "${PROJECT_SOURCE_DIR}/build/docs/conf.py" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/docs/conf.py" "${PROJECT_SOURCE_DIR}/build/docs/conf.py" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/sqlite3.dll" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/sqlite3.lib" COPYONLY)

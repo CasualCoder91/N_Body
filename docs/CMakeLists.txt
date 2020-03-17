@@ -23,14 +23,14 @@ add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
 add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
 
 find_package(Sphinx REQUIRED)
- 
-set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/source)
+
+set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/docs/sphinx)
- 
+
 add_custom_target(Sphinx ALL
                   COMMAND
-                  ${SPHINX_EXECUTABLE} -b html -c ./ 
-		  -Dbreathe_projects.CatCutifier=${DOXYGEN_OUTPUT_DIR}
+                  ${SPHINX_EXECUTABLE} -b html -c ./
+		  -Dbreathe_projects.N_Body=${DOXYGEN_OUTPUT_DIR}/xml
                   ${SPHINX_SOURCE} ${SPHINX_BUILD}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                   COMMENT "Generating documentation with Sphinx")
