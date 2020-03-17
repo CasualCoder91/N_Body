@@ -30,7 +30,11 @@ release = 'alpha'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['breathe','sphinx.ext.pngmath']
+extensions = [
+    'breathe',
+    'sphinx.ext.imgmath'
+]
+needs_sphinx = '1.4.3'
 # Breathe Configuration
 breathe_projects = {
 "N_Body": "../docs/docs/doxygen/xml/",
