@@ -19,5 +19,23 @@ Then one has to take the inverse of the ncpf. Since Salpeter is a power-law dist
  https://local.strw.leidenuniv.nl/events/phdtheses/haas/05.pdf
 
 .. math::
-    \frac{dN}{dm}=A*m^{-\alpha }
-    \int_{m_{min}}^{m}
+    p(m)=\frac{dN}{dm}=A*m^{-\alpha }
+
+    P(m)=\int_{m_{min}}^{m}A*m^{-\alpha } dm = \frac{A}{-\alpha +1}\left ( m^{-\alpha +1} -m_{min}^{-\alpha +1}\right )
+
+A is defined by normalization:
+
+.. math::
+    P({m_{max}})\equiv 1\rightarrow A=\frac{-\alpha +1}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1} }
+
+Inserting this into P(m) yields:
+
+.. math::
+    P(m)=\frac{m^{-\alpha +1} -m_{min}^{-\alpha +1}}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1}}
+
+  Inverting this function and some simplifications lead to:
+
+  .. math::
+      m_{rand} = m_{min}*\left [ 1+x*\left ( \left ( \frac{m_{max}}{m_{min}} -1\right )^{-\alpha +1} \right ) \right ]^{\frac{1}{-\alpha +1}}
+
+where x is a random number in range [0,1]
