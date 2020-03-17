@@ -33,7 +33,7 @@ Inserting this into P(m) yields:
 .. math::
     P(m)=\frac{m^{-\alpha +1} -m_{min}^{-\alpha +1}}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1}}
 
-  Inverting this function and some simplifications lead to:
+Inverting this function and some simplifications lead to:
 
   .. math::
       m_{rand} = m_{min}*\left [ 1+x*\left ( \left ( \frac{m_{max}}{m_{min}} -1\right )^{-\alpha +1} \right ) \right ]^{\frac{1}{-\alpha +1}}
