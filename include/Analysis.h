@@ -17,15 +17,16 @@
 #include "InOut.h"
 #include "InitialConditions.h"
 
-class Analysis : Parameters
+class Analysis
 {
 private:
     bool bEnergy;
     bool bAverageVelocity;
     bool bAverage2DVelocity;
+    double G;
 public:
 
-    Analysis();
+    Analysis(Parameters parameters);
 
     std::vector<double> totE;
     std::vector<double> potE;
@@ -51,7 +52,7 @@ public:
      @param nTimesteps the amount of timesteps used for each number of stars.
      @param integrator the integrator used for integration over time.
      */
-	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator);
+	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator, Parameters* parameters);
 
     bool getbEnergy();
 

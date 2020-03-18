@@ -1,19 +1,10 @@
 #include "Analysis.h"
 
-Analysis::Analysis(){
-	Parameters::config.Load(filePath);
-	if (!config.Get("bEnergy", bEnergy)) {
-		bEnergy = false;
-		std::cout << "bEnergy missing in " + filePath + " add bEnergy = true to activate energy analysis."<< std::endl;
-	}
-	if (!config.Get("bAverageVelocity", bAverageVelocity)) {
-		bAverageVelocity = false;
-		std::cout << "bAverageVelocity missing in " + filePath + " add bAverageVelocity = true to activate 3d velocity analysis." << std::endl;
-	}
-	if (!config.Get("bAverage2DVelocity", bAverage2DVelocity)) {
-		bAverage2DVelocity = false;
-		std::cout << "bAverage2DVelocity missing in " + filePath + " add bAverage2DVelocity = true to activate 2d velocity analysis." << std::endl;
-	}
+Analysis::Analysis(Parameters parameters){
+	this->bEnergy = parameters.doEnergyAnalysis();
+	this->bAverageVelocity = parameters.doAverageVelocity();
+	this->bAverage2DVelocity = parameters.doAverage2DVelocity();
+	this->G = parameters.getG();
 }
 
 double Analysis::potentialEnergy(std::vector<Star*>& stars){
@@ -21,7 +12,7 @@ double Analysis::potentialEnergy(std::vector<Star*>& stars){
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size()-1;++i) {
 		for (int j = i+1; j < stars.size(); ++j) {
-			potentialEnergy -= Parameters::G * stars.at(i)->mass * stars.at(j)->mass / Vec3D::distance(&stars.at(i)->position, &stars.at(j)->position);
+			potentialEnergy -= this->G * stars.at(i)->mass * stars.at(j)->mass / Vec3D::distance(&stars.at(i)->position, &stars.at(j)->position);
 		}
 	}
 	this->potE.push_back(potentialEnergy);
@@ -39,7 +30,7 @@ double Analysis::kineticEnergy(std::vector<Star*>& stars){
 	return kineticEnergy;
 }
 
-void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
+void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Parameters* parameters){
 	Vec3D tlf = Vec3D(), brb = Vec3D();
 
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
@@ -50,7 +41,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 	for (int n = 2; n <= maxNStars; ++n) {
 
 		//init
-		InitialConditions initialConditions = InitialConditions();
+		InitialConditions initialConditions = InitialConditions(parameters);
 		std::vector<Star*> stars = initialConditions.initStars(0,n);
 		double totalMass = initialConditions.initialMass(stars);
 		initialConditions.plummerSphere(stars, 1, totalMass);
@@ -59,7 +50,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 		for (int i = 0; i < nTimesteps; i++) {
 
 			Node::findCorners(tlf, brb, stars);
-			Node root = Node(tlf, brb, nullptr);
+			Node root = Node(tlf, brb, nullptr, parameters);
 			for (Star* star : stars) {
 				root.insert(star);
 			}

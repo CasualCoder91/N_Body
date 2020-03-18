@@ -6,8 +6,11 @@
 #include "Star.h"
 #include "Parameters.h"
 
-class InitialConditions: Parameters {
+class InitialConditions {
+private:
+	double G;
 public:
+	InitialConditions(Parameters* parameters);
 	std::vector<Star*> initStars(int firstID, int n_Stars);
 	double initialMass(std::vector<Star*> &stars);
 	double initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha= -2.35);

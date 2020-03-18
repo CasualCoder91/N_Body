@@ -8,19 +8,27 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
+#include <string>
+
+#include "Database.h"
 #include "Parameters.h"
 
-class Simulation : public Parameters
+class Simulation : SimulationData
 {
 private:
-protected:
-    int simulationID;
+    Database* database;
+    Parameters* parameters;
+    
 public:
-    Simulation(int id);
-    Simulation(int id, std::string title, int n_Stars, double boxLength, double dt, int nTimesteps);
+    Simulation(int id, Database* database, Parameters* parameters);
+    Simulation(int id, Parameters* parameters);
     void setID(int id);
     int getID();
+    /*int getNStars();
+    int getNTimesteps();
+    double getdt();*/
     std::string print();
+    void run();
 };
 
 #endif

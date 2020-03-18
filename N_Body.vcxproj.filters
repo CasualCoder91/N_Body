@@ -47,6 +47,9 @@
     <ClInclude Include="include\Parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\SimulationData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Analysis.cpp">
@@ -86,6 +89,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Parameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SimulationData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

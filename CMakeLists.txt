@@ -26,3 +26,6 @@ configure_file("${PROJECT_SOURCE_DIR}/docs/stars0.jpg" "${PROJECT_SOURCE_DIR}/bu
 configure_file("${PROJECT_SOURCE_DIR}/docs/conf.py" "${PROJECT_SOURCE_DIR}/build/docs/conf.py" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/sqlite3.dll" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/sqlite3.lib" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.dll" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.lib" COPYONLY)
+file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/build/Release/Output/Database)

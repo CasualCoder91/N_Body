@@ -1,12 +1,32 @@
 #include "Node.h"
 
 double Node::precission = 0.5;
+double Node::G = 4.483e-3;
+double Node::softening = 0.16;
 
-Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent){
+Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, Parameters* parameters){
 	this->top_left_front = top_left_front;
 	this->bottom_right_back = bottom_right_back;
 	this->center = Vec3D::center(top_left_front, bottom_right_back);
 	this->parent = parent;
+	this->G = parameters->getG();
+	this->softening = parameters->getSoftening();
+	this->precission = parameters->getPrecission();
+	this->n_stars = 0;
+	this->star = nullptr; //needed?
+	this->centerOfMass = Vec3D();
+	this->mass = 0;
+	this->internalNode = false;
+}
+
+Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, double G, double softening, double precission){
+	this->top_left_front = top_left_front;
+	this->bottom_right_back = bottom_right_back;
+	this->center = Vec3D::center(top_left_front, bottom_right_back);
+	this->parent = parent;
+	this->G = G;
+	this->softening = softening;
+	this->precission = precission;
 	this->n_stars = 0;
 	this->star = nullptr; //needed?
 	this->centerOfMass = Vec3D();
@@ -82,14 +102,14 @@ void Node::insert(Star* star)
 
 Node* Node::create(Octant octant){
 	switch(static_cast<int>(octant)) {
-		case 0: return new Node(top_left_front, center, this);
-		case 1: return new Node(Vec3D(center.x, top_left_front.y, top_left_front.z), Vec3D(bottom_right_back.x, center.y, center.z),this);
-		case 2: return new Node(Vec3D(center.x, center.y, top_left_front.z), Vec3D(bottom_right_back.x,bottom_right_back.y,center.z), this);
-		case 3: return new Node(Vec3D(top_left_front.x, center.y, top_left_front.z), Vec3D(center.x, bottom_right_back.y, center.z), this);
-		case 4: return new Node(Vec3D(top_left_front.x, top_left_front.y, center.z), Vec3D(center.x, center.y, bottom_right_back.z), this);
-		case 5: return new Node(Vec3D(center.x, top_left_front.y, center.z), Vec3D(bottom_right_back.x, center.y, bottom_right_back.z), this);
-		case 6: return new Node(center, bottom_right_back, this);
-		case 7: return new Node(Vec3D(top_left_front.x, center.y, center.z), Vec3D(center.x, bottom_right_back.y, bottom_right_back.z), this);
+		case 0: return new Node(top_left_front, center, this, G, softening, precission);
+		case 1: return new Node(Vec3D(center.x, top_left_front.y, top_left_front.z), Vec3D(bottom_right_back.x, center.y, center.z),this, G, softening, precission);
+		case 2: return new Node(Vec3D(center.x, center.y, top_left_front.z), Vec3D(bottom_right_back.x,bottom_right_back.y,center.z), this, G, softening, precission);
+		case 3: return new Node(Vec3D(top_left_front.x, center.y, top_left_front.z), Vec3D(center.x, bottom_right_back.y, center.z), this, G, softening, precission);
+		case 4: return new Node(Vec3D(top_left_front.x, top_left_front.y, center.z), Vec3D(center.x, center.y, bottom_right_back.z), this, G, softening, precission);
+		case 5: return new Node(Vec3D(center.x, top_left_front.y, center.z), Vec3D(bottom_right_back.x, center.y, bottom_right_back.z), this, G, softening, precission);
+		case 6: return new Node(center, bottom_right_back, this, G, softening, precission);
+		case 7: return new Node(Vec3D(top_left_front.x, center.y, center.z), Vec3D(center.x, bottom_right_back.y, bottom_right_back.z), this, G, softening, precission);
 	}
 	return nullptr;
 }
@@ -188,7 +208,7 @@ void Node::applyForce(const Vec3D position,Vec3D* acceleration){
 		double dz = this->star->position.z - position.z;
 		temp = dx * dx + dy * dy + dz * dz;
 		if (temp > 0) {
-			temp = Parameters::G * this->star->mass / pow(temp + Parameters::softening * Parameters::softening, 3 / 2);
+			temp = this->G * this->star->mass / pow(temp + this->softening * this->softening, 3 / 2);
 			//star->acceleration += Vec3D(temp * dx, temp * dy, temp * dz);
 			acceleration->x += temp * dx;
 			acceleration->y += temp * dy;
@@ -198,7 +218,7 @@ void Node::applyForce(const Vec3D position,Vec3D* acceleration){
 	}
 	double distStarCOM = Vec3D::distance(&(position), &(this->centerOfMass));
 	if ((this->bottom_right_back.x - this->top_left_front.x) / distStarCOM < precission && this->star != star && distStarCOM>0) {
-		temp = Parameters::G * this->mass / pow(distStarCOM + softening, 3);
+		temp = this->G * this->mass / pow(distStarCOM + softening, 3);
 		//star->acceleration += Vec3D(temp * (star->position.x - this->centerOfMass.x), temp * (star->position.y - this->centerOfMass.y), temp * (star->position.z - this->centerOfMass.z));
 		acceleration->x += temp * (this->centerOfMass.x - position.x);
 		acceleration->y += temp * (this->centerOfMass.y - position.y);
