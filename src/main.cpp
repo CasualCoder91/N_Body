@@ -73,7 +73,7 @@ int main() {
 	else if(selection == 2){
 		Parameters* parameters = new Parameters();
 		simulationID = db.insert(parameters);
-		Simulation simulation = Simulation(simulationID,parameters);
+		Simulation simulation = Simulation(simulationID);
 		std::cout << "New simulation created: " << simulationID << std::endl;
 		std::cout << "Starting simulation" << std::endl;
 		//runSimulation(simulation, parameters);

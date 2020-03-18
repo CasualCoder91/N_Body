@@ -9,9 +9,10 @@
 class InitialConditions {
 private:
 	double G;
+	int nStars;
 public:
-	InitialConditions(Parameters* parameters);
-	std::vector<Star*> initStars(int firstID, int n_Stars);
+	InitialConditions(SimulationData* parameters);
+	std::vector<Star*> initStars(int firstID);
 	double initialMass(std::vector<Star*> &stars);
 	double initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha= -2.35);
 	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter

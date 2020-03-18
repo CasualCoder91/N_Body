@@ -42,7 +42,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 
 		//init
 		InitialConditions initialConditions = InitialConditions(parameters);
-		std::vector<Star*> stars = initialConditions.initStars(0,n);
+		std::vector<Star*> stars = initialConditions.initStars(0);
 		double totalMass = initialConditions.initialMass(stars);
 		initialConditions.plummerSphere(stars, 1, totalMass);
 

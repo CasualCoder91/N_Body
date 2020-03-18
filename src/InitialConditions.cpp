@@ -1,12 +1,13 @@
 #include "InitialConditions.h"
 
-InitialConditions::InitialConditions(Parameters* parameters){
+InitialConditions::InitialConditions(SimulationData* parameters){
 	this->G = parameters->getG();
+	this->nStars = parameters->getNStars();
 }
 
-std::vector<Star*> InitialConditions::initStars(int firstID, int n_Stars){
+std::vector<Star*> InitialConditions::initStars(int firstID){
 	std::vector<Star*> stars = {};
-	for (int i = 0; i < n_Stars; i++) {
+	for (int i = 0; i < this->nStars; i++) {
 		Star* star = new Star(firstID+i);
 		stars.push_back(star);
 	}

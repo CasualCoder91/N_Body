@@ -1,8 +1,8 @@
 #include "Simulation.h"
 
-Simulation::Simulation(int id, Database* database, Parameters* parameters):SimulationData(id, parameters){}
+Simulation::Simulation(int id, Database* database):SimulationData(id){}
 
-Simulation::Simulation(int id, Parameters* parameters):SimulationData(id, parameters) {}
+Simulation::Simulation(int id):SimulationData(id) {}
 
 void Simulation::setID(int id){
 	this->simulationID = id;
@@ -33,20 +33,20 @@ std::string Simulation::print(){
 void Simulation::run(){
 	int nextStarIndex = database->selectLastID("star") + 1;
 	//Init stars
-	InitialConditions initialConditions = InitialConditions(parameters);
-	std::vector<Star*> stars = initialConditions.initStars(nextStarIndex, this->parameters->getNStars());
+	InitialConditions initialConditions = InitialConditions(this);
+	std::vector<Star*> stars = initialConditions.initStars(nextStarIndex);
 	double totalMass = initialConditions.initialMass(stars);
 	initialConditions.plummerSphere(stars, 1, totalMass);
 	database->insertStars(this->getID(), stars, 0);
 
 	//Integrate
-	Integrator rk4 = Integrator(parameters->getdt());
+	Integrator rk4 = Integrator(this->getdt());
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
-	for (int i = 1; i < parameters->getNTimesteps(); i++) {
+	for (int i = 1; i < this->getNTimesteps(); i++) {
 
 		Vec3D tlf = Vec3D(), brb = Vec3D();
 		Node::findCorners(tlf, brb, stars);
-		Node root = Node(tlf, brb, nullptr, parameters);
+		Node root = Node(tlf, brb, nullptr, this);
 		for (Star* star : stars) {
 			root.insert(star);
 		}

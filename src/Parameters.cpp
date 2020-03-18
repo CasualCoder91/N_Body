@@ -1,27 +1,8 @@
 #include "Parameters.h"
 
 
-Parameters::Parameters(){
-    this->filePath = "./simulation.cfg";
-    config.Load(filePath);
-    if (!config.Get("n_Stars", n_Stars)) {
-        std::cout << "n_Stars missing in " + filePath << std::endl;
-    }
-    if (!config.Get("boxLength", boxLength)) {
-        std::cout << "boxLength missing in " + filePath << std::endl;
-    }
-    if (!config.Get("dt", dt)) {
-        std::cout << "dt missing in " + filePath << std::endl;
-    }
-    if (!config.Get("nTimesteps", nTimesteps)) {
-        std::cout << "nTimesteps missing in " + filePath << std::endl;
-    }
-    if (!config.Get("title", title)) {
-        std::cout << "title missing in " + filePath << std::endl;
-    }
-    if (!config.Get("precission", precission)) {
-        std::cout << "precission missing in " + filePath << std::endl;
-    }
+Parameters::Parameters():SimulationData(){
+
     if (!config.Get("bEnergy", bEnergy)) {
         bEnergy = false;
         std::cout << "bEnergy missing in " + filePath + " add bEnergy = true to activate energy analysis." << std::endl;
@@ -44,26 +25,6 @@ Parameters::Parameters(){
     }
 }
 
-double Parameters::getG() {
-    return G;
-}
-double Parameters::getSoftening() {
-    return softening;
-}
-
-double Parameters::getPrecission(){
-    return this->precission;
-}
-
-double Parameters::getBoxLength() {
-    return boxLength;
-}
-double Parameters::getdt() {
-    return dt;
-}
-int Parameters::getNTimesteps() {
-    return nTimesteps;
-}
 std::string Parameters::getTitle() {
     return title;
 }
@@ -84,6 +45,4 @@ bool Parameters::doAverage2DVelocity(){
     return this->bAverage2DVelocity;
 }
 
-int Parameters::getNStars() {
-    return n_Stars;
-}
+

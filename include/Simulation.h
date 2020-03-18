@@ -17,11 +17,11 @@ class Simulation : SimulationData
 {
 private:
     Database* database;
-    Parameters* parameters;
+    //Parameters* parameters;
     
 public:
-    Simulation(int id, Database* database, Parameters* parameters);
-    Simulation(int id, Parameters* parameters);
+    Simulation(int id, Database* database);
+    Simulation(int id);
     void setID(int id);
     int getID();
     /*int getNStars();
