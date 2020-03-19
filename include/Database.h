@@ -28,6 +28,10 @@ private:
 
 public:
 	Database();
+	/**
+	@brief Opens a database connection. In case the database does not exist yet it creates a new one 
+	@param name file path of the database. If not passed \ref Database.dataBaseDataPath is used. If name is given, that database will be used/created.
+	*/
 	bool open(char* name ="");
 	bool exec(char* sql);
 	void setup();

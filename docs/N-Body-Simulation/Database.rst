@@ -10,7 +10,7 @@ Another reason being that loading data from files is inefficient depending on th
 Entity Relationship Diagram
 ---------------------------
 
-.. image:: ..Images/ERD.png
+.. image:: Images/ERD.png
 
 Database Interface
 ------------------
