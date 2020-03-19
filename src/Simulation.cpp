@@ -4,6 +4,10 @@ Simulation::Simulation(int id, Database* database):SimulationData(id){}
 
 Simulation::Simulation(int id):SimulationData(id) {}
 
+Simulation::Simulation(int id, SimulationData* simulationData){
+	this->simulationID = id;
+}
+
 void Simulation::setID(int id){
 	this->simulationID = id;
 }
@@ -13,7 +17,7 @@ int Simulation::getID(){
 }
 
 //int Simulation::getNStars() {
-//	return n_Stars;
+//	return nStars;
 //}
 //
 //double Simulation::getdt() {
@@ -27,7 +31,7 @@ int Simulation::getID(){
 std::string Simulation::print(){
 	return "ID: " + std::to_string(this->simulationID) +
 		" | Title: " + this->title + 
-		" #Stars: " + std::to_string(this->n_Stars) +'\n';
+		" #Stars: " + std::to_string(this->nStars) +'\n';
 }
 
 void Simulation::run(){

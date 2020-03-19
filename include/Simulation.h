@@ -22,6 +22,7 @@ private:
 public:
     Simulation(int id, Database* database);
     Simulation(int id);
+    Simulation(int id, SimulationData* simulationData);
     void setID(int id);
     int getID();
     /*int getNStars();

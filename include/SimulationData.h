@@ -13,19 +13,23 @@ protected:
 
     double softening;
     double precission;
-
     std::string title;
-    int n_Stars;
+    int nStars;
     double boxLength;
     double dt;
     int nTimesteps;
+    int outputTimestep;
     int simulationID;
     /** @brief Gravitational constant in astronomical units: parsec*solar mass*km^2/s^2*/
     double G;
+    double minMass;
+    double maxMass;
+    double alpha;
 public:
     SimulationData();
-    SimulationData(int id, std::string title, int n_Stars, double boxLength, double dt, int nTimesteps);
+    SimulationData(int id, std::string title, int nStars, double boxLength, double dt, int nTimesteps);
     SimulationData(int id);
+    SimulationData(int id, SimulationData* simulationData);
     std::string print();
     double getBoxLength(); //[pc]
     int getNStars();
@@ -34,4 +38,8 @@ public:
     double getG();
     double getSoftening();
     double getPrecission();
+    int getOutputTimestep();
+    double getMinMass();
+    double getMaxMass();
+    double getAlpha();
 };

@@ -47,7 +47,13 @@ void Database::setup(){
 		"n_stars INTEGER NOT NULL,"
 		"boxlength REAL NOT NULL,"
 		"dt REAL NOT NULL,"
-		"n_timesteps INTEGER NOT NULL);";
+		"n_timesteps INTEGER NOT NULL,"
+		"outputTimestep INTEGER NOT NULL,"
+		"softening REAL NOT NULL,"
+		"precission REAL NOT NULL,"
+		"minMass REAL NOT NULL,"
+		"maxMass REAL NOT NULL,"
+		"alpha REAL NOT NULL);";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS star("
 		"id INTEGER NOT NULL,"
@@ -145,7 +151,8 @@ int Database::selectLastID(std::string table){
 int Database::insert(Parameters* parameters){
 	if (!this->isOpen)
 		this->open();
-	std::string sql = "INSERT INTO simulation (n_stars,boxLength,dt,n_timesteps,title) VALUES (?1,?2,?3,?4,?5)";
+	std::string sql = "INSERT INTO simulation (n_stars,boxLength,dt,n_timesteps,title,outputTimestep,softening,precission,minMass,maxMass,alpha)"
+		"VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, parameters->getNStars());
@@ -155,6 +162,12 @@ int Database::insert(Parameters* parameters){
 	char* cstr = new char[parameters->getTitle().length() + 1];
 	std::strcpy(cstr, parameters->getTitle().c_str());
 	sqlite3_bind_text(st, 5, cstr, -1, SQLITE_TRANSIENT);
+	sqlite3_bind_int(st, 6, parameters->getOutputTimestep());
+	sqlite3_bind_double(st, 7, parameters->getSoftening());
+	sqlite3_bind_double(st, 8, parameters->getPrecission());
+	sqlite3_bind_double(st, 9, parameters->getMinMass());
+	sqlite3_bind_double(st, 10, parameters->getMaxMass());
+	sqlite3_bind_double(st, 11, parameters->getAlpha());
 	int returnCode = sqlite3_step(st);
 	if (returnCode != SQLITE_DONE){
 		throw "Could not insert new simulation";

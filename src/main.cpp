@@ -76,7 +76,7 @@ int main() {
 		Simulation simulation = Simulation(simulationID);
 		std::cout << "New simulation created: " << simulationID << std::endl;
 		std::cout << "Starting simulation" << std::endl;
-		//runSimulation(simulation, parameters);
+		simulation.run();
 	}
 	else if (selection == 3) {
 		return 0;
@@ -92,7 +92,7 @@ int main() {
 	return 0;
 
 	//Simulation
-	//int n_Stars = 100;
+	//int nStars = 100;
 	//double boxLength = 1; //[pc]
 	//double dt = 0.01;
 	//int nTimesteps = 100;
