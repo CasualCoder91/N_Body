@@ -11,6 +11,7 @@ Welcome to N_Body's documentation!
    :caption: Contents:
 
    N-Body-Simulation/Initialization
+   N-Body-Simulation/Database
 
 
 
@@ -25,6 +26,8 @@ Indices and tables
 
 Docs
 ====
+
+Tests
 
 .. doxygenclass:: InitialConditions
    :members:
