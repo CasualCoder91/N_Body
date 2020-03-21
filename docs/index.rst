@@ -12,6 +12,7 @@ Welcome to N_Body's documentation!
 
    N-Body-Simulation/Initialization
    N-Body-Simulation/Database
+   N-Body-Simulation/Initialization
 
 
 

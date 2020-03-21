@@ -1,5 +1,5 @@
 ==============
-DATABASE
+Database
 ==============
 
 SQLite Database is used to store simulations including all relevant parameters, stars with their respective positions and velocities as well as data resulting from analysis.
