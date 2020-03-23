@@ -2,7 +2,6 @@
 
 #include <string>
 #include <iostream>
-//#include "Parameters.h"
 #include "Configuration.h"
 
 class SimulationData

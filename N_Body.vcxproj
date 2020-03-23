@@ -164,6 +164,7 @@
     <ClInclude Include="include\Integrator.h" />
     <ClInclude Include="include\Node.h" />
     <ClInclude Include="include\Parameters.h" />
+    <ClInclude Include="include\Potential.h" />
     <ClInclude Include="include\Simulation.h" />
     <ClInclude Include="include\SimulationData.h" />
     <ClInclude Include="include\Star.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Node.cpp" />
     <ClCompile Include="src\Parameters.cpp" />
+    <ClCompile Include="src\Potential.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\SimulationData.cpp" />
     <ClCompile Include="src\Star.cpp" />

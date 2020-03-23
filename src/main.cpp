@@ -24,9 +24,11 @@
 #include "Database.h"
 #include "Simulation.h"
 
+#include "Potential.h"
+
 typedef int mode_t;
 
-//void runSimulation(Simulation& simulation, Parameters parameters);
+void testPotential();
 
 int main() {
 
@@ -35,6 +37,8 @@ int main() {
 	Database db = Database();
 	db.open();
 	db.setup();
+
+	//testPotential();
 
 	int selection;
 	int simulationID = -1;
@@ -149,3 +153,30 @@ int main() {
 //	std::cout << "done" << std::endl;
 //
 //}
+
+void testPotential(){
+	Potential potential = Potential(Vec3D(0,0,0));
+	std::vector<double> positions;
+	std::vector<double> velocities;
+	std::vector<double> disk;
+	std::vector<double> blackHole;
+	std::vector<double> buldge;
+	std::vector<double> halo;
+
+	for (double i = 0.1; i < 30; i += 0.1) {
+		positions.push_back(i);
+		Vec3D position = Vec3D(i, 0, 0);
+		velocities.push_back(potential.circularVelocity(&position));
+		disk.push_back(potential.circularVelocityDisk(&position));
+		blackHole.push_back(potential.circularVelocityBlackHole(&position));
+		buldge.push_back(potential.circularVelocityBuldge(&position));
+		halo.push_back(potential.circularVelocityHalo(&position));
+	}
+
+	InOut::write(positions, velocities, "potentialTest.dat");
+	InOut::write(positions, disk, "potentialTestDisk.dat");
+	InOut::write(positions, blackHole, "potentialTestBlackHole.dat");
+	InOut::write(positions, buldge, "potentialTestBuldge.dat");
+	InOut::write(positions, halo, "potentialTestHalo.dat");
+
+}

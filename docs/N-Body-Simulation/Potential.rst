@@ -10,7 +10,7 @@ https://academic.oup.com/mnras/article/487/3/4025/5511782
 (another galactic potential) http://www.astro.utu.fi/~cflynn/galdyn/lecture4.html
 (halo from here if needed: https://iopscience.iop.org/article/10.1088/0004-637X/794/1/4)
 (Measurements of circular velocity) https://arxiv.org/pdf/1810.09466.pdf
-(circular veloctiy) https://www.researchgate.net/publication/316680117_GalRotpy_an_educational_tool_to_understand_and_parametrize_the_rotation_curve_and_gravitational_potential_of_disk-like_galaxies
+(circular velocity, using derivation) https://www.researchgate.net/publication/316680117_GalRotpy_an_educational_tool_to_understand_and_parametrize_the_rotation_curve_and_gravitational_potential_of_disk-like_galaxies
 
 The potential consists of four parts: black hole, buldge, disc and the dark matter halo.
 
@@ -91,6 +91,9 @@ therefor
    \frac{4 \pi G \rho _{s} R r_{s}^3 \log \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}{\left(R^2+z^2\right)^{3/2}}-\frac{4\pi G\rho_{s} R {r_{s}}^2}{\left(R^2+z^2\right) \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)} \right )
 
 plugging in all the parameters (and :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]`) results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
+
+
+.. image:: Images/CircularVelocity.png
 
 "Junk"
 
