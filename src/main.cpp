@@ -38,7 +38,7 @@ int main() {
 	db.open();
 	db.setup();
 
-	//testPotential();
+	testPotential();
 
 	int selection;
 	int simulationID = -1;
