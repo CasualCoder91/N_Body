@@ -13,6 +13,7 @@ Simulating stellar motions for open clusters in the Milky Way
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
    Project_Overview/Aims
    Project_Overview/Tasks
    N-Body-Simulation/Initialization
