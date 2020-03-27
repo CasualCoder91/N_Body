@@ -6,14 +6,18 @@
 Welcome to N_Body's documentation!
 ==================================
 
+Simulating stellar motions for open clusters in the Milky Way
+
+.. image:: https://scx2.b-cdn.net/gfx/news/hires/2013/theoriginoft.jpg
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   Project_Overview/Aims
+   Project_Overview/Tasks
    N-Body-Simulation/Initialization
    N-Body-Simulation/Database
    N-Body-Simulation/Potential
-
 
 
 Indices and tables
