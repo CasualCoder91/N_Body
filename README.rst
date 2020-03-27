@@ -1,5 +1,14 @@
 Download and Installation
 =========================
+
+Documentation status:
+
+.. image:: https://readthedocs.org/projects/n-body/badge/?version=latest
+   :target: https://n-body.readthedocs.io/en/latest/?badge=latest
+   :alt: Here be dragons!
+
+Clone repository
+----------------
 git clone https://github.com/CasualCoder91/N_Body.git
 
 Windows

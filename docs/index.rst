@@ -10,12 +10,6 @@ Simulating stellar motions for open clusters in the Milky Way
 
 .. image:: https://scx2.b-cdn.net/gfx/news/hires/2013/theoriginoft.jpg
 
-Documentation status:
-.. image:: https://readthedocs.org/projects/n-body/badge/?version=latest
-   :target: https://n-body.readthedocs.io/en/latest/?badge=latest
-   :alt: Here be dragons!
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
