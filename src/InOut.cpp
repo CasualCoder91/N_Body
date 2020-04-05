@@ -73,3 +73,11 @@ void InOut::write(std::vector<double> x, std::vector<double> y, std::string file
 	}
 	file.close();
 }
+
+void InOut::write(std::vector<Vec3D> line, std::string filename) {
+	std::ofstream file(InOut::outputDirectory + filename);
+	for (int i = 0; i < line.size(); ++i) {
+		file << line.at(i).print() << '\n';
+	}
+	file.close();
+}

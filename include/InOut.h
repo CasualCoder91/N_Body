@@ -55,6 +55,8 @@ namespace InOut{
      */
     void writeRecursively(std::ofstream* file_ptr, Node* node_ptr);
 
+    void write(std::vector<Vec3D> line, std::string filename);
+
     std::vector<Vec3D> readVectors(std::string filename);
 };
 

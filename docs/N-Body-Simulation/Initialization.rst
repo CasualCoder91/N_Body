@@ -35,7 +35,36 @@ Inserting this into P(m) yields:
 
 Inverting this function and some simplifications lead to:
 
-  .. math::
-      m_{rand} = m_{min}*\left [ 1+x*\left ( \left ( \frac{m_{max}}{m_{min}} -1\right )^{-\alpha +1} \right ) \right ]^{\frac{1}{-\alpha +1}}
+.. math::
+    m_{rand} = m_{min}*\left [ 1+x*\left ( \left ( \frac{m_{max}}{m_{min}} -1\right )^{-\alpha +1} \right ) \right ]^{\frac{1}{-\alpha +1}}
 
 where x is a random number in range [0,1]
+
+
+Positions
+---------
+
+Miyamoto & Nagai
+^^^^^^^^^^^^^^^^
+
+mass distribution (from Poisson equation)(Source: http://articles.adsabs.harvard.edu/pdf/1975PASJ...27..533M)
+
+.. math::
+    \rho \left ( R,z \right )=\frac{b_{disk}^{2}M_{disk}}{4\pi }\frac{a_{disk}R^{2}+\left ( a+3\left (z^{2}+b_{disk}^{2}  \right )^{\frac{1}{2}} \right )\left ( a+\left ( z^{2}+b_{disk}^{2} \right )^{\frac{1}{2}} \right )^{2}}{\left ( R^{2}+\left ( a+\left ( z^{2}+b_{disk}^{2} \right )^{\frac{1}{2}} \right )^{2} \right )^{\frac{5}{2}}\left (  z^{2}+b_{disk}^{2}\right )^{\frac{3}{2}}}
+
+**Radial distribution**
+
+normalized cumulative distribution function
+
+.. math::
+    E^{*}\left ( R \right )=\frac{1}{\Sigma _{0}}\int_{0}^{R}\Sigma ^{*}\left ( R' \right )dR'
+
+with probability distribution function in cylindrical coordinates for the radial component:
+
+.. math::
+    \Sigma^{*}\left(R\right )=R\int_{-\infty}^{\infty}\rho\left ( R,z \right )dz
+
+and normalization constant
+
+.. math::
+    \Sigma_{0}=\int_{0}^{\infty}\Sigma^{*}\left(R'\right )dR'

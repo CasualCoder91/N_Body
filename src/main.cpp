@@ -39,6 +39,7 @@ int main() {
 	db.setup();
 
 	testPotential();
+	return 0;
 
 	int selection;
 	int simulationID = -1;
@@ -156,27 +157,35 @@ int main() {
 
 void testPotential(){
 	Potential potential = Potential(Vec3D(0,0,0));
-	std::vector<double> positions;
-	std::vector<double> velocities;
-	std::vector<double> disk;
-	std::vector<double> blackHole;
-	std::vector<double> buldge;
-	std::vector<double> halo;
+	//std::vector<double> positions;
+	//std::vector<double> velocities;
+	//std::vector<double> disk;
+	//std::vector<double> blackHole;
+	//std::vector<double> buldge;
+	//std::vector<double> halo;
 
-	for (double i = 0.1; i < 30; i += 0.1) {
-		positions.push_back(i);
-		Vec3D position = Vec3D(i, 0, 0);
-		velocities.push_back(potential.circularVelocity(&position));
-		disk.push_back(potential.circularVelocityDisk(&position));
-		blackHole.push_back(potential.circularVelocityBlackHole(&position));
-		buldge.push_back(potential.circularVelocityBuldge(&position));
-		halo.push_back(potential.circularVelocityHalo(&position));
+	//for (double i = 0.1; i < 30; i += 0.1) {
+	//	positions.push_back(i);
+	//	Vec3D position = Vec3D(i, 0, 0);
+	//	velocities.push_back(potential.circularVelocity(&position));
+	//	disk.push_back(potential.circularVelocityDisk(&position));
+	//	blackHole.push_back(potential.circularVelocityBlackHole(&position));
+	//	buldge.push_back(potential.circularVelocityBuldge(&position));
+	//	halo.push_back(potential.circularVelocityHalo(&position));
+	//}
+
+	//InOut::write(positions, velocities, "potentialTest.dat");
+	//InOut::write(positions, disk, "potentialTestDisk.dat");
+	//InOut::write(positions, blackHole, "potentialTestBlackHole.dat");
+	//InOut::write(positions, buldge, "potentialTestBuldge.dat");
+	//InOut::write(positions, halo, "potentialTestHalo.dat");
+
+
+
+	std::vector<Vec3D> positions;
+	for (int i = 0; i < 10000; i++) {
+		positions.push_back(potential.sampleDisk(-40, 40, -40, 40, -20, 20));
 	}
-
-	InOut::write(positions, velocities, "potentialTest.dat");
-	InOut::write(positions, disk, "potentialTestDisk.dat");
-	InOut::write(positions, blackHole, "potentialTestBlackHole.dat");
-	InOut::write(positions, buldge, "potentialTestBuldge.dat");
-	InOut::write(positions, halo, "potentialTestHalo.dat");
+	InOut::write(positions, "potentialTestDiskSample.dat");
 
 }
