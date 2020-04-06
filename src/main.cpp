@@ -170,7 +170,7 @@ void testPotential(){
 	//	velocities.push_back(potential.circularVelocity(&position));
 	//	disk.push_back(potential.circularVelocityDisk(&position));
 	//	blackHole.push_back(potential.circularVelocityBlackHole(&position));
-	//	buldge.push_back(potential.circularVelocityBuldge(&position));
+	//	buldge.push_back(potential.circularVelocityBulge(&position));
 	//	halo.push_back(potential.circularVelocityHalo(&position));
 	//}
 
@@ -180,12 +180,14 @@ void testPotential(){
 	//InOut::write(positions, buldge, "potentialTestBuldge.dat");
 	//InOut::write(positions, halo, "potentialTestHalo.dat");
 
+	potential.frequencyDistribution(Vec3D(1, 1, 1));
 
-
-	std::vector<Vec3D> positions;
+	std::vector<Vec3D> positionsDisk;
+	std::vector<Vec3D> positionsBulge;
 	for (int i = 0; i < 10000; i++) {
-		positions.push_back(potential.sampleDisk(-40, 40, -40, 40, -20, 20));
+		positionsDisk.push_back(potential.sampleDisk(-40, 40, -40, 40, -20, 20));
+		positionsBulge.push_back(potential.sampleBuldge(-4, 4, -4, 4, -4, 4));
 	}
-	InOut::write(positions, "potentialTestDiskSample.dat");
-
+	InOut::write(positionsDisk, "potentialTestDiskSample.dat");
+	InOut::write(positionsBulge, "potentialTestBulgeSample.dat");
 }
