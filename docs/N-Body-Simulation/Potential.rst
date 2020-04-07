@@ -92,17 +92,13 @@ therefor
 
 plugging in all the parameters (and :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]`) results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
 
-
-.. image:: Images/CircularVelocity.png
+.. plot:: pyplots/potentialVelocity.py
 
 The mass distribution is calculated by numerical integration of the density.
 
 Example at z=1pc
 
 .. plot:: pyplots/frequencyDistribution.py
-   :include-source:
-
-
 
 "Junk"
 
