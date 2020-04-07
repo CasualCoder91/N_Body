@@ -28,8 +28,6 @@
 
 typedef int mode_t;
 
-void testPotential();
-
 int main() {
 
 	Parameters parameters = Parameters();
@@ -37,9 +35,6 @@ int main() {
 	Database db = Database();
 	db.open();
 	db.setup();
-
-	testPotential();
-	return 0;
 
 	int selection;
 	int simulationID = -1;
@@ -155,32 +150,26 @@ int main() {
 //
 //}
 
-void testPotential(){
-	Potential potential = Potential(Vec3D(0,0,0));
-	//std::vector<double> positions;
-	//std::vector<double> velocities;
-	//std::vector<double> disk;
-	//std::vector<double> blackHole;
-	//std::vector<double> buldge;
-	//std::vector<double> halo;
+void testfrequencyDistribution(){
+	Potential potential = Potential(Vec3D(0, 0, 0));
+	std::vector<Vec3D> Output;
 
-	//for (double i = 0.1; i < 30; i += 0.1) {
-	//	positions.push_back(i);
-	//	Vec3D position = Vec3D(i, 0, 0);
-	//	velocities.push_back(potential.circularVelocity(&position));
-	//	disk.push_back(potential.circularVelocityDisk(&position));
-	//	blackHole.push_back(potential.circularVelocityBlackHole(&position));
-	//	buldge.push_back(potential.circularVelocityBulge(&position));
-	//	halo.push_back(potential.circularVelocityHalo(&position));
-	//}
+	double z = 1; //kpc
 
-	//InOut::write(positions, velocities, "potentialTest.dat");
-	//InOut::write(positions, disk, "potentialTestDisk.dat");
-	//InOut::write(positions, blackHole, "potentialTestBlackHole.dat");
-	//InOut::write(positions, buldge, "potentialTestBuldge.dat");
-	//InOut::write(positions, halo, "potentialTestHalo.dat");
+	for (double x = -30; x < 30; x+=0.5) {
+		std::cout << "x=" << x << std::endl;
+		for (double y = -30; y < 30; y+=0.5) {
+			double starMass = potential.frequencyDistribution(Vec3D(x, y, z));
+			Output.push_back(Vec3D(x, y, starMass));
+		}
+	}
 
-	potential.frequencyDistribution(Vec3D(1, 1, 1));
+	InOut::write(Output, "frequencyDistribution_z" + std::to_string(z) + ".dat");
+
+}
+
+void samplePotential() {
+	Potential potential = Potential(Vec3D(0, 0, 0));
 
 	std::vector<Vec3D> positionsDisk;
 	std::vector<Vec3D> positionsBulge;
@@ -190,4 +179,30 @@ void testPotential(){
 	}
 	InOut::write(positionsDisk, "potentialTestDiskSample.dat");
 	InOut::write(positionsBulge, "potentialTestBulgeSample.dat");
+}
+
+void potentialVelocityOutput() {
+	Potential potential = Potential(Vec3D(0, 0, 0));
+	std::vector<double> positions;
+	std::vector<double> velocities;
+	std::vector<double> disk;
+	std::vector<double> blackHole;
+	std::vector<double> buldge;
+	std::vector<double> halo;
+
+	for (double i = 0.1; i < 30; i += 0.1) {
+		positions.push_back(i);
+		Vec3D position = Vec3D(i, 0, 0);
+		velocities.push_back(potential.circularVelocity(&position));
+		disk.push_back(potential.circularVelocityDisk(&position));
+		blackHole.push_back(potential.circularVelocityBlackHole(&position));
+		buldge.push_back(potential.circularVelocityBulge(&position));
+		halo.push_back(potential.circularVelocityHalo(&position));
+	}
+
+	InOut::write(positions, velocities, "potentialTest.dat");
+	InOut::write(positions, disk, "potentialTestDisk.dat");
+	InOut::write(positions, blackHole, "potentialTestBlackHole.dat");
+	InOut::write(positions, buldge, "potentialTestBuldge.dat");
+	InOut::write(positions, halo, "potentialTestHalo.dat");
 }

@@ -95,6 +95,15 @@ plugging in all the parameters (and :math:`G\approx 4.302*10^{-6}\left [ \frac{k
 
 .. image:: Images/CircularVelocity.png
 
+The mass distribution is calculated by numerical integration of the density.
+
+Example at z=1pc
+
+.. plot:: pyplots/frequencyDistribution.py
+   :include-source:
+
+
+
 "Junk"
 
 Halo potential given by (https://iopscience.iop.org/article/10.1088/0004-637X/714/1/229)

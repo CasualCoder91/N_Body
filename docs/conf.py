@@ -32,7 +32,8 @@ release = 'alpha'
 # ones.
 extensions = [
     'breathe',
-    'sphinx.ext.imgmath'
+    'sphinx.ext.imgmath',
+    'matplotlib.sphinxext.plot_directive'
 ]
 needs_sphinx = '1.4.3'
 # Breathe Configuration

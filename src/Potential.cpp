@@ -199,7 +199,7 @@ double Potential::frequencyDistribution(Vec3D position) {
 		&res, &err);
 	gsl_monte_plain_free(s);
 
-	std::cout << "testintegral - result: " << res << " error: " << err << std::endl;
+	//std::cout << "testintegral - result: " << res << " error: " << err << std::endl;
 
 	return res;
 }
