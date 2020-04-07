@@ -178,11 +178,11 @@ double gslDensity(double x[], size_t dim, void* p) {
 double Potential::frequencyDistribution(Vec3D position) {
 		
 	gsl_monte_function F;
-	struct my_f_params params = { massBulge, aBulge, massDisk, aDisk, bDisk };
+	struct my_f_params frequencyDistributionParams = { massBulge, aBulge, massDisk, aDisk, bDisk };
 
 	F.f = &gslDensity;
 	F.dim = 3;
-	F.params = &params;
+	F.params = &frequencyDistributionParams;
 
 	gsl_rng_env_setup();
 
@@ -198,8 +198,6 @@ double Potential::frequencyDistribution(Vec3D position) {
 	gsl_monte_plain_integrate(&F, xl, xu, 3, calls, r, s,
 		&res, &err);
 	gsl_monte_plain_free(s);
-
-	//std::cout << "testintegral - result: " << res << " error: " << err << std::endl;
 
 	return res;
 }

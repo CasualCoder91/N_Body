@@ -28,7 +28,12 @@
 
 typedef int mode_t;
 
+void samplePotential();
+
 int main() {
+
+	samplePotential();
+	return 0;
 
 	Parameters parameters = Parameters();
 
@@ -173,9 +178,9 @@ void samplePotential() {
 
 	std::vector<Vec3D> positionsDisk;
 	std::vector<Vec3D> positionsBulge;
-	for (int i = 0; i < 10000; i++) {
+	for (int i = 0; i < 5000; i++) {
 		positionsDisk.push_back(potential.sampleDisk(-40, 40, -40, 40, -20, 20));
-		positionsBulge.push_back(potential.sampleBuldge(-4, 4, -4, 4, -4, 4));
+		positionsBulge.push_back(potential.sampleBuldge(-6, 6, -6, 6, -6, 6));
 	}
 	InOut::write(positionsDisk, "potentialTestDiskSample.dat");
 	InOut::write(positionsBulge, "potentialTestBulgeSample.dat");

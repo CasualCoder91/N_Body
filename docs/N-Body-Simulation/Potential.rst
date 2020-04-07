@@ -94,11 +94,22 @@ plugging in all the parameters (and :math:`G\approx 4.302*10^{-6}\left [ \frac{k
 
 .. plot:: pyplots/potentialVelocity.py
 
-The mass distribution is calculated by numerical integration of the density.
+The frequency distribution is calculated by numerical integration of the density.
+GSL implementation of Monte Carlo Integration is used. For further details refer to the GSL documentation_.
+
+.. _documentation: https://www.gnu.org/software/gsl/doc/html/montecarlo.html
 
 Example at z=1pc
 
 .. plot:: pyplots/frequencyDistribution.py
+
+Sample the density
+------------------
+
+Individual Star positions within some area are sampled directly from the density via rejection sampling.
+
+.. plot:: pyplots/potentialSample.py
+
 
 "Junk"
 
