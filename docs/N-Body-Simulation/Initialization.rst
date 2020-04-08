@@ -41,6 +41,18 @@ Inverting this function and some simplifications lead to:
 where x is a random number in range [0,1]
 
 
+Present Day Mass Function (PDMF)
+--------------------------------
+
+Disk Stellar Mass Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+https://iopscience.iop.org/article/10.1086/376392/pdf
+
+The mass of stars belonging to the disk is initialized by the PDMF as given by :raw-tex:`\cite{Chabrier2003}`.
+
+
+
 Positions
 ---------
 
@@ -68,3 +80,9 @@ and normalization constant
 
 .. math::
     \Sigma_{0}=\int_{0}^{\infty}\Sigma^{*}\left(R'\right )dR'
+
+
+.. raw:: latex
+  
+ \bibliographystyle{plain}
+ \bibliography{bibtex.bib}
