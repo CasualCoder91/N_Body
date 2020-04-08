@@ -1,6 +1,6 @@
 #include "..\include\Potential.h"
 
-double rangeZero(double a, double b) {
+double Potential::rangeZero(double a, double b) {
 	double temp = 0;
 	if ((a < 0 && b> 0) || (a > 0 && b<0))
 		temp = 0;
@@ -110,6 +110,7 @@ Vec3D Potential::sampleDisk(double xMin, double xMax, double yMin, double yMax, 
 	return Vec3D();
 }
 
+
 double Potential::desityBulge(double r){
 	return massBulge/(2*M_PI*pow(aBulge,3))*pow(aBulge,4)/(r*pow(r+aBulge,3));
 }
@@ -119,6 +120,7 @@ double Potential::desityBulge(double x, double y, double z){
 	return desityBulge(r);
 }
 
+//todo: change to vector<Star> as soon as present day mass function is sorted out
 Vec3D Potential::sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax){
 	double k = 0;
 	double smallestx = rangeZero(xMin, xMax);
@@ -175,7 +177,7 @@ double gslDensity(double x[], size_t dim, void* p) {
 	return temp;
 };
 
-double Potential::frequencyDistribution(Vec3D position) {
+double Potential::frequencyDistribution(Vec3D position, Vec3D volumeElement) {
 		
 	gsl_monte_function F;
 	struct my_f_params frequencyDistributionParams = { massBulge, aBulge, massDisk, aDisk, bDisk };

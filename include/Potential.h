@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <gsl/gsl_monte_plain.h>
 #include <gsl/gsl_math.h>
 #include "SimulationData.h"
@@ -21,8 +20,10 @@ private:
 	const double densityHalo = 7e6; // SolarMassUnit*kpc^-3
 	const double G = 4.302e-6; // 
 	Vec3D position;
-	Vec3D volumeElement = Vec3D(0.1, 0.1, 0.1);
+	//Vec3D volumeElement = Vec3D(0.1, 0.1, 0.1); // dx,dy,dz in kpc
 
+private:
+	double rangeZero(double a, double b);
 public:
 	Potential(Vec3D position);
 	double circularVelocity(Vec3D* position);
@@ -39,5 +40,5 @@ public:
 	double desityBulge(double x, double y, double z);
 	Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
-	double frequencyDistribution(Vec3D position);
+	double frequencyDistribution(Vec3D position, Vec3D volumeElement);
 };

@@ -32,7 +32,13 @@ void samplePotential();
 
 int main() {
 
-	samplePotential();
+	Parameters testParameters = Parameters();
+	InitialConditions testInitialConditions = InitialConditions(&testParameters);
+	Potential testPotential = Potential(Vec3D(0, 0, 0));
+	double boxSize = 0.002;
+	std::vector<Star*> stars = testInitialConditions.initDiskStars(0, Vec3D(0.1, boxSize, 0), Vec3D(0.1+boxSize, 0, 0), 0.1, &testPotential);
+	InOut::write(stars, "testInitialConditions.dat");
+
 	return 0;
 
 	Parameters parameters = Parameters();
@@ -114,47 +120,6 @@ int main() {
 	return 0;
 }
 
-//void runSimulation(Simulation& simulation,Parameters parameters){
-//	Database database = Database();
-//	int nextStarIndex = database.selectLastID("star")+1;
-//	//Init stars
-//	InitialConditions initialConditions = InitialConditions(parameters);
-//	std::vector<Star*> stars = initialConditions.initStars(nextStarIndex,simulation.getNStars());
-//	double totalMass = initialConditions.initialMass(stars);
-//	initialConditions.plummerSphere(stars, 1, totalMass);
-//	database.insertStars(simulation.getID(), stars, 0);
-//
-//	//Integrate
-//	Integrator rk4 = Integrator(simulation.getdt());
-//	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
-//	for (int i = 1; i < simulation.getNTimesteps(); i++) {
-//
-//		Vec3D tlf = Vec3D(), brb = Vec3D();
-//		Node::findCorners(tlf, brb, stars);
-//		Node root = Node(tlf, brb, nullptr, parameters);
-//		for (Star* star : stars) {
-//			root.insert(star);
-//		}
-//
-//		root.calculateMassDistribution();
-//
-//		rk4.euler(stars, &root);
-//
-//		if (i % 10 == 0) {
-//			//InOut::writeWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
-//			//InOut::writeAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
-//			database.timestep(i, stars);
-//		}
-//	}
-//	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
-//	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
-//	//InOut::write(stars,"stars.dat");
-//	//InOut::write(&root);
-//	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
-//	std::cout << "done" << std::endl;
-//
-//}
-
 void testfrequencyDistribution(){
 	Potential potential = Potential(Vec3D(0, 0, 0));
 	std::vector<Vec3D> Output;
@@ -164,7 +129,7 @@ void testfrequencyDistribution(){
 	for (double x = -30; x < 30; x+=0.5) {
 		std::cout << "x=" << x << std::endl;
 		for (double y = -30; y < 30; y+=0.5) {
-			double starMass = potential.frequencyDistribution(Vec3D(x, y, z));
+			double starMass = potential.frequencyDistribution(Vec3D(x, y, z),Vec3D(0.1,0.1,0.1));
 			Output.push_back(Vec3D(x, y, starMass));
 		}
 	}

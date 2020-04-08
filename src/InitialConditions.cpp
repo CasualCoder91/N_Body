@@ -1,5 +1,22 @@
 #include "InitialConditions.h"
 
+double InitialConditions::rangeZero(double a, double b) {
+	double temp = 0;
+	if ((a < 0 && b> 0) || (a > 0 && b < 0))
+		temp = 0;
+	if (a > 0 && b > 0) {
+		if (a > b)
+			return b;
+		return a;
+	}
+	if (a < 0 && b < 0) {
+		if (a > b)
+			return a;
+		return b;
+	}
+	return temp;
+}
+
 InitialConditions::InitialConditions(SimulationData* parameters){
 	this->G = parameters->getG();
 	this->nStars = parameters->getNStars();
@@ -41,6 +58,121 @@ double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double 
 		totalMass += star->mass;
 	}
 	return totalMass;
+}
+
+std::vector<Star*> InitialConditions::initDiskStars(int firstID, Vec3D tlf, Vec3D brf, double depth, Potential* potential){
+	double gridResolution = 0.001; //kpc
+	std::vector<Star*> stars;
+	if (depth < 0) {
+		throw "initDiskStars: Depth must be >= 0";
+	}
+	for (double z = tlf.z; z < tlf.z + depth; z += gridResolution) {
+		std::cout << "z = " << z << " max z = " << tlf.z + depth << std::endl;
+		for (double x = tlf.x; x < brf.x; x += gridResolution) {
+			for (double y = brf.y; y < tlf.y; y += gridResolution) {
+				Vec3D position = Vec3D(x, y, z);
+				Vec3D volumeElement = Vec3D(gridResolution, gridResolution, gridResolution);
+				double massInCell = potential->frequencyDistribution(position, volumeElement); // change to discFrequencyDistribution
+				std::vector<Star*> starsInCell = massDisk(massInCell); //stars with mass
+				sampleDiskPositions(starsInCell, position, volumeElement, potential);
+				stars.insert(stars.end(), starsInCell.begin(), starsInCell.end());
+			}
+		}
+	}
+
+	return stars;
+}
+
+double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D position, Vec3D volumeElement, Potential* potential) {
+	double smallestx = rangeZero(position.x, position.x+volumeElement.x);
+	double smallesty = rangeZero(position.y, position.y + volumeElement.y);
+	double smallestz = rangeZero(position.z, position.z + volumeElement.z);
+
+	double k = potential->densityDisk(smallestx, smallesty, smallestz);
+	std::random_device rd;  //Will be used to obtain a seed for the random number engine
+	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+	std::uniform_real_distribution<> disx(position.x, position.x + volumeElement.x);
+	std::uniform_real_distribution<> disy(position.y, position.y + volumeElement.y);
+	std::uniform_real_distribution<> disz(position.z, position.z + volumeElement.z);
+	std::uniform_real_distribution<> disaccept(0, k);
+	for (Star* star : stars) {
+		while (true) {
+			double x = disx(gen);
+			double y = disy(gen);
+			double z = disz(gen);
+
+			double accept = disaccept(gen);
+			double temp = potential->densityDisk(x, y, z);
+
+			if (accept < temp) {
+				star->position = Vec3D(x, y, z);
+				break;
+			}
+		}
+	}
+	return 0; //todo: return average velocity maybe?
+}
+
+
+std::vector<Star*> InitialConditions::massDisk(double totalMass){
+	std::vector<Star*> stars;
+	double pickedTotalMass = 0;
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::uniform_real_distribution<> dism(0.1, 6.05); // mass sample
+	static std::uniform_real_distribution<> disaccept1(0, 0.15); //upper limit
+	static std::uniform_real_distribution<> disaccept2(0, 0.044); //upper limit
+	static std::uniform_real_distribution<> disaccept3(0, 0.00231); //upper limit
+	static std::uniform_real_distribution<> disaccept4(0, 0.0000178); //upper limit
+	static double factor1 = 0.158;
+	static double chabrierMass = 0.079;
+	static double chabrierSigma = 0.69;
+	static double factor2 = 4.4e-2;
+	static double exponent2 = 4.37;
+	static double factor3 = 1.5e-2;
+	static double exponent3 = 3.53;
+	static double factor4 = 2.5e-4;
+	static double exponent4 = 2.11;
+	double temp = 0;
+	while (pickedTotalMass < totalMass) {
+		while (true) {
+			double m = dism(gen);
+			if (m < 1) {
+				temp = factor1 * exp(-pow(log(m) - log(chabrierMass), 2) / (2 * pow(chabrierSigma, 2)));
+				if (temp < disaccept1(gen)) {
+					stars.push_back(new Star(0, m)); // todo: which id?!
+					pickedTotalMass += m;
+					break;
+				}
+			}
+			else if (m < 1.7) {
+				temp = factor2 * pow(m, -exponent2);
+				if (temp < disaccept2(gen)) {
+					stars.push_back(new Star(0, m)); // todo: which id?!
+					pickedTotalMass += m;
+					break;
+				}
+			}
+			else if (m < 3.5){
+				temp = factor3 * pow(m, -exponent3);
+				if (temp < disaccept3(gen)) {
+					stars.push_back(new Star(0, m)); // todo: which id?!
+					pickedTotalMass += m;
+					break;
+				}
+			}
+			else if (m <= 6.05) {
+				temp = factor4 * pow(m, -exponent4);
+				if (temp < disaccept4(gen)) {
+					stars.push_back(new Star(0, m)); // todo: which id?!
+					pickedTotalMass += m;
+					break;
+				}
+			}
+		}
+	}
+	std::cout << "Proposed mass of disk: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
+	return stars;
 }
 
 void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
