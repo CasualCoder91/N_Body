@@ -7,7 +7,9 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 #checks if OpenMP is available
 find_package(OpenMP REQUIRED)
 
-set(SOURCES src/main.cpp src/Analysis.cpp src/InitialConditions.cpp src/InOut.cpp src/Integrator.cpp src/Node.cpp src/Parameters.cpp src/Star.cpp src/Vec3D.cpp src/Configuration.cpp src/Database.cpp src/Simulation.cpp)
+set(SOURCES src/main.cpp src/Analysis.cpp src/InitialConditions.cpp src/InOut.cpp
+src/Integrator.cpp src/Node.cpp src/Parameters.cpp src/Star.cpp src/Vec3D.cpp src/Configuration.cpp
+src/Database.cpp src/Simulation.cpp src/Potential.cpp src/SimulationData.cpp)
 
 
 include_directories(include)

@@ -49,9 +49,9 @@ Disk Stellar Mass Function
 
 https://iopscience.iop.org/article/10.1086/376392/pdf
 
-The mass of stars belonging to the disk is initialized by the PDMF as given by :raw-tex:`\cite{Chabrier2003}`.
+Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by :cite:`2003PASP..115..763C`.
 
-
+.. plot:: pyplots/initialConditionsMassDisk.py
 
 Positions
 ---------
@@ -82,7 +82,4 @@ and normalization constant
     \Sigma_{0}=\int_{0}^{\infty}\Sigma^{*}\left(R'\right )dR'
 
 
-.. raw:: latex
-  
- \bibliographystyle{plain}
- \bibliography{bibtex.bib}
+.. bibliography:: bibtex.bib

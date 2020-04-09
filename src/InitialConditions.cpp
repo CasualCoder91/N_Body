@@ -119,11 +119,12 @@ std::vector<Star*> InitialConditions::massDisk(double totalMass){
 	double pickedTotalMass = 0;
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
-	static std::uniform_real_distribution<> dism(0.1, 6.05); // mass sample
-	static std::uniform_real_distribution<> disaccept1(0, 0.15); //upper limit
-	static std::uniform_real_distribution<> disaccept2(0, 0.044); //upper limit
-	static std::uniform_real_distribution<> disaccept3(0, 0.00231); //upper limit
-	static std::uniform_real_distribution<> disaccept4(0, 0.0000178); //upper limit
+	//static std::uniform_real_distribution<> disLogM(-4.6, 1.8); // mass sample
+	static std::uniform_real_distribution<> disM(0.08, 63.1); // mass sample
+	static std::uniform_real_distribution<> disaccept1(0, 0.86); //upper limit
+	//static std::uniform_real_distribution<> disaccept2(0, 0.044); //upper limit
+	//static std::uniform_real_distribution<> disaccept3(0, 0.00231); //upper limit
+	//static std::uniform_real_distribution<> disaccept4(0, 0.0000178); //upper limit
 	static double factor1 = 0.158;
 	static double chabrierMass = 0.079;
 	static double chabrierSigma = 0.69;
@@ -134,36 +135,38 @@ std::vector<Star*> InitialConditions::massDisk(double totalMass){
 	static double factor4 = 2.5e-4;
 	static double exponent4 = 2.11;
 	double temp = 0;
+	double ln10 = log(10);
 	while (pickedTotalMass < totalMass) {
 		while (true) {
-			double m = dism(gen);
-			if (m < 1) {
-				temp = factor1 * exp(-pow(log(m) - log(chabrierMass), 2) / (2 * pow(chabrierSigma, 2)));
-				if (temp < disaccept1(gen)) {
+			double m = disM(gen);
+			double logM = log10(m);
+			if (logM < 0) { // m < 1
+				temp = factor1/(m* ln10)* exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
+				if (disaccept1(gen) < temp ) {
 					stars.push_back(new Star(0, m)); // todo: which id?!
 					pickedTotalMass += m;
 					break;
 				}
 			}
-			else if (m < 1.7) {
-				temp = factor2 * pow(m, -exponent2);
-				if (temp < disaccept2(gen)) {
+			else if (logM < 0.54) {
+				temp = factor2 / (m * ln10) * pow(m, -exponent2);
+				if (disaccept1(gen) < temp) {
 					stars.push_back(new Star(0, m)); // todo: which id?!
 					pickedTotalMass += m;
 					break;
 				}
 			}
-			else if (m < 3.5){
-				temp = factor3 * pow(m, -exponent3);
-				if (temp < disaccept3(gen)) {
+			else if (logM < 1.26){
+				temp = factor3 / (m * ln10) * pow(m, -exponent3);
+				if (disaccept1(gen)< temp) {
 					stars.push_back(new Star(0, m)); // todo: which id?!
 					pickedTotalMass += m;
 					break;
 				}
 			}
-			else if (m <= 6.05) {
-				temp = factor4 * pow(m, -exponent4);
-				if (temp < disaccept4(gen)) {
+			else{
+				temp = factor4 / (m * ln10) * pow(m, -exponent4);
+				if (disaccept1(gen) < temp) {
 					stars.push_back(new Star(0, m)); // todo: which id?!
 					pickedTotalMass += m;
 					break;
@@ -171,6 +174,7 @@ std::vector<Star*> InitialConditions::massDisk(double totalMass){
 			}
 		}
 	}
+	std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
 	std::cout << "Proposed mass of disk: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
 	return stars;
 }

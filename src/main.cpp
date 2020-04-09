@@ -32,12 +32,27 @@ void samplePotential();
 
 int main() {
 
+	//Parameters testParameters = Parameters();
+	//InitialConditions testInitialConditions = InitialConditions(&testParameters);
+	//Potential testPotential = Potential(Vec3D(0, 0, 0));
+	//double boxSize = 0.002;
+	//std::vector<Star*> stars = testInitialConditions.initDiskStars(0, Vec3D(0.1, boxSize, 0), Vec3D(0.1+boxSize, 0, 0), 0.1, &testPotential);
+	//InOut::write(stars, "testInitialConditions.dat");
+
 	Parameters testParameters = Parameters();
 	InitialConditions testInitialConditions = InitialConditions(&testParameters);
-	Potential testPotential = Potential(Vec3D(0, 0, 0));
-	double boxSize = 0.002;
-	std::vector<Star*> stars = testInitialConditions.initDiskStars(0, Vec3D(0.1, boxSize, 0), Vec3D(0.1+boxSize, 0, 0), 0.1, &testPotential);
-	InOut::write(stars, "testInitialConditions.dat");
+
+	std::vector<Star*> stars = testInitialConditions.massDisk(10000);
+	std::vector<double> index;
+	std::vector<double> mass;
+	 double i = 0;
+	for (Star* star : stars) {
+		index.push_back(i);
+		i++;
+		mass.push_back(star->mass);
+	}
+
+	InOut::write(index,mass, "initialConditionsMassDisk10000.dat");
 
 	return 0;
 
