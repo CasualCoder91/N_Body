@@ -10,9 +10,11 @@ Salpeter (1955)
 
 .. doxygenfunction:: initialMassSalpeter
 
+.. plot:: pyplots/initialConditionsMassSalpeter.py
+
 Background
 
-In order to sample an IMF one must integrate it over the mass, yielding a cumulative probability function (cpf), and normalize it (ncpf).
+When it comes to sampling an IMF, one possible approach is called inverse transform sampling. Here one must integrate the IMF over the mass, yielding a cumulative probability function (cpf), and normalize it (ncpf).
 Then one has to take the inverse of the ncpf. Since Salpeter is a power-law distribution function all this can be done analytically:
 
  https://www.usna.edu/Users/cs/crabbe/SI475/current/particleFilter/particleFilter.pdf
@@ -50,6 +52,26 @@ Disk Stellar Mass Function
 https://iopscience.iop.org/article/10.1086/376392/pdf
 
 Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by :cite:`2003PASP..115..763C`.
+
+For :math:`m<1` the PDMF reads
+
+.. math::
+    \xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]
+
+or equivalently (this version is sampled)
+
+.. math::
+    \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)}*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]
+
+For :math:`m>1` the PDMF has the form
+
+.. math::
+    \xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A m^{-x}
+
+or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
+
+.. math::
+    \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}
 
 .. plot:: pyplots/initialConditionsMassDisk.py
 

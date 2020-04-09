@@ -39,7 +39,7 @@ void Simulation::run(){
 	//Init stars
 	InitialConditions initialConditions = InitialConditions(this);
 	std::vector<Star*> stars = initialConditions.initStars(nextStarIndex);
-	double totalMass = initialConditions.initialMass(stars);
+	double totalMass = initialConditions.initialMassSalpeter(stars,0.08,100);
 	initialConditions.plummerSphere(stars, 1, totalMass);
 	database->insertStars(this->getID(), stars, 0);
 

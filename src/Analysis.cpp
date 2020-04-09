@@ -43,7 +43,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 		//init
 		InitialConditions initialConditions = InitialConditions(parameters);
 		std::vector<Star*> stars = initialConditions.initStars(0);
-		double totalMass = initialConditions.initialMass(stars);
+		double totalMass = initialConditions.initialMassSalpeter(stars, 0.08, 100);
 		initialConditions.plummerSphere(stars, 1, totalMass);
 
 		startTime = std::chrono::steady_clock::now();

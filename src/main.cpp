@@ -41,8 +41,9 @@ int main() {
 
 	Parameters testParameters = Parameters();
 	InitialConditions testInitialConditions = InitialConditions(&testParameters);
-
-	std::vector<Star*> stars = testInitialConditions.massDisk(10000);
+	testInitialConditions.setNStars(10000);
+	std::vector<Star*> stars = testInitialConditions.initStars(0);
+	testInitialConditions.initialMassSalpeter(stars, 0.08, 100);
 	std::vector<double> index;
 	std::vector<double> mass;
 	 double i = 0;
@@ -52,7 +53,7 @@ int main() {
 		mass.push_back(star->mass);
 	}
 
-	InOut::write(index,mass, "initialConditionsMassDisk10000.dat");
+	InOut::write(index,mass, "initialConditionsMassSalpeter10000.dat");
 
 	return 0;
 

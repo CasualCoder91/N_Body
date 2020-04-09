@@ -31,21 +31,6 @@ std::vector<Star*> InitialConditions::initStars(int firstID){
 	return stars;
 }
 
-double InitialConditions::initialMass(std::vector<Star*> &stars){
-	double mass = 0;
-	double totalMass = 0;
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_real_distribution<> dis(0.0, 0.1);
-	for (Star* star : stars) {
-		mass = dis(gen);
-		mass = 0.08 + (0.19 * pow(mass, 1.55) + 0.05 * pow(mass, 0.6)) / pow(1 - mass, 0.58);
-		star->mass = mass;
-		totalMass += mass;
-	}
-	return totalMass;
-}
-
 double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha){
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
@@ -188,6 +173,10 @@ void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structur
 		star->position = Vec3D::randomVector(distance);
 		plummerVelocity(star, structuralLength, distance, totalMass);
 	}
+}
+
+void InitialConditions::setNStars(int N){
+	this->nStars = N;
 }
 
 double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass){
