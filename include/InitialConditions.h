@@ -41,8 +41,9 @@ public:
 	@param tlf Top-Left-Front corner of the cube in [kpc]
 	@param tlf Bottom-Right-Front corner of the cube in [kpc]
 	@param depth Depth of the cube in z direction [kpc]
+	@param gridResolution Lenght of one sub-cube [kpc]. This dictates the accuracy.
 	*/
-	std::vector<Star*> initDiskStars(int firstID, Vec3D tlf, Vec3D brf, double depth, Potential* potential);
+	std::vector<Star*> initDiskStars(int firstID, Vec3D tlf, Vec3D brf, double depth, Potential* potential, double gridResolution = 0.001);
 	/**
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.

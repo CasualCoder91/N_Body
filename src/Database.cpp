@@ -297,7 +297,7 @@ std::vector<SimulationData> Database::selectSimulations(){
 		this->open();
 	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps FROM simulation";
 	sqlite3_stmt* stmt;
-	if (sqlite3_prepare_v2(db, query.c_str(), query.size(), &stmt, nullptr) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
 		// Error reporting and handling
 	}
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -314,7 +314,7 @@ std::vector<Vec3D> Database::selectVelocities(int timestep){
 		this->open();
 	std::string query = "SELECT x,y,z FROM velocity where timestep = ?1";
 	sqlite3_stmt* stmt;
-	if (sqlite3_prepare_v2(db, query.c_str(), query.size(), &stmt, nullptr) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
 		// Error reporting and handling
 	}
 	sqlite3_bind_int(stmt, 1, timestep);
@@ -331,7 +331,7 @@ std::vector<int> Database::selectTimesteps(){
 		this->open();
 	std::string query = "SELECT DISTINCT timestep FROM velocity";
 	sqlite3_stmt* stmt;
-	if (sqlite3_prepare_v2(db, query.c_str(), query.size(), &stmt, nullptr) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
 		// Error reporting and handling
 	}
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -350,7 +350,7 @@ std::vector<Star*> Database::selectStars(int simulationID, int timeStep){
 		"INNER JOIN position on position.id_star = star.id "
 		"where position.timestep = ?1 AND velocity.timestep = ?1 AND star.id_simulation = ?2";
 	sqlite3_stmt* stmt;
-	if (sqlite3_prepare_v2(db, query.c_str(), query.size(), &stmt, nullptr) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
 		// Error reporting and handling
 	}
 	sqlite3_bind_int(stmt, 1, timeStep);

@@ -45,8 +45,7 @@ double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double 
 	return totalMass;
 }
 
-std::vector<Star*> InitialConditions::initDiskStars(int firstID, Vec3D tlf, Vec3D brf, double depth, Potential* potential){
-	double gridResolution = 0.001; //kpc
+std::vector<Star*> InitialConditions::initDiskStars(int firstID, Vec3D tlf, Vec3D brf, double depth, Potential* potential, double gridResolution){
 	std::vector<Star*> stars;
 	if (depth < 0) {
 		throw "initDiskStars: Depth must be >= 0";
