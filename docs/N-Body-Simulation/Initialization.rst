@@ -49,6 +49,8 @@ Present Day Mass Function (PDMF)
 Disk Stellar Mass Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. doxygenfunction:: InitialConditions::massDisk
+
 https://iopscience.iop.org/article/10.1086/376392/pdf
 
 Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by :cite:`2003PASP..115..763C`.

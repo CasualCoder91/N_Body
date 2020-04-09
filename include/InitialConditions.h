@@ -30,24 +30,24 @@ public:
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
 	@param [in,out] stars The mass of these stars will be modified.
-	@paran minMass The smallest possible mass.
-	@paran maxMass The largest possible mass.
-	@paran alpha The exponent used in the IMF.
+	@param minMass The smallest possible mass.
+	@param maxMass The largest possible mass.
+	@param alpha The exponent used in the IMF.
 	*/
 	double initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha= -2.35);
 	/**
 	@brief Creates stars belonging to the disk inside the given cuboid. 
 	Sub-cubes are created, the totall mass within which is calculated, the stars are sampled such that the total sampled mass comes close to the value optained by integration.
-	@paran tlf Top-Left-Front corner of the cube in [kpc]
-	@paran tlf Bottom-Right-Front corner of the cube in [kpc]
-	@paran depth Depth of the cube in z direction [kpc]
+	@param tlf Top-Left-Front corner of the cube in [kpc]
+	@param tlf Bottom-Right-Front corner of the cube in [kpc]
+	@param depth Depth of the cube in z direction [kpc]
 	*/
 	std::vector<Star*> initDiskStars(int firstID, Vec3D tlf, Vec3D brf, double depth, Potential* potential);
 	/**
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
-	@param totalMass Mass which the summ of star masses should be equal to.
+	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	*/
-	std::vector<Star*> massDisk(double totalMass); //rejection sampling
+	std::vector<Star*> massDisk(double totalMass);
 	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement, Potential* potential);
 	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
 
