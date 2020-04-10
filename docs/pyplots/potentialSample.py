@@ -4,17 +4,27 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.cm as cm
 from matplotlib.colors import LogNorm
 
-data = np.loadtxt('potentialDiskSample.dat',delimiter=',')
-data2 = np.loadtxt('potentialBulgeSample.dat',delimiter=',')
+dataDisk = np.loadtxt('potentialDiskPositionsSample5000.dat',delimiter=',')
+dataBulge = np.loadtxt('potentialBulgePositionsSample5000.dat',delimiter=',')
 fig = plt.figure()
-fig.set_size_inches(16, 2.8)
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(data[:,0], data[:,1], data[:,2], s=5,c='red')
-ax.scatter(data2[:,0], data2[:,1], data2[:,2], s=5,c='blue')
+fig.set_size_inches(14, 4.2)
+ax = fig.add_subplot(2,2,1)
+plt.hist(dataDisk[:,0]+dataBulge[:,0], bins=200)
+ax.title.set_text('Distribution along x Axis')
+
+ax = fig.add_subplot(2,2,2)
+ax.title.set_text('Distribution along z Axis')
+plt.hist(dataDisk[:,2]+dataBulge[:,2], bins=200)
+
+
+ax = fig.add_subplot(2,2,(3,4), projection='3d')
+ax.scatter(dataDisk[:,0], dataDisk[:,1], dataDisk[:,2], s=5,c='red')
+ax.scatter(dataBulge[:,0], dataBulge[:,1], dataBulge[:,2], s=5,c='blue')
 ax.view_init(elev=5., azim=180)
 ax.dist = 8
 ax.set_xlim([-40,40])
 ax.set_ylim([-40,40])
 ax.set_zlim([-7,7])
-plt.autoscale(False)
+
+#plt.autoscale(False)
 plt.show()

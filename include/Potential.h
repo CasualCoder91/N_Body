@@ -13,10 +13,10 @@ class Potential : SimulationData
 {
 private:
 	const double massBlackHole = 4e6; // SolarMassUnit
-	const double massDisk = 10e10; // SolarMassUnit
+	const double mMassDisk = 10e10; // SolarMassUnit
 	const double aDisk = 6.5; //kpc
 	const double bDisk = 0.26; //kpc
-	const double massBulge = 3.45e10; // SolarMassUnit
+	const double mMassBulge = 3.45e10; // SolarMassUnit
 	const double aBulge = 0.7; // SolarMassUnit
 	const double rHalo = 16; // kpc
 	const double densityHalo = 7e6; // SolarMassUnit*kpc^-3
@@ -25,7 +25,7 @@ private:
 	//Vec3D volumeElement = Vec3D(0.1, 0.1, 0.1); // dx,dy,dz in kpc
 
 private:
-	double rangeZero(double a, double b);
+	double closestToZero(double a, double b);
 public:
 	Potential(Vec3D position);
 	double circularVelocity(Vec3D* position);
@@ -38,9 +38,12 @@ public:
 	double densityDisk(double x, double y, double z);
 	Vec3D sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
-	double desityBulge(double r);
-	double desityBulge(double x, double y, double z);
+	double densityBulge(double r);
+	double densityBulge(double x, double y, double z);
 	Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
+	//Mass of Disk and Bulge inside volume
 	double frequencyDistribution(Vec3D position, Vec3D volumeElement);
+	double massDisk(Vec3D position, Vec3D volumeElement);
+	double massBulge(Vec3D position, Vec3D volumeElement);
 };

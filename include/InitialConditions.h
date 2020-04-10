@@ -49,13 +49,31 @@ public:
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	*/
 	std::vector<Star*> massDisk(double totalMass);
+	/**
+	@brief Sets positions of stars by rejection sampling the density function of the disc.
+	@param [in,out] stars The possitions of these stars will be modified.
+	@param position One corner (typicaly bottom left front) of the volume the positions lie within.
+	@param volumeElement leghts of the sides of the cube (typicaly all positive and equal size) [kpc].
+	@param potential Pointer of the Potential defining the density distribution of the disk.
+	@see sampleBulgePositions
+	*/
 	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement, Potential* potential);
+	/**
+	@brief Sets positions of stars by rejection sampling the density function of the bulge.
+	@param [in,out] stars The possitions of these stars will be modified.
+	@param position One corner (typicaly bottom left front) of the volume the positions lie within.
+	@param volumeElement leghts of the sides of the cube (typicaly all positive and equal size) [kpc].
+	@param potential Pointer of the Potential defining the density distribution of the disk.
+	@see sampleDiskPositions
+	*/
+	double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement, Potential* potential);
+
 	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
 
 	void setNStars(int N);
 private:
 	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass);
 	void plummerVelocity(Star* star, double structuralLength, double distance, double totalMass);
-	double rangeZero(double a, double b);
+	double closestToZero(double a, double b);
 };
 

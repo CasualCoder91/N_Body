@@ -53,6 +53,9 @@
     <ClInclude Include="include\Potential.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Analysis.cpp">
@@ -76,9 +79,6 @@
     <ClCompile Include="src\Star.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\tests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Vec3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,6 +98,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Potential.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

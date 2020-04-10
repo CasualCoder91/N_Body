@@ -48,7 +48,7 @@ public:
      @return the calculated 3D vector.
      @see randomAngles()
      */
-    static Vec3D randomAngles(double r);
+    static Vec3D randomAngles(double length);
     /**
      @brief Calculates lenght (euclidean norm).
      @return lenght of the vector.
@@ -62,7 +62,7 @@ public:
     /**
      @static
      @brief Calculates the cross product of two vectors.
-     @param v1, v2 Vectors of which the cross product is calculated.
+     @param a, b Vectors of which the cross product is calculated.
      @return cross product.
      */
     static Vec3D crossProduct(Vec3D* a, Vec3D* b);
