@@ -2,7 +2,81 @@
 
 struct gslDensityDiskParams { double mMassDisk; double aDisk; double bDisk; };
 struct gslDensityBulgeParams { double mMassBulge; double aBulge; };
+struct gslDensityBulgeQagsParams { double mMassBulge; double aBulge; double R; };
 struct gslDensityParams { double mMassBulge; double aBulge; double mMassDisk; double aDisk; double bDisk; };
+
+double gslDensity(double x[], size_t dim, void* p) {
+
+	struct gslDensityParams* fp = (struct gslDensityParams*)p;
+
+	if (dim != 3)
+	{
+		fprintf(stderr, "error: dim != 3");
+		abort();
+	}
+	double z2b2 = pow(x[2], 2) + pow(fp->bDisk, 2);
+	double sz2b2 = sqrt(z2b2);
+	double R = gsl_hypot(x[0], x[1]);
+	double r = gsl_hypot3(x[0], x[1], x[2]);
+	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * pow(R, 2) + (fp->aDisk + 3 * sz2b2 * pow(fp->aDisk + sz2b2, 2))) / (pow(pow(R, 2) + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	temp += fp->mMassBulge / (2 * M_PI * pow(fp->aBulge, 3)) * pow(fp->aBulge, 4) / (r * pow(r + fp->aBulge, 3));
+
+	return temp;
+};
+
+//for MC
+double gslDensityDisk(double x[], size_t dim, void* p) {
+	struct gslDensityDiskParams* fp = (struct gslDensityDiskParams*)p;
+
+	if (dim != 3)
+	{
+		fprintf(stderr, "error: dim != 3");
+		abort();
+	}
+	double z2b2 = pow(x[2], 2) + pow(fp->bDisk, 2);
+	double sz2b2 = sqrt(z2b2);
+	double R = gsl_hypot(x[0], x[1]);
+	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * pow(R, 2) + (fp->aDisk + 3 * sz2b2 * pow(fp->aDisk + sz2b2, 2))) / (pow(pow(R, 2) + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+
+	return temp;
+};
+
+//for qags
+double gslDensityDisk(double x[], void* p) {
+	struct gslDensityDiskParams* fp = (struct gslDensityDiskParams*)p;
+
+	double z2b2 = pow(x[2], 2) + pow(fp->bDisk, 2);
+	double sz2b2 = sqrt(z2b2);
+	double R = gsl_hypot(x[0], x[1]);
+	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * pow(R, 2) + (fp->aDisk + 3 * sz2b2 * pow(fp->aDisk + sz2b2, 2))) / (pow(pow(R, 2) + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+
+	return temp;
+};
+
+double gslDensityBulge(double x[], size_t dim, void* p) {
+
+	struct gslDensityBulgeParams* fp = (struct gslDensityBulgeParams*)p;
+
+	if (dim != 3)
+	{
+		fprintf(stderr, "error: dim != 3");
+		abort();
+	}
+	double r = gsl_hypot3(x[0], x[1], x[2]);
+	double temp = fp->mMassBulge / (2 * M_PI * pow(fp->aBulge, 3)) * pow(fp->aBulge, 4) / (r * pow(r + fp->aBulge, 3));
+
+	return temp;
+};
+
+
+double gslDensityBulge(double z, void* p) {
+
+	struct gslDensityBulgeQagsParams* fp = (struct gslDensityBulgeQagsParams*)p;
+	double R2 = pow(fp->R, 2);
+	double temp = fp->mMassBulge / (2 * M_PI ) * fp->aBulge / (sqrt(R2 +pow(z,2)) * pow(sqrt(R2 + pow(z, 2)) + fp->aBulge, 3));
+
+	return temp;
+};
 
 double Potential::closestToZero(double a, double b) {
 	double temp = 0;
@@ -124,6 +198,24 @@ double Potential::densityBulge(double x, double y, double z){
 	return densityBulge(r);
 }
 
+double Potential::surfaceDensityBulge(double R){
+	if (R == 0) {
+		std::cout << "R=0 not allowed." << std::endl;
+		return 0;
+	}
+	//1/(2*M_PI)*1/pow(1-pow(R,2))^2*((2+pow(R,2)*gsl_arcsec gsl_complex_arcsec_real(R)/sqrt(pow(R,2)-1))
+	gsl_function F;
+	F.function = &gslDensityBulge;
+	gslDensityBulgeQagsParams densityBulgeQagsParams = { mMassBulge,aBulge,R };
+	F.params = &densityBulgeQagsParams;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+
+	gsl_integration_qagiu(&F,0,0,1e-7, 1000,iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return result;
+}
+
 //todo: change to vector<Star> as soon as present day mass function is sorted out
 Vec3D Potential::sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax){
 	double k = 0;
@@ -160,55 +252,6 @@ Vec3D Potential::sampleBuldge(double xMin, double xMax, double yMin, double yMax
 }
 
 
-double gslDensity(double x[], size_t dim, void* p) {
-
-	struct gslDensityParams* fp = (struct gslDensityParams*)p;
-
-	if (dim != 3)
-	{
-		fprintf(stderr, "error: dim != 3");
-		abort();
-	}
-	double z2b2 = pow(x[2], 2) + pow(fp->bDisk, 2);
-	double sz2b2 = sqrt(z2b2);
-	double R = gsl_hypot(x[0],x[1]);
-	double r = gsl_hypot3(x[0], x[1], x[2]);
-	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * pow(R, 2) + (fp->aDisk + 3 * sz2b2 * pow(fp->aDisk + sz2b2, 2))) / (pow(pow(R, 2) + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
-	temp += fp->mMassBulge / (2 * M_PI * pow(fp->aBulge, 3)) * pow(fp->aBulge, 4) / (r * pow(r + fp->aBulge, 3));
-
-	return temp;
-};
-
-double gslDensityDisk(double x[], size_t dim, void* p) {
-	struct gslDensityDiskParams* fp = (struct gslDensityDiskParams*)p;
-
-	if (dim != 3)
-	{
-		fprintf(stderr, "error: dim != 3");
-		abort();
-	}
-	double z2b2 = pow(x[2], 2) + pow(fp->bDisk, 2);
-	double sz2b2 = sqrt(z2b2);
-	double R = gsl_hypot(x[0], x[1]);
-	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * pow(R, 2) + (fp->aDisk + 3 * sz2b2 * pow(fp->aDisk + sz2b2, 2))) / (pow(pow(R, 2) + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
-
-	return temp;
-};
-
-double gslDensityBulge(double x[], size_t dim, void* p) {
-
-	struct gslDensityBulgeParams* fp = (struct gslDensityBulgeParams*)p;
-
-	if (dim != 3)
-	{
-		fprintf(stderr, "error: dim != 3");
-		abort();
-	}
-	double r = gsl_hypot3(x[0], x[1], x[2]);
-	double temp = fp->mMassBulge / (2 * M_PI * pow(fp->aBulge, 3)) * pow(fp->aBulge, 4) / (r * pow(r + fp->aBulge, 3));
-
-	return temp;
-};
 
 double Potential::frequencyDistribution(Vec3D position, Vec3D volumeElement) {
 

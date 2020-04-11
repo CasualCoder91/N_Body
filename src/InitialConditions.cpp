@@ -188,6 +188,52 @@ std::vector<Star*> InitialConditions::massDisk(double totalMass){
 	return stars;
 }
 
+//std::vector<Star*> InitialConditions::massBulge(double totalMass){
+//
+//	return std::vector<Star*>();
+//}
+
+std::vector<Star*> InitialConditions::initialMassBulge(double totalMass){
+	std::vector<Star*> stars;
+	double pickedTotalMass = 0;
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	static std::uniform_real_distribution<> disM(0.08, 100); // mass sample
+	static std::uniform_real_distribution<> disAccept(0, 0.00095); //upper limit
+	static double factor1 = 3.6e-4;
+	static double chabrierMass = 0.22;
+	static double chabrierSigma = 0.33;
+	static double factor2 = 7.1e-5;
+	static double exponent2 = 1.3;
+	double temp = 0;
+	double ln10 = log(10);
+	while (pickedTotalMass < totalMass) {
+		while (true) {
+			double m = disM(gen);
+			double logM = log10(m);
+			if (m<0.7) { // m < 1
+				temp = factor1 / (m * ln10) * exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
+				if (disAccept(gen) < temp) {
+					stars.push_back(new Star(0, m)); // todo: which id?!
+					pickedTotalMass += m;
+					break;
+				}
+			}
+			else{
+				temp = factor2 / (m * ln10) * pow(m, -exponent2);
+				if (disAccept(gen) < temp) {
+					stars.push_back(new Star(0, m)); // todo: which id?!
+					pickedTotalMass += m;
+					break;
+				}
+			}
+		}
+	}
+	std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
+	std::cout << "Proposed mass of disk: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
+	return stars;
+}
+
 void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()

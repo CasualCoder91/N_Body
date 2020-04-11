@@ -22,6 +22,7 @@ Then one has to take the inverse of the ncpf. Since Salpeter is a power-law dist
 
 .. math::
     p(m)=\frac{dN}{dm}=A*m^{-\alpha }
+    :label: salpeter
 
     P(m)=\int_{m_{min}}^{m}A*m^{-\alpha } dm = \frac{A}{-\alpha +1}\left ( m^{-\alpha +1} -m_{min}^{-\alpha +1}\right )
 
@@ -42,14 +43,30 @@ Inverting this function and some simplifications lead to:
 
 where x is a random number in range [0,1]
 
+Spheroid/Bulge - Chabrier (2003)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. doxygenfunction:: InitialConditions::initialMassBulge
+
+.. plot:: pyplots/initialConditionsMassBulge.py
+
+Per rejection sampling the following function, given by :cite:`2003PASP..115..763C`, the mass of stars, which belong to the bulge, is determined.
+
+For :math:`m<0.7` the log-normal distribution equation :eq:`lognormal` is used. Parameters are :math:`A=3.6*10^{-4}`, :math:`m_{c}=0.22` and :math:`\sigma=0.33`.
+For :math:`m>0.7` a Salpeter slope :eq:`salpeter` with parameters :math:`A=7.1*10^{-5}` and :math:`x=1.3` is chosen.
+
 
 Present Day Mass Function (PDMF)
 --------------------------------
+
+.. Bulge: (m>1) http://adsabs.harvard.edu/full/1999A%26A...348..457M (m<1) https://hubblesite.org/uploads/science_paper/file_attachment/200/pdf.pdf
 
 Disk Stellar Mass Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. doxygenfunction:: InitialConditions::massDisk
+
+.. plot:: pyplots/initialConditionsMassDisk.py
 
 Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by :cite:`2003PASP..115..763C`.
 
@@ -57,6 +74,7 @@ For :math:`m<1` the PDMF reads
 
 .. math::
     \xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]
+    :label: lognormal
 
 or equivalently (this version is sampled)
 
@@ -73,7 +91,6 @@ or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
 .. math::
     \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}
 
-.. plot:: pyplots/initialConditionsMassDisk.py
 
 Positions
 ---------

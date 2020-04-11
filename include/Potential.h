@@ -1,7 +1,9 @@
 #pragma once
 
 #include <gsl/gsl_monte_plain.h>
+#include <gsl/gsl_integration.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_complex_math.h>
 #include "SimulationData.h"
 #include "Vec3D.h"
 
@@ -40,6 +42,7 @@ public:
 
 	double densityBulge(double r);
 	double densityBulge(double x, double y, double z);
+	double surfaceDensityBulge(double R);
 	Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 	//Mass of Disk and Bulge inside volume

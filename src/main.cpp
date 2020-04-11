@@ -38,7 +38,7 @@ int main() {
 	//std::vector<Star*> stars = testInitialConditions.initDiskStars(0, Vec3D(0.1, boxSize, 0), Vec3D(0.1+boxSize, 0, 0), 0.1, &testPotential);
 	//InOut::write(stars, "testInitialConditions.dat");
 
-	Test::samplePotentialOutput();
+	Test::initialConditionsSurfaceDensityBulge();
 
 	return 0;
 

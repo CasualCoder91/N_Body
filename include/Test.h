@@ -11,6 +11,8 @@ public:
 	void potentialVelocityOutput();
 	void testfrequencyDistribution();
 	void initialConditionsMassSalpeterOutput(int nStars = 10000);
+	static void initialConditionsMassBulgeOutput(double totalMass);
+	static void initialConditionsSurfaceDensityBulge();
 	//Potential
 	static void massDistributionDiskOutput(double z = 1); // [z] = [kpc]
 	static void massDistributionBulgeOutput(double z = 1); // [z] = [kpc]

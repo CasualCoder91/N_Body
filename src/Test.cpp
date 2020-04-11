@@ -75,6 +75,32 @@ void Test::initialConditionsMassSalpeterOutput(int nStars) {
 	InOut::write(index, mass, "initialConditionsMassSalpeter"+std::to_string(nStars)+".dat");
 }
 
+void Test::initialConditionsMassBulgeOutput(double totalMass){
+	Parameters parameters = Parameters();
+	InitialConditions initialConditions = InitialConditions(&parameters);
+	std::vector<Star*> stars = initialConditions.initialMassBulge(totalMass);
+	std::vector<double> index;
+	std::vector<double> mass;
+	double i = 0;
+	for (Star* star : stars) {
+		index.push_back(i);
+		i++;
+		mass.push_back(star->mass);
+	}
+	InOut::write(index, mass, "initialConditionsMassBulge" + std::to_string(totalMass) + ".dat");
+}
+
+void Test::initialConditionsSurfaceDensityBulge(){
+	Potential potential = Potential(Vec3D(0, 0, 0));
+	std::vector<double> surfaceDensity;
+	std::vector<double> radius;
+	for (double R = 0.1; R < 30; R = R + 0.1) {
+		radius.push_back(R);
+		surfaceDensity.push_back(potential.surfaceDensityBulge(R));
+	}
+	InOut::write(radius, surfaceDensity, "initialConditionsSurfaceDensityBulge.dat");
+}
+
 void Test::massDistributionDiskOutput(double z){
 	Potential potential = Potential(Vec3D(0, 0, 0));
 	std::vector<Vec3D> Output;

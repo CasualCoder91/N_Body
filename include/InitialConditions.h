@@ -50,6 +50,15 @@ public:
 	*/
 	std::vector<Star*> massDisk(double totalMass);
 	/**
+	@brief Creates stars belonging to the bulge/spheroid with mass optained through rejection sampling.
+	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
+	@see initialMassBulge
+	*/
+
+	//std::vector<Star*> massBulge(double totalMass);
+
+	std::vector<Star*> initialMassBulge(double totalMass);
+	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc.
 	@param [in,out] stars The possitions of these stars will be modified.
 	@param position One corner (typicaly bottom left front) of the volume the positions lie within.
