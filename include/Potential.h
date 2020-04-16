@@ -51,7 +51,7 @@ public:
 	@brief Caluclate the surface mass density of the disk at a given radial distance R.
 	The GSL function gsl_integration_qagiu is used.
 	@param R The radius at which the surface mass density is calculated.
-	@ret The calculated surface mass density.
+	@return The calculated surface mass density.
 	*/
 	double surfaceDensityDisk(double R);
 	Vec3D sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
@@ -62,7 +62,7 @@ public:
 	@brief Caluclate the surface mass density of the bulge at a given radial distance R.
 	The GSL function gsl_integration_qagiu is used.
 	@param R The radius at which the surface mass density is calculated.
-	@ret The calculated surface mass density.
+	@return The calculated surface mass density.
 	*/
 	double surfaceDensityBulge(double R);
 	Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
