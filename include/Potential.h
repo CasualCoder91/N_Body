@@ -71,4 +71,10 @@ public:
 	double frequencyDistribution(Vec3D position, Vec3D volumeElement);
 	double massDisk(Vec3D position, Vec3D volumeElement);
 	double massBulge(Vec3D position, Vec3D volumeElement);
+
+	//wip
+	//all Potentials
+	double angularVelocity(double R);
+
+
 };

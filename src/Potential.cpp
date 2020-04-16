@@ -350,3 +350,9 @@ double Potential::massBulge(Vec3D position, Vec3D volumeElement) {
 
 	return mass;
 }
+
+double Potential::angularVelocity(double R){
+
+
+	return 0.0;
+}
