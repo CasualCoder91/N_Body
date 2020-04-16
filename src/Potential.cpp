@@ -1,6 +1,7 @@
 #include "..\include\Potential.h"
 
 struct gslDensityDiskParams { double mMassDisk; double aDisk; double bDisk; };
+struct gslDensityDiskQagsParams { double mMassDisk; double aDisk; double bDisk; double R; };
 struct gslDensityBulgeParams { double mMassBulge; double aBulge; };
 struct gslDensityBulgeQagsParams { double mMassBulge; double aBulge; double R; };
 struct gslDensityParams { double mMassBulge; double aBulge; double mMassDisk; double aDisk; double bDisk; };
@@ -42,13 +43,13 @@ double gslDensityDisk(double x[], size_t dim, void* p) {
 };
 
 //for qags
-double gslDensityDisk(double x[], void* p) {
-	struct gslDensityDiskParams* fp = (struct gslDensityDiskParams*)p;
+double gslDensityDisk(double z, void* p) {
+	struct gslDensityDiskQagsParams* fp = (struct gslDensityDiskQagsParams*)p;
 
-	double z2b2 = pow(x[2], 2) + pow(fp->bDisk, 2);
+	double z2b2 = pow(z, 2) + pow(fp->bDisk, 2);
 	double sz2b2 = sqrt(z2b2);
-	double R = gsl_hypot(x[0], x[1]);
-	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * pow(R, 2) + (fp->aDisk + 3 * sz2b2 * pow(fp->aDisk + sz2b2, 2))) / (pow(pow(R, 2) + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	double R2 = pow(fp->R, 2);
+	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * R2 + (fp->aDisk + 3 * sz2b2 * pow(fp->aDisk + sz2b2, 2))) / (pow(R2 + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
 
 	return temp;
 };
@@ -67,7 +68,6 @@ double gslDensityBulge(double x[], size_t dim, void* p) {
 
 	return temp;
 };
-
 
 double gslDensityBulge(double z, void* p) {
 
@@ -95,10 +95,13 @@ double Potential::closestToZero(double a, double b) {
 	return temp;
 }
 
+Potential::Potential(){
+	this->position = Vec3D(0, 0, 0);
+}
+
 Potential::Potential(Vec3D position){
 	this->position = position;
 }
-
 
 double Potential::circularVelocity(Vec3D* position){
 	Vec3D distance = *position - this->position;
@@ -161,6 +164,19 @@ double Potential::densityDisk(double x, double y, double z){
 	return densityDisk(R,z);
 }
 
+double Potential::surfaceDensityDisk(double R){
+	gsl_function F;
+	F.function = &gslDensityDisk;
+	gslDensityDiskQagsParams densityDiskQagsParams = { mMassDisk, aDisk, bDisk, R };
+	F.params = &densityDiskQagsParams;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+
+	gsl_integration_qagiu(&F, 0, 0, 1e-7, 1000, iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return 2.0*result;
+}
+
 Vec3D Potential::sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax){
 	double smallestx = closestToZero(xMin, xMax);
 	double smallesty = closestToZero(yMin, yMax);
@@ -213,7 +229,7 @@ double Potential::surfaceDensityBulge(double R){
 
 	gsl_integration_qagiu(&F,0,0,1e-7, 1000,iw, &result, &error);
 	gsl_integration_workspace_free(iw);
-	return result;
+	return 2.0 * result;
 }
 
 //todo: change to vector<Star> as soon as present day mass function is sorted out
@@ -250,8 +266,6 @@ Vec3D Potential::sampleBuldge(double xMin, double xMax, double yMin, double yMax
 	}
 	return Vec3D();
 }
-
-
 
 double Potential::frequencyDistribution(Vec3D position, Vec3D volumeElement) {
 

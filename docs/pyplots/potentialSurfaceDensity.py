@@ -1,0 +1,17 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.cm as cm
+from matplotlib.colors import LogNorm
+
+dataBulge = np.loadtxt('potentialSurfaceDensityBulge.dat',delimiter=',')
+dataDisk = np.loadtxt('potentialSurfaceDensityDisk.dat',delimiter=',')
+
+plt.plot(dataDisk[:,0], dataDisk[:,1]*10e-6, label='Disk')
+plt.plot(dataBulge[:,0], dataBulge[:,1]*10e-6, label='Bulge')
+plt.yscale('log')
+plt.ylabel('SMD ['+r'$M_{\odot}*pc^{-2}$]')
+plt.xlabel('R [kpc]')
+plt.title('Surface Mass Density')
+plt.legend()
+plt.show()

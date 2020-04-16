@@ -100,7 +100,13 @@ therefor
 
 plugging in all the parameters (and :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]`) results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
 
+Circular Velocity
+-----------------
+
 .. plot:: pyplots/potentialVelocity.py
+
+Mass Distribution
+-----------------
 
 The mass inside a volume is calculated by numerical integration of the density.
 GSL implementation of Monte Carlo Integration is used. For further details refer to the GSL documentation_.
@@ -111,6 +117,19 @@ Example at z=1pc
 
 .. plot:: pyplots/massDistribution.py
 
+Surface Mass Density (SMD)
+--------------------------
+
+The SMD is defined by
+
+.. math::
+    \Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( r \right )\mathrm{d}z
+
+.. doxygenfunction:: Potential::surfaceDensityDisk
+
+.. doxygenfunction:: Potential::surfaceDensityBulge
+
+.. plot:: pyplots/potentialSurfaceDensity.py
 
 "Junk"
 

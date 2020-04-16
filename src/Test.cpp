@@ -90,7 +90,7 @@ void Test::initialConditionsMassBulgeOutput(double totalMass){
 	InOut::write(index, mass, "initialConditionsMassBulge" + std::to_string(totalMass) + ".dat");
 }
 
-void Test::initialConditionsSurfaceDensityBulge(){
+void Test::potentialSurfaceDensityBulge(){
 	Potential potential = Potential(Vec3D(0, 0, 0));
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
@@ -98,7 +98,18 @@ void Test::initialConditionsSurfaceDensityBulge(){
 		radius.push_back(R);
 		surfaceDensity.push_back(potential.surfaceDensityBulge(R));
 	}
-	InOut::write(radius, surfaceDensity, "initialConditionsSurfaceDensityBulge.dat");
+	InOut::write(radius, surfaceDensity, "potentialSurfaceDensityBulge.dat");
+}
+
+void Test::potentialSurfaceDensityDisk(){
+	Potential potential = Potential(Vec3D(0, 0, 0));
+	std::vector<double> surfaceDensity;
+	std::vector<double> radius;
+	for (double R = 0.1; R < 30; R = R + 0.1) {
+		radius.push_back(R);
+		surfaceDensity.push_back(potential.surfaceDensityDisk(R));
+	}
+	InOut::write(radius, surfaceDensity, "potentialSurfaceDensityDisk.dat");
 }
 
 void Test::massDistributionDiskOutput(double z){

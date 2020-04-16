@@ -1,3 +1,10 @@
+/**
+ * The Milky Way Potential. A combination of the potentials for the black hole, bulge, disk and dark matter halo.
+ *
+ * @author Alarich Herzner
+ * @version 0.2 16.04.2020
+*/
+
 #pragma once
 
 #include <gsl/gsl_monte_plain.h>
@@ -29,7 +36,9 @@ private:
 private:
 	double closestToZero(double a, double b);
 public:
+	Potential();
 	Potential(Vec3D position);
+
 	double circularVelocity(Vec3D* position);
 	double circularVelocityDisk(Vec3D* position);
 	double circularVelocityBlackHole(Vec3D* position);
@@ -38,10 +47,23 @@ public:
 
 	double densityDisk(double R, double z);
 	double densityDisk(double x, double y, double z);
+	/**
+	@brief Caluclate the surface mass density of the disk at a given radial distance R.
+	The GSL function gsl_integration_qagiu is used.
+	@param R The radius at which the surface mass density is calculated.
+	@ret The calculated surface mass density.
+	*/
+	double surfaceDensityDisk(double R);
 	Vec3D sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 	double densityBulge(double r);
 	double densityBulge(double x, double y, double z);
+	/**
+	@brief Caluclate the surface mass density of the bulge at a given radial distance R.
+	The GSL function gsl_integration_qagiu is used.
+	@param R The radius at which the surface mass density is calculated.
+	@ret The calculated surface mass density.
+	*/
 	double surfaceDensityBulge(double R);
 	Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
