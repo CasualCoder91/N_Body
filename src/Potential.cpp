@@ -108,7 +108,7 @@ double Potential::circularVelocity(Vec3D* position){
 	double r = distance.length();
 	double z = distance.z;
 	double R2 = pow(distance.x, 2) + pow(distance.y,2);
-	double velocity = sqrt(G * massBlackHole * R2 / pow(R2 + pow(z, 2), 1.5)
+	double velocity = sqrt(G * mMassBlackHole * R2 / pow(R2 + pow(z, 2), 1.5)
 		+ G * mMassDisk * R2 / pow(pow(aDisk + sqrt(pow(bDisk, 2) + pow(z, 2)), 2) + R2, 1.5)
 		+ G * mMassBulge * R2 / (r * pow(aBulge + r, 2))
 		+ 4 * M_PI * G * densityHalo * R2 * pow(rHalo, 3) * log(r / rHalo + 1) / pow(R2+pow(z,2), 1.5)
@@ -130,7 +130,7 @@ double Potential::circularVelocityBlackHole(Vec3D* position){
 	double r = distance.length();
 	double z = distance.z;
 	double R2 = pow(distance.x, 2) + pow(distance.y, 2);
-	double velocity = sqrt(G * massBlackHole * R2 / pow(R2 + pow(z, 2), 1.5));
+	double velocity = sqrt(G * mMassBlackHole * R2 / pow(R2 + pow(z, 2), 1.5));
 	return velocity;
 }
 
@@ -352,7 +352,21 @@ double Potential::massBulge(Vec3D position, Vec3D volumeElement) {
 }
 
 double Potential::angularVelocity(double R){
+	double R2 = gsl_pow_2(R);
+	double haloTemp = 4.0 * M_PI * densityHalo * gsl_pow_3(rHalo);
+	return sqrt(this->G/R*(-mMassBulge/ gsl_pow_2(aBulge+R)+2.0*mMassDisk*gsl_pow_3(R)/pow(gsl_pow_2(aDisk+bDisk)+gsl_pow_2(R2),1.5)
+		+mMassBlackHole/R2+ haloTemp/(R2+R*rHalo)+ haloTemp*log((R+rHalo)/rHalo)/R2));
+}
 
-
-	return 0.0;
+double Potential::epicyclicFrequency(double R){
+	double R2 = gsl_pow_2(R);
+	double R3 = gsl_pow_3(R);
+	double R4 = gsl_pow_2(R2);
+	double R6 = gsl_pow_2(R3);
+	double haloTemp = 4.0 * M_PI * densityHalo * gsl_pow_3(rHalo);
+	double temp = mMassBlackHole / R3 + 2.0 * mMassBulge / gsl_pow_3(aBulge + R) - 3.0 * mMassBulge / (R * gsl_pow_2(aBulge + R));
+	temp = temp - 12.0 * mMassDisk * R6 / pow(gsl_pow_2(aDisk) + 2.0 * aDisk * bDisk + gsl_pow_2(bDisk) + R4, 2.5) + 12.0 * mMassDisk * R2 / pow(gsl_pow_2(aDisk) + 2.0 * aDisk * bDisk + gsl_pow_2(bDisk) + R4, 1.5);
+	temp = temp + haloTemp / (R * gsl_pow_2(R + rHalo)) - haloTemp / (R2 * (R + rHalo)) + haloTemp * log((R + rHalo) / rHalo) / R3;
+	temp = sqrt(G * temp);
+	return temp;
 }

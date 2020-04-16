@@ -21,7 +21,7 @@
 class Potential : SimulationData
 {
 private:
-	const double massBlackHole = 4e6; // SolarMassUnit
+	const double mMassBlackHole = 4e6; // SolarMassUnit
 	const double mMassDisk = 10e10; // SolarMassUnit
 	const double aDisk = 6.5; //kpc
 	const double bDisk = 0.26; //kpc
@@ -72,9 +72,8 @@ public:
 	double massDisk(Vec3D position, Vec3D volumeElement);
 	double massBulge(Vec3D position, Vec3D volumeElement);
 
-	//wip
 	//all Potentials
 	double angularVelocity(double R);
-
+	double epicyclicFrequency(double R);
 
 };
