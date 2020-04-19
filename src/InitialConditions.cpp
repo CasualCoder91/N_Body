@@ -1,5 +1,7 @@
 #include "InitialConditions.h"
 
+double InitialConditions::kmInpc = 3.086e-13;
+
 double InitialConditions::closestToZero(double a, double b) {
 	double temp = 0;
 	if ((a < 0 && b> 0) || (a > 0 && b < 0))
@@ -17,7 +19,7 @@ double InitialConditions::closestToZero(double a, double b) {
 	return temp;
 }
 
-InitialConditions::InitialConditions(SimulationData* parameters){
+InitialConditions::InitialConditions(SimulationData* parameters):gen((std::random_device())()){
 	this->G = parameters->getG();
 	this->nStars = parameters->getNStars();
 }
@@ -58,7 +60,7 @@ std::vector<Star*> InitialConditions::initDiskStars(int firstID, Vec3D tlf, Vec3
 				Vec3D volumeElement = Vec3D(gridResolution, gridResolution, gridResolution);
 				double massInCell = potential->massDisk(position, volumeElement);
 				std::vector<Star*> starsInCell = massDisk(massInCell); //stars with mass
-				sampleDiskPositions(starsInCell, position, volumeElement, potential);
+				sampleDiskPositions(starsInCell, position, volumeElement);
 				stars.insert(stars.end(), starsInCell.begin(), starsInCell.end());
 			}
 		}
@@ -67,12 +69,12 @@ std::vector<Star*> InitialConditions::initDiskStars(int firstID, Vec3D tlf, Vec3
 	return stars;
 }
 
-double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D position, Vec3D volumeElement, Potential* potential) {
+double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D position, Vec3D volumeElement) {
 	double smallestx = closestToZero(position.x, position.x+volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
 	double smallestz = closestToZero(position.z, position.z + volumeElement.z);
 
-	double k = potential->densityDisk(smallestx, smallesty, smallestz);
+	double k = Potential::densityDisk(smallestx, smallesty, smallestz);
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> disx(position.x, position.x + volumeElement.x);
@@ -86,7 +88,7 @@ double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D pos
 			double z = disz(gen);
 
 			double accept = disaccept(gen);
-			double temp = potential->densityDisk(x, y, z);
+			double temp = Potential::densityDisk(x, y, z);
 
 			if (accept < temp) {
 				star->position = Vec3D(x, y, z);
@@ -97,12 +99,49 @@ double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D pos
 	return 0; //todo: return average velocity maybe?
 }
 
-double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement, Potential* potential){
+void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
+
+	double R = position.length();
+	std::normal_distribution<> zVelocityDistribution{ 0,Potential::verticalVelocityDispersion(R) };
+	double vz = zVelocityDistribution(gen);
+	std::normal_distribution<> radialVelocityDistribution{ 0,Potential::radialVelocityDispersion(R) };
+	double vR = radialVelocityDistribution(gen);
+	std::normal_distribution<> azimuthalVelocityDistribution{ Potential::azimuthalStreamingVelocity(position),Potential::azimuthalVelocityDispersion(R) };
+	double va = azimuthalVelocityDistribution(gen);
+
+	double theta = atan(position.y / position.x);
+
+	velocity += Vec3D(vR * cos(theta) - R * va * sin(theta), vR * sin(theta) + R * va * cos(theta), vz);
+}
+
+double InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){
+	//std::random_device rd{};
+	//std::mt19937 gen{ rd() };
+	for (Star* star : stars) {
+		sampleDiskVelocity(star->velocity, star->position);
+
+		//double R = star->position.length();
+		//std::normal_distribution<> zVelocityDistribution{ 0,Potential::verticalVelocityDispersion(R)};
+		//double vz = zVelocityDistribution(gen);
+		//std::normal_distribution<> radialVelocityDistribution{ 0,Potential::radialVelocityDispersion(R)};
+		//double vR = radialVelocityDistribution(gen);
+		//std::normal_distribution<> azimuthalVelocityDistribution{ Potential::azimuthalStreamingVelocity(star->position),Potential::azimuthalVelocityDispersion(R) };
+		//double va = azimuthalVelocityDistribution(gen);
+
+		//double theta = atan(star->position.y / star->position.x);
+
+		//star->velocity += Vec3D(vR * cos(theta)-R*va*sin(theta), vR*sin(theta)+R*va*cos(theta), vz);
+
+	}
+	return 0.0;
+}
+
+double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement){
 	double smallestx = closestToZero(position.x, position.x + volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
 	double smallestz = closestToZero(position.z, position.z + volumeElement.z);
 
-	double k = potential->densityDisk(smallestx, smallesty, smallestz);
+	double k = Potential::densityDisk(smallestx, smallesty, smallestz);
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> disx(position.x, position.x + volumeElement.x);
@@ -116,7 +155,7 @@ double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D p
 			double z = disz(gen);
 
 			double accept = disaccept(gen);
-			double temp = potential->densityBulge(x, y, z);
+			double temp = Potential::densityBulge(x, y, z);
 
 			if (accept < temp) {
 				star->position = Vec3D(x, y, z);
@@ -242,6 +281,12 @@ void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structur
 		double distance = structuralLength / sqrt(pow(dis(gen), -2. / 3.) - 1);
 		star->position = Vec3D::randomVector(distance);
 		plummerVelocity(star, structuralLength, distance, totalMass);
+	}
+}
+
+void InitialConditions::offsetCluster(std::vector<Star*>& stars, Vec3D& offset){
+	for (Star* star : stars) {
+		star->position += offset;
 	}
 }
 

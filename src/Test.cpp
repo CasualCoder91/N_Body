@@ -1,20 +1,19 @@
 #include "..\include\Test.h"
 
 void Test::samplePotentialOutput(int nStars) {
-	Potential potential = Potential(Vec3D(0, 0, 0));
 
 	std::vector<Vec3D> positionsDisk;
 	std::vector<Vec3D> positionsBulge;
 	for (int i = 0; i < nStars; i++) {
-		positionsDisk.push_back(potential.sampleDisk(-40, 40, -40, 40, -20, 20));
-		positionsBulge.push_back(potential.sampleBuldge(-6, 6, -6, 6, -6, 6));
+		positionsDisk.push_back(Potential::sampleDisk(-40, 40, -40, 40, -20, 20));
+		positionsBulge.push_back(Potential::sampleBuldge(-6, 6, -6, 6, -6, 6));
 	}
 	InOut::write(positionsDisk, "potentialDiskPositionsSample"+std::to_string(nStars)+".dat");
 	InOut::write(positionsBulge, "potentialBulgePositionsSample" + std::to_string(nStars) + ".dat");
 }
 
-void Test::potentialVelocityOutput() {
-	Potential potential = Potential(Vec3D(0, 0, 0));
+void Test::potentialCircularVelocityOutput() {
+
 	std::vector<double> positions;
 	std::vector<double> velocities;
 	std::vector<double> disk;
@@ -25,11 +24,11 @@ void Test::potentialVelocityOutput() {
 	for (double i = 0.1; i < 30; i += 0.1) {
 		positions.push_back(i);
 		Vec3D position = Vec3D(i, 0, 0);
-		velocities.push_back(potential.circularVelocity(&position));
-		disk.push_back(potential.circularVelocityDisk(&position));
-		blackHole.push_back(potential.circularVelocityBlackHole(&position));
-		buldge.push_back(potential.circularVelocityBulge(&position));
-		halo.push_back(potential.circularVelocityHalo(&position));
+		velocities.push_back(Potential::circularVelocity(&position));
+		disk.push_back(Potential::circularVelocityDisk(&position));
+		blackHole.push_back(Potential::circularVelocityBlackHole(&position));
+		buldge.push_back(Potential::circularVelocityBulge(&position));
+		halo.push_back(Potential::circularVelocityHalo(&position));
 	}
 
 	InOut::write(positions, velocities, "potentialTest.dat");
@@ -40,7 +39,7 @@ void Test::potentialVelocityOutput() {
 }
 
 void Test::testfrequencyDistribution() {
-	Potential potential = Potential(Vec3D(0, 0, 0));
+
 	std::vector<Vec3D> Output;
 
 	double z = 1; //kpc
@@ -48,7 +47,7 @@ void Test::testfrequencyDistribution() {
 	for (double x = -30; x < 30; x += 0.5) {
 		std::cout << "x=" << x << std::endl;
 		for (double y = -30; y < 30; y += 0.5) {
-			double starMass = potential.frequencyDistribution(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
+			double starMass = Potential::frequencyDistribution(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
 			Output.push_back(Vec3D(x, y, starMass));
 		}
 	}
@@ -91,35 +90,47 @@ void Test::initialConditionsMassBulgeOutput(double totalMass){
 }
 
 void Test::potentialSurfaceDensityBulge(){
-	Potential potential = Potential(Vec3D(0, 0, 0));
+
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
 	for (double R = 0.1; R < 30; R = R + 0.1) {
 		radius.push_back(R);
-		surfaceDensity.push_back(potential.surfaceDensityBulge(R));
+		surfaceDensity.push_back(Potential::surfaceDensityBulge(R));
 	}
 	InOut::write(radius, surfaceDensity, "potentialSurfaceDensityBulge.dat");
 }
 
 void Test::potentialSurfaceDensityDisk(){
-	Potential potential = Potential(Vec3D(0, 0, 0));
+
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
 	for (double R = 0.1; R < 30; R = R + 0.1) {
 		radius.push_back(R);
-		surfaceDensity.push_back(potential.surfaceDensityDisk(R));
+		surfaceDensity.push_back(Potential::surfaceDensityDisk(R));
 	}
 	InOut::write(radius, surfaceDensity, "potentialSurfaceDensityDisk.dat");
 }
 
+void Test::initialConditionsSampleDisk(){
+	Parameters parameters = Parameters();
+	InitialConditions initialConditions = InitialConditions(&parameters);
+	double gridResolution = 0.001;
+	Vec3D position = Vec3D(5, 5, 0);
+	Vec3D volumeElement = Vec3D(gridResolution, gridResolution, gridResolution);
+	double massInCell = Potential::massDisk(position, volumeElement);
+	std::vector<Star*> starsInCell = initialConditions.massDisk(massInCell); //stars with mass
+	initialConditions.sampleDiskPositions(starsInCell, position, volumeElement);
+	initialConditions.sampleDiskVelocities(starsInCell);
+}
+
 void Test::massDistributionDiskOutput(double z){
-	Potential potential = Potential(Vec3D(0, 0, 0));
+
 	std::vector<Vec3D> Output;
 
 	for (double x = -30; x < 30; x += 0.5) {
 		std::cout << "x=" << x << std::endl;
 		for (double y = -30; y < 30; y += 0.5) {
-			double starMass = potential.massDisk(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
+			double starMass = Potential::massDisk(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
 			Output.push_back(Vec3D(x, y, starMass));
 		}
 	}
@@ -128,13 +139,13 @@ void Test::massDistributionDiskOutput(double z){
 }
 
 void Test::massDistributionBulgeOutput(double z){
-	Potential potential = Potential(Vec3D(0, 0, 0));
+
 	std::vector<Vec3D> Output;
 
 	for (double x = -30; x < 30; x += 0.5) {
 		std::cout << "x=" << x << std::endl;
 		for (double y = -30; y < 30; y += 0.5) {
-			double starMass = potential.massBulge(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
+			double starMass = Potential::massBulge(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
 			Output.push_back(Vec3D(x, y, starMass));
 		}
 	}

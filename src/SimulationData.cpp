@@ -1,7 +1,8 @@
 #include "SimulationData.h"
 
 
-SimulationData::SimulationData(){
+void SimulationData::getParametersFromConfig(){
+	std::cout << "\n Reading Parameters from simulation.cfg" << std::endl;
 	this->filePath = "./simulation.cfg";
 	config.Load(filePath);
 	if (!config.Get("nStars", nStars)) {
@@ -28,6 +29,14 @@ SimulationData::SimulationData(){
 	if (!config.Get("precission", precission)) {
 		std::cout << "precission missing in " + filePath << std::endl;
 	}
+	if (!config.Get("G", G)) {
+		std::cout << "Gravitational constant missing in " + filePath << std::endl;
+		std::cout << "Setting default value: " << 4.483e-3 << std::endl;
+		this->G = 4.483e-3;
+	}
+	else {
+		std::cout << "Warning: Units of G must be parsec*solar mass^-1*km^2/s^2" << std::endl;
+	}
 	if (!config.Get("minMass", minMass)) {
 		std::cout << "minMass missing in " + filePath << std::endl;
 	}
@@ -37,20 +46,26 @@ SimulationData::SimulationData(){
 	if (!config.Get("alpha", alpha)) {
 		std::cout << "precission missing in " + filePath << std::endl;
 	}
+	std::cout << std::endl;
 }
 
-SimulationData::SimulationData(int id, std::string title, int nStars, double boxLength, double dt, int nTimesteps) {
+SimulationData::SimulationData(){
+	getParametersFromConfig();
+}
+
+SimulationData::SimulationData(int id, std::string title, int nStars, double boxLength, double dt, int nTimesteps, int outputTimestep) {
 	this->simulationID = id;
 	this->title = title;
 	this->nStars = nStars;
 	this->boxLength = boxLength;
 	this->dt = dt;
 	this->nTimesteps = nTimesteps;
+	this->outputTimestep = outputTimestep;
 }
 
 SimulationData::SimulationData(int id){
 	this->simulationID = id;
-	SimulationData();
+	getParametersFromConfig();
 }
 
 SimulationData::SimulationData(int id, SimulationData* simulationData){

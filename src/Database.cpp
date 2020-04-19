@@ -139,6 +139,8 @@ int Database::getLastID(){
 }
 
 int Database::selectLastID(std::string table){
+	if (this->open()) //error during opening connection
+		return -1;
 	std::string sql = "select id from "+table+" order by id desc LIMIT 1";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
@@ -291,18 +293,21 @@ void Database::insertVelocity(int& idStar, Vec3D& velocity, int& timestep){
 	sqlite3_finalize(st);
 }
 
-std::vector<SimulationData> Database::selectSimulations(){
+std::vector<SimulationData> Database::selectSimulationData(int ID){
 	std::vector<SimulationData> simulations = {};
 	if (!this->isOpen)
 		this->open();
-	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps FROM simulation";
+	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
+	if (ID != -1) {
+		query += " Where ID = " + std::to_string(ID);
+	}
 	sqlite3_stmt* stmt;
 	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
 		// Error reporting and handling
 	}
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		simulations.push_back(SimulationData(sqlite3_column_int(stmt, 0), reinterpret_cast<const char*>(sqlite3_column_text(stmt,1)), sqlite3_column_int(stmt, 2),
-			sqlite3_column_double(stmt, 3), sqlite3_column_double(stmt, 4), sqlite3_column_int(stmt, 5)));
+			sqlite3_column_double(stmt, 3), sqlite3_column_double(stmt, 4), sqlite3_column_int(stmt, 5), sqlite3_column_int(stmt, 6)));
 	}
 	sqlite3_finalize(stmt);
 	return simulations;
@@ -363,3 +368,4 @@ std::vector<Star*> Database::selectStars(int simulationID, int timeStep){
 	sqlite3_finalize(stmt);
 	return stars;
 }
+

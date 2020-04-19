@@ -16,8 +16,10 @@ class Integrator
 {
 public:
     /** @brief Timestepsize used for integration. Dimension is pc*s/km to minimize cutoff error caused by big differences in orders of magnetude */
-	double dt = 0.1;
+	double dt = 0.1; // [day]
     double dt2 = 0.05; //dt/2
+    static double dayInSec;
+    static double kmInpc;
 
     Vec3D* C[4]; //RK4
     Vec3D* K[4]; //RK4

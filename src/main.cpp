@@ -38,12 +38,9 @@ int main() {
 	//std::vector<Star*> stars = testInitialConditions.initDiskStars(0, Vec3D(0.1, boxSize, 0), Vec3D(0.1+boxSize, 0, 0), 0.1, &testPotential);
 	//InOut::write(stars, "testInitialConditions.dat");
 
-	Test::potentialSurfaceDensityBulge();
-	Test::potentialSurfaceDensityDisk();
+	//Test::initialConditionsSampleDisk();
 
-	return 0;
-
-	Parameters parameters = Parameters();
+	//return 0;
 
 	Database db = Database();
 	db.open();
@@ -55,39 +52,53 @@ int main() {
 	std::cin >> selection;
 	std::cin.clear();
 	if (selection == 1) {
-		std::vector<SimulationData> simulations = db.selectSimulations();
+		std::vector<SimulationData> simulations = db.selectSimulationData();
 		std::cout << "Available Simulations:" << std::endl;
 		for (SimulationData sim : simulations) {
 			std::cout << sim.print();
 		}
 		std::cout << "Input ID to select simulation" << std::endl;
-		std::cin >> selection;
+		int simulationID = 0;
+		std::cin >> simulationID;
 		std::cin.clear();
-		std::cout << "Running analysis on selected simulation" << std::endl;
-		Analysis analysis = Analysis(parameters);
-		int analysisID = db.insertAnalysis(selection, analysis);
-		std::vector<int> timeSteps = db.selectTimesteps();
-		for (int timeStep : timeSteps) {
-			std::vector<Star*> stars = db.selectStars(selection, timeStep);
-			if (analysis.getbEnergy()) {
-				db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
-			}
-			if (analysis.getbAverageVelocity()) {
-				std::vector<Vec3D*> velocities = {};
-				for (Star* star : stars) {
-					velocities.push_back(&star->velocity);
-				}
-				double test = analysis.average(velocities);
-				db.insertAnalysisdtVelocity(analysisID,timeStep, analysis.average(velocities));
+		Simulation simulation = Simulation(simulationID, &db.selectSimulationData(simulationID).at(0));
+		std::cout << "[1] Ouput\n[2] Analysis" << std::endl;
+		std::cin >> selection;
+		if (selection == 1) {
+			for (int timestep = 0; timestep < simulation.getNTimesteps(); timestep += simulation.getOutputTimestep()) {
+				std::vector<Star*> stars = db.selectStars(simulation.getID(), timestep);
+				InOut::write(stars, "starPositions"+std::to_string(timestep)+".dat");
 			}
 		}
-		std::cout << "Energy analysis done" << std::endl;
+		else {
+			std::cout << "Running analysis on selected simulation" << std::endl;
+			Parameters parameters = Parameters();
+			Analysis analysis = Analysis(parameters);
+			int analysisID = db.insertAnalysis(simulationID, analysis);
+			std::vector<int> timeSteps = db.selectTimesteps();
+			for (int timeStep : timeSteps) {
+				std::vector<Star*> stars = db.selectStars(selection, timeStep);
+				if (analysis.getbEnergy()) {
+					db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
+				}
+				if (analysis.getbAverageVelocity()) {
+					std::vector<Vec3D*> velocities = {};
+					for (Star* star : stars) {
+						velocities.push_back(&star->velocity);
+					}
+					double test = analysis.average(velocities);
+					db.insertAnalysisdtVelocity(analysisID, timeStep, analysis.average(velocities));
+				}
+			}
+			std::cout << "Energy analysis done" << std::endl;
+		}
+
 	}
 	else if(selection == 2){
 		Parameters* parameters = new Parameters();
 		simulationID = db.insert(parameters);
-		Simulation simulation = Simulation(simulationID);
-		std::cout << "New simulation created: " << simulationID << std::endl;
+		Simulation simulation = Simulation(simulationID,&db);
+		std::cout << "New simulation created. ID = " << simulationID << std::endl;
 		std::cout << "Starting simulation" << std::endl;
 		simulation.run();
 	}
@@ -111,7 +122,7 @@ int main() {
 	//int nTimesteps = 100;
 	//bool energyAnalysis = true;
 
-	Analysis analysis = Analysis(parameters);
+	//Analysis analysis = Analysis(parameters);
 
 
 	//stars.push_back(new Star(1000, 0, 0, 0));

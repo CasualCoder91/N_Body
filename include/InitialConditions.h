@@ -19,6 +19,9 @@ private:
 	double G;
 	/** @brief Amount of stars in the cluster */
 	int nStars;
+	static double kmInpc;
+
+	std::mt19937 gen;
 
 public:
 	InitialConditions(SimulationData* parameters);
@@ -66,7 +69,11 @@ public:
 	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleBulgePositions
 	*/
-	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement, Potential* potential);
+	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+
+	void sampleDiskVelocity(Vec3D& velocity, Vec3D& position);
+
+	double sampleDiskVelocities(std::vector<Star*> stars);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the bulge.
 	@param [in,out] stars The possitions of these stars will be modified.
@@ -75,13 +82,15 @@ public:
 	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleDiskPositions
 	*/
-	double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement, Potential* potential);
+	double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 
 	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
 
+	void offsetCluster(std::vector<Star*>& stars, Vec3D& offset);
+
 	void setNStars(int N);
 private:
-	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass);
+	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass); // in km*s^-1
 	void plummerVelocity(Star* star, double structuralLength, double distance, double totalMass);
 	double closestToZero(double a, double b);
 };

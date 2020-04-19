@@ -13,7 +13,7 @@
 #include "Database.h"
 #include "Parameters.h"
 
-class Simulation : SimulationData
+class Simulation : public  SimulationData
 {
 private:
     Database* database;

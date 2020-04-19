@@ -1,6 +1,8 @@
 #include "Simulation.h"
 
-Simulation::Simulation(int id, Database* database):SimulationData(id){}
+Simulation::Simulation(int id, Database* database):SimulationData(id){
+	this->database = database;
+}
 
 Simulation::Simulation(int id):SimulationData(id) {}
 
@@ -16,18 +18,6 @@ int Simulation::getID(){
 	return this->simulationID;
 }
 
-//int Simulation::getNStars() {
-//	return nStars;
-//}
-//
-//double Simulation::getdt() {
-//	return dt;
-//}
-//
-//int Simulation::getNTimesteps() {
-//	return nTimesteps;
-//}
-
 std::string Simulation::print(){
 	return "ID: " + std::to_string(this->simulationID) +
 		" | Title: " + this->title + 
@@ -41,25 +31,33 @@ void Simulation::run(){
 	std::vector<Star*> stars = initialConditions.initStars(nextStarIndex);
 	double totalMass = initialConditions.initialMassSalpeter(stars,0.08,100);
 	initialConditions.plummerSphere(stars, 1, totalMass);
+	Vec3D offset = Vec3D(5000, 5000, 0);
+	initialConditions.offsetCluster(stars, offset);
+	Vec3D clusterVelocity = Vec3D();
+	initialConditions.sampleDiskVelocity(clusterVelocity, offset);
+	for (Star* star : stars) {
+		star->velocity += clusterVelocity;
+	}
 	database->insertStars(this->getID(), stars, 0);
 
 	//Integrate
-	Integrator rk4 = Integrator(this->getdt());
+	Integrator integrator = Integrator(this->getdt());
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+	Vec3D tlf = Vec3D(), brb = Vec3D();
 	for (int i = 1; i < this->getNTimesteps(); i++) {
 
-		Vec3D tlf = Vec3D(), brb = Vec3D();
 		Node::findCorners(tlf, brb, stars);
-		Node root = Node(tlf, brb, nullptr, this);
+		Node root = Node(tlf, brb, nullptr, this); // Cleanup/Destructor of tree needed in every timestep
 		for (Star* star : stars) {
 			root.insert(star);
+			Potential::applyForce(star);
 		}
 
 		root.calculateMassDistribution();
 
-		rk4.euler(stars, &root);
+		integrator.euler(stars, &root); // includes force from stars within Cluster
 
-		if (i % 10 == 0) {
+		if (i % this->getOutputTimestep() == 0) {
 			//InOut::writeWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
 			//InOut::writeAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
 			database->timestep(i, stars);

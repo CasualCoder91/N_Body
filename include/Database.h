@@ -46,7 +46,7 @@ public:
 	void insertStar(int simulationID, Star* star, int& timestep);
 	void insertPosition(int& idStar, Vec3D& position, int& timestep);
 	void insertVelocity(int& idStar, Vec3D& velocity, int& timestep);
-	std::vector<SimulationData> selectSimulations();
+	std::vector<SimulationData> selectSimulationData(int ID = -1);
 	std::vector<Vec3D> selectVelocities(int timestep);
 	std::vector<int> selectTimesteps();
 	std::vector<Star*> selectStars(int simulationID, int timeStep);
