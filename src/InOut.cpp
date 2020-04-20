@@ -10,7 +10,6 @@ void InOut::write(std::vector<Star*> stars, std::string filename) {
 
 void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
 	std::ofstream file(InOut::outputDirectory + filename);
-	#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
 		file << stars.at(i)->position.x << ',' << stars.at(i)->position.y << ',' << stars.at(i)->position.z << ',' << i << '\n';
 	}

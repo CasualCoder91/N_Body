@@ -8,7 +8,7 @@ const double Potential::mMassBulge = 3.45e10; // SolarMassUnit
 const double Potential::aBulge = 0.7e3; //pc
 const double Potential::rHalo = 16e3; //pc
 const double Potential::densityHalo = 7e-3; // SolarMassUnit*pc^-3
-const double Potential::G = 4.302e-6; // parsec*solarMassUnit^-1*km^2/s^2
+const double Potential::G = 4.302e-3; // parsec*solarMassUnit^-1*km^2/s^2
 const double Potential::kmInpc = 3.086e-13;
 
 struct gslDensityDiskParams { double mMassDisk; double aDisk; double bDisk; };
@@ -422,6 +422,7 @@ double Potential::azimuthalVelocityDispersion(double R){
 
 double Potential::azimuthalStreamingVelocity(Vec3D position){
 	double R = sqrt(pow(position.x, 2) + pow(position.y, 2));
+	double test = circularVelocity(&position);
 	return sqrt(gsl_pow_2(radialVelocityDispersion(R)) * (1.0 - gsl_pow_2(epicyclicFrequency(R)) / (4.0 * gsl_pow_2(angularVelocity(R))) - 2.0 * R / aDisk) + gsl_pow_2(circularVelocity(&position)));
 }
 
@@ -429,17 +430,17 @@ void Potential::applyForce(Star* star){
 	double r = star->position.length();
 	double r2 = gsl_pow_2(r);
 	double r3 = gsl_pow_3(r);
-	double tempHalo = 4.0 * M_PI * densityHalo * gsl_pow_2(rHalo);
+	double tempHalo = 4.0 * M_PI * densityHalo;
 	//Halo & Bulge
-	double temp = G * (mMassBlackHole / r3 + G * mMassBulge / (r * gsl_pow_2(aBulge + r)) - tempHalo / (r2 * (1 + r / rHalo)) + tempHalo * log(1 + r / rHalo)/ r3)*kmInpc;
+	double temp = -G * (mMassBlackHole / r3 + mMassBulge / (r * gsl_pow_2(aBulge + r)) - tempHalo * gsl_pow_2(rHalo) / (r2 * (1 + r / rHalo)) + tempHalo * gsl_pow_3(rHalo) * log(1 + r / rHalo)/ r3)*kmInpc;
 	star->acceleration.x += temp * star->position.x;
 	star->acceleration.y += temp * star->position.y;
 	star->acceleration.z += temp * star->position.z;
 	//Disk
 	double x2y2 = gsl_pow_2(star->position.x) + gsl_pow_2(star->position.y);
 	double sqrtb2z2 = gsl_hypot(bDisk, star->position.z);
-	temp = G * mMassDisk / pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)*kmInpc;
+	temp = -G * mMassDisk / pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)*kmInpc;
 	star->acceleration.x += temp * star->position.x;
 	star->acceleration.y += temp * star->position.y;
-	star->acceleration.z += G * mMassDisk * star->position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * kmInpc;
+	star->acceleration.z += -G * mMassDisk * star->position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * kmInpc;
 }

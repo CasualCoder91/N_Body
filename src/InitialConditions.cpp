@@ -91,6 +91,8 @@ double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D pos
 			double temp = Potential::densityDisk(x, y, z);
 
 			if (accept < temp) {
+				if(sqrt(pow(x,2) + pow(y,2)) < 2000)
+					continue;
 				star->position = Vec3D(x, y, z);
 				break;
 			}
@@ -104,14 +106,15 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 	double R = position.length();
 	std::normal_distribution<> zVelocityDistribution{ 0,Potential::verticalVelocityDispersion(R) };
 	double vz = zVelocityDistribution(gen);
+	double test = Potential::radialVelocityDispersion(R);
 	std::normal_distribution<> radialVelocityDistribution{ 0,Potential::radialVelocityDispersion(R) };
 	double vR = radialVelocityDistribution(gen);
 	std::normal_distribution<> azimuthalVelocityDistribution{ Potential::azimuthalStreamingVelocity(position),Potential::azimuthalVelocityDispersion(R) };
 	double va = azimuthalVelocityDistribution(gen);
 
-	double theta = atan(position.y / position.x);
+	double theta = atan2(position.y , position.x);
 
-	velocity += Vec3D(vR * cos(theta) - R * va * sin(theta), vR * sin(theta) + R * va * cos(theta), vz);
+	velocity += Vec3D(vR * cos(theta) + va * cos(theta+M_PI_2), vR * sin(theta) + va * sin(theta + M_PI_2), vz);
 }
 
 double InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){

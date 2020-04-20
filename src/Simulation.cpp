@@ -25,20 +25,27 @@ std::string Simulation::print(){
 }
 
 void Simulation::run(){
-	int nextStarIndex = database->selectLastID("star") + 1;
 	//Init stars
 	InitialConditions initialConditions = InitialConditions(this);
-	std::vector<Star*> stars = initialConditions.initStars(nextStarIndex);
-	double totalMass = initialConditions.initialMassSalpeter(stars,0.08,100);
-	initialConditions.plummerSphere(stars, 1, totalMass);
+
+	//Init clusterStars
+	int nextStarIndex = database->selectLastID("star") + 1;
+	std::vector<Star*> clusterStars = initialConditions.initStars(nextStarIndex);
+	double totalMass = initialConditions.initialMassSalpeter(clusterStars,0.08,100);
+	initialConditions.plummerSphere(clusterStars, 1, totalMass);
 	Vec3D offset = Vec3D(5000, 5000, 0);
-	initialConditions.offsetCluster(stars, offset);
+	initialConditions.offsetCluster(clusterStars, offset);
 	Vec3D clusterVelocity = Vec3D();
 	initialConditions.sampleDiskVelocity(clusterVelocity, offset);
-	for (Star* star : stars) {
+	for (Star* star : clusterStars) {
 		star->velocity += clusterVelocity;
 	}
-	database->insertStars(this->getID(), stars, 0);
+	database->insertStars(this->getID(), clusterStars, 0);
+
+	//Init otherStars
+	std::vector<Star*> otherStars = initialConditions.massDisk(20); //test
+	initialConditions.sampleDiskPositions(otherStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
+	initialConditions.sampleDiskVelocities(otherStars);
 
 	//Integrate
 	Integrator integrator = Integrator(this->getdt());
@@ -46,26 +53,42 @@ void Simulation::run(){
 	Vec3D tlf = Vec3D(), brb = Vec3D();
 	for (int i = 1; i < this->getNTimesteps(); i++) {
 
-		Node::findCorners(tlf, brb, stars);
-		Node root = Node(tlf, brb, nullptr, this); // Cleanup/Destructor of tree needed in every timestep
-		for (Star* star : stars) {
-			root.insert(star);
-			Potential::applyForce(star);
+		if (clusterStars.size() > 0) {
+			Node::findCorners(tlf, brb, clusterStars);
+			Node root = Node(tlf, brb, nullptr, this); // Cleanup/Destructor of tree needed in every timestep
+			for (Star* star : clusterStars) {
+				root.insert(star);
+			}
+			root.calculateMassDistribution();
+
+			//Force clusterStars
+			for (int i = 0; i < clusterStars.size(); ++i) {
+				clusterStars.at(i)->acceleration.reset();
+				Potential::applyForce(clusterStars.at(i));
+				root.applyForce(clusterStars.at(i)->position, &clusterStars.at(i)->acceleration);
+			}
 		}
 
-		root.calculateMassDistribution();
+		//Force otherStars
+		for (int i = 0; i < otherStars.size(); ++i) {
+			otherStars.at(i)->acceleration.reset();
+			Potential::applyForce(otherStars.at(i));
+		}
 
-		integrator.euler(stars, &root); // includes force from stars within Cluster
+		if(clusterStars.size()>0)
+			integrator.euler(clusterStars);
+		integrator.euler(otherStars);
 
 		if (i % this->getOutputTimestep() == 0) {
-			//InOut::writeWithLabel(stars, "./Output/stars" + std::to_string(i) + ".dat");
-			//InOut::writeAll(stars, "./Output/stars_all" + std::to_string(i) + ".dat");
-			database->timestep(i, stars);
+			InOut::writeWithLabel(otherStars, "Stars/3/otherStars" + std::to_string(i) + ".dat");
+			//InOut::writeAll(clusterStars, "./Output/stars_all" + std::to_string(i) + ".dat");
+			//database->timestep(i, clusterStars);
+			//std::cout << i << std::endl;
 		}
 	}
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
-	//InOut::write(stars,"stars.dat");
+	//InOut::write(clusterStars,"stars.dat");
 	//InOut::write(&root);
 	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
 	std::cout << "done" << std::endl;

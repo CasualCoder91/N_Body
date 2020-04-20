@@ -16,14 +16,13 @@ Integrator::Integrator(double dt){
 	this->K[3] = new Vec3D();
 }
 
-void Integrator::euler(std::vector<Star*> stars, Node* root, double dt){
+void Integrator::euler(std::vector<Star*> stars, double dt){
 	if (dt != 0) {
 		this->dt = dt;
 	}
 	//#pragma omp parallel for //1:10
 	for (int i = 0; i < stars.size(); ++i){
-		stars.at(i)->acceleration.reset();
-		root->applyForce(stars.at(i)->position, &stars.at(i)->acceleration);
+		//root->applyForce(stars.at(i)->position, &stars.at(i)->acceleration);
 		stars.at(i)->velocity += (stars.at(i)->acceleration * this->dt * this->dayInSec);
 		stars.at(i)->position += (stars.at(i)->velocity * this->dt*this->kmInpc* this->dayInSec);
 	}

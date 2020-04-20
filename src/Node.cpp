@@ -45,6 +45,8 @@ Node::~Node(){
 }
 
 void Node::findCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>& stars){
+	if (stars.size() == 0)
+		return;
 	tlf = stars.at(0)->position;
 	brb = stars.at(0)->position;
 	for (Star* star : stars) {

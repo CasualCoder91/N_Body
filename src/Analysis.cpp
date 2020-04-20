@@ -60,7 +60,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 				stars.at(i)->acceleration.reset(); // reset acceleration to 0,0,0
 				root.applyForce(stars.at(i));
 			}
-			integrator.euler(stars,&root);
+			integrator.euler(stars);
 		}
 		endTime = std::chrono::steady_clock::now();
 		time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
