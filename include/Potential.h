@@ -30,7 +30,7 @@ private:
 	static const double aBulge; // SolarMassUnit
 	static const double rHalo; // kpc
 	static const double densityHalo; // SolarMassUnit*kpc^-3
-	static const double G; // 
+	static const double G; // parsec*solarMassUnit^-1*km^2/s^2
 	/** @brief 1 km divided by 1 pc */
 	static const double kmInpc;
 
@@ -38,7 +38,7 @@ private:
 	static double closestToZero(double a, double b);
 public:
 
-	static double circularVelocity(Vec3D* position);
+	static double circularVelocity(Vec3D* position); // return in km/s
 	static double circularVelocityDisk(Vec3D* position);
 	static double circularVelocityBlackHole(Vec3D* position);
 	static double circularVelocityBulge(Vec3D* position);
@@ -49,8 +49,8 @@ public:
 	/**
 	@brief Caluclate the surface mass density of the disk at a given radial distance R.
 	The GSL function gsl_integration_qagiu is used.
-	@param R The radius at which the surface mass density is calculated.
-	@return The calculated surface mass density.
+	@param R The radius [pc] at which the surface mass density is calculated.
+	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
 	static double surfaceDensityDisk(double R);
 	static Vec3D sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
@@ -60,8 +60,8 @@ public:
 	/**
 	@brief Caluclate the surface mass density of the bulge at a given radial distance R.
 	The GSL function gsl_integration_qagiu is used.
-	@param R The radius at which the surface mass density is calculated.
-	@return The calculated surface mass density.
+	@param R The radius [pc] at which the surface mass density is calculated.
+	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
 	static double surfaceDensityBulge(double R);
 	static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
@@ -72,12 +72,12 @@ public:
 	static double massBulge(Vec3D position, Vec3D volumeElement);
 
 	//all Potentials
-	static double angularVelocity(double R);
-	static double surfaceDensity(double R);
-	static double epicyclicFrequency(double R);
-	static double radialVelocityDispersion(double R);
-	static double verticalVelocityDispersion(double R);
-	static double azimuthalVelocityDispersion(double R);
+	static double angularVelocity(double R); // return in s^-1
+	static double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, tested
+	static double epicyclicFrequency(double R); // in s^-1
+	static double radialVelocityDispersion(double R); // return in km/s
+	static double verticalVelocityDispersion(double R); // return in km/s
+	static double azimuthalVelocityDispersion(double R); // return in km/s
 	static double azimuthalStreamingVelocity(Vec3D position);
 
 	static void applyForce(Star* star);

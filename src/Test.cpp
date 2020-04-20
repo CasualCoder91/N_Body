@@ -93,7 +93,7 @@ void Test::potentialSurfaceDensityBulge(){
 
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
-	for (double R = 0.1; R < 30; R = R + 0.1) {
+	for (double R = 100; R < 30000; R = R + 100) {
 		radius.push_back(R);
 		surfaceDensity.push_back(Potential::surfaceDensityBulge(R));
 	}
@@ -104,7 +104,7 @@ void Test::potentialSurfaceDensityDisk(){
 
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
-	for (double R = 0.1; R < 30; R = R + 0.1) {
+	for (double R = 100; R < 30000; R = R + 100) {
 		radius.push_back(R);
 		surfaceDensity.push_back(Potential::surfaceDensityDisk(R));
 	}
