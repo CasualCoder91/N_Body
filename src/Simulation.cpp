@@ -33,7 +33,7 @@ void Simulation::run(){
 	std::vector<Star*> clusterStars = initialConditions.initStars(nextStarIndex);
 	double totalMass = initialConditions.initialMassSalpeter(clusterStars,0.08,100);
 	initialConditions.plummerSphere(clusterStars, 1, totalMass);
-	Vec3D offset = Vec3D(5000, 5000, 0);
+	Vec3D offset = Vec3D(40, 40, 0);
 	initialConditions.offsetCluster(clusterStars, offset);
 	Vec3D clusterVelocity = Vec3D();
 	initialConditions.sampleDiskVelocity(clusterVelocity, offset);
@@ -42,16 +42,26 @@ void Simulation::run(){
 	}
 	database->insertStars(this->getID(), clusterStars, 0);
 
+	std::vector<Star*> otherStars = initialConditions.massDisk(0); //test
 	//Init otherStars
-	std::vector<Star*> otherStars = initialConditions.massDisk(20); //test
-	initialConditions.sampleDiskPositions(otherStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
-	initialConditions.sampleDiskVelocities(otherStars);
+	if (otherStars.size() > 0) {
+		initialConditions.sampleDiskPositions(otherStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
+		initialConditions.sampleDiskVelocities(otherStars);
+	}
 
 	//Integrate
 	Integrator integrator = Integrator(this->getdt());
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	Vec3D tlf = Vec3D(), brb = Vec3D();
-	for (int i = 1; i < this->getNTimesteps(); i++) {
+	for (int i = 0; i < this->getNTimesteps(); i++) {
+
+		if (i % this->getOutputTimestep() == 0) {
+			//InOut::writeWithLabel(otherStars, "Stars/3/otherStars" + std::to_string(i) + ".dat");
+			InOut::writeWithLabel(clusterStars, "Stars/4/clusterStars" + std::to_string(i) + ".dat");
+			//InOut::writeAll(clusterStars, "./Output/stars_all" + std::to_string(i) + ".dat");
+			//database->timestep(i, clusterStars);
+			//std::cout << i << std::endl;
+		}
 
 		if (clusterStars.size() > 0) {
 			Node::findCorners(tlf, brb, clusterStars);
@@ -70,21 +80,19 @@ void Simulation::run(){
 		}
 
 		//Force otherStars
-		for (int i = 0; i < otherStars.size(); ++i) {
-			otherStars.at(i)->acceleration.reset();
-			Potential::applyForce(otherStars.at(i));
+		if (otherStars.size() > 0) {
+			for (int i = 0; i < otherStars.size(); ++i) {
+				otherStars.at(i)->acceleration.reset();
+				Potential::applyForce(otherStars.at(i));
+			}
 		}
 
 		if(clusterStars.size()>0)
 			integrator.euler(clusterStars);
-		integrator.euler(otherStars);
-
-		if (i % this->getOutputTimestep() == 0) {
-			InOut::writeWithLabel(otherStars, "Stars/3/otherStars" + std::to_string(i) + ".dat");
-			//InOut::writeAll(clusterStars, "./Output/stars_all" + std::to_string(i) + ".dat");
-			//database->timestep(i, clusterStars);
-			//std::cout << i << std::endl;
+		if (otherStars.size() > 0) {
+			integrator.euler(otherStars);
 		}
+
 	}
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);

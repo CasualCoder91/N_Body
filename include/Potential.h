@@ -34,6 +34,8 @@ private:
 	/** @brief 1 km divided by 1 pc */
 	static const double kmInpc;
 
+	static const double velocityDispersionScaleLength;
+
 private:
 	static double closestToZero(double a, double b);
 public:
@@ -74,10 +76,10 @@ public:
 	//all Potentials
 	static double angularVelocity(double R); // return in s^-1
 	static double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, tested
-	static double epicyclicFrequency(double R); // in s^-1
-	static double radialVelocityDispersion(double R); // return in km/s
+	static double epicyclicFrequency(double R, double z); // in s^-1
+	static double radialVelocityDispersion(double R, double z); // return in km/s
 	static double verticalVelocityDispersion(double R); // return in km/s
-	static double azimuthalVelocityDispersion(double R); // return in km/s
+	static double azimuthalVelocityDispersion(double R, double z); // return in km/s
 	static double azimuthalStreamingVelocity(Vec3D position);
 
 	static void applyForce(Star* star);

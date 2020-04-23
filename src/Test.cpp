@@ -2,14 +2,21 @@
 
 void Test::samplePotentialOutput(int nStars) {
 
-	std::vector<Vec3D> positionsDisk;
-	std::vector<Vec3D> positionsBulge;
-	for (int i = 0; i < nStars; i++) {
-		positionsDisk.push_back(Potential::sampleDisk(-40, 40, -40, 40, -20, 20));
-		positionsBulge.push_back(Potential::sampleBuldge(-6, 6, -6, 6, -6, 6));
-	}
-	InOut::write(positionsDisk, "potentialDiskPositionsSample"+std::to_string(nStars)+".dat");
-	InOut::write(positionsBulge, "potentialBulgePositionsSample" + std::to_string(nStars) + ".dat");
+	std::vector<Star*> diskStars = InitialConditions::initStars(0, nStars);
+	std::vector<Star*> bulgeStars = InitialConditions::initStars(0, nStars);
+
+	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
+	InitialConditions::sampleDiskPositions(diskStars, Vec3D(-40000, -40000, -20000), Vec3D(80000, 80000, 40000));
+	InitialConditions::sampleBulgePositions(bulgeStars, Vec3D(-6000, -6000, -6000), Vec3D(12000, 12000, 12000));
+
+	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
+	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
+	//positionsDisk.push_back(Potential::sampleDisk(-40, 40, -40, 40, -20, 20));
+	//positionsBulge.push_back(Potential::sampleBuldge(-6, 6, -6, 6, -6, 6));
+	InOut::write(diskStars, "potentialDiskPositionsSample"+std::to_string(nStars)+".dat");
+	InOut::write(bulgeStars, "potentialBulgePositionsSample" + std::to_string(nStars) + ".dat");
 }
 
 void Test::potentialCircularVelocityOutput() {
@@ -151,4 +158,32 @@ void Test::massDistributionBulgeOutput(double z){
 	}
 
 	InOut::write(Output, "massDistributionBulge_z" + std::to_string((int)z) + ".dat");
+}
+
+void Test::massDistributionTimer(){
+	double totalMass = 0;
+	for (double x = 0; x < 10000; x = x + 100) {
+		Vec3D corner = Vec3D(x, 0, -50);
+		Vec3D volumeElement = Vec3D(10, 10, 10);
+		Vec3D center = Vec3D::center(corner, corner+volumeElement);
+
+		std::cout << "Volume Element at (center): " << center.length() * 1e-3 << "kpc" << std::endl;
+		std::cout << "Volume Element dx:" << volumeElement.x * 1e-3 << "kpc" << std::endl;
+		//std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+		double starMass = Potential::massDisk(corner, volumeElement)+Potential::massBulge(corner, volumeElement);
+		totalMass += starMass;
+
+		std::cout << "starMass: " << starMass << std::endl;
+
+		//std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+		//std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
+		//std::cout << "Mass inside Volume: " << starMass << std::endl;
+		//std::cout << "Time needed for calucation: " << time_span.count() << "seconds" << std::endl;
+		//startTime = std::chrono::steady_clock::now();
+		//std::vector<Star*> stars = InitialConditions::massDisk(1e4);
+		//endTime = std::chrono::steady_clock::now();
+		//time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
+		//std::cout << "Sample mass Disk - Time needed for calucation: " << time_span.count() << "seconds" << std::endl;
+	}
+	std::cout << "totalMass: " << totalMass << std::endl;
 }

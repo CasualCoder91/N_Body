@@ -33,6 +33,15 @@ std::vector<Star*> InitialConditions::initStars(int firstID){
 	return stars;
 }
 
+std::vector<Star*> InitialConditions::initStars(int firstID, int nStars){
+	std::vector<Star*> stars = {};
+	for (int i = 0; i < nStars; i++) {
+		Star* star = new Star(firstID + i);
+		stars.push_back(star);
+	}
+	return stars;
+}
+
 double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha){
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
@@ -103,14 +112,26 @@ double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D pos
 
 void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 
-	double R = position.length();
+	double R = gsl_hypot(position.x,position.y);
+
 	std::normal_distribution<> zVelocityDistribution{ 0,Potential::verticalVelocityDispersion(R) };
 	double vz = zVelocityDistribution(gen);
-	double test = Potential::radialVelocityDispersion(R);
-	std::normal_distribution<> radialVelocityDistribution{ 0,Potential::radialVelocityDispersion(R) };
-	double vR = radialVelocityDistribution(gen);
-	std::normal_distribution<> azimuthalVelocityDistribution{ Potential::azimuthalStreamingVelocity(position),Potential::azimuthalVelocityDispersion(R) };
-	double va = azimuthalVelocityDistribution(gen);
+
+	double rDispersion = Potential::radialVelocityDispersion(R,position.z);
+	double vR = 0;
+	if (rDispersion > 0){
+		std::normal_distribution<> radialVelocityDistribution{ 0,rDispersion };
+		vR = radialVelocityDistribution(gen);
+	}
+	double aDispersion = Potential::azimuthalVelocityDispersion(R, position.z);
+	double va = 0;
+	if (aDispersion > 0) {
+		std::normal_distribution<> azimuthalVelocityDistribution{ Potential::azimuthalStreamingVelocity(position),aDispersion };
+		va = azimuthalVelocityDistribution(gen);
+	}
+	else {
+		va = Potential::azimuthalStreamingVelocity(position);
+	}
 
 	double theta = atan2(position.y , position.x);
 
@@ -171,6 +192,8 @@ double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D p
 
 std::vector<Star*> InitialConditions::massDisk(double totalMass){
 	std::vector<Star*> stars;
+	if (totalMass <= 0)
+		return stars;
 	double pickedTotalMass = 0;
 	static std::random_device rd;
 	static std::mt19937 gen(rd());
@@ -212,6 +235,7 @@ std::vector<Star*> InitialConditions::massDisk(double totalMass){
 				if (disAccept(gen)< temp) {
 					stars.push_back(new Star(0, m)); // todo: which id?!
 					pickedTotalMass += m;
+					std::cout << "pickedTotalMass: " << pickedTotalMass << std::endl;
 					break;
 				}
 			}

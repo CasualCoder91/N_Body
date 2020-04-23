@@ -41,6 +41,8 @@ int main() {
 	//Test::potentialSurfaceDensityBulge();
 	//Test::potentialSurfaceDensityDisk();
 
+	//Test::massDistributionTimer();
+
 	//return 0;
 
 	Database db = Database();

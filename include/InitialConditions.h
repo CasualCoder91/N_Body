@@ -30,6 +30,9 @@ public:
 	@param firstID The ID given to the first star in the vector. Subsequent stars get higher IDs
 	*/
 	std::vector<Star*> initStars(int firstID);
+
+	static std::vector<Star*> initStars(int firstID, int nStars);
+
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
 	@param [in,out] stars The mass of these stars will be modified.
@@ -51,7 +54,7 @@ public:
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	*/
-	std::vector<Star*> massDisk(double totalMass);
+	static std::vector<Star*> massDisk(double totalMass);
 	/**
 	@brief Creates stars belonging to the bulge/spheroid with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
@@ -69,7 +72,7 @@ public:
 	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleBulgePositions
 	*/
-	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+	static double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 
 	void sampleDiskVelocity(Vec3D& velocity, Vec3D& position);
 
@@ -82,7 +85,7 @@ public:
 	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleDiskPositions
 	*/
-	double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+	static double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 
 	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
 
@@ -92,6 +95,6 @@ public:
 private:
 	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass); // in km*s^-1
 	void plummerVelocity(Star* star, double structuralLength, double distance, double totalMass);
-	double closestToZero(double a, double b);
+	static double closestToZero(double a, double b);
 };
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 #include "Potential.h"
 #include "InOut.h"
 #include "Parameters.h"
@@ -18,4 +20,10 @@ public:
 	//Potential
 	static void massDistributionDiskOutput(double z = 1); // [z] = [kpc]
 	static void massDistributionBulgeOutput(double z = 1); // [z] = [kpc]
+
+
+	//Timer
+	static void massDistributionTimer();
+
+
 };
