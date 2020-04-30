@@ -187,3 +187,76 @@ void Test::massDistributionTimer(){
 	}
 	std::cout << "totalMass: " << totalMass << std::endl;
 }
+
+void Test::velocityDistributionTestBulge(){
+	for (double r = 100; r < 6000; r += 100) {
+		std::cout << "r: " << r << " | velocityDistribution: " << Potential::velocityDistributionBulge(r) << std::endl;
+	}
+}
+
+void Test::velocityBulgeTest(){
+	//Parameters parameter = Parameters();
+	//InitialConditions initialConditions = InitialConditions(&parameter);
+	//std::vector<double> longitude;
+	//std::vector<double> dispersion;
+	//for (double l = -10; l < 10; l += 0.5) {
+	//	double b = 0;
+	//	std::vector<Vec3D*> velocities;
+	//	//for (double r = 5000; r < 8000; r += 1000) {
+	//	double r = 8490;
+	//		double x = (8500-r * cos(b * 0.0174533) * cos(l * 0.0174533));
+	//		double y = r * cos(b * 0.0174533) * sin(l * 0.0174533);
+	//		double z = r * sin(b * 0.0174533); // b = -4°
+	//		Vec3D position = Vec3D(x, y, z);
+	//		std::vector<Star*> bulgeStars = InitialConditions::initStars(0, 1000);
+	//		InitialConditions::sampleBulgePositions(bulgeStars, position, Vec3D(1, 1, 1));
+
+
+	//		for (Star* star : bulgeStars) {
+	//			initialConditions.sampleBulgeVelocity(star->velocity, star->position);
+	//			velocities.push_back(&star->velocity);
+	//		}
+	//	//}
+	//	std::cout << "position:" << position.print() << std::endl;
+	//	std::cout << "r:" << position.length() << std::endl;
+	//	std::cout << "l: " << l << std::endl;
+	//	longitude.push_back(l);
+	//	dispersion.push_back(Analysis::average(velocities));
+	//	std::cout << "Average velocity: " << Analysis::average(velocities);
+	//	std::cout << "Velocity dispersion: " << Analysis::dispersion(velocities) << std::endl;
+	//}
+	//InOut::write(longitude, dispersion, "bulgeDispersion.dat");
+	std::vector<double> longitude;
+	std::vector<double> dispersion;
+	for (double l = -10; l < 10; l += 0.2) {
+		longitude.push_back(l);
+		double b = -4;
+		std::vector<Vec3D*> velocities;
+		double distance = 8490;
+		double x = (8500- distance * cos(b * 0.0174533) * cos(l * 0.0174533));
+		double y = distance * cos(b * 0.0174533) * sin(l * 0.0174533);
+		double z = distance * sin(b * 0.0174533); // b = -4°
+		double r = gsl_hypot3(x, y, z);
+		double R = gsl_hypot(x, y);
+		double disp = Potential::velocityDistributionBulge(r);
+		std::cout << "r: " << r << " | vel dist: " << Potential::velocityDistributionBulge(r) << std::endl;
+		dispersion.push_back(disp);
+		//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
+	}
+	InOut::write(longitude, dispersion, "bulgeDispersion.dat");
+
+}
+
+void Test::velocityBulgeRTest() {
+	std::vector<double> radius;
+	std::vector<double> dispersion;
+	for (double r = 10; r < 1000; r += 1) {
+		radius.push_back(r);
+		double disp = Potential::velocityDistributionBulge(r);
+		std::cout << "r: " << r << " | vel dist: " << Potential::velocityDistributionBulge(r) << std::endl;
+		dispersion.push_back(disp);
+		//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
+	}
+	InOut::write(radius, dispersion, "bulgeDispersion.dat");
+
+}

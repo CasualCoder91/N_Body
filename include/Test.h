@@ -1,11 +1,13 @@
 #pragma once
 
 #include <chrono>
+#include <math.h>
 
 #include "Potential.h"
 #include "InOut.h"
 #include "Parameters.h"
 #include "InitialConditions.h"
+#include "Analysis.h"
 
 class Test {
 public:
@@ -25,5 +27,9 @@ public:
 	//Timer
 	static void massDistributionTimer();
 
+	static void velocityDistributionTestBulge();
+
+	static void velocityBulgeTest();
+	static void Test::velocityBulgeRTest();
 
 };

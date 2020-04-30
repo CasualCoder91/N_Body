@@ -91,6 +91,17 @@ double Analysis::average(std::vector<Vec3D*>& vectors){
 	return average/vectors.size();
 }
 
+double Analysis::dispersion(std::vector<Vec3D*>& vectors){
+	double n = vectors.size();
+	double average = Analysis::average(vectors);
+	double dispersion = 0;
+
+	for (Vec3D* vector : vectors) {
+		dispersion += abs(vector->length()-average);
+	}
+	return dispersion / n;
+}
+
 void Analysis::write(){
 	if (bEnergy) {
 		InOut::write(time, totE, "TotalEnergy.dat");

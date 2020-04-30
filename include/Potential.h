@@ -27,7 +27,9 @@ private:
 	static const double aDisk; //kpc
 	static const double bDisk; //kpc
 	static const double mMassBulge; // SolarMassUnit
+	static const double mMassBulge2; // SolarMassUnit
 	static const double aBulge; // SolarMassUnit
+	static const double aBulge2; // SolarMassUnit
 	static const double rHalo; // kpc
 	static const double densityHalo; // SolarMassUnit*kpc^-3
 	static const double G; // parsec*solarMassUnit^-1*km^2/s^2
@@ -35,11 +37,15 @@ private:
 	static const double kmInpc;
 
 	static const double velocityDispersionScaleLength;
+public:
+	static const double characteristicVelocityBulge; // km/s
 
 private:
 	static double closestToZero(double a, double b);
+	//averaged Disk potential at radius r
+	
 public:
-
+	static double sphericalAveragedDisk(double r);
 	static double circularVelocity(Vec3D* position); // return in km/s
 	static double circularVelocityDisk(Vec3D* position);
 	static double circularVelocityBlackHole(Vec3D* position);
@@ -66,7 +72,7 @@ public:
 	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
 	static double surfaceDensityBulge(double R);
-	static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
+	//static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 	//Mass of Disk and Bulge inside volume
 	static double frequencyDistribution(Vec3D position, Vec3D volumeElement);
@@ -82,6 +88,16 @@ public:
 	static double azimuthalVelocityDispersion(double R, double z); // return in km/s
 	static double azimuthalStreamingVelocity(Vec3D position);
 
+	//todo: test this, check Dimensions!
+	static double velocityDistributionBulge(double r); //inacurate
+	static double radialVelocityDispersionBulge(double R, double z); // return in km/s
+	//static double infiniteDistributionFunctionBulge(double q); //q = sqrt(-E*characteristicVelocity^-2)
+	//static double distributionFunctionBulge(double e); // e = relative Energy = -E
+	//static double particleEnergy(Star* star); // Energy per unit mass (not relative energy)
+	//static double particleEnergy(Vec3D& position, Vec3D& velocity);
+	//static double particleEnergy(Vec3D& position, double velocity);
 	static void applyForce(Star* star);
+	//static double potentialEnergy(Vec3D& position);
+	//static double potentialEnergy(double R, double z);
 
 };

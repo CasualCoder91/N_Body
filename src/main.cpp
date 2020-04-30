@@ -41,9 +41,9 @@ int main() {
 	//Test::potentialSurfaceDensityBulge();
 	//Test::potentialSurfaceDensityDisk();
 
-	//Test::massDistributionTimer();
+	Test::velocityBulgeTest();
 
-	//return 0;
+	return 0;
 
 	Database db = Database();
 	db.open();

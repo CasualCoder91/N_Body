@@ -60,9 +60,6 @@ public:
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	@see initialMassBulge
 	*/
-
-	//std::vector<Star*> massBulge(double totalMass);
-
 	std::vector<Star*> initialMassBulge(double totalMass);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc.
@@ -86,6 +83,8 @@ public:
 	@see sampleDiskPositions
 	*/
 	static double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+
+	void sampleBulgeVelocity(Vec3D& velocity, Vec3D& position);
 
 	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
 

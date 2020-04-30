@@ -60,7 +60,9 @@ public:
 
     bool getbAverage2DVelocity();
 
-    double average(std::vector<Vec3D*>& vectors);
+    static double average(std::vector<Vec3D*>& vectors);
+
+    static double dispersion(std::vector<Vec3D*>& vectors);
 
     void write();
 };
