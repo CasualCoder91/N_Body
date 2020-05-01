@@ -42,7 +42,7 @@ void Simulation::run(){
 	}
 	database->insertStars(this->getID(), clusterStars, 0);
 
-	std::vector<Star*> otherStars = initialConditions.massDisk(0); //test
+	std::vector<Star*> otherStars = initialConditions.massDisk(30); //test
 	//Init otherStars
 	if (otherStars.size() > 0) {
 		initialConditions.sampleDiskPositions(otherStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
@@ -56,8 +56,8 @@ void Simulation::run(){
 	for (int i = 0; i < this->getNTimesteps(); i++) {
 
 		if (i % this->getOutputTimestep() == 0) {
-			//InOut::writeWithLabel(otherStars, "Stars/3/otherStars" + std::to_string(i) + ".dat");
-			InOut::writeWithLabel(clusterStars, "Stars/4/clusterStars" + std::to_string(i) + ".dat");
+			InOut::writeWithLabel(otherStars, "Stars/5/otherStars" + std::to_string(i) + ".dat");
+			//InOut::writeWithLabel(clusterStars, "Stars/4/clusterStars" + std::to_string(i) + ".dat");
 			//InOut::writeAll(clusterStars, "./Output/stars_all" + std::to_string(i) + ".dat");
 			//database->timestep(i, clusterStars);
 			//std::cout << i << std::endl;

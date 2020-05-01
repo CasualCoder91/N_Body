@@ -117,7 +117,7 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 	std::normal_distribution<> zVelocityDistribution{ 0,Potential::verticalVelocityDispersion(R) };
 	double vz = zVelocityDistribution(gen);
 
-	double rDispersion = Potential::radialVelocityDispersion(R,position.z);
+	double rDispersion = Potential::radialVelocityDispersionDisk(R,position.z);
 	double vR = 0;
 	if (rDispersion > 0){
 		std::normal_distribution<> radialVelocityDistribution{ 0,rDispersion };
@@ -143,19 +143,6 @@ double InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){
 	//std::mt19937 gen{ rd() };
 	for (Star* star : stars) {
 		sampleDiskVelocity(star->velocity, star->position);
-
-		//double R = star->position.length();
-		//std::normal_distribution<> zVelocityDistribution{ 0,Potential::verticalVelocityDispersion(R)};
-		//double vz = zVelocityDistribution(gen);
-		//std::normal_distribution<> radialVelocityDistribution{ 0,Potential::radialVelocityDispersion(R)};
-		//double vR = radialVelocityDistribution(gen);
-		//std::normal_distribution<> azimuthalVelocityDistribution{ Potential::azimuthalStreamingVelocity(star->position),Potential::azimuthalVelocityDispersion(R) };
-		//double va = azimuthalVelocityDistribution(gen);
-
-		//double theta = atan(star->position.y / star->position.x);
-
-		//star->velocity += Vec3D(vR * cos(theta)-R*va*sin(theta), vR*sin(theta)+R*va*cos(theta), vz);
-
 	}
 	return 0.0;
 }

@@ -28,7 +28,7 @@ void Test::potentialCircularVelocityOutput() {
 	std::vector<double> buldge;
 	std::vector<double> halo;
 
-	for (double i = 0.1; i < 30; i += 0.1) {
+	for (double i = 10; i < 30000; i += 100) {
 		positions.push_back(i);
 		Vec3D position = Vec3D(i, 0, 0);
 		velocities.push_back(Potential::circularVelocity(&position));
@@ -38,11 +38,11 @@ void Test::potentialCircularVelocityOutput() {
 		halo.push_back(Potential::circularVelocityHalo(&position));
 	}
 
-	InOut::write(positions, velocities, "potentialTest.dat");
-	InOut::write(positions, disk, "potentialTestDisk.dat");
-	InOut::write(positions, blackHole, "potentialTestBlackHole.dat");
-	InOut::write(positions, buldge, "potentialTestBuldge.dat");
-	InOut::write(positions, halo, "potentialTestHalo.dat");
+	InOut::write(positions, velocities, "potentialVelocity.dat");
+	InOut::write(positions, disk, "potentialVelocityDisk.dat");
+	InOut::write(positions, blackHole, "potentialVelocityBlackHole.dat");
+	InOut::write(positions, buldge, "potentialVelocityBuldge.dat");
+	InOut::write(positions, halo, "potentialVelocityHalo.dat");
 }
 
 void Test::testfrequencyDistribution() {
@@ -50,11 +50,11 @@ void Test::testfrequencyDistribution() {
 	std::vector<Vec3D> Output;
 
 	double z = 1; //kpc
-
-	for (double x = -30; x < 30; x += 0.5) {
+	double delta = 500;
+	for (double x = -30000; x < 30000; x += delta) {
 		std::cout << "x=" << x << std::endl;
-		for (double y = -30; y < 30; y += 0.5) {
-			double starMass = Potential::frequencyDistribution(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
+		for (double y = -30000; y < 30000; y += delta) {
+			double starMass = Potential::frequencyDistribution(Vec3D(x, y, z), Vec3D(delta, delta, delta));
 			Output.push_back(Vec3D(x, y, starMass));
 		}
 	}
@@ -239,7 +239,7 @@ void Test::velocityBulgeTest(){
 		double r = gsl_hypot3(x, y, z);
 		double R = gsl_hypot(x, y);
 		double disp = Potential::velocityDistributionBulge(r);
-		std::cout << "r: " << r << " | vel dist: " << Potential::velocityDistributionBulge(r) << std::endl;
+		std::cout << "r: " << r << " | vel dist: " << disp << std::endl;
 		dispersion.push_back(disp);
 		//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
 	}

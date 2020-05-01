@@ -18,8 +18,8 @@ plt.hist(dataDisk[:,2]+dataBulge[:,2], bins=200)
 
 
 ax = fig.add_subplot(2,2,(3,4), projection='3d')
-ax.scatter(dataDisk[:,0], dataDisk[:,1], dataDisk[:,2], s=5,c='red')
-ax.scatter(dataBulge[:,0], dataBulge[:,1], dataBulge[:,2], s=5,c='blue')
+ax.scatter(dataDisk[:,0]*0.001, dataDisk[:,1]*0.001, dataDisk[:,2]*0.001, s=5,c='red')
+ax.scatter(dataBulge[:,0]*0.001, dataBulge[:,1]*0.001, dataBulge[:,2]*0.001, s=5,c='blue')
 ax.view_init(elev=5., azim=180)
 ax.dist = 8
 ax.set_xlim([-40,40])

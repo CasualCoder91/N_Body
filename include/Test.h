@@ -12,8 +12,8 @@
 class Test {
 public:
 	static void samplePotentialOutput(int nStars = 5000);
-	void potentialCircularVelocityOutput();
-	void testfrequencyDistribution();
+	static void potentialCircularVelocityOutput();
+	static void testfrequencyDistribution();
 	void initialConditionsMassSalpeterOutput(int nStars = 10000);
 	static void initialConditionsMassBulgeOutput(double totalMass);
 	static void potentialSurfaceDensityBulge();
