@@ -31,7 +31,7 @@ private:
 	static const double aBulge; // SolarMassUnit
 	//static const double aBulge2; // SolarMassUnit
 	static const double rHalo; // kpc
-	static const double densityHalo; // SolarMassUnit*kpc^-3
+	//static const double densityHalo; // SolarMassUnit*kpc^-3
 	static const double mMassHalo; // SolarMassUnit
 	static const double G; // parsec*solarMassUnit^-1*km^2/s^2
 	/** @brief 1 km divided by 1 pc */
@@ -91,8 +91,8 @@ public:
 	static double azimuthalStreamingVelocity(Vec3D position);
 
 	//todo: test this, check Dimensions!
-	static double velocityDistributionBulge(double r); //inacurate
-	static double radialVelocityDispersionBulge(double R, double z); // return in km/s
+	static double velocityDistributionBulge(double r); // working with new potential?
+	//static double radialVelocityDispersionBulge(double R, double z); // return in km/s
 	//static double infiniteDistributionFunctionBulge(double q); //q = sqrt(-E*characteristicVelocity^-2)
 	//static double distributionFunctionBulge(double e); // e = relative Energy = -E
 	//static double particleEnergy(Star* star); // Energy per unit mass (not relative energy)

@@ -177,36 +177,36 @@ double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D p
 	return 0; //todo: return average velocity maybe?
 }
 
-void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
-	//std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	//std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	//double escapeVelocity = sqrt(-2 * Potential::potentialEnergy(position));
-	//std::uniform_real_distribution<> distributionVelocity(0.0, escapeVelocity); // Use escape velocity instead!
-	//double maximumEnergy = Potential::particleEnergy(position, Vec3D(0, 0, 0));
-	//double maxDF = Potential::distributionFunctionBulge(-maximumEnergy);//(gsl_pow_2(Potential::characteristicVelocityBulge)-1); // -1 to avoid division by zero
-	//std::uniform_real_distribution<> distributionDF(0.0, maxDF);
-	//while (true) {
-	//	double mVelocity = distributionVelocity(gen);
-	//	double randomDF = distributionDF(gen);
-	//	double energy = Potential::particleEnergy(position, mVelocity);
-	//	double attemptDF = Potential::distributionFunctionBulge(-energy);
-	//	if (randomDF < attemptDF) {
-	//		position += Vec3D::randomVector(mVelocity);
-	//		return;
-	//	}
-	//}
-	double R = gsl_hypot(position.x, position.y);
-	//std::cout << position.print() << std::endl;
-	std::normal_distribution<> velocityDistribution{ 0,Potential::radialVelocityDispersionBulge(R, position.z) };
-	double vz = velocityDistribution(gen);
-	double vR = velocityDistribution(gen);
-	//std::normal_distribution<> velocityDistribution2{ 200,2*Potential::radialVelocityDispersionBulge(R, position.z) };
-	double va = velocityDistribution(gen);
-
-	double theta = atan2(position.y, position.x);
-
-	velocity += Vec3D(vR * cos(theta) + va * cos(theta + M_PI_2), vR * sin(theta) + va * sin(theta + M_PI_2), vz);
-}
+//void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
+//	//std::random_device rd;  //Will be used to obtain a seed for the random number engine
+//	//std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+//	//double escapeVelocity = sqrt(-2 * Potential::potentialEnergy(position));
+//	//std::uniform_real_distribution<> distributionVelocity(0.0, escapeVelocity); // Use escape velocity instead!
+//	//double maximumEnergy = Potential::particleEnergy(position, Vec3D(0, 0, 0));
+//	//double maxDF = Potential::distributionFunctionBulge(-maximumEnergy);//(gsl_pow_2(Potential::characteristicVelocityBulge)-1); // -1 to avoid division by zero
+//	//std::uniform_real_distribution<> distributionDF(0.0, maxDF);
+//	//while (true) {
+//	//	double mVelocity = distributionVelocity(gen);
+//	//	double randomDF = distributionDF(gen);
+//	//	double energy = Potential::particleEnergy(position, mVelocity);
+//	//	double attemptDF = Potential::distributionFunctionBulge(-energy);
+//	//	if (randomDF < attemptDF) {
+//	//		position += Vec3D::randomVector(mVelocity);
+//	//		return;
+//	//	}
+//	//}
+//	double R = gsl_hypot(position.x, position.y);
+//	//std::cout << position.print() << std::endl;
+//	std::normal_distribution<> velocityDistribution{ 0,Potential::radialVelocityDispersionBulge(R, position.z) };
+//	double vz = velocityDistribution(gen);
+//	double vR = velocityDistribution(gen);
+//	//std::normal_distribution<> velocityDistribution2{ 200,2*Potential::radialVelocityDispersionBulge(R, position.z) };
+//	double va = velocityDistribution(gen);
+//
+//	double theta = atan2(position.y, position.x);
+//
+//	velocity += Vec3D(vR * cos(theta) + va * cos(theta + M_PI_2), vR * sin(theta) + va * sin(theta + M_PI_2), vz);
+//}
 
 std::vector<Star*> InitialConditions::massDisk(double totalMass){
 	std::vector<Star*> stars;

@@ -41,9 +41,11 @@ int main() {
 	//Test::potentialSurfaceDensityBulge();
 	//Test::potentialSurfaceDensityDisk();
 
-	//Test::samplePotentialOutput(5000);
+	//Test::potentialCircularVelocityOutput();
+	Test::velocityBulgeTest();
+	Test::potentialCircularVelocityOutput();
 
-	//return 0;
+	return 0;
 
 	Database db = Database();
 	db.open();
