@@ -84,7 +84,8 @@ public:
 	*/
 	static double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 
-	void sampleBulgeVelocity(Vec3D& velocity, Vec3D& position);
+	void sampleBulgeVelocity(Vec3D& velocity, Vec3D& position); //todo:test!
+	void sampleBulgeVelocities(std::vector<Star*> stars);
 
 	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
 

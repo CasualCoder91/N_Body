@@ -1,15 +1,15 @@
 #include "..\include\Potential.h"
 
 const double Potential::mMassBlackHole = 4e6; // SolarMassUnit
-const double Potential::mMassDisk = 6.51e10;//6.51e10; // SolarMassUnit original: 10e10
-const double Potential::aDisk = 4.4e3;//6.5e3; //pc 4.4e3;//
-const double Potential::bDisk = 0.267e3; //pc 0.308e3;//
-const double Potential::mMassBulge = 1.2e10;//1.03e10; // SolarMassUnit original: 3.45e10
-const double Potential::aBulge = 0.267e3; //0.267e3;//0.7e3; //pc
+const double Potential::mMassDisk = 6.51e10;//SolarMassUnit original: 10e10
+const double Potential::aDisk = 4.4e3;//pc
+const double Potential::bDisk = 0.267e3; //pc
+const double Potential::mMassBulge = 1.2e10;// SolarMassUnit original: 3.45e10
+const double Potential::aBulge = 0.35e3; //pc
 const double Potential::characteristicVelocityBulge = 444.4;  // km/s
-const double Potential::rHalo = 15e3; //7.7e3;//pc
+const double Potential::rHalo = 17e3; //7.7e3;//pc
 //const double Potential::densityHalo = 7e-3; // SolarMassUnit*pc^-3
-const double Potential::mMassHalo = 5E11;//2.9e11;//2.40021e11;
+const double Potential::mMassHalo = 5E11;//
 const double Potential::G = 4.302e-3; // parsec*solarMassUnit^-1*km^2/s^2
 const double Potential::kmInpc = 3.086e-13;
 const double Potential::velocityDispersionScaleLength = aDisk / 4.0;
@@ -211,7 +211,8 @@ double Potential::circularVelocityBlackHole(Vec3D* position){
 
 double Potential::circularVelocityBulge(Vec3D* position){
 	double r2 = gsl_pow_2(position->length());
-	double velocity = sqrt(G * mMassBulge * r2 / (pow(gsl_pow_2(aBulge) + r2, 1.5)));
+	double R2 = gsl_pow_2(position->x) + gsl_pow_2(position->y);
+	double velocity = sqrt(G * mMassBulge * R2 / (pow(gsl_pow_2(aBulge) + r2, 1.5)));
 	return velocity;
 }
 
@@ -223,6 +224,12 @@ double Potential::circularVelocityHalo(Vec3D* position){
 	double R2 = pow(distance.x, 2) + pow(distance.y, 2);
 	double velocity = sqrt(G * R2 * mMassHalo * ( log(r / rHalo + 1) / (r*r2) - 1 / (r2 * (r + rHalo))));
 	return velocity;
+}
+
+double Potential::escapeVelocity(Vec3D* position){
+	double r = position->length();
+	double R = gsl_hypot(position->x, position->y);
+	return sqrt(2*G*(mMassBlackHole/r+mMassDisk/sqrt(gsl_pow_2(R)+gsl_pow_2(aDisk+gsl_hypot(position->z,bDisk)))+mMassBulge/gsl_hypot(r,aBulge)+mMassHalo*log(1+r/rHalo)/r));
 }
 
 double Potential::densityDisk(double R, double z){
@@ -473,6 +480,10 @@ double Potential::velocityDistributionBulge(double r){
 	gsl_integration_qagiu(&F, r, 0, 1e-5, 1000, iw, &result, &error);
 	gsl_integration_workspace_free(iw);
 	return sqrt(G*pow(gsl_pow_2(aBulge)+gsl_pow_2(r),2.5) * result); //*gsl_pow_3(r+aBulge)
+}
+
+double Potential::meanVelocityBulge(double r){
+	return 0.0;
 }
 
 void Potential::applyForce(Star* star){

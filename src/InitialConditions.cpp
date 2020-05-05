@@ -139,8 +139,6 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 }
 
 double InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){
-	//std::random_device rd{};
-	//std::mt19937 gen{ rd() };
 	for (Star* star : stars) {
 		sampleDiskVelocity(star->velocity, star->position);
 	}
@@ -175,6 +173,24 @@ double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D p
 		}
 	}
 	return 0; //todo: return average velocity maybe?
+}
+
+void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
+	double delta = Potential::velocityDistributionBulge(position.length());
+	double vCirc = Potential::circularVelocity(&position);
+	std::normal_distribution<> velocityDistribution{ 0,delta };
+	double vRand = velocityDistribution(gen);
+
+	double theta = atan2(position.y, position.x);
+	double phi = asin(position.z / position.length());
+	velocity = Vec3D(vCirc * cos(theta + M_PI_2) + cos(phi)*cos(theta)*vRand, vCirc * sin(theta + M_PI_2) + cos(phi) * sin(theta) * vRand, sin(phi)*vRand);
+
+}
+
+void InitialConditions::sampleBulgeVelocities(std::vector<Star*> stars){
+	for (Star* star : stars) {
+		sampleBulgeVelocity(star->velocity, star->position);
+	}
 }
 
 //void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){

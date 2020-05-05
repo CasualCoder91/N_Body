@@ -244,3 +244,46 @@ void Test::velocityBulgeRTest() {
 	InOut::write(radius, dispersion, "bulgeDispersion.dat");
 
 }
+
+void Test::initialConditionsSampleBulgeVelocity(){
+	Parameters testParameters = Parameters();
+	InitialConditions testInitialConditions = InitialConditions(&testParameters);
+	testInitialConditions.setNStars(1);
+	std::vector<Star*> stars = testInitialConditions.initStars(0);
+	double delta = 100;
+	std::vector<double> bValues{ -4, -6, -8 };
+	std::vector<double> longitude;
+	std::vector<double> averageVelocity;
+	for (double b : bValues) {
+		for (double l = -10; l < 10; l += 0.2) {
+			longitude.push_back(l);
+			double distance = 8490;
+			double x = (8500 - distance * cos(b * 0.0174533) * cos(l * 0.0174533));
+			double y = distance * cos(b * 0.0174533) * sin(l * 0.0174533);
+			double z = distance * sin(b * 0.0174533); // b = -4°
+			double r = gsl_hypot3(x, y, z);
+			InitialConditions::sampleBulgePositions(stars, Vec3D(r, 0, 0), Vec3D(delta, delta, delta));
+			testInitialConditions.sampleBulgeVelocities(stars);
+			std::vector<Vec3D*> velocities;
+			for (Star* star : stars) {
+				velocities.push_back(&star->velocity);
+			}
+			//std::cout << "r: " << r << " | average velocity: " << Analysis::average(velocities) << " | Dispersion: " << Analysis::dispersion(velocities) << std::endl;
+			averageVelocity.push_back(Analysis::average(velocities));
+		}
+		InOut::write(longitude, averageVelocity, "../src/Test/bulgeMeanVelocity" + std::to_string((int)b) + ".dat");
+		longitude.clear();
+		averageVelocity.clear();
+	}
+	std::string filename = "E:/Master_Thesis/VS_Project/N_Body/src/Test/bulgeMeanVelocity.py";
+	std::string command = "python ";
+	command += filename;
+	system(command.c_str());
+}
+
+void Test::escapeVelocityTest(){
+	double delta = 50;
+		for(double x = 0; x < 10000; x += delta) {
+			std::cout << "r:" << x << " | velocity: " << Potential::escapeVelocity(&Vec3D(x, 0, 0)) << std::endl;
+	}
+}

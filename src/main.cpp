@@ -42,9 +42,10 @@ int main() {
 	//Test::potentialSurfaceDensityDisk();
 
 	//Test::potentialCircularVelocityOutput();
-	Test::velocityBulgeTest();
-	Test::potentialCircularVelocityOutput();
-
+	//Test::velocityBulgeTest();
+	//Test::potentialCircularVelocityOutput();
+	//Test::initialConditionsSampleBulgeVelocity();
+	Test::escapeVelocityTest();
 	return 0;
 
 	Database db = Database();

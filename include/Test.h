@@ -30,6 +30,8 @@ public:
 	static void velocityDistributionTestBulge();
 
 	static void velocityBulgeTest();
-	static void Test::velocityBulgeRTest();
+	static void velocityBulgeRTest();
+	static void initialConditionsSampleBulgeVelocity();
 
+	static void escapeVelocityTest();
 };

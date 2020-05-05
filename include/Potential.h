@@ -53,6 +53,8 @@ public:
 	static double circularVelocityBulge(Vec3D* position); // with new Bulge!
 	static double circularVelocityHalo(Vec3D* position);
 
+	static double escapeVelocity(Vec3D* position);
+
 	static double densityDisk(double R, double z);
 	static double densityDisk(double x, double y, double z);
 	/**
@@ -92,6 +94,7 @@ public:
 
 	//todo: test this, check Dimensions!
 	static double velocityDistributionBulge(double r); // working with new potential?
+	static double meanVelocityBulge(double r);
 	//static double radialVelocityDispersionBulge(double R, double z); // return in km/s
 	//static double infiniteDistributionFunctionBulge(double q); //q = sqrt(-E*characteristicVelocity^-2)
 	//static double distributionFunctionBulge(double e); // e = relative Energy = -E
