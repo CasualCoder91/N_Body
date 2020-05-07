@@ -38,6 +38,8 @@ void InOut::write(Node* tree, std::string filename){
 	return;
 }
 
+
+
 void InOut::writeRecursively(std::ofstream* file_ptr,Node* node_ptr) {
 	for (Node* child : node_ptr->children) {
 		if (child) {
@@ -51,7 +53,7 @@ void InOut::writeRecursively(std::ofstream* file_ptr,Node* node_ptr) {
 std::vector<Vec3D> InOut::readVectors(std::string filename){
 	std::vector<Vec3D> vectors;
 	std::string line;
-	std::ifstream sVectors("filename");
+	std::ifstream sVectors(filename);
 	if (sVectors.is_open()){
 		while (std::getline(sVectors, line)){
 			std::cout << line << '\n';
@@ -61,11 +63,45 @@ std::vector<Vec3D> InOut::readVectors(std::string filename){
 	return vectors;
 }
 
-void InOut::write(std::vector<double> x, std::vector<double> y, std::string filename){
+std::vector<std::vector<double>> InOut::readDoubleMatrix(std::string filname){
+	std::string line;
+	std::ifstream file(filname);
+	std::vector<double> row;
+	std::vector<std::vector<double>> matrix;
+	std::string delimiter = ",";
+
+	while (std::getline(file, line)){
+		std::string firstToken = line.substr(0, line.find(delimiter));
+		if (checkIsDouble(firstToken)) {
+			size_t pos = 0;
+			while ((pos = line.find(delimiter)) != std::string::npos) {
+				row.push_back(std::stod(line.substr(0, pos), nullptr));
+				line.erase(0, pos + delimiter.length());
+			}
+			row.push_back(std::stod(line, nullptr));
+			matrix.push_back(row);
+			row.clear();
+		}
+	}
+
+	return matrix;
+}
+
+bool InOut::checkIsDouble(std::string inputString){
+	char* end;
+	double result = strtod(inputString.c_str(), &end);
+	if (end == inputString.c_str() || *end != '\0') 
+		return false;
+	return true;
+}
+
+void InOut::write(std::vector<double> x, std::vector<double> y, std::string filename, std::string header){
 	if (x.size() != y.size()) {
 		throw  "Vector size must be equal";
 	}
-	std::ofstream file(InOut::outputDirectory+filename);
+	std::ofstream file(filename);
+	if (header.size() > 0)
+		file << header << '\n';
 	//no NOT parallel this one
 	for (int i = 0; i < x.size(); ++i) {
 		file << x.at(i) <<','<< y.at(i) << '\n';

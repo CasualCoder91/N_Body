@@ -34,4 +34,6 @@ public:
 	static void initialConditionsSampleBulgeVelocity();
 
 	static void escapeVelocityTest();
+
+	static void initialConditionsInitFieldStars();
 };

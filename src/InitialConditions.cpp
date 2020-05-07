@@ -19,6 +19,18 @@ double InitialConditions::closestToZero(double a, double b) {
 	return temp;
 }
 
+double InitialConditions::farthermostFromZero(double a, double b){
+	double temp = 0;
+	if (abs(a) > abs(b))
+		return a;
+	return b;
+}
+
+InitialConditions::InitialConditions():gen((std::random_device())()) {
+	this->G = SimulationData::getGFromCfg();
+	this->nStars = SimulationData::getNStarsFromCfg();
+}
+
 InitialConditions::InitialConditions(SimulationData* parameters):gen((std::random_device())()){
 	this->G = parameters->getG();
 	this->nStars = parameters->getNStars();
@@ -42,9 +54,42 @@ std::vector<Star*> InitialConditions::initStars(int firstID, int nStars){
 	return stars;
 }
 
+std::vector<Star*> InitialConditions::initFieldStars(int firstID, double angle, double dx, double distance, Vec3D focus, Vec3D viewpoint){
+	Vec3D direction = (focus - viewpoint).normalize();
+	int nSteps = (distance+dx) / dx;
+	std::vector<Star*> fieldStars;
+	//#pragma omp parallel for
+	for (int step = 1; step <= nSteps; ++step) {//steps along direction (line of sight)
+		double r = step*dx * tan(angle); //distance from line of sight at current step
+		double aBoid = 2 * r;
+		if (aBoid < 1) //if cubes are smaller 1pc^3 density is aproximated 0
+			continue;
+		Vec3D rVec = sqrt(2) * r * Vec3D::crossProduct(&Vec3D(-1, 1, -1), &direction).normalize();
+		rVec.x = -abs(rVec.x);
+		rVec.y = -abs(rVec.y);
+		rVec.z = -abs(rVec.z);
+		Vec3D corner = viewpoint + direction * ((double)step - 1)*dx + rVec;
+		std::cout << corner.print() << std::endl;
+		Vec3D volumeElement = direction*dx-2*rVec;
+		double diskMass = Potential::massDisk(corner, volumeElement);
+		std::vector<Star*> diskStars = massDisk(diskMass);
+		if (diskStars.size() > 0) {
+			sampleDiskPositions(diskStars, corner, volumeElement); //test
+			sampleDiskVelocities(diskStars);
+			fieldStars.insert(std::end(fieldStars), std::begin(diskStars), std::end(diskStars));
+		}
+		double bulgeMass = Potential::massBulge(corner, volumeElement);
+		std::vector<Star*> bulgeStars = initialMassBulge(bulgeMass);
+		if (bulgeStars.size() > 0) {
+			sampleBulgePositions(bulgeStars, corner, volumeElement); //test
+			sampleBulgeVelocities(bulgeStars);
+			fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
+		}
+	}
+	return fieldStars;
+}
+
 double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha){
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 	std::uniform_real_distribution<> dis(0.0, 1.0);//avoid close to singularity
 	double totalMass = 0.0;
 	double temp = alpha + 1.0;
@@ -79,17 +124,28 @@ std::vector<Star*> InitialConditions::initDiskStars(int firstID, Vec3D tlf, Vec3
 }
 
 double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D position, Vec3D volumeElement) {
+	//get Limits for "Accept" distribution. Depends on Volume. Largest density is found at positions closest to 0
 	double smallestx = closestToZero(position.x, position.x+volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
 	double smallestz = closestToZero(position.z, position.z + volumeElement.z);
+	double largestx = farthermostFromZero(position.x, position.x + volumeElement.x);
+	double largesty = farthermostFromZero(position.y, position.y + volumeElement.y);
+	double largestz = farthermostFromZero(position.z, position.z + volumeElement.z);
+	double acceptUpperLimit = Potential::densityDisk(smallestx, smallesty, smallestz);
+	double acceptLowerLimit = Potential::densityDisk(largestx, largesty, largestz);
+	//create distribution with calculated limits
+	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);//lower limit is new -> speedup
 
-	double k = Potential::densityDisk(smallestx, smallesty, smallestz);
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_real_distribution<> disx(position.x, position.x + volumeElement.x);
-	std::uniform_real_distribution<> disy(position.y, position.y + volumeElement.y);
-	std::uniform_real_distribution<> disz(position.z, position.z + volumeElement.z);
-	std::uniform_real_distribution<> disaccept(0, k);
+	double x1_low = std::min(position.x, position.x + volumeElement.x);
+	double x1_high = std::max(position.x, position.x + volumeElement.x);
+	double x2_low = std::min(position.y, position.y + volumeElement.y);
+	double x2_high = std::max(position.y, position.y + volumeElement.y);
+	double x3_low = std::min(position.z, position.z + volumeElement.z);
+	double x3_high = std::max(position.z, position.z + volumeElement.z);
+	std::uniform_real_distribution<> disx(x1_low, x1_high);
+	std::uniform_real_distribution<> disy(x2_low, x2_high);
+	std::uniform_real_distribution<> disz(x3_low, x3_high);
+
 	for (Star* star : stars) {
 		while (true) {
 			double x = disx(gen);
@@ -100,8 +156,6 @@ double InitialConditions::sampleDiskPositions(std::vector<Star*> stars,Vec3D pos
 			double temp = Potential::densityDisk(x, y, z);
 
 			if (accept < temp) {
-				if(sqrt(pow(x,2) + pow(y,2)) < 2000)
-					continue;
 				star->position = Vec3D(x, y, z);
 				break;
 			}
@@ -145,24 +199,40 @@ double InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){
 	return 0.0;
 }
 
-double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement){
+void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement){
 	double smallestx = closestToZero(position.x, position.x + volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
 	double smallestz = closestToZero(position.z, position.z + volumeElement.z);
+	double largestx = farthermostFromZero(position.x, position.x + volumeElement.x);
+	double largesty = farthermostFromZero(position.y, position.y + volumeElement.y);
+	double largestz = farthermostFromZero(position.z, position.z + volumeElement.z);
+	double acceptUpperLimit = Potential::densityBulge(smallestx, smallesty, smallestz);
+	double acceptLowerLimit = Potential::densityBulge(largestx, largesty, largestz);
+	//create distribution with calculated limits
+	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);//lower limit is new -> speedup
 
-	double k = Potential::densityDisk(smallestx, smallesty, smallestz);
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_real_distribution<> disx(position.x, position.x + volumeElement.x);
-	std::uniform_real_distribution<> disy(position.y, position.y + volumeElement.y);
-	std::uniform_real_distribution<> disz(position.z, position.z + volumeElement.z);
-	std::uniform_real_distribution<> disaccept(0, k);
+
+	double x1_low = std::min(position.x, position.x + volumeElement.x);
+	double x1_high = std::max(position.x, position.x + volumeElement.x);
+	double x2_low = std::min(position.y, position.y + volumeElement.y);
+	double x2_high = std::max(position.y, position.y + volumeElement.y);
+	double x3_low = std::min(position.z, position.z + volumeElement.z);
+	double x3_high = std::max(position.z, position.z + volumeElement.z);
+	//double rMin = gsl_hypot3(std::min(position.x, position.x + volumeElement.x), std::min(position.y, position.y + volumeElement.y), std::min(position.z, position.z + volumeElement.z));
+	//double rMax = gsl_hypot3(std::max(position.x, position.x + volumeElement.x), std::max(position.y, position.y + volumeElement.y), std::max(position.z, position.z + volumeElement.z));
+	//std::uniform_real_distribution<> disr(rMin, rMax);
+	std::uniform_real_distribution<> disx(x1_low, x1_high);
+	std::uniform_real_distribution<> disy(x2_low, x2_high);
+	std::uniform_real_distribution<> disz(x3_low, x3_high);
+
+	//const double lamda = 1 / (Potential::aBulge * 2);
+	//std::exponential_distribution<double> disr(lamda);
+	//std::exponential_distribution<double> disaccept(lamda);
 	for (Star* star : stars) {
 		while (true) {
 			double x = disx(gen);
 			double y = disy(gen);
 			double z = disz(gen);
-
 			double accept = disaccept(gen);
 			double temp = Potential::densityBulge(x, y, z);
 
@@ -172,11 +242,11 @@ double InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D p
 			}
 		}
 	}
-	return 0; //todo: return average velocity maybe?
+	return; //todo: return average velocity maybe?
 }
 
 void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
-	double delta = Potential::velocityDistributionBulge(position.length());
+	double delta = Potential::velocityDistributionBulgeTableValue(position.length());
 	double vCirc = Potential::circularVelocity(&position);
 	std::normal_distribution<> velocityDistribution{ 0,delta };
 	double vRand = velocityDistribution(gen);
@@ -192,6 +262,156 @@ void InitialConditions::sampleBulgeVelocities(std::vector<Star*> stars){
 		sampleBulgeVelocity(star->velocity, star->position);
 	}
 }
+
+std::vector<Star*> InitialConditions::massDisk(double totalMass){
+	std::vector<Star*> stars;
+	if (totalMass <= 0)
+		return stars;
+	Star* proposedStar;
+	double pickedTotalMass = 0;
+	static std::uniform_real_distribution<> disM(0.08, 63.1); // mass sample
+	static std::uniform_real_distribution<> disAccept(0, 0.86); //upper limit
+	static double factor1 = 0.158;
+	static double chabrierMass = 0.079;
+	static double chabrierSigma = 0.69;
+	static double factor2 = 4.4e-2;
+	static double exponent2 = 4.37;
+	static double factor3 = 1.5e-2;
+	static double exponent3 = 3.53;
+	static double factor4 = 2.5e-4;
+	static double exponent4 = 2.11;
+	double temp = 0;
+	double ln10 = log(10);
+	while (pickedTotalMass < totalMass) {
+		while (true) {
+			double m = disM(gen);
+			double logM = log10(m);
+			if (logM < 0) { // m < 1
+				temp = factor1/(m* ln10)* exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
+				if (disAccept(gen) < temp ) {
+					proposedStar = new Star(0, m);
+					break;
+				}
+			}
+			else if (logM < 0.54) {
+				temp = factor2 / (m * ln10) * pow(m, -exponent2);
+				if (disAccept(gen) < temp) {
+					proposedStar = new Star(0, m);
+					break;
+				}
+			}
+			else if (logM < 1.26){
+				temp = factor3 / (m * ln10) * pow(m, -exponent3);
+				if (disAccept(gen)< temp) {
+					proposedStar = new Star(0, m);
+					break;
+				}
+			}
+			else{
+				temp = factor4 / (m * ln10) * pow(m, -exponent4);
+				if (disAccept(gen) < temp) {
+					proposedStar = new Star(0, m);
+					break;
+				}
+			}
+		}
+		if (pickedTotalMass + proposedStar->mass / 2 < totalMass) {
+			stars.push_back(proposedStar); // todo: which id?!
+			pickedTotalMass += proposedStar->mass;
+		}
+		else
+			break;
+	}
+	if (stars.size() > 0)
+		std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
+	std::cout << "Proposed mass of disk: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
+	return stars;
+}
+
+std::vector<Star*> InitialConditions::initialMassBulge(double totalMass){
+	std::vector<Star*> stars;
+	Star* proposedStar;
+	double pickedTotalMass = 0;
+	static std::uniform_real_distribution<> disM(0.08, 1); // mass sample
+	static std::uniform_real_distribution<> disAccept(0, 0.00095); //upper limit
+	static double factor1 = 3.6e-4;
+	static double chabrierMass = 0.22;
+	static double chabrierSigma = 0.33;
+	static double factor2 = 7.1e-5;
+	static double exponent2 = 1.3;
+	double temp = 0;
+	double ln10 = log(10);
+	while (pickedTotalMass < totalMass) {
+		while (true) {
+			double m = disM(gen);
+			double logM = log10(m);
+			if (m<0.7) { // m < 1
+				temp = factor1 / (m * ln10) * exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
+				if (disAccept(gen) < temp) {
+					proposedStar = new Star(0, m);
+					break;
+				}
+			}
+			else{
+				temp = factor2 / (m * ln10) * pow(m, -exponent2);
+				if (disAccept(gen) < temp) {
+					proposedStar = new Star(0, m);
+					break;
+				}
+			}
+		}
+		if (pickedTotalMass + proposedStar->mass / 2 < totalMass) {
+			stars.push_back(proposedStar); // todo: which id?!
+			pickedTotalMass += proposedStar->mass;
+		}
+		else
+			break;
+	}
+	if (stars.size()>0)
+		std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
+	std::cout << "Proposed mass of Bulge: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
+	return stars;
+}
+
+void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
+	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
+	for (Star* star : stars) {
+		double distance = structuralLength / sqrt(pow(dis(gen), -2. / 3.) - 1);
+		star->position = Vec3D::randomVector(distance);
+		plummerVelocity(star, structuralLength, distance, totalMass);
+	}
+}
+
+void InitialConditions::offsetCluster(std::vector<Star*>& stars, Vec3D& offset){
+	for (Star* star : stars) {
+		star->position += offset;
+	}
+}
+
+void InitialConditions::setNStars(int N){
+	this->nStars = N;
+}
+
+double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass){
+	//return sqrt(2.) * pow(distance * distance + structuralLength, -0.25);
+	//https://github.com/bacook17/behalf/blob/master/behalf/initialConditions.py
+	return sqrt(2. * this->G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
+}
+
+void InitialConditions::plummerVelocity(Star* star, double structuralLength, double distance, double totalMass){
+	std::uniform_real_distribution<> dis(0.0, 1.0);
+	//Rejection Technique
+	std::uniform_real_distribution<> dis_g(0.0, 0.1);
+	double q = dis(gen); // random value in range [0,1]
+	double g = dis_g(gen); // random value in range [0,0.1]
+	while (g > q* q* pow( (1. - q * q), 3.5)) {
+		q = dis(gen);
+		g = dis_g(gen);
+	}
+	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass)/1.01;
+	star->velocity = Vec3D::randomAngles(velocity);
+}
+
 
 //void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 //	//std::random_device rd;  //Will be used to obtain a seed for the random number engine
@@ -223,152 +443,3 @@ void InitialConditions::sampleBulgeVelocities(std::vector<Star*> stars){
 //
 //	velocity += Vec3D(vR * cos(theta) + va * cos(theta + M_PI_2), vR * sin(theta) + va * sin(theta + M_PI_2), vz);
 //}
-
-std::vector<Star*> InitialConditions::massDisk(double totalMass){
-	std::vector<Star*> stars;
-	if (totalMass <= 0)
-		return stars;
-	double pickedTotalMass = 0;
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::uniform_real_distribution<> disM(0.08, 63.1); // mass sample
-	static std::uniform_real_distribution<> disAccept(0, 0.86); //upper limit
-	static double factor1 = 0.158;
-	static double chabrierMass = 0.079;
-	static double chabrierSigma = 0.69;
-	static double factor2 = 4.4e-2;
-	static double exponent2 = 4.37;
-	static double factor3 = 1.5e-2;
-	static double exponent3 = 3.53;
-	static double factor4 = 2.5e-4;
-	static double exponent4 = 2.11;
-	double temp = 0;
-	double ln10 = log(10);
-	while (pickedTotalMass < totalMass) {
-		while (true) {
-			double m = disM(gen);
-			double logM = log10(m);
-			if (logM < 0) { // m < 1
-				temp = factor1/(m* ln10)* exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
-				if (disAccept(gen) < temp ) {
-					stars.push_back(new Star(0, m)); // todo: which id?!
-					pickedTotalMass += m;
-					break;
-				}
-			}
-			else if (logM < 0.54) {
-				temp = factor2 / (m * ln10) * pow(m, -exponent2);
-				if (disAccept(gen) < temp) {
-					stars.push_back(new Star(0, m)); // todo: which id?!
-					pickedTotalMass += m;
-					break;
-				}
-			}
-			else if (logM < 1.26){
-				temp = factor3 / (m * ln10) * pow(m, -exponent3);
-				if (disAccept(gen)< temp) {
-					stars.push_back(new Star(0, m)); // todo: which id?!
-					pickedTotalMass += m;
-					std::cout << "pickedTotalMass: " << pickedTotalMass << std::endl;
-					break;
-				}
-			}
-			else{
-				temp = factor4 / (m * ln10) * pow(m, -exponent4);
-				if (disAccept(gen) < temp) {
-					stars.push_back(new Star(0, m)); // todo: which id?!
-					pickedTotalMass += m;
-					break;
-				}
-			}
-		}
-	}
-	std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
-	std::cout << "Proposed mass of disk: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
-	return stars;
-}
-
-
-std::vector<Star*> InitialConditions::initialMassBulge(double totalMass){
-	std::vector<Star*> stars;
-	double pickedTotalMass = 0;
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	static std::uniform_real_distribution<> disM(0.08, 1); // mass sample
-	static std::uniform_real_distribution<> disAccept(0, 0.00095); //upper limit
-	static double factor1 = 3.6e-4;
-	static double chabrierMass = 0.22;
-	static double chabrierSigma = 0.33;
-	static double factor2 = 7.1e-5;
-	static double exponent2 = 1.3;
-	double temp = 0;
-	double ln10 = log(10);
-	while (pickedTotalMass < totalMass) {
-		while (true) {
-			double m = disM(gen);
-			double logM = log10(m);
-			if (m<0.7) { // m < 1
-				temp = factor1 / (m * ln10) * exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
-				if (disAccept(gen) < temp) {
-					stars.push_back(new Star(0, m)); // todo: which id?!
-					pickedTotalMass += m;
-					break;
-				}
-			}
-			else{
-				temp = factor2 / (m * ln10) * pow(m, -exponent2);
-				if (disAccept(gen) < temp) {
-					stars.push_back(new Star(0, m)); // todo: which id?!
-					pickedTotalMass += m;
-					break;
-				}
-			}
-		}
-	}
-	std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
-	std::cout << "Proposed mass of disk: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
-	return stars;
-}
-
-void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
-	for (Star* star : stars) {
-		double distance = structuralLength / sqrt(pow(dis(gen), -2. / 3.) - 1);
-		star->position = Vec3D::randomVector(distance);
-		plummerVelocity(star, structuralLength, distance, totalMass);
-	}
-}
-
-void InitialConditions::offsetCluster(std::vector<Star*>& stars, Vec3D& offset){
-	for (Star* star : stars) {
-		star->position += offset;
-	}
-}
-
-void InitialConditions::setNStars(int N){
-	this->nStars = N;
-}
-
-double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass){
-	//return sqrt(2.) * pow(distance * distance + structuralLength, -0.25);
-	//https://github.com/bacook17/behalf/blob/master/behalf/initialConditions.py
-	return sqrt(2. * this->G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
-}
-
-void InitialConditions::plummerVelocity(Star* star, double structuralLength, double distance, double totalMass){
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-	std::uniform_real_distribution<> dis(0.0, 1.0);
-	//Rejection Technique
-	std::uniform_real_distribution<> dis_g(0.0, 0.1);
-	double q = dis(gen); // random value in range [0,1]
-	double g = dis_g(gen); // random value in range [0,0.1]
-	while (g > q* q* pow( (1. - q * q), 3.5)) {
-		q = dis(gen);
-		g = dis_g(gen);
-	}
-	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass)/1.01;
-	star->velocity = Vec3D::randomAngles(velocity);
-}

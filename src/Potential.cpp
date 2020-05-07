@@ -14,6 +14,10 @@ const double Potential::G = 4.302e-3; // parsec*solarMassUnit^-1*km^2/s^2
 const double Potential::kmInpc = 3.086e-13;
 const double Potential::velocityDispersionScaleLength = aDisk / 4.0;
 
+const std::string Potential::lookupTableLocation = "src/LookupTables/";
+const std::string Potential::velocityDistributionBulgeTableFilename = "velocityDistributionBulgeTable.dat";
+const std::vector<std::vector<double>> Potential::velocityDistributionBulgeTable = Potential::LoadVelocityDistributionBulgeTable();
+
 struct gslDensityDiskParams { double mMassDisk; double aDisk; double bDisk; };
 struct gslDensityDiskQagsParams { double mMassDisk; double aDisk; double bDisk; double R; };
 struct gslDensityBulgeParams { double mMassBulge; double aBulge; };
@@ -160,6 +164,17 @@ double Potential::closestToZero(double a, double b) {
 	return temp;
 }
 
+std::vector<std::vector<double>> Potential::LoadVelocityDistributionBulgeTable(){
+	std::string filename = "velocityDistributionBulgeTable.dat";
+	std::vector<std::vector<double>> table = InOut::readDoubleMatrix(lookupTableLocation+filename);
+	if (table.size() == 0) {
+		std::cout << "No lookup table found for VelocityDistributionBulge ... generating " + filename << std::endl;
+		Potential::generateVelocityDistributionBulgeLookupTable(25000);
+		table = InOut::readDoubleMatrix(lookupTableLocation + filename);
+	}
+	return table;
+}
+
 double Potential::sphericalAveragedDisk(double r){
 	//gslSphericalAveragedDisk(double theta, void* p) {
 	//struct gslSphericalAveragedDiskParams* fp = (struct gslSphericalAveragedDiskParams*)p;
@@ -171,10 +186,9 @@ double Potential::sphericalAveragedDisk(double r){
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
 	double result, error;
 
-	gsl_integration_qag(&F, 0, 2*M_PI, 1e-5, 1e-5, 1000,1, iw, &result, &error);
+	gsl_integration_qag(&F, 0, 2*M_PI, 1e-3, 1e-3, 1000,1, iw, &result, &error);
 	gsl_integration_workspace_free(iw);
 	return 1/(2*M_PI) * result;
-
 }
 
 double Potential::circularVelocity(Vec3D* position){
@@ -354,8 +368,14 @@ double Potential::massDisk(Vec3D position, Vec3D volumeElement){
 	const gsl_rng_type* T = gsl_rng_default;
 	gsl_rng* r = gsl_rng_alloc(T);
 
-	double xl[3] = { position.x, position.y, position.z };
-	double xu[3] = { position.x + volumeElement.x, position.y + volumeElement.y, position.z + volumeElement.z };
+	double x1_low = std::min(position.x, position.x + volumeElement.x);
+	double x1_high = std::max(position.x, position.x + volumeElement.x);
+	double x2_low = std::min(position.y, position.y + volumeElement.y);
+	double x2_high = std::max(position.y, position.y + volumeElement.y);
+	double x3_low = std::min(position.z, position.z + volumeElement.z);
+	double x3_high = std::max(position.z, position.z + volumeElement.z);
+	double xl[3] = { x1_low, x2_low, x3_low };
+	double xu[3] = { x1_high, x2_high, x3_high };
 	size_t calls = 500000;
 
 	gsl_monte_plain_state* s = gsl_monte_plain_alloc(3);
@@ -382,8 +402,14 @@ double Potential::massBulge(Vec3D position, Vec3D volumeElement) {
 	const gsl_rng_type* T = gsl_rng_default;
 	gsl_rng* r = gsl_rng_alloc(T);
 
-	double xl[3] = { position.x, position.y, position.z };
-	double xu[3] = { position.x + volumeElement.x, position.y + volumeElement.y, position.z + volumeElement.z };
+	double x1_low = std::min(position.x, position.x + volumeElement.x);
+	double x1_high = std::max(position.x, position.x + volumeElement.x);
+	double x2_low = std::min(position.y, position.y + volumeElement.y);
+	double x2_high = std::max(position.y, position.y + volumeElement.y);
+	double x3_low = std::min(position.z, position.z + volumeElement.z);
+	double x3_high = std::max(position.z, position.z + volumeElement.z);
+	double xl[3] = { x1_low, x2_low, x3_low };
+	double xu[3] = { x1_high, x2_high, x3_high };
 	size_t calls = 500000;
 
 	gsl_monte_plain_state* s = gsl_monte_plain_alloc(3);
@@ -482,8 +508,28 @@ double Potential::velocityDistributionBulge(double r){
 	return sqrt(G*pow(gsl_pow_2(aBulge)+gsl_pow_2(r),2.5) * result); //*gsl_pow_3(r+aBulge)
 }
 
-double Potential::meanVelocityBulge(double r){
-	return 0.0;
+double Potential::velocityDistributionBulgeTableValue(double r){
+	int nRows = velocityDistributionBulgeTable.size();
+	for (int row = 0; row < nRows;++row) {
+		if ((int)velocityDistributionBulgeTable[row][0]==(int)r)
+			return velocityDistributionBulgeTable[row][1];
+	}
+	return -1;
+}
+
+void Potential::generateVelocityDistributionBulgeLookupTable(double rMax){
+	std::string header = "mMassBlackHole " + std::to_string(mMassBlackHole) +
+		", aBulge " + std::to_string(aBulge) +", mMassDisk " + std::to_string(mMassDisk) +", mMassBulge " + std::to_string(mMassBulge) +
+		", aDisk " + std::to_string(aDisk) +", bDisk " + std::to_string(bDisk) +", rHalo " + std::to_string(rHalo) +", mMassHalo " + std::to_string(mMassHalo);
+	std::vector<double> rVec;
+	std::vector<double> velDist;
+	for (double r = 0; r <= rMax; ++r) {
+		std::cout << "r: " << r << std::endl;
+		rVec.push_back(r);
+		velDist.push_back(velocityDistributionBulge(r));
+	}
+	InOut::write(rVec, velDist, lookupTableLocation + velocityDistributionBulgeTableFilename, header);
+	return;
 }
 
 void Potential::applyForce(Star* star){

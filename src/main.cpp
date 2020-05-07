@@ -45,7 +45,13 @@ int main() {
 	//Test::velocityBulgeTest();
 	//Test::potentialCircularVelocityOutput();
 	//Test::initialConditionsSampleBulgeVelocity();
-	Test::escapeVelocityTest();
+	//Test::escapeVelocityTest();
+	Test::initialConditionsInitFieldStars();
+	//Potential::generateVelocityDistributionBulgeLookupTable(25000);
+	//std::vector<std::vector<double>> test = InOut::readDoubleMatrix("velocityDistributionBulgeTable.dat");
+
+
+
 	return 0;
 
 	Database db = Database();

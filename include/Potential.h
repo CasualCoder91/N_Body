@@ -14,6 +14,7 @@
 #include "SimulationData.h"
 #include "Vec3D.h"
 #include "Star.h"
+#include "InOut.h"
 
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
@@ -28,7 +29,6 @@ private:
 	static const double bDisk; //kpc
 	static const double mMassBulge; // SolarMassUnit
 	//static const double mMassBulge2; // SolarMassUnit
-	static const double aBulge; // SolarMassUnit
 	//static const double aBulge2; // SolarMassUnit
 	static const double rHalo; // kpc
 	//static const double densityHalo; // SolarMassUnit*kpc^-3
@@ -38,12 +38,16 @@ private:
 	static const double kmInpc;
 
 	static const double velocityDispersionScaleLength;
+
+	static const std::string lookupTableLocation;
+	static const std::string velocityDistributionBulgeTableFilename;
+
 public:
 	static const double characteristicVelocityBulge; // km/s
-
+	static const double aBulge; // SolarMassUnit
+	static const std::vector<std::vector<double>> velocityDistributionBulgeTable;
 private:
 	static double closestToZero(double a, double b);
-	//averaged Disk potential at radius r
 	
 public:
 	static double sphericalAveragedDisk(double r);
@@ -94,7 +98,10 @@ public:
 
 	//todo: test this, check Dimensions!
 	static double velocityDistributionBulge(double r); // working with new potential?
-	static double meanVelocityBulge(double r);
+	static double velocityDistributionBulgeTableValue(double r); // working with new potential?
+	static void generateVelocityDistributionBulgeLookupTable(double rMax);
+	static std::vector<std::vector<double>> LoadVelocityDistributionBulgeTable();
+	
 	//static double radialVelocityDispersionBulge(double R, double z); // return in km/s
 	//static double infiniteDistributionFunctionBulge(double q); //q = sqrt(-E*characteristicVelocity^-2)
 	//static double distributionFunctionBulge(double e); // e = relative Energy = -E

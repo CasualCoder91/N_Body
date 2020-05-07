@@ -1,13 +1,14 @@
 #include "SimulationData.h"
 
+std::string SimulationData::filePath = "./simulation.cfg";
+Configuration SimulationData::config = Configuration();
+int SimulationData::nStars = getNStarsFromCfg();
+double SimulationData::G = getGFromCfg();
 
 void SimulationData::getParametersFromConfig(){
 	std::cout << "\n Reading Parameters from simulation.cfg" << std::endl;
-	this->filePath = "./simulation.cfg";
 	config.Load(filePath);
-	if (!config.Get("nStars", nStars)) {
-		std::cout << "nStars missing in " + filePath << std::endl;
-	}
+	getNStarsFromCfg();
 	if (!config.Get("boxLength", boxLength)) {
 		std::cout << "boxLength missing in " + filePath << std::endl;
 	}
@@ -29,14 +30,7 @@ void SimulationData::getParametersFromConfig(){
 	if (!config.Get("precission", precission)) {
 		std::cout << "precission missing in " + filePath << std::endl;
 	}
-	if (!config.Get("G", G)) {
-		std::cout << "Gravitational constant missing in " + filePath << std::endl;
-		std::cout << "Setting default value: " << 4.483e-3 << std::endl;
-		this->G = 4.483e-3;
-	}
-	else {
-		std::cout << "Warning: Units of G must be parsec*solar mass^-1*km^2/s^2" << std::endl;
-	}
+	getGFromCfg();
 	if (!config.Get("minMass", minMass)) {
 		std::cout << "minMass missing in " + filePath << std::endl;
 	}
@@ -97,6 +91,14 @@ int SimulationData::getNStars() {
 	return nStars;
 }
 
+int SimulationData::getNStarsFromCfg(){
+	config.Load(filePath);
+	if (!config.Get("nStars", nStars)) {
+		std::cout << "nStars missing in " + filePath << std::endl;
+	}
+	return nStars;
+}
+
 double SimulationData::getdt() {
 	return dt;
 }
@@ -106,6 +108,15 @@ int SimulationData::getNTimesteps() {
 }
 
 double SimulationData::getG() {
+	return this->G;
+}
+
+double SimulationData::getGFromCfg(){
+	config.Load(filePath);
+	if (!config.Get("G", G)) {
+		std::cout << "Gravitational constant missing in " + filePath << std::endl;
+		std::cout << "Setting default value: " << 4.483e-3 << std::endl;
+	}
 	return G;
 }
 

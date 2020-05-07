@@ -48,7 +48,7 @@ namespace InOut{
      @param x,y std::vector meant to be coordinates. vector size must be equal.
      @param filename The name and location of the filePath. Can be used as path relative to excelcuateble ie "folder/filename.dat"
      */
-	void write(std::vector<double> x, std::vector<double> y, std::string filename);
+	void write(std::vector<double> x, std::vector<double> y, std::string filename, std::string header = "");
     /**
      @brief Function used by write(Node* tree, std::string filename).
      @attention do **not** call this function
@@ -58,5 +58,10 @@ namespace InOut{
     void write(std::vector<Vec3D> line, std::string filename);
 
     std::vector<Vec3D> readVectors(std::string filename);
+
+    std::vector<std::vector<double>> readDoubleMatrix(std::string filname);
+
+    bool checkIsDouble(std::string inputString);
+
 };
 

@@ -17,6 +17,7 @@ public:
 
     std::string getTitle();
     std::string getFilePath();
+
     bool doEnergyAnalysis();
     bool doAverageVelocity();
     bool doAverage2DVelocity();

@@ -24,6 +24,7 @@ private:
 	std::mt19937 gen;
 
 public:
+	InitialConditions();
 	InitialConditions(SimulationData* parameters);
 	/**
 	@brief Creates cluster stars with default member variables (mass, position, velocty, acceleration)
@@ -32,6 +33,8 @@ public:
 	std::vector<Star*> initStars(int firstID);
 
 	static std::vector<Star*> initStars(int firstID, int nStars);
+
+	std::vector<Star*> initFieldStars(int firstID, double angle, double dx, double distance, Vec3D focus, Vec3D viewpoint);
 
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
@@ -54,7 +57,7 @@ public:
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	*/
-	static std::vector<Star*> massDisk(double totalMass);
+	std::vector<Star*> massDisk(double totalMass);
 	/**
 	@brief Creates stars belonging to the bulge/spheroid with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
@@ -69,7 +72,7 @@ public:
 	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleBulgePositions
 	*/
-	static double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 
 	void sampleDiskVelocity(Vec3D& velocity, Vec3D& position);
 
@@ -82,7 +85,7 @@ public:
 	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleDiskPositions
 	*/
-	static double sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+	void sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 
 	void sampleBulgeVelocity(Vec3D& velocity, Vec3D& position); //todo:test!
 	void sampleBulgeVelocities(std::vector<Star*> stars);
@@ -96,5 +99,6 @@ private:
 	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass); // in km*s^-1
 	void plummerVelocity(Star* star, double structuralLength, double distance, double totalMass);
 	static double closestToZero(double a, double b);
+	static double farthermostFromZero(double a, double b);
 };
 

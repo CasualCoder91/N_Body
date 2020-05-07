@@ -7,8 +7,9 @@ void Test::samplePotentialOutput(int nStars) {
 
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
-	InitialConditions::sampleDiskPositions(diskStars, Vec3D(-40000, -40000, -20000), Vec3D(80000, 80000, 40000));
-	InitialConditions::sampleBulgePositions(bulgeStars, Vec3D(-6000, -6000, -6000), Vec3D(12000, 12000, 12000));
+	InitialConditions initialConditions = InitialConditions();
+	initialConditions.sampleDiskPositions(diskStars, Vec3D(-40000, -40000, -20000), Vec3D(80000, 80000, 40000));
+	initialConditions.sampleBulgePositions(bulgeStars, Vec3D(-6000, -6000, -6000), Vec3D(12000, 12000, 12000));
 
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
@@ -247,9 +248,9 @@ void Test::velocityBulgeRTest() {
 
 void Test::initialConditionsSampleBulgeVelocity(){
 	Parameters testParameters = Parameters();
-	InitialConditions testInitialConditions = InitialConditions(&testParameters);
-	testInitialConditions.setNStars(1);
-	std::vector<Star*> stars = testInitialConditions.initStars(0);
+	InitialConditions initialConditions = InitialConditions(&testParameters);
+	initialConditions.setNStars(1);
+	std::vector<Star*> stars = initialConditions.initStars(0);
 	double delta = 100;
 	std::vector<double> bValues{ -4, -6, -8 };
 	std::vector<double> longitude;
@@ -262,8 +263,8 @@ void Test::initialConditionsSampleBulgeVelocity(){
 			double y = distance * cos(b * 0.0174533) * sin(l * 0.0174533);
 			double z = distance * sin(b * 0.0174533); // b = -4°
 			double r = gsl_hypot3(x, y, z);
-			InitialConditions::sampleBulgePositions(stars, Vec3D(r, 0, 0), Vec3D(delta, delta, delta));
-			testInitialConditions.sampleBulgeVelocities(stars);
+			initialConditions.sampleBulgePositions(stars, Vec3D(r, 0, 0), Vec3D(delta, delta, delta));
+			initialConditions.sampleBulgeVelocities(stars);
 			std::vector<Vec3D*> velocities;
 			for (Star* star : stars) {
 				velocities.push_back(&star->velocity);
@@ -286,4 +287,10 @@ void Test::escapeVelocityTest(){
 		for(double x = 0; x < 10000; x += delta) {
 			std::cout << "r:" << x << " | velocity: " << Potential::escapeVelocity(&Vec3D(x, 0, 0)) << std::endl;
 	}
+}
+
+void Test::initialConditionsInitFieldStars(){
+	InitialConditions initialConditions = InitialConditions();
+	std::vector<Star*> stars = initialConditions.initFieldStars(0, 0.00029088833, 10, 8000, Vec3D(0, 0, 0), Vec3D(8000, 0, 0)); //0.00029088833
+	InOut::write(stars, "fieldStars.dat");
 }
