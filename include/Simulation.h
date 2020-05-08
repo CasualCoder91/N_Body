@@ -12,24 +12,26 @@
 
 #include "Database.h"
 #include "Parameters.h"
+#include "ProgressBar.h"
 
-class Simulation : public  SimulationData
-{
+class Simulation : public Parameters{
+
 private:
     Database* database;
-    //Parameters* parameters;
+    Potential* potential;
     
 public:
     Simulation(int id, Database* database);
     Simulation(int id);
     Simulation(int id, SimulationData* simulationData);
+    Simulation(int id, Database* database, Parameters* parameters);
+    ~Simulation();
+
     void setID(int id);
     int getID();
-    /*int getNStars();
-    int getNTimesteps();
-    double getdt();*/
     std::string print();
     void run();
+private:
 };
 
 #endif

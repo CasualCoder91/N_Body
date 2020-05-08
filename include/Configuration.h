@@ -6,6 +6,9 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+
+#include "Vec3D.h"
 
 class Configuration
 {
@@ -25,6 +28,7 @@ public:
     bool Get(const std::string& key, long& value) const;
     bool Get(const std::string& key, double& value) const;
     bool Get(const std::string& key, bool& value) const;
+    bool Get(const std::string& key, Vec3D& value) const;
 
 private:
     // the container

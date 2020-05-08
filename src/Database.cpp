@@ -180,12 +180,31 @@ int Database::insert(Parameters* parameters){
 }
 
 void Database::insertStars(int simulationID, std::vector<Star*>& stars, int timestep){
+	std::cout << "Adding stars to database" << std::endl;
 	if (!this->isOpen)
 		this->open();
-	#pragma omp parallel for
+	char* errorMessage;
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	char buffer[] = "INSERT INTO star (id,mass,id_simulation) VALUES (?1,?2,?3)";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	//#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
-		insertStar(simulationID, stars.at(i), timestep);
+		sqlite3_bind_int(stmt, 1, stars.at(i)->id);
+		sqlite3_bind_double(stmt, 2, stars.at(i)->mass);
+		sqlite3_bind_int(stmt, 3, simulationID);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("Commit Failed!\n");
+		}
+		sqlite3_reset(stmt);
+		//insertStar(simulationID, stars.at(i), timestep);
 	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+
+	Database::timestep(timestep, stars);
+
 }
 
 int Database::insertAnalysis(int simulationID, Analysis analysis){
@@ -241,11 +260,53 @@ void Database::insertAnalysisdtVelocity(int analysisID, int dt, double velocity)
 void Database::timestep(int timestep, std::vector<Star*>& stars){
 	if (!this->isOpen)
 		this->open();
-	#pragma omp parallel for
-	for (int i = 0; i < stars.size(); ++i) {
-		insertVelocity(stars.at(i)->id,stars.at(i)->velocity, timestep);
-		insertPosition(stars.at(i)->id, stars.at(i)->position, timestep);
+	char* errorMessage;
+
+	//Insert velocities
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	char buffer[] = "INSERT INTO velocity (x,y,z,id_star,timestep) VALUES (?1,?2,?3,?4,?5)";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	for (unsigned i = 0; i < stars.size(); i++){
+		sqlite3_bind_double(stmt, 1, stars.at(i)->velocity.x);
+		sqlite3_bind_double(stmt, 2, stars.at(i)->velocity.y);
+		sqlite3_bind_double(stmt, 3, stars.at(i)->velocity.z);
+		sqlite3_bind_int(stmt, 4, stars.at(i)->id);
+		sqlite3_bind_int(stmt, 5, timestep);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("Commit Failed!\n");
+		}
+
+		sqlite3_reset(stmt);
 	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+
+	//insert positions
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	char buffer2[] = "INSERT INTO position (x,y,z,id_star,timestep) VALUES (?1,?2,?3,?4,?5)";
+	sqlite3_prepare_v2(db, buffer2, strlen(buffer2), &stmt, NULL);
+	for (unsigned i = 0; i < stars.size(); i++) {
+		sqlite3_bind_double(stmt, 1, stars.at(i)->position.x);
+		sqlite3_bind_double(stmt, 2, stars.at(i)->position.y);
+		sqlite3_bind_double(stmt, 3, stars.at(i)->position.z);
+		sqlite3_bind_int(stmt, 4, stars.at(i)->id);
+		sqlite3_bind_int(stmt, 5, timestep);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("Commit Failed!\n");
+		}
+		sqlite3_reset(stmt);
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+
+	//#pragma omp parallel for
+	//for (int i = 0; i < stars.size(); ++i) {
+	//	insertVelocity(stars.at(i)->id,stars.at(i)->velocity, timestep);
+	//	insertPosition(stars.at(i)->id, stars.at(i)->position, timestep);
+	//}
 }
 
 void Database::insertStar(int simulationID, Star* star, int& timestep){

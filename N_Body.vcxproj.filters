@@ -59,6 +59,15 @@
     <ClInclude Include="include\sqlite3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\LookupTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Analysis.cpp">
@@ -107,6 +116,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\sqlite3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LookupTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProgressBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

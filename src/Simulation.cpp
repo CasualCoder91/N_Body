@@ -1,13 +1,26 @@
 #include "Simulation.h"
 
-Simulation::Simulation(int id, Database* database):SimulationData(id){
+Simulation::Simulation(int id, Database* database){
 	this->database = database;
+	this->simulationID = id;
+	this->potential = new Potential(this);
 }
 
-Simulation::Simulation(int id):SimulationData(id) {}
+Simulation::Simulation(int id){
+	this->simulationID = id;
+	this->database = new Database();
+	this->potential = new Potential(this);
+}
 
 Simulation::Simulation(int id, SimulationData* simulationData){
 	this->simulationID = id;
+	this->potential = new Potential(this);
+}
+
+Simulation::Simulation(int id, Database* database, Parameters* parameters) :Parameters{ parameters } {
+	this->simulationID = id;
+	this->database = database;
+	this->potential = new Potential(this);
 }
 
 void Simulation::setID(int id){
@@ -26,7 +39,7 @@ std::string Simulation::print(){
 
 void Simulation::run(){
 	//Init stars
-	InitialConditions initialConditions = InitialConditions(this);
+	InitialConditions initialConditions = InitialConditions(this,Simulation::potential);
 
 	//Init clusterStars
 	int nextStarIndex = database->selectLastID("star") + 1;
@@ -42,24 +55,30 @@ void Simulation::run(){
 	}
 	database->insertStars(this->getID(), clusterStars, 0);
 
-	std::vector<Star*> otherStars = initialConditions.massDisk(30); //test
-	//Init otherStars
-	if (otherStars.size() > 0) {
-		initialConditions.sampleDiskPositions(otherStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
-		initialConditions.sampleDiskVelocities(otherStars);
-	}
+	//std::vector<Star*> fieldStars = initialConditions.massDisk(30); //test
+	////Init fieldStars
+	//if (fieldStars.size() > 0) {
+	//	initialConditions.sampleDiskPositions(fieldStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
+	//	initialConditions.sampleDiskVelocities(fieldStars);
+	//}
+	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex); //0.00029088833
+	database->insertStars(this->getID(), fieldStars, 0);
+
 
 	//Integrate
 	Integrator integrator = Integrator(this->getdt());
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	Vec3D tlf = Vec3D(), brb = Vec3D();
 	for (int i = 0; i < this->getNTimesteps(); i++) {
-
+		ProgressBar progressBar = ProgressBar(0, this->getNTimesteps());
 		if (i % this->getOutputTimestep() == 0) {
-			InOut::writeWithLabel(otherStars, "Stars/5/otherStars" + std::to_string(i) + ".dat");
+			//InOut::writeWithLabel(fieldStars, "Stars/5/fieldStars" + std::to_string(i) + ".dat");
 			//InOut::writeWithLabel(clusterStars, "Stars/4/clusterStars" + std::to_string(i) + ".dat");
 			//InOut::writeAll(clusterStars, "./Output/stars_all" + std::to_string(i) + ".dat");
-			//database->timestep(i, clusterStars);
+			database->timestep(i, clusterStars);
+			database->timestep(i, fieldStars);
+			progressBar.Update(i);
+			progressBar.Print();
 			//std::cout << i << std::endl;
 		}
 
@@ -74,23 +93,23 @@ void Simulation::run(){
 			//Force clusterStars
 			for (int i = 0; i < clusterStars.size(); ++i) {
 				clusterStars.at(i)->acceleration.reset();
-				Potential::applyForce(clusterStars.at(i));
+				potential->applyForce(clusterStars.at(i));
 				root.applyForce(clusterStars.at(i)->position, &clusterStars.at(i)->acceleration);
 			}
 		}
 
-		//Force otherStars
-		if (otherStars.size() > 0) {
-			for (int i = 0; i < otherStars.size(); ++i) {
-				otherStars.at(i)->acceleration.reset();
-				Potential::applyForce(otherStars.at(i));
+		//Force fieldStars
+		if (fieldStars.size() > 0) {
+			for (int i = 0; i < fieldStars.size(); ++i) {
+				fieldStars.at(i)->acceleration.reset();
+				potential->applyForce(fieldStars.at(i));
 			}
 		}
 
 		if(clusterStars.size()>0)
 			integrator.euler(clusterStars);
-		if (otherStars.size() > 0) {
-			integrator.euler(otherStars);
+		if (fieldStars.size() > 0) {
+			integrator.euler(fieldStars);
 		}
 
 	}
@@ -100,4 +119,8 @@ void Simulation::run(){
 	//InOut::write(&root);
 	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
 	std::cout << "done" << std::endl;
+}
+
+Simulation::~Simulation(){
+	delete potential;
 }

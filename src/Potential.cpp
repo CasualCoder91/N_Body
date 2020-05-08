@@ -10,13 +10,13 @@ const double Potential::characteristicVelocityBulge = 444.4;  // km/s
 const double Potential::rHalo = 17e3; //7.7e3;//pc
 //const double Potential::densityHalo = 7e-3; // SolarMassUnit*pc^-3
 const double Potential::mMassHalo = 5E11;//
-const double Potential::G = 4.302e-3; // parsec*solarMassUnit^-1*km^2/s^2
+//const double Potential::G = 4.302e-3; // parsec*solarMassUnit^-1*km^2/s^2
 const double Potential::kmInpc = 3.086e-13;
 const double Potential::velocityDispersionScaleLength = aDisk / 4.0;
 
 const std::string Potential::lookupTableLocation = "src/LookupTables/";
 const std::string Potential::velocityDistributionBulgeTableFilename = "velocityDistributionBulgeTable.dat";
-const std::vector<std::vector<double>> Potential::velocityDistributionBulgeTable = Potential::LoadVelocityDistributionBulgeTable();
+//const std::vector<std::vector<double>> Potential::velocityDistributionBulgeTable = Potential::LoadVelocityDistributionBulgeTable();
 
 struct gslDensityDiskParams { double mMassDisk; double aDisk; double bDisk; };
 struct gslDensityDiskQagsParams { double mMassDisk; double aDisk; double bDisk; double R; };
@@ -28,7 +28,7 @@ struct gslVelocityDispersionBulgeParams { double mMassBlackHole; double mMassBul
 
 struct gslSphericalAveragedDiskParams { double mMassDisk; double aDisk; double bDisk; double G; double r; };
 
-double gslDensity(double x[], size_t dim, void* p) {
+double Potential::gslDensity(double x[], size_t dim, void* p) {
 
 	struct gslDensityParams* fp = (struct gslDensityParams*)p;
 
@@ -40,10 +40,10 @@ double gslDensity(double x[], size_t dim, void* p) {
 	double R = gsl_hypot(x[0], x[1]);
 	double z = x[2];
 
-	return Potential::densityDisk(R, z) + Potential::densityBulge(R, z);
+	return densityDisk(R, z) + densityBulge(R, z);
 };
 
-double gslDensity(double z, void* p) { // function Units: SolarMassUnit*pc^-3
+double Potential::gslDensity(double z, void* p) { // function Units: SolarMassUnit*pc^-3
 
 	struct gslDensityQagsParams* fp = (struct gslDensityQagsParams*)p;
 
@@ -102,7 +102,7 @@ double gslDensityBulge(double z, void* p) { // new Potential
 	return temp;
 };
 
-double gslVelocityBulge(double r, void* p){
+double Potential::gslVelocityBulge(double r, void* p){
 	double r2 = gsl_pow_2(r);
 	struct gslVelocityBulgeParams* fp = (struct gslVelocityBulgeParams*)p;
 	//double temp = 1/(r * gsl_pow_3(fp->aBulge + r)) * (
@@ -174,6 +174,10 @@ std::vector<std::vector<double>> Potential::LoadVelocityDistributionBulgeTable()
 	}
 	return table;
 }
+
+Potential::Potential(){}
+
+Potential::Potential(Parameters* parameters):Parameters(parameters){}
 
 double Potential::sphericalAveragedDisk(double r){
 	//gslSphericalAveragedDisk(double theta, void* p) {
@@ -434,7 +438,7 @@ double Potential::surfaceDensity(double R){
 	}
 	
 	gsl_function F;
-	F.function = &gslDensity;
+	F.function = &Potential::gslDensity;
 	gslDensityQagsParams densityQagsParams = {R};
 	F.params = &densityQagsParams;
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
@@ -509,12 +513,7 @@ double Potential::velocityDistributionBulge(double r){
 }
 
 double Potential::velocityDistributionBulgeTableValue(double r){
-	int nRows = velocityDistributionBulgeTable.size();
-	for (int row = 0; row < nRows;++row) {
-		if ((int)velocityDistributionBulgeTable[row][0]==(int)r)
-			return velocityDistributionBulgeTable[row][1];
-	}
-	return -1;
+	return velocityDistributionBulgeTable.get(r);
 }
 
 void Potential::generateVelocityDistributionBulgeLookupTable(double rMax){

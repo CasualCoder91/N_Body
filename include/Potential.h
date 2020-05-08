@@ -15,12 +15,13 @@
 #include "Vec3D.h"
 #include "Star.h"
 #include "InOut.h"
+#include "LookupTable.h"
 
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
 
-class Potential : SimulationData
+class Potential : Parameters
 {
 private:
 	static const double mMassBlackHole; // SolarMassUnit
@@ -33,7 +34,7 @@ private:
 	static const double rHalo; // kpc
 	//static const double densityHalo; // SolarMassUnit*kpc^-3
 	static const double mMassHalo; // SolarMassUnit
-	static const double G; // parsec*solarMassUnit^-1*km^2/s^2
+	//static const double G; // parsec*solarMassUnit^-1*km^2/s^2
 	/** @brief 1 km divided by 1 pc */
 	static const double kmInpc;
 
@@ -42,22 +43,28 @@ private:
 	static const std::string lookupTableLocation;
 	static const std::string velocityDistributionBulgeTableFilename;
 
+	LookupTable velocityDistributionBulgeTable = LookupTable("velocityDistributionBulgeTable.dat");
+
 public:
 	static const double characteristicVelocityBulge; // km/s
 	static const double aBulge; // SolarMassUnit
-	static const std::vector<std::vector<double>> velocityDistributionBulgeTable;
+
+	//static const std::vector<std::vector<double>> velocityDistributionBulgeTable; //todo: replace this with LookupTable
 private:
 	static double closestToZero(double a, double b);
 	
 public:
-	static double sphericalAveragedDisk(double r);
-	static double circularVelocity(Vec3D* position); // return in km/s
-	static double circularVelocityDisk(Vec3D* position);
-	static double circularVelocityBlackHole(Vec3D* position);
-	static double circularVelocityBulge(Vec3D* position); // with new Bulge!
-	static double circularVelocityHalo(Vec3D* position);
+	Potential();
+	Potential(Parameters * parameters);
 
-	static double escapeVelocity(Vec3D* position);
+	static double sphericalAveragedDisk(double r);
+	double circularVelocity(Vec3D* position); // return in km/s
+	double circularVelocityDisk(Vec3D* position);
+	double circularVelocityBlackHole(Vec3D* position);
+	double circularVelocityBulge(Vec3D* position); // with new Bulge!
+	double circularVelocityHalo(Vec3D* position);
+
+	double escapeVelocity(Vec3D* position);
 
 	static double densityDisk(double R, double z);
 	static double densityDisk(double x, double y, double z);
@@ -67,7 +74,7 @@ public:
 	@param R The radius [pc] at which the surface mass density is calculated.
 	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
-	static double surfaceDensityDisk(double R);
+	double surfaceDensityDisk(double R);
 	//static Vec3D sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 	static double densityBulge(double r); //new Bulge
@@ -79,37 +86,44 @@ public:
 	@param R The radius [pc] at which the surface mass density is calculated.
 	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
-	static double surfaceDensityBulge(double R); //new Bulge
+	double surfaceDensityBulge(double R); //new Bulge
 	//static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 	//Mass of Disk and Bulge inside volume
-	static double frequencyDistribution(Vec3D position, Vec3D volumeElement);
-	static double massDisk(Vec3D position, Vec3D volumeElement);
-	static double massBulge(Vec3D position, Vec3D volumeElement);
+	double frequencyDistribution(Vec3D position, Vec3D volumeElement);
+	double massDisk(Vec3D position, Vec3D volumeElement);
+	double massBulge(Vec3D position, Vec3D volumeElement);
 
 	//all Potentials
-	static double angularVelocity(double R); // return in s^-1, new Bulge/Halo
-	static double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
-	static double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
-	static double radialVelocityDispersionDisk(double R, double z); // return in km/s
-	static double verticalVelocityDispersion(double R); // return in km/s
-	static double azimuthalVelocityDispersion(double R, double z); // return in km/s
-	static double azimuthalStreamingVelocity(Vec3D position);
+	double angularVelocity(double R); // return in s^-1, new Bulge/Halo
+	double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
+	double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
+	double radialVelocityDispersionDisk(double R, double z); // return in km/s
+	double verticalVelocityDispersion(double R); // return in km/s
+	double azimuthalVelocityDispersion(double R, double z); // return in km/s
+	double azimuthalStreamingVelocity(Vec3D position);
 
 	//todo: test this, check Dimensions!
-	static double velocityDistributionBulge(double r); // working with new potential?
-	static double velocityDistributionBulgeTableValue(double r); // working with new potential?
-	static void generateVelocityDistributionBulgeLookupTable(double rMax);
-	static std::vector<std::vector<double>> LoadVelocityDistributionBulgeTable();
+	double velocityDistributionBulge(double r); // working with new potential?
+	double velocityDistributionBulgeTableValue(double r); // working with new potential?
+	void generateVelocityDistributionBulgeLookupTable(double rMax);
+	std::vector<std::vector<double>> LoadVelocityDistributionBulgeTable();
 	
+	void applyForce(Star* star);
+
+
+	static double gslDensity(double x[], size_t dim, void* p);
+	static double gslDensity(double z, void* p);
+	static double gslVelocityBulge(double r, void* p);
+
+	//static double potentialEnergy(Vec3D& position);
+	//static double potentialEnergy(double R, double z);
+
 	//static double radialVelocityDispersionBulge(double R, double z); // return in km/s
 	//static double infiniteDistributionFunctionBulge(double q); //q = sqrt(-E*characteristicVelocity^-2)
 	//static double distributionFunctionBulge(double e); // e = relative Energy = -E
 	//static double particleEnergy(Star* star); // Energy per unit mass (not relative energy)
 	//static double particleEnergy(Vec3D& position, Vec3D& velocity);
 	//static double particleEnergy(Vec3D& position, double velocity);
-	static void applyForce(Star* star);
-	//static double potentialEnergy(Vec3D& position);
-	//static double potentialEnergy(double R, double z);
 
 };

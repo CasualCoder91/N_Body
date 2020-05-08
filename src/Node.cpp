@@ -5,7 +5,7 @@ double Node::G = 4.483e-3; //overwritten by parameter
 double Node::softening = 0.16;
 double Node::kmInpc = 3.086e-13;
 
-Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, SimulationData* parameters){
+Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, Parameters* parameters){
 	this->top_left_front = top_left_front;
 	this->bottom_right_back = bottom_right_back;
 	this->center = Vec3D::center(top_left_front, bottom_right_back);

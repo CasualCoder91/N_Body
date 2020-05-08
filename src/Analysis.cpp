@@ -41,8 +41,9 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 	for (int n = 2; n <= maxNStars; ++n) {
 
 		//init
-		InitialConditions initialConditions = InitialConditions(parameters);
-		std::vector<Star*> stars = initialConditions.initStars(0);
+		InitialConditions initialConditions = InitialConditions();
+		int starID = 0;
+		std::vector<Star*> stars = initialConditions.initStars(starID);
 		double totalMass = initialConditions.initialMassSalpeter(stars, 0.08, 100);
 		initialConditions.plummerSphere(stars, 1, totalMass);
 
@@ -92,7 +93,7 @@ double Analysis::average(std::vector<Vec3D*>& vectors){
 }
 
 double Analysis::dispersion(std::vector<Vec3D*>& vectors){
-	double n = vectors.size();
+	size_t n = vectors.size();
 	double average = Analysis::average(vectors);
 	double dispersion = 0;
 

@@ -7,13 +7,19 @@
 
 class Parameters : public SimulationData{
 protected:
+    std::string filePath = "./simulation.cfg";
+    Configuration config = Configuration();
 
     //Analysis Parameters
-    bool bEnergy;
-    bool bAverageVelocity;
-    bool bAverage2DVelocity;
+    bool bEnergy = false;
+    bool bAverageVelocity = false;
+    bool bAverage2DVelocity = false;
+
+protected:
+    void getParametersFromConfig();
 public:
     Parameters();
+    Parameters(Parameters* parameters);
 
     std::string getTitle();
     std::string getFilePath();

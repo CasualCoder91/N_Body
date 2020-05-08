@@ -46,13 +46,13 @@ int main() {
 	//Test::potentialCircularVelocityOutput();
 	//Test::initialConditionsSampleBulgeVelocity();
 	//Test::escapeVelocityTest();
-	Test::initialConditionsInitFieldStars();
+	//Test::initialConditionsInitFieldStars();
 	//Potential::generateVelocityDistributionBulgeLookupTable(25000);
 	//std::vector<std::vector<double>> test = InOut::readDoubleMatrix("velocityDistributionBulgeTable.dat");
 
 
 
-	return 0;
+	//return 0;
 
 	Database db = Database();
 	db.open();
@@ -107,9 +107,9 @@ int main() {
 
 	}
 	else if(selection == 2){
-		Parameters* parameters = new Parameters();
-		simulationID = db.insert(parameters);
-		Simulation simulation = Simulation(simulationID,&db);
+		Parameters parameters = Parameters();
+		simulationID = db.insert(&parameters);
+		Simulation simulation = Simulation(simulationID,&db,&parameters);
 		std::cout << "New simulation created. ID = " << simulationID << std::endl;
 		std::cout << "Starting simulation" << std::endl;
 		simulation.run();

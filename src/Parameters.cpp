@@ -1,8 +1,12 @@
 #include "Parameters.h"
 
+void Parameters::getParametersFromConfig(){
+    //std::cout << "\nReading Parameters from " << filePath << std::endl;
+    //config.Load(filePath);
+}
 
 Parameters::Parameters():SimulationData(){
-
+	config.Load(filePath);
     if (!config.Get("bEnergy", bEnergy)) {
         bEnergy = false;
         std::cout << "bEnergy missing in " + filePath + " add bEnergy = true to activate energy analysis." << std::endl;
@@ -15,14 +19,13 @@ Parameters::Parameters():SimulationData(){
         bAverage2DVelocity = false;
         std::cout << "bAverage2DVelocity missing in " + filePath + " add bAverage2DVelocity = true to activate 2d velocity analysis." << std::endl;
     }
-    if (!config.Get("softening", softening)) {
-        this->softening = 0.16;
-        std::cout << "softening missing in " + filePath + " setting default value: " + std::to_string(softening) << std::endl;
-    }
-    if (!config.Get("G", G)) {
-        this->G = 4.483e-3;
-        std::cout << "G missing in " + filePath + " setting default value: " + std::to_string(G) << std::endl;
-    }
+    getParametersFromConfig();
+}
+
+Parameters::Parameters(Parameters* parameters):SimulationData((SimulationData*)parameters){
+	this->bEnergy = parameters->bEnergy;
+	this->bAverageVelocity = parameters->bAverageVelocity;
+	this->bAverage2DVelocity = parameters->bAverage2DVelocity;
 }
 
 std::string Parameters::getTitle() {
@@ -44,5 +47,3 @@ bool Parameters::doAverageVelocity(){
 bool Parameters::doAverage2DVelocity(){
     return this->bAverage2DVelocity;
 }
-
-

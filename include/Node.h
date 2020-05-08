@@ -21,7 +21,7 @@
 #include "Structs.h"
 #include "Vec3D.h"
 #include "Star.h"
-#include "SimulationData.h"
+#include "Parameters.h"
 
 class Node {
 	/** @brief location of the center of the Node. Used to find the octant a star in question lies within. */
@@ -62,7 +62,7 @@ public:
 	@param parent Pointer to the parent of the node. Use null nullptr to create a root node.
 	@param parameters Parameters defined in simulation.cfg file. Member variables G, softening and precission are set via parameters.
 	*/
-	Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, SimulationData* parameters);
+	Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, Parameters* parameters);
 	~Node();
 	/**
 	@static

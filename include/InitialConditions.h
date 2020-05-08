@@ -13,28 +13,30 @@
 #include "Star.h"
 #include "Parameters.h"
 #include "Potential.h"
+#include "ProgressBar.h"
 
-class InitialConditions {
+class InitialConditions : Parameters {
 private:
-	double G;
-	/** @brief Amount of stars in the cluster */
-	int nStars;
 	static double kmInpc;
 
 	std::mt19937 gen;
 
+	Potential* potential;
+
+	bool printDetails = false;
+
 public:
-	InitialConditions();
-	InitialConditions(SimulationData* parameters);
+	InitialConditions(bool printDetails = false);
+	InitialConditions(Parameters* parameters, Potential* potential, bool printDetails = false);
 	/**
 	@brief Creates cluster stars with default member variables (mass, position, velocty, acceleration)
 	@param firstID The ID given to the first star in the vector. Subsequent stars get higher IDs
 	*/
-	std::vector<Star*> initStars(int firstID);
+	std::vector<Star*> initStars(int& firstID);
 
 	static std::vector<Star*> initStars(int firstID, int nStars);
 
-	std::vector<Star*> initFieldStars(int firstID, double angle, double dx, double distance, Vec3D focus, Vec3D viewpoint);
+	std::vector<Star*> initFieldStars(int& firstID);
 
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
@@ -52,18 +54,18 @@ public:
 	@param depth Depth of the cube in z direction [kpc]
 	@param gridResolution Lenght of one sub-cube [kpc]. This dictates the accuracy.
 	*/
-	std::vector<Star*> initDiskStars(int firstID, Vec3D tlf, Vec3D brf, double depth, Potential* potential, double gridResolution = 0.001);
+	std::vector<Star*> initDiskStars(int& starID, Vec3D tlf, Vec3D brf, double depth, Potential* potential, double gridResolution = 0.001);
 	/**
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	*/
-	std::vector<Star*> massDisk(double totalMass);
+	std::vector<Star*> massDisk(double totalMass, int& starID);
 	/**
 	@brief Creates stars belonging to the bulge/spheroid with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	@see initialMassBulge
 	*/
-	std::vector<Star*> initialMassBulge(double totalMass);
+	std::vector<Star*> initialMassBulge(double totalMass, int& starID);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc.
 	@param [in,out] stars The possitions of these stars will be modified.

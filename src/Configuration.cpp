@@ -111,6 +111,25 @@ bool Configuration::Get(const std::string& key, bool& value) const
     }
 }
 
+bool Configuration::Get(const std::string& key, Vec3D& value) const{
+    std::string str;
+    if (Get(key, str)) {
+        str = str.substr(1, str.size() - 2);
+        std::stringstream ss(str);
+        std::string item;
+        std::getline(ss, item, ',');
+        value.x = std::stod(item);
+        std::getline(ss, item, ',');
+        value.y = std::stod(item);
+        std::getline(ss, item, ',');
+        value.z = std::stod(item);
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 std::string Configuration::Trim(const std::string& str){
     int first = str.find_first_not_of(" \t");
 
