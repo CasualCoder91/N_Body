@@ -2,5 +2,3 @@ breathe
 Sphinx>=2.0.1
 matplotlib
 sphinxcontrib-bibtex
-os
-sys
