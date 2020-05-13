@@ -430,3 +430,37 @@ std::vector<Star*> Database::selectStars(int simulationID, int timeStep){
 	return stars;
 }
 
+void Database::outputStars(int simulationID, std::string filePath){
+	if (!this->isOpen)
+		this->open();
+	std::string query = "SELECT star.id,mass,position.timestep,position.x,position.y,position.z,velocity.x,velocity.y,velocity.z "
+		"FROM star INNER JOIN velocity on velocity.id_star = star.id "
+		"INNER JOIN position on position.id_star = star.id "
+		"WHERE star.id_simulation = ?1 "
+		"AND position.timestep = velocity.timestep"; //dont know why but this is needed
+	sqlite3_stmt* stmt;
+	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
+		// Error reporting and handling
+	}
+	sqlite3_bind_int(stmt, 1, simulationID);
+	std::ofstream file(filePath);
+
+	/* dump columns names into the file */
+	for (int i = 0; i < 9; i++) {
+		file << sqlite3_column_name(stmt, i) << ',';
+	}
+	file << "\n";
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		for (int i = 0; i < 9; i++) {
+			file << sqlite3_column_text(stmt, i) << ',';
+		}
+		file << "\n";
+		//file << sqlite3_column_int(stmt, 0) << ',' << sqlite3_column_double(stmt, 1) << ',' << sqlite3_column_text(stmt, 2) << ',' <<
+		//	sqlite3_column_double(stmt, 3) << ',' << sqlite3_column_double(stmt, 4) << ',' << sqlite3_column_double(stmt, 5) << ',' <<
+		//	sqlite3_column_double(stmt, 6) << ',' << sqlite3_column_double(stmt, 7) << ',' << sqlite3_column_double(stmt, 8) << '\n';
+	}
+	sqlite3_finalize(stmt);
+	file.close();
+}
+

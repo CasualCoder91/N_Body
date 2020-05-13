@@ -103,7 +103,7 @@ plugging in all the parameters (and :math:`G\approx 4.302*10^{-6}\left [ \frac{k
 Circular Velocity
 -----------------
 
-.. plot:: pyplots/potentialVelocity.py
+.. plot:: pyplots/potentialCircularVelocity.py
 
 Angular Velocity
 ----------------

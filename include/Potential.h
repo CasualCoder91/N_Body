@@ -16,10 +16,13 @@
 #include "Star.h"
 #include "InOut.h"
 #include "LookupTable.h"
+#include "ProgressBar.h"
 
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
+
+extern bool debug;
 
 class Potential : Parameters
 {
@@ -29,32 +32,26 @@ private:
 	static const double aDisk; //kpc
 	static const double bDisk; //kpc
 	static const double mMassBulge; // SolarMassUnit
-	//static const double mMassBulge2; // SolarMassUnit
-	//static const double aBulge2; // SolarMassUnit
 	static const double rHalo; // kpc
-	//static const double densityHalo; // SolarMassUnit*kpc^-3
 	static const double mMassHalo; // SolarMassUnit
-	//static const double G; // parsec*solarMassUnit^-1*km^2/s^2
 	/** @brief 1 km divided by 1 pc */
 	static const double kmInpc;
 
 	static const double velocityDispersionScaleLength;
 
 	static const std::string lookupTableLocation;
-	static const std::string velocityDistributionBulgeTableFilename;
-
-	LookupTable velocityDistributionBulgeTable = LookupTable("velocityDistributionBulgeTable.dat");
 
 public:
 	static const double characteristicVelocityBulge; // km/s
 	static const double aBulge; // SolarMassUnit
 
-	//static const std::vector<std::vector<double>> velocityDistributionBulgeTable; //todo: replace this with LookupTable
+	static const std::string velocityDistributionBulgeTableFilename;
+	LookupTable velocityDistributionBulgeTable;
+
 private:
 	static double closestToZero(double a, double b);
 	
 public:
-	Potential();
 	Potential(Parameters * parameters);
 
 	static double sphericalAveragedDisk(double r);
@@ -90,7 +87,7 @@ public:
 	//static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 	//Mass of Disk and Bulge inside volume
-	double frequencyDistribution(Vec3D position, Vec3D volumeElement);
+	//double frequencyDistribution(Vec3D position, Vec3D volumeElement);
 	double massDisk(Vec3D position, Vec3D volumeElement);
 	double massBulge(Vec3D position, Vec3D volumeElement);
 
@@ -107,7 +104,6 @@ public:
 	double velocityDistributionBulge(double r); // working with new potential?
 	double velocityDistributionBulgeTableValue(double r); // working with new potential?
 	void generateVelocityDistributionBulgeLookupTable(double rMax);
-	std::vector<std::vector<double>> LoadVelocityDistributionBulgeTable();
 	
 	void applyForce(Star* star);
 
@@ -115,6 +111,8 @@ public:
 	static double gslDensity(double x[], size_t dim, void* p);
 	static double gslDensity(double z, void* p);
 	static double gslVelocityBulge(double r, void* p);
+	static double gslDensityDisk(double x[], size_t dim, void* p);
+	static double gslDensityDisk(double z, void* p);
 
 	//static double potentialEnergy(Vec3D& position);
 	//static double potentialEnergy(double R, double z);

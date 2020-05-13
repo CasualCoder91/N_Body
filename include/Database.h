@@ -50,6 +50,7 @@ public:
 	std::vector<Vec3D> selectVelocities(int timestep);
 	std::vector<int> selectTimesteps();
 	std::vector<Star*> selectStars(int simulationID, int timeStep);
+	void outputStars(int simulationID, std::string filePath);
 };
 
 #endif

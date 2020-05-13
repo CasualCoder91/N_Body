@@ -7,9 +7,15 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 #checks if OpenMP is available
 find_package(OpenMP REQUIRED)
 
+# set everything up for c++ 17 features
+set(CMAKE_CXX_STANDARD 17)
+# Don't add this line if you will try_compile with boost.
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(SOURCES src/main.cpp src/Analysis.cpp src/InitialConditions.cpp src/InOut.cpp
 src/Integrator.cpp src/Node.cpp src/Parameters.cpp src/Star.cpp src/Vec3D.cpp src/Configuration.cpp
-src/Database.cpp src/Simulation.cpp src/Potential.cpp src/SimulationData.cpp src/Test.cpp)
+src/Database.cpp src/Simulation.cpp src/Potential.cpp src/SimulationData.cpp src/Test.cpp
+src/ProgressBar.cpp src/LookupTable.cpp src/Plot.cpp)
 
 
 include_directories(include)
@@ -30,4 +36,16 @@ configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/
 configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/sqlite3.lib" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.dll" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.lib" COPYONLY)
+
+configure_file("${PROJECT_SOURCE_DIR}/src/Plots/potentialCircularVelocity.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/potentialCircularVelocity.py" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/src/Plots/initialConditionsMassBulge.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/initialConditionsMassBulge.py" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/src/Plots/potentialPositions.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/potentialPositions.py" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/src/Plots/massDistribution.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/massDistribution.py" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/src/Plots/potentialSurfaceDensity.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/potentialSurfaceDensity.py" COPYONLY)
+
+configure_file("${PROJECT_SOURCE_DIR}/src/Plots/initialConditionsMassSalpeter.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/initialConditionsMassSalpeter.py" COPYONLY)
+
+configure_file("${PROJECT_SOURCE_DIR}/src/Plots/initialConditionsMassDisk.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/initialConditionsMassDisk.py" COPYONLY)
+
+
 file(MAKE_DIRECTORY ${PROJECT_SOURCE_DIR}/build/Release/Output/Database)

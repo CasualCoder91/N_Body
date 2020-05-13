@@ -3,10 +3,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.cm as cm
 from matplotlib.colors import LogNorm
-import sys
-import os
 
-def potentialCircularVelocity(dataPath='',showPlot=True):
+def potentialCircularVelocity(dataPath='',showPlot=True,arguments=[]):
     data = np.loadtxt(dataPath+'potentialVelocity.dat',delimiter=',')
     dataDisk = np.loadtxt(dataPath+'potentialVelocityDisk.dat',delimiter=',')
     dataBlackHole = np.loadtxt(dataPath+'potentialVelocityBlackHole.dat',delimiter=',')
@@ -25,19 +23,4 @@ def potentialCircularVelocity(dataPath='',showPlot=True):
     if showPlot:
         plt.show()
 
-#global default values
-dataPath = os.path.abspath('')
-showPlot=True
-
-def main():
-    global dataPath
-    global showPlot
-    if len(sys.argv) != 1:
-        dataPath=dataPath+sys.argv[1]
-    potentialCircularVelocity(dataPath)
-    if not showPlot:
-        plt.savefig(dataPath+'Potential/CircularVelocity.jpg')
-        plt.close()
-
-
-#main()
+potentialCircularVelocity()

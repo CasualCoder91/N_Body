@@ -20,6 +20,7 @@ void SimulationData::getParametersFromConfig(){
 	initParameterFromCfg("viewPoint", viewPoint);
 	initParameterFromCfg("focus", focus);
 	initParameterFromCfg("nStars", nStars);
+	initParameterFromCfg("offset", clusterLocation);
 	initParameterFromCfg("G", G);
 }
 

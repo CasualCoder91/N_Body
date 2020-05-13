@@ -105,6 +105,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>./include;</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,6 +145,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>./include;</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,6 +168,7 @@
     <ClInclude Include="include\LookupTable.h" />
     <ClInclude Include="include\Node.h" />
     <ClInclude Include="include\Parameters.h" />
+    <ClInclude Include="include\Plot.h" />
     <ClInclude Include="include\Potential.h" />
     <ClInclude Include="include\ProgressBar.h" />
     <ClInclude Include="include\Simulation.h" />
@@ -187,6 +190,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Node.cpp" />
     <ClCompile Include="src\Parameters.cpp" />
+    <ClCompile Include="src\Plot.cpp" />
     <ClCompile Include="src\Potential.cpp" />
     <ClCompile Include="src\ProgressBar.cpp" />
     <ClCompile Include="src\Simulation.cpp" />

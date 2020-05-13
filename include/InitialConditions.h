@@ -29,11 +29,16 @@ public:
 	InitialConditions(bool printDetails = false);
 	InitialConditions(Parameters* parameters, Potential* potential, bool printDetails = false);
 	/**
-	@brief Creates cluster stars with default member variables (mass, position, velocty, acceleration)
-	@param firstID The ID given to the first star in the vector. Subsequent stars get higher IDs
+	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
+	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
 	*/
 	std::vector<Star*> initStars(int& firstID);
-
+	/**
+	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
+	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
+	@param nStars Amout of stars generated
+	@see initStars(int& firstID)
+	*/
 	static std::vector<Star*> initStars(int firstID, int nStars);
 
 	std::vector<Star*> initFieldStars(int& firstID);
@@ -49,29 +54,31 @@ public:
 	/**
 	@brief Creates stars belonging to the disk inside the given cuboid. 
 	Sub-cubes are created, the totall mass within which is calculated, the stars are sampled such that the total sampled mass comes close to the value optained by integration.
+	@param [in,out] starID ID of the first star in the return vector. Gets incremented with every added star.
 	@param tlf Top-Left-Front corner of the cube in [kpc]
-	@param tlf Bottom-Right-Front corner of the cube in [kpc]
+	@param brf Bottom-Right-Front corner of the cube in [kpc]
 	@param depth Depth of the cube in z direction [kpc]
 	@param gridResolution Lenght of one sub-cube [kpc]. This dictates the accuracy.
 	*/
-	std::vector<Star*> initDiskStars(int& starID, Vec3D tlf, Vec3D brf, double depth, Potential* potential, double gridResolution = 0.001);
+	std::vector<Star*> initDiskStars(int& starID, Vec3D tlf, Vec3D brf, double depth, double gridResolution = 0.001);
 	/**
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
+	@param [in,out] starID ID of the first star in the return vector. Gets incremented with every added star.
 	*/
 	std::vector<Star*> massDisk(double totalMass, int& starID);
 	/**
 	@brief Creates stars belonging to the bulge/spheroid with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
+	@param [in,out] starID ID of the first star in the return vector. Gets incremented with every added star.
 	@see initialMassBulge
 	*/
 	std::vector<Star*> initialMassBulge(double totalMass, int& starID);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc.
-	@param [in,out] stars The possitions of these stars will be modified.
+	@param [in,out] stars The positions of these stars will be modified.
 	@param position One corner (typicaly bottom left front) of the volume the positions lie within.
 	@param volumeElement leghts of the sides of the cube (typicaly all positive and equal size) [kpc].
-	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleBulgePositions
 	*/
 	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
@@ -81,10 +88,9 @@ public:
 	double sampleDiskVelocities(std::vector<Star*> stars);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the bulge.
-	@param [in,out] stars The possitions of these stars will be modified.
+	@param [in,out] stars The positions of these stars will be modified.
 	@param position One corner (typicaly bottom left front) of the volume the positions lie within.
 	@param volumeElement leghts of the sides of the cube (typicaly all positive and equal size) [kpc].
-	@param potential Pointer of the Potential defining the density distribution of the disk.
 	@see sampleDiskPositions
 	*/
 	void sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);

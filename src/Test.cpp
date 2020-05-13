@@ -1,6 +1,23 @@
 #include "..\include\Test.h"
 
-void Test::samplePotentialOutput(int nStars) {
+std::string Test::path = "/src/Test/";
+std::string Test::absolutePath = std::filesystem::current_path().string() + path;
+
+void Test::pythonScript(std::string fileName){
+	std::string filename = path + fileName;
+	std::string command = "start python ";
+	command += filename;
+	system(command.c_str());
+}
+
+void Test::sampleFieldStarPositions(int nStars){
+	std::cout << "Testing field star positions .." << std::endl;
+	sampleFieldStarPositionsOutput(absolutePath,nStars);
+	Plot plot = Plot(path, path, true);
+	plot.plot("potentialPositions", { std::to_string(nStars) });
+}
+
+void Test::sampleFieldStarPositionsOutput(std::string path, int nStars) {
 
 	std::vector<Star*> diskStars = InitialConditions::initStars(0, nStars);
 	std::vector<Star*> bulgeStars = InitialConditions::initStars(0, nStars);
@@ -16,12 +33,22 @@ void Test::samplePotentialOutput(int nStars) {
 	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
 	//positionsDisk.push_back(Potential::sampleDisk(-40, 40, -40, 40, -20, 20));
 	//positionsBulge.push_back(Potential::sampleBuldge(-6, 6, -6, 6, -6, 6));
-	InOut::write(diskStars, "potentialDiskPositionsSample"+std::to_string(nStars)+".dat");
-	InOut::write(bulgeStars, "potentialBulgePositionsSample" + std::to_string(nStars) + ".dat");
+	InOut::write(diskStars, path + "potentialDiskPositionsSample"+std::to_string(nStars)+".dat");
+	InOut::write(bulgeStars, path + "potentialBulgePositionsSample" + std::to_string(nStars) + ".dat");
 }
 
-void Test::potentialCircularVelocityOutput() {
-	Potential potential = Potential();
+void Test::potentialCircularVelocity() {
+	std::cout << "Testing circular velocity .." << std::endl;
+	potentialCircularVelocityOutput(path);
+	std::cout << " .. plotting data" << std::endl;
+	Plot plot = Plot(path, path, true);
+	plot.plot("potentialCircularVelocity", {});
+	std::cout << " .. done" << std::endl;
+}
+
+void Test::potentialCircularVelocityOutput(std::string path){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 
 	std::vector<double> positions;
 	std::vector<double> velocities;
@@ -39,36 +66,12 @@ void Test::potentialCircularVelocityOutput() {
 		buldge.push_back(potential.circularVelocityBulge(&position));
 		halo.push_back(potential.circularVelocityHalo(&position));
 	}
-
-	InOut::write(positions, velocities, "../src/Test/potentialVelocity.dat");
-	InOut::write(positions, disk, "../src/Test/potentialVelocityDisk.dat");
-	InOut::write(positions, blackHole, "../src/Test/potentialVelocityBlackHole.dat");
-	InOut::write(positions, buldge, "../src/Test/potentialVelocityBuldge.dat");
-	InOut::write(positions, halo, "../src/Test/potentialVelocityHalo.dat");
-
-	std::string filename = "E:/Master_Thesis/VS_Project/N_Body/src/Test/potentialVelocity.py";
-	std::string command = "python ";
-	command += filename;
-	system(command.c_str());
-
-}
-
-void Test::testfrequencyDistribution() {
-	Potential potential = Potential();
-	std::vector<Vec3D> Output;
-
-	double z = 1; //kpc
-	double delta = 500;
-	for (double x = -30000; x < 30000; x += delta) {
-		std::cout << "x=" << x << std::endl;
-		for (double y = -30000; y < 30000; y += delta) {
-			double starMass = potential.frequencyDistribution(Vec3D(x, y, z), Vec3D(delta, delta, delta));
-			Output.push_back(Vec3D(x, y, starMass));
-		}
-	}
-
-	InOut::write(Output, "frequencyDistribution_z" + std::to_string(z) + ".dat");
-
+	std::cout << " .. generating Output" << std::endl;
+	InOut::write(positions, velocities, path + "potentialVelocity.dat");
+	InOut::write(positions, disk, path + "potentialVelocityDisk.dat");
+	InOut::write(positions, blackHole, path + "potentialVelocityBlackHole.dat");
+	InOut::write(positions, buldge, path + "potentialVelocityBuldge.dat");
+	InOut::write(positions, halo, path + "potentialVelocityHalo.dat");
 }
 
 void Test::initialConditionsMassSalpeterOutput(int nStars) {
@@ -105,7 +108,8 @@ void Test::initialConditionsMassBulgeOutput(double totalMass){
 }
 
 void Test::potentialSurfaceDensityBulge(){
-	Potential potential = Potential();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
 	for (double R = 100; R < 30000; R = R + 100) {
@@ -116,7 +120,8 @@ void Test::potentialSurfaceDensityBulge(){
 }
 
 void Test::potentialSurfaceDensityDisk(){
-	Potential potential = Potential();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
 	for (double R = 100; R < 30000; R = R + 100) {
@@ -127,7 +132,8 @@ void Test::potentialSurfaceDensityDisk(){
 }
 
 void Test::initialConditionsSampleDisk(){
-	Potential potential = Potential();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	InitialConditions initialConditions = InitialConditions();
 	double gridResolution = 0.001;
 	Vec3D position = Vec3D(5, 5, 0);
@@ -139,39 +145,60 @@ void Test::initialConditionsSampleDisk(){
 	initialConditions.sampleDiskVelocities(starsInCell);
 }
 
-void Test::massDistributionDiskOutput(double z){
-	Potential potential = Potential();
-	std::vector<Vec3D> Output;
-
-	for (double x = -30; x < 30; x += 0.5) {
-		std::cout << "x=" << x << std::endl;
-		for (double y = -30; y < 30; y += 0.5) {
-			double starMass = potential.massDisk(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
-			Output.push_back(Vec3D(x, y, starMass));
-		}
-	}
-
-	InOut::write(Output, "massDistributionDisk_z" + std::to_string(z) + ".dat");
+void Test::massDistribution(double z, double dx){
+	std::cout << "Testing mass distribution: \n- generating Output " << std::endl;
+	massDistributionDiskOutput(path, z, dx); // [z] = [kpc]
+	massDistributionBulgeOutput(path, z, dx); // [z] = [kpc]
+	std::cout << "- plotting data" << std::endl;
+	Plot plot = Plot(path, path, true);
+	plot.plot("massDistribution", { std::to_string((int)z) });
+	std::cout << "- done" << std::endl;
 }
 
-void Test::massDistributionBulgeOutput(double z){
-	Potential potential = Potential();
+void Test::massDistributionDiskOutput(std::string path, double z, double dx){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	std::vector<Vec3D> Output;
-
-	for (double x = -30; x < 30; x += 0.5) {
-		std::cout << "x=" << x << std::endl;
-		for (double y = -30; y < 30; y += 0.5) {
-			double starMass = potential.massBulge(Vec3D(x, y, z), Vec3D(0.1, 0.1, 0.1));
+	double border = 30000;
+	ProgressBar progressBar = ProgressBar(-border, border -dx);
+	std::cout << "Generating disk mass distribution" << std::endl;
+	for (double x = -border; x < border; x += dx) {
+		for (double y = -border; y < border; y += dx) {
+			double starMass = potential.massDisk(Vec3D(x, y, z), Vec3D(dx, dx, 100));
 			Output.push_back(Vec3D(x, y, starMass));
 		}
+		progressBar.Update(x);
+		progressBar.Print();
+	}
+	std::cout << "done" << std::endl;
+
+	InOut::write(Output, path+"massDistributionDisk_z" + std::to_string((int)z) + ".dat");
+}
+
+void Test::massDistributionBulgeOutput(std::string path, double z, double dx){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	std::vector<Vec3D> Output;
+	double border = 30000;
+	ProgressBar progressBar = ProgressBar(-border, border-dx);
+	std::cout << "Generating disk mass distribution" << std::endl;
+	for (double x = -border; x < border; x += dx) {
+		for (double y = -border; y < border; y += dx) {
+			double starMass = potential.massBulge(Vec3D(x, y, z), Vec3D(dx, dx, 100));
+			Output.push_back(Vec3D(x, y, starMass));
+		}
+		progressBar.Update(x);
+		progressBar.Print();
 	}
 
-	InOut::write(Output, "massDistributionBulge_z" + std::to_string((int)z) + ".dat");
+	InOut::write(Output, path+"massDistributionBulge_z" + std::to_string((int)z) + ".dat");
+
 }
 
 void Test::massDistributionTimer(){
 	double totalMass = 0;
-	Potential potential = Potential();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	for (double x = 0; x < 10000; x = x + 100) {
 		Vec3D corner = Vec3D(x, 0, -50);
 		Vec3D volumeElement = Vec3D(10, 10, 10);
@@ -198,15 +225,17 @@ void Test::massDistributionTimer(){
 	std::cout << "totalMass: " << totalMass << std::endl;
 }
 
-void Test::velocityDistributionTestBulge(){
-	Potential potential = Potential();
+void Test::velocityDistributionBulge(){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	for (double r = 100; r < 6000; r += 100) {
 		std::cout << "r: " << r << " | velocityDistribution: " << potential.velocityDistributionBulge(r) << std::endl;
 	}
 }
 
-void Test::velocityBulgeTest(){
-	Potential potential = Potential();
+void Test::velocityBulge(){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	std::cout << "BulgeVelocityTest: start" << std::endl;
 	std::vector<double> longitude;
 	std::vector<double> dispersion;
@@ -218,7 +247,7 @@ void Test::velocityBulgeTest(){
 			double distance = 8490;
 			double x = (8500 - distance * cos(b * 0.0174533) * cos(l * 0.0174533));
 			double y = distance * cos(b * 0.0174533) * sin(l * 0.0174533);
-			double z = distance * sin(b * 0.0174533); // b = -4°
+			double z = distance * sin(b * 0.0174533);
 			double r = gsl_hypot3(x, y, z);
 			double R = gsl_hypot(x, y);
 			double disp = potential.velocityDistributionBulge(r);
@@ -226,21 +255,19 @@ void Test::velocityBulgeTest(){
 			dispersion.push_back(disp);
 			//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
 		}
-		InOut::write(longitude, dispersion, "../src/Test/bulgeDispersion" + std::to_string((int)b)+".dat");
+		InOut::write(longitude, dispersion, path + "/bulgeDispersion" + std::to_string((int)b)+".dat");
 		longitude.clear();
 		dispersion.clear();
 	}
-	std::string filename = "E:/Master_Thesis/VS_Project/N_Body/src/Test/bulgeDispersion.py";
-	std::string command = "python ";
-	command += filename;
-	system(command.c_str());
-
+	Plot plot = Plot(path, path, true);
+	plot.plot("bulgeDispersion", { });
 }
 
-void Test::velocityBulgeRTest() {
+void Test::velocityBulgeR() {
 	std::vector<double> radius;
 	std::vector<double> dispersion;
-	Potential potential = Potential();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	for (double r = 10; r < 1000; r += 1) {
 		radius.push_back(r);
 		double disp = potential.velocityDistributionBulge(r);
@@ -268,7 +295,7 @@ void Test::initialConditionsSampleBulgeVelocity(){
 			double distance = 8490;
 			double x = (8500 - distance * cos(b * 0.0174533) * cos(l * 0.0174533));
 			double y = distance * cos(b * 0.0174533) * sin(l * 0.0174533);
-			double z = distance * sin(b * 0.0174533); // b = -4°
+			double z = distance * sin(b * 0.0174533);
 			double r = gsl_hypot3(x, y, z);
 			initialConditions.sampleBulgePositions(stars, Vec3D(r, 0, 0), Vec3D(delta, delta, delta));
 			initialConditions.sampleBulgeVelocities(stars);
@@ -279,19 +306,18 @@ void Test::initialConditionsSampleBulgeVelocity(){
 			//std::cout << "r: " << r << " | average velocity: " << Analysis::average(velocities) << " | Dispersion: " << Analysis::dispersion(velocities) << std::endl;
 			averageVelocity.push_back(Analysis::average(velocities));
 		}
-		InOut::write(longitude, averageVelocity, "../src/Test/bulgeMeanVelocity" + std::to_string((int)b) + ".dat");
+		InOut::write(longitude, averageVelocity, path + "bulgeMeanVelocity" + std::to_string((int)b) + ".dat");
 		longitude.clear();
 		averageVelocity.clear();
 	}
-	std::string filename = "E:/Master_Thesis/VS_Project/N_Body/src/Test/bulgeMeanVelocity.py";
-	std::string command = "python ";
-	command += filename;
-	system(command.c_str());
+	Plot plot = Plot(path, path, true);
+	plot.plot("bulgeMeanVelocity", { });
 }
 
-void Test::escapeVelocityTest(){
+void Test::escapeVelocity(){
 	double delta = 50;
-	Potential potential = Potential();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
 	for(double x = 0; x < 10000; x += delta) {
 		std::cout << "r:" << x << " | velocity: " << potential.escapeVelocity(&Vec3D(x, 0, 0)) << std::endl;
 	}
@@ -306,5 +332,5 @@ void Test::initialConditionsInitFieldStars(){
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	std::cout << "Time needed for calucation: " << time_span.count() << "seconds" << std::endl;
-	InOut::write(stars, "fieldStars.dat");
+	InOut::write(stars, path+"fieldStars.dat");
 }

@@ -1,26 +1,22 @@
 #include "..\include\Potential.h"
 
 const double Potential::mMassBlackHole = 4e6; // SolarMassUnit
-const double Potential::mMassDisk = 6.51e10;//SolarMassUnit original: 10e10
-const double Potential::aDisk = 4.4e3;//pc
-const double Potential::bDisk = 0.267e3; //pc
-const double Potential::mMassBulge = 1.2e10;// SolarMassUnit original: 3.45e10
-const double Potential::aBulge = 0.35e3; //pc
+const double Potential::mMassDisk = 6.51e10; // SolarMassUnit
+const double Potential::aDisk = 4.4e3; // pc
+const double Potential::bDisk = 0.267e3; // pc
+const double Potential::mMassBulge = 1.2e10; // SolarMassUnit
+const double Potential::aBulge = 0.35e3; // pc
 const double Potential::characteristicVelocityBulge = 444.4;  // km/s
-const double Potential::rHalo = 17e3; //7.7e3;//pc
-//const double Potential::densityHalo = 7e-3; // SolarMassUnit*pc^-3
-const double Potential::mMassHalo = 5E11;//
-//const double Potential::G = 4.302e-3; // parsec*solarMassUnit^-1*km^2/s^2
+const double Potential::rHalo = 17e3; // pc
+const double Potential::mMassHalo = 5E11; // SolarMassUnit
 const double Potential::kmInpc = 3.086e-13;
 const double Potential::velocityDispersionScaleLength = aDisk / 4.0;
 
 const std::string Potential::lookupTableLocation = "src/LookupTables/";
 const std::string Potential::velocityDistributionBulgeTableFilename = "velocityDistributionBulgeTable.dat";
-//const std::vector<std::vector<double>> Potential::velocityDistributionBulgeTable = Potential::LoadVelocityDistributionBulgeTable();
 
 struct gslDensityDiskParams { double mMassDisk; double aDisk; double bDisk; };
-struct gslDensityDiskQagsParams { double mMassDisk; double aDisk; double bDisk; double R; };
-struct gslDensityBulgeParams { double mMassBulge; double aBulge; };
+struct gslDensityDiskQagsParams { double R; };
 struct gslDensityBulgeQagsParams { double mMassBulge; double aBulge; double R; };
 struct gslDensityQagsParams {double R; };
 struct gslVelocityBulgeParams { double mMassBlackHole; double mMassBulge; double aBulge; double mMassDisk; double aDisk; double bDisk; double rHalo; double mMassHalo; };
@@ -29,8 +25,6 @@ struct gslVelocityDispersionBulgeParams { double mMassBlackHole; double mMassBul
 struct gslSphericalAveragedDiskParams { double mMassDisk; double aDisk; double bDisk; double G; double r; };
 
 double Potential::gslDensity(double x[], size_t dim, void* p) {
-
-	struct gslDensityParams* fp = (struct gslDensityParams*)p;
 
 	if (dim != 3)
 	{
@@ -52,44 +46,40 @@ double Potential::gslDensity(double z, void* p) { // function Units: SolarMassUn
 };
 
 //for MC
-double gslDensityDisk(double x[], size_t dim, void* p) {
-	struct gslDensityDiskParams* fp = (struct gslDensityDiskParams*)p;
+double Potential::gslDensityDisk(double x[], size_t dim, void* p) {
+	//struct gslDensityDiskParams* fp = (struct gslDensityDiskParams*)p;
 
 	if (dim != 3)
 	{
 		fprintf(stderr, "error: dim != 3");
 		abort();
 	}
-	double z2b2 = pow(x[2], 2) + pow(fp->bDisk, 2);
+	double z2b2 = pow(x[2], 2) + pow(bDisk, 2);
 	double sz2b2 = sqrt(z2b2);
 	double R = gsl_hypot(x[0], x[1]);
-	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * pow(R, 2) + (fp->aDisk + 3 * sz2b2) * pow(fp->aDisk + sz2b2, 2)) / (pow(pow(R, 2) + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	double temp = gsl_pow_2(bDisk) * mMassDisk / (4 * M_PI) * (aDisk * pow(R, 2) + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(pow(R, 2) + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
 
 	return temp;
 };
 
 //for qags
-double gslDensityDisk(double z, void* p) {
+double Potential::gslDensityDisk(double z, void* p) {
 	struct gslDensityDiskQagsParams* fp = (struct gslDensityDiskQagsParams*)p;
 
-	double z2b2 = pow(z, 2) + pow(fp->bDisk, 2);
+	double z2b2 = pow(z, 2) + pow(bDisk, 2);
 	double sz2b2 = sqrt(z2b2);
 	double R2 = pow(fp->R, 2);
-	double temp = gsl_pow_2(fp->bDisk) * fp->mMassDisk / (4 * M_PI) * (fp->aDisk * R2 + (fp->aDisk + 3 * sz2b2) * pow(fp->aDisk + sz2b2, 2)) / (pow(R2 + pow(fp->aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	double temp = gsl_pow_2(bDisk) * mMassDisk / (4 * M_PI) * (aDisk * R2 + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(R2 + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
 
 	return temp;
 };
 
 double gslDensityBulge(double x[], size_t dim, void* p) {
-
-	struct gslDensityBulgeParams* fp = (struct gslDensityBulgeParams*)p;
-
 	if (dim != 3)
 	{
 		fprintf(stderr, "error: dim != 3");
 		abort();
 	}
-
 	return Potential::densityBulge(gsl_hypot3(x[0], x[1], x[2]));
 };
 
@@ -118,27 +108,6 @@ double Potential::gslVelocityBulge(double r, void* p){
 	return temp;
 }
 
-//double gslVelocityDispersionBulge(double z, void* p) {
-//	struct gslVelocityDispersionBulgeParams* fp = (struct gslVelocityDispersionBulgeParams*)p;
-//	double R2 = gsl_pow_2(fp->R);
-//	double z2 = gsl_pow_2(z);
-//	double r = gsl_hypot(fp->R, z);
-//	double r2 = gsl_pow_2(r);
-//	double r3 = gsl_pow_3(r);
-//	double haloTemp = fp->densityHalo * gsl_pow_3(fp->rHalo);
-//	double hypotbz = gsl_hypot(fp->bDisk, z);
-//	double diskTemp = fp->aDisk + hypotbz;
-//	//only bulge density:
-//	//double temp = fp->mMassBlackHole / r3 + fp->mMassBulge / (r * gsl_pow_2(fp->aBulge + r));
-//	//	 + fp->mMassDisk* diskTemp / (hypotbz*pow(R2 + gsl_pow_2(diskTemp), 1.5))
-//	//	 -4 * M_PI * haloTemp / (r2 * (fp->rHalo + r)) +4*M_PI*haloTemp *log((fp->rHalo + r) / fp->rHalo)/ r3;
-//	//temp = temp* fp->G* z / (r* gsl_pow_3(fp->aBulge + r));
-//	//all densities:
-//	double temp = fp->aBulge * fp->mMassBulge / (2 * M_PI * r * gsl_pow_3(fp->aBulge + r)) + haloTemp / (r * gsl_pow_2(fp->rHalo + r)) + gsl_pow_2(fp->bDisk) * fp->mMassDisk * (fp->aDisk * R2 + gsl_pow_2(diskTemp) * (fp->aDisk + 3 * hypotbz)) / (4 * M_PI * gsl_pow_2(hypotbz) * pow(R2 + gsl_pow_2(diskTemp), 2.5));
-//	temp = temp * fp->G * z * (fp->mMassBlackHole / r + fp->mMassBulge / (r * gsl_pow_2(fp->aBulge + r)) - 4 * M_PI * haloTemp / (r2 * (fp->rHalo + r)) + fp->mMassDisk*diskTemp / (hypotbz*pow(R2 + gsl_pow_2(diskTemp), 1.5)) + 4 * M_PI * haloTemp * log((fp->rHalo + r) / fp->rHalo) / r3);
-//	return temp;
-//}
-
 double gslSphericalAveragedDisk(double theta, void* p) {
 	struct gslSphericalAveragedDiskParams* fp = (struct gslSphericalAveragedDiskParams*)p;
 	double temp = gsl_hypot(fp->bDisk, fp->r * cos(theta));
@@ -164,20 +133,13 @@ double Potential::closestToZero(double a, double b) {
 	return temp;
 }
 
-std::vector<std::vector<double>> Potential::LoadVelocityDistributionBulgeTable(){
-	std::string filename = "velocityDistributionBulgeTable.dat";
-	std::vector<std::vector<double>> table = InOut::readDoubleMatrix(lookupTableLocation+filename);
-	if (table.size() == 0) {
-		std::cout << "No lookup table found for VelocityDistributionBulge ... generating " + filename << std::endl;
-		Potential::generateVelocityDistributionBulgeLookupTable(25000);
-		table = InOut::readDoubleMatrix(lookupTableLocation + filename);
+Potential::Potential(Parameters* parameters):Parameters(parameters), velocityDistributionBulgeTable(LookupTable(velocityDistributionBulgeTableFilename)) {
+	if (velocityDistributionBulgeTable.isEmpty()) {
+		std::cout << "No lookup table found for the bulge velocity distribution. Generating new table ... " << std::endl;
+		generateVelocityDistributionBulgeLookupTable(25000);
+		velocityDistributionBulgeTable = LookupTable(velocityDistributionBulgeTableFilename);
 	}
-	return table;
 }
-
-Potential::Potential(){}
-
-Potential::Potential(Parameters* parameters):Parameters(parameters){}
 
 double Potential::sphericalAveragedDisk(double r){
 	//gslSphericalAveragedDisk(double theta, void* p) {
@@ -265,7 +227,7 @@ double Potential::densityDisk(double x, double y, double z){
 double Potential::surfaceDensityDisk(double R){
 	gsl_function F;
 	F.function = &gslDensityDisk;
-	gslDensityDiskQagsParams densityDiskQagsParams = { mMassDisk, aDisk, bDisk, R };
+	gslDensityDiskQagsParams densityDiskQagsParams = { R };
 	F.params = &densityDiskQagsParams;
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
 	double result, error;
@@ -334,29 +296,6 @@ double Potential::surfaceDensityBulge(double R){
 	return 2.0 * result;
 }
 
-double Potential::frequencyDistribution(Vec3D position, Vec3D volumeElement) {
-	gsl_monte_function F;
-
-	F.f = &gslDensity;
-	F.dim = 3;
-
-	gsl_rng_env_setup();
-
-	const gsl_rng_type *T = gsl_rng_default;
-	gsl_rng* r = gsl_rng_alloc(T);
-
-	double xl[3] = { position.x, position.y, position.z };
-	double xu[3] = { position.x+volumeElement.x, position.y+volumeElement.y, position.z+volumeElement.z };
-	size_t calls = 500000;
-
-	gsl_monte_plain_state* s = gsl_monte_plain_alloc(3);
-	double res, err;
-	gsl_monte_plain_integrate(&F, xl, xu, 3, calls, r, s,&res, &err);
-	gsl_monte_plain_free(s);
-	gsl_rng_free(r);
-	return res;
-}
-
 double Potential::massDisk(Vec3D position, Vec3D volumeElement){
 
 	struct gslDensityDiskParams densityDiskParams = { mMassDisk, aDisk, bDisk };
@@ -393,13 +332,11 @@ double Potential::massDisk(Vec3D position, Vec3D volumeElement){
 
 double Potential::massBulge(Vec3D position, Vec3D volumeElement) {
 
-	struct gslDensityBulgeParams densityBulgeParams = { mMassBulge, aBulge };
-
 	gsl_monte_function F;
 
 	F.f = &gslDensityBulge;
 	F.dim = 3;
-	F.params = &densityBulgeParams;
+	//F.params = &densityBulgeParams;
 
 	gsl_rng_env_setup();
 
@@ -495,10 +432,12 @@ double Potential::azimuthalStreamingVelocity(Vec3D position){
 }
 
 double Potential::velocityDistributionBulge(double r){
-	if (r == 0) {
-		std::cout << "r=0 not allowed." << std::endl;
+	if (r == 0 && debug) {
+		std::cout << "\nr=0 not allowed." << std::endl;
 		return 0;
 	}
+	if (r == 0) 
+		return 0;
 
 	gsl_function F;
 	F.function = &gslVelocityBulge;
@@ -517,17 +456,21 @@ double Potential::velocityDistributionBulgeTableValue(double r){
 }
 
 void Potential::generateVelocityDistributionBulgeLookupTable(double rMax){
+	LookupTable lookupTable = LookupTable(velocityDistributionBulgeTableFilename);
 	std::string header = "mMassBlackHole " + std::to_string(mMassBlackHole) +
 		", aBulge " + std::to_string(aBulge) +", mMassDisk " + std::to_string(mMassDisk) +", mMassBulge " + std::to_string(mMassBulge) +
 		", aDisk " + std::to_string(aDisk) +", bDisk " + std::to_string(bDisk) +", rHalo " + std::to_string(rHalo) +", mMassHalo " + std::to_string(mMassHalo);
 	std::vector<double> rVec;
 	std::vector<double> velDist;
+	ProgressBar progressBar = ProgressBar(0, rMax);
 	for (double r = 0; r <= rMax; ++r) {
-		std::cout << "r: " << r << std::endl;
+		progressBar.Update(r);
+		progressBar.Print();
 		rVec.push_back(r);
 		velDist.push_back(velocityDistributionBulge(r));
 	}
-	InOut::write(rVec, velDist, lookupTableLocation + velocityDistributionBulgeTableFilename, header);
+	lookupTable.setMap(rVec, velDist);
+	lookupTable.makeFile(velocityDistributionBulgeTableFilename, header);
 	return;
 }
 
@@ -617,4 +560,48 @@ void Potential::applyForce(Star* star){
 //	double r = gsl_hypot(R, z);
 //	return -G*(mMassBulge2 / (r + aBulge2));
 //	//return -G * (mMassBlackHole / r + mMassDisk / sqrt(gsl_pow_2(R) + gsl_pow_2(aDisk + sqrt(gsl_pow_2(z) + gsl_pow_2(bDisk))))+mMassBulge2/(r+aBulge2)+4*M_PI*gsl_pow_3(rHalo)*log(1+r/rHalo)/r);
+//}
+
+//double Potential::frequencyDistribution(Vec3D position, Vec3D volumeElement) {
+//	gsl_monte_function F;
+//
+//	F.f = &gslDensity;
+//	F.dim = 3;
+//
+//	gsl_rng_env_setup();
+//
+//	const gsl_rng_type *T = gsl_rng_default;
+//	gsl_rng* r = gsl_rng_alloc(T);
+//
+//	double xl[3] = { position.x, position.y, position.z };
+//	double xu[3] = { position.x+volumeElement.x, position.y+volumeElement.y, position.z+volumeElement.z };
+//	size_t calls = 500000;
+//
+//	gsl_monte_plain_state* s = gsl_monte_plain_alloc(3);
+//	double res, err;
+//	gsl_monte_plain_integrate(&F, xl, xu, 3, calls, r, s,&res, &err);
+//	gsl_monte_plain_free(s);
+//	gsl_rng_free(r);
+//	return res;
+//}
+
+//double gslVelocityDispersionBulge(double z, void* p) {
+//	struct gslVelocityDispersionBulgeParams* fp = (struct gslVelocityDispersionBulgeParams*)p;
+//	double R2 = gsl_pow_2(fp->R);
+//	double z2 = gsl_pow_2(z);
+//	double r = gsl_hypot(fp->R, z);
+//	double r2 = gsl_pow_2(r);
+//	double r3 = gsl_pow_3(r);
+//	double haloTemp = fp->densityHalo * gsl_pow_3(fp->rHalo);
+//	double hypotbz = gsl_hypot(fp->bDisk, z);
+//	double diskTemp = fp->aDisk + hypotbz;
+//	//only bulge density:
+//	//double temp = fp->mMassBlackHole / r3 + fp->mMassBulge / (r * gsl_pow_2(fp->aBulge + r));
+//	//	 + fp->mMassDisk* diskTemp / (hypotbz*pow(R2 + gsl_pow_2(diskTemp), 1.5))
+//	//	 -4 * M_PI * haloTemp / (r2 * (fp->rHalo + r)) +4*M_PI*haloTemp *log((fp->rHalo + r) / fp->rHalo)/ r3;
+//	//temp = temp* fp->G* z / (r* gsl_pow_3(fp->aBulge + r));
+//	//all densities:
+//	double temp = fp->aBulge * fp->mMassBulge / (2 * M_PI * r * gsl_pow_3(fp->aBulge + r)) + haloTemp / (r * gsl_pow_2(fp->rHalo + r)) + gsl_pow_2(fp->bDisk) * fp->mMassDisk * (fp->aDisk * R2 + gsl_pow_2(diskTemp) * (fp->aDisk + 3 * hypotbz)) / (4 * M_PI * gsl_pow_2(hypotbz) * pow(R2 + gsl_pow_2(diskTemp), 2.5));
+//	temp = temp * fp->G * z * (fp->mMassBlackHole / r + fp->mMassBulge / (r * gsl_pow_2(fp->aBulge + r)) - 4 * M_PI * haloTemp / (r2 * (fp->rHalo + r)) + fp->mMassDisk*diskTemp / (hypotbz*pow(R2 + gsl_pow_2(diskTemp), 1.5)) + 4 * M_PI * haloTemp * log((fp->rHalo + r) / fp->rHalo) / r3);
+//	return temp;
 //}

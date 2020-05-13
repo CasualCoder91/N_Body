@@ -1,7 +1,30 @@
 #include "InOut.h"
 
+std::string InOut::makeDirectory(std::string path){
+	setOutputDirectory(path);
+	int nError = 0;
+#if defined(_WIN32)
+	nError = _mkdir(path.c_str()); // can be used on Windows
+#else 
+	mode_t nMode = 0733; // UNIX style permissions
+	nError = mkdir(sPath.c_str(), nMode); // can be used on non-Windows
+#endif
+	if (nError != 0) {
+		int i = 0;
+		// handle your error here
+	}
+	return path;
+}
+
+void InOut::setOutputDirectory(std::string& filename){
+	size_t found = filename.find('/');
+	if (found == std::string::npos)
+		filename = outputDirectory + filename;
+}
+
 void InOut::write(std::vector<Star*> stars, std::string filename) {
-	std::ofstream file(InOut::outputDirectory + filename);
+	setOutputDirectory(filename);
+	std::ofstream file(filename);
 	for (Star* star : stars) {
 		file << star->position.print() << '\n';
 	}
@@ -9,7 +32,8 @@ void InOut::write(std::vector<Star*> stars, std::string filename) {
 }
 
 void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
-	std::ofstream file(InOut::outputDirectory + filename);
+	setOutputDirectory(filename);
+	std::ofstream file(filename);
 	for (int i = 0; i < stars.size();++i) {
 		file << stars.at(i)->position.x << ',' << stars.at(i)->position.y << ',' << stars.at(i)->position.z << ',' << i << '\n';
 	}
@@ -17,7 +41,8 @@ void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
 }
 
 void InOut::writeAll(std::vector<Star*> stars, std::string filename){
-	std::ofstream file(InOut::outputDirectory + filename);
+	setOutputDirectory(filename);
+	std::ofstream file(filename);
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size(); ++i) {
 		file << "Star: " << i << '\n';
@@ -31,7 +56,8 @@ void InOut::write(Node* tree, std::string filename){
 		throw "Write function may only be called on root node";
 	}
 	else {
-		std::ofstream file(InOut::outputDirectory + filename);
+		setOutputDirectory(filename);
+		std::ofstream file(filename);
 		writeRecursively(&file, tree);
 		file.close();
 	}
@@ -99,6 +125,7 @@ void InOut::write(std::vector<double> x, std::vector<double> y, std::string file
 	if (x.size() != y.size()) {
 		throw  "Vector size must be equal";
 	}
+	setOutputDirectory(filename);
 	std::ofstream file(filename);
 	if (header.size() > 0)
 		file << header << '\n';
@@ -110,7 +137,8 @@ void InOut::write(std::vector<double> x, std::vector<double> y, std::string file
 }
 
 void InOut::write(std::vector<Vec3D> line, std::string filename) {
-	std::ofstream file(InOut::outputDirectory + filename);
+	setOutputDirectory(filename);
+	std::ofstream file(filename);
 	for (int i = 0; i < line.size(); ++i) {
 		file << line.at(i).print() << '\n';
 	}

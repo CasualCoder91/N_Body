@@ -16,7 +16,7 @@
 
 class Simulation : public Parameters{
 
-private:
+public:
     Database* database;
     Potential* potential;
     

@@ -34,6 +34,7 @@ protected:
     /** @brief Gravitational constant in astronomical units: parsec/solar mass*km^2/s^2*/
     static double G;// = 4.483e-3;
     int nStars = 0;
+    Vec3D clusterLocation = Vec3D(40, 40, 0);
 
 private:
     void getParametersFromConfig();

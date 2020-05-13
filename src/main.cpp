@@ -26,8 +26,13 @@
 #include "Potential.h"
 
 #include "Test.h"
+#include "Plot.h"
 
 typedef int mode_t;
+//namespace plt = matplotlibcpp;
+
+//global parameters
+bool debug = false;
 
 int main() {
 
@@ -42,105 +47,87 @@ int main() {
 	//Test::potentialSurfaceDensityDisk();
 
 	//Test::potentialCircularVelocityOutput();
-	//Test::velocityBulgeTest();
+	//Test::velocityBulge();
 	//Test::potentialCircularVelocityOutput();
 	//Test::initialConditionsSampleBulgeVelocity();
-	//Test::escapeVelocityTest();
+	//Test::escapeVelocity();
 	//Test::initialConditionsInitFieldStars();
 	//Potential::generateVelocityDistributionBulgeLookupTable(25000);
 	//std::vector<std::vector<double>> test = InOut::readDoubleMatrix("velocityDistributionBulgeTable.dat");
-
-
-
-	//return 0;
 
 	Database db = Database();
 	db.open();
 	db.setup();
 
-	int selection;
-	int simulationID = -1;
-	std::cout << "[1] Load Simulation\n[2] New Simulation\n[3] Exit" << std::endl;
-	std::cin >> selection;
-	std::cin.clear();
-	if (selection == 1) {
-		std::vector<SimulationData> simulations = db.selectSimulationData();
-		std::cout << "Available Simulations:" << std::endl;
-		for (SimulationData sim : simulations) {
-			std::cout << sim.print();
-		}
-		std::cout << "Input ID to select simulation" << std::endl;
-		int simulationID = 0;
-		std::cin >> simulationID;
-		std::cin.clear();
-		Simulation simulation = Simulation(simulationID, &db.selectSimulationData(simulationID).at(0));
-		std::cout << "[1] Ouput\n[2] Analysis" << std::endl;
+	while (true) {
+		int selection;
+		int simulationID = -1;
+		std::cout << "[1] Load Simulation\n[2] New Simulation\n[3] Run Tests\n[4] Exit" << std::endl;
 		std::cin >> selection;
+		std::cin.clear();
 		if (selection == 1) {
-			for (int timestep = 0; timestep < simulation.getNTimesteps(); timestep += simulation.getOutputTimestep()) {
-				std::vector<Star*> stars = db.selectStars(simulation.getID(), timestep);
-				InOut::write(stars, "starPositions"+std::to_string(timestep)+".dat");
+			std::vector<SimulationData> simulations = db.selectSimulationData();
+			std::cout << "Available Simulations:" << std::endl;
+			for (SimulationData sim : simulations) {
+				std::cout << sim.print();
 			}
-		}
-		else {
-			std::cout << "Running analysis on selected simulation" << std::endl;
-			Parameters parameters = Parameters();
-			Analysis analysis = Analysis(parameters);
-			int analysisID = db.insertAnalysis(simulationID, analysis);
-			std::vector<int> timeSteps = db.selectTimesteps();
-			for (int timeStep : timeSteps) {
-				std::vector<Star*> stars = db.selectStars(selection, timeStep);
-				if (analysis.getbEnergy()) {
-					db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
-				}
-				if (analysis.getbAverageVelocity()) {
-					std::vector<Vec3D*> velocities = {};
-					for (Star* star : stars) {
-						velocities.push_back(&star->velocity);
+			std::cout << "Input ID to select simulation" << std::endl;
+			int simulationID = 0;
+			std::cin >> simulationID;
+			std::cin.clear();
+			Simulation simulation = Simulation(simulationID, &db.selectSimulationData(simulationID).at(0));
+			std::cout << "[1] Ouput\n[2] Analysis" << std::endl;
+			std::cin >> selection;
+			std::cin.clear();
+			if (selection == 1) {
+				std::string directory = "Simulation" + std::to_string(simulation.getID());
+				directory = InOut::makeDirectory(directory);
+				std::cout << "Files will be written to: " << directory << std::endl;
+				db.outputStars(simulation.getID(), directory + "/stars.dat");
+				std::cout << "done" << std::endl;
+			}
+			else {
+				std::cout << "Running analysis on selected simulation" << std::endl;
+				Parameters parameters = Parameters();
+				Analysis analysis = Analysis(parameters);
+				int analysisID = db.insertAnalysis(simulationID, analysis);
+				std::vector<int> timeSteps = db.selectTimesteps();
+				for (int timeStep : timeSteps) {
+					std::vector<Star*> stars = db.selectStars(selection, timeStep);
+					if (analysis.getbEnergy()) {
+						db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
 					}
-					double test = analysis.average(velocities);
-					db.insertAnalysisdtVelocity(analysisID, timeStep, analysis.average(velocities));
+					if (analysis.getbAverageVelocity()) {
+						std::vector<Vec3D*> velocities = {};
+						for (Star* star : stars) {
+							velocities.push_back(&star->velocity);
+						}
+						double test = analysis.average(velocities);
+						db.insertAnalysisdtVelocity(analysisID, timeStep, analysis.average(velocities));
+					}
 				}
+				std::cout << "Energy analysis done" << std::endl;
 			}
-			std::cout << "Energy analysis done" << std::endl;
+
 		}
-
+		else if (selection == 2) {
+			Parameters parameters = Parameters();
+			simulationID = db.insert(&parameters);
+			Simulation simulation = Simulation(simulationID, &db, &parameters);
+			std::cout << "New simulation created. ID = " << simulationID << std::endl;
+			std::cout << "Starting simulation" << std::endl;
+			simulation.run();
+		}
+		else if (selection == 3) {
+			Test::potentialCircularVelocity();
+			Test::massDistribution(500,15000);
+			Test::sampleFieldStarPositions(2000);
+			Test::velocityBulge();
+			Test::initialConditionsSampleBulgeVelocity();
+		}
+		else if (selection == 4) {
+			return 0;
+		}
 	}
-	else if(selection == 2){
-		Parameters parameters = Parameters();
-		simulationID = db.insert(&parameters);
-		Simulation simulation = Simulation(simulationID,&db,&parameters);
-		std::cout << "New simulation created. ID = " << simulationID << std::endl;
-		std::cout << "Starting simulation" << std::endl;
-		simulation.run();
-	}
-	else if (selection == 3) {
-		return 0;
-	}
-
-	
-
-	//Vec3D test = Vec3D(2, 3, 4);
-	//Vec3D normalVector = Vec3D(0, 0, 1);
-	//Vec3D xy = Vec3D::projection(test,normalVector);
-
-	//std::cout << xy.print() << std::endl;
-	return 0;
-
-	//Simulation
-	//int nStars = 100;
-	//double boxLength = 1; //[pc]
-	//double dt = 0.01;
-	//int nTimesteps = 100;
-	//bool energyAnalysis = true;
-
-	//Analysis analysis = Analysis(parameters);
-
-
-	//stars.push_back(new Star(1000, 0, 0, 0));
-	//totalMass += 1000;
-
-	
-	std::cin.get();
 	return 0;
 }

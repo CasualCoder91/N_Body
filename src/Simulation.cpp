@@ -46,10 +46,9 @@ void Simulation::run(){
 	std::vector<Star*> clusterStars = initialConditions.initStars(nextStarIndex);
 	double totalMass = initialConditions.initialMassSalpeter(clusterStars,0.08,100);
 	initialConditions.plummerSphere(clusterStars, 1, totalMass);
-	Vec3D offset = Vec3D(40, 40, 0);
-	initialConditions.offsetCluster(clusterStars, offset);
+	initialConditions.offsetCluster(clusterStars, clusterLocation);
 	Vec3D clusterVelocity = Vec3D();
-	initialConditions.sampleDiskVelocity(clusterVelocity, offset);
+	initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
 	for (Star* star : clusterStars) {
 		star->velocity += clusterVelocity;
 	}
@@ -64,12 +63,12 @@ void Simulation::run(){
 	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex); //0.00029088833
 	database->insertStars(this->getID(), fieldStars, 0);
 
-
+	std::cout << "Starting integration" << std::endl;
 	//Integrate
 	Integrator integrator = Integrator(this->getdt());
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	Vec3D tlf = Vec3D(), brb = Vec3D();
-	for (int i = 0; i < this->getNTimesteps(); i++) {
+	for (int i = 0; i <= this->getNTimesteps(); i++) {
 		ProgressBar progressBar = ProgressBar(0, this->getNTimesteps());
 		if (i % this->getOutputTimestep() == 0) {
 			//InOut::writeWithLabel(fieldStars, "Stars/5/fieldStars" + std::to_string(i) + ".dat");

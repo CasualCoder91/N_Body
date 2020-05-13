@@ -9,14 +9,25 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <direct.h>
 
 #include "Star.h"
 #include "Node.h"
 
 namespace InOut{
 
-    /**@brief All files are writen within this directory */
+    /**@brief By default all files are writen within this subdirectory */
     static std::string outputDirectory = "Output/";
+
+    /**@brief Creates given directories if they do not exist */
+    std::string makeDirectory(std::string path);
+    /**
+     @brief if parameter is just a filename (contains no /) it is modified to poit to the default Directory 
+     @param [in,out] filePath if it just contains the filename the path is set to the default directory.
+    */
+    static void setOutputDirectory(std::string& filePath);
     /**
      @brief Writes all star coordinates into a filePath. Format according to Vec3D::print()
      @param stars Vector of star pointers. All elements are written to filePath
@@ -47,6 +58,7 @@ namespace InOut{
      @brief Writes std::vector elements to a filePath. Format: first x element, first y emelent
      @param x,y std::vector meant to be coordinates. vector size must be equal.
      @param filename The name and location of the filePath. Can be used as path relative to excelcuateble ie "folder/filename.dat"
+     @param header If given this will be written at the start of the generated file.
      */
 	void write(std::vector<double> x, std::vector<double> y, std::string filename, std::string header = "");
     /**
@@ -55,8 +67,13 @@ namespace InOut{
      */
     void writeRecursively(std::ofstream* file_ptr, Node* node_ptr);
 
+    /**
+     @brief Each Vec3D entry is written into one separate line.
+     */
     void write(std::vector<Vec3D> line, std::string filename);
-
+    /**
+     @brief wip! Will read Vec3D objects from file
+     */
     std::vector<Vec3D> readVectors(std::string filename);
 
     std::vector<std::vector<double>> readDoubleMatrix(std::string filname);

@@ -6,6 +6,10 @@ LookupTable::LookupTable(std::string filename, std::string delimiter) {
     init();
 }
 
+bool LookupTable::isEmpty(){
+    return map.empty();
+}
+
 double LookupTable::get(double key){
     std::map<double, double>::iterator low, prev;
     low = map.lower_bound(key); // lowest value above used key
@@ -37,7 +41,7 @@ void LookupTable::setMap(std::vector<double> keys, std::vector<double> values){
 void LookupTable::makeFile(std::string pFileName, std::string header){
     if (pFileName.size() != 0)
         fileName = pFileName;
-    std::ofstream file(fileName);
+    std::ofstream file(filePath + fileName);
     if (header.size()>0)
         file << header << '\n';
     //no NOT parallel this one
@@ -64,7 +68,7 @@ void LookupTable::init(){
         }
     }
 
-    if (map.size() == 0) {
+    if (map.size() == 0 && debug) {
         std::cout << "Map initialization failed. File not found or corrupted:" << std::endl;
         std::cout << "Path: " << filePath << " | Filename: " << fileName << std::endl;
         std::cin.get();

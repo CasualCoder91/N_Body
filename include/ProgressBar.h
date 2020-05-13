@@ -12,6 +12,7 @@ public:
     void SetActive(bool value);
     bool GetActive();
 private:
+    float shift = 0;
     float progress = 0.0; //goes from 0 to 1
     int barWidth = 70;      //size of the progress bar
     float minValue = 0;

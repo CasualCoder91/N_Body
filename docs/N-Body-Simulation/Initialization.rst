@@ -101,7 +101,7 @@ Individual Star positions within some volume are sampled directly from the densi
 
 .. doxygenfunction:: sampleBulgePositions
 
-.. plot:: pyplots/potentialSample.py
+.. plot:: pyplots/potentialPositions.py
 
 
 .. bibliography:: bibtex.bib

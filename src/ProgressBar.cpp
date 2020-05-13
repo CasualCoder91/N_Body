@@ -1,22 +1,23 @@
 #include "ProgressBar.h"
 #include <iostream>
 
-ProgressBar::ProgressBar(float minValue, float maxValue)
-{
-	this->minValue = minValue;
-	this->maxValue = maxValue;
+ProgressBar::ProgressBar(float minValue, float maxValue){
+    if (minValue < 0)
+        this->shift = abs(minValue);
+	this->minValue = minValue + shift;
+	this->maxValue = maxValue + shift;
     this->active = (minValue < maxValue);
 }
 
-ProgressBar::ProgressBar(float minValue, float maxValue, bool active)
-{
-    this->minValue = minValue;
-    this->maxValue = maxValue;
+ProgressBar::ProgressBar(float minValue, float maxValue, bool active){
+    if (minValue < 0)
+        this->shift = abs(minValue);
+    this->minValue = minValue + shift;
+    this->maxValue = maxValue + shift;
     this->active = active;
 }
 
-void ProgressBar::Print()
-{
+void ProgressBar::Print(){
     if (this->active) {
         progress = currentValue / (maxValue - minValue);
         std::cout << ansi::foreground_red << "[";
@@ -26,29 +27,28 @@ void ProgressBar::Print()
             else if (i == pos) std::cout << ">";
             else std::cout << " ";
         }
-        std::cout << "] " << int(progress * 100.0) << " %\r" << ansi::reset;
+        if(currentValue!= maxValue)
+            std::cout << "] " << int(progress * 100.0) << " %\r" << ansi::reset;
+        else
+            std::cout << "] " << int(progress * 100.0) << " %\n" << ansi::reset;
     }
 }
 
-void ProgressBar::Update(float currentValue)
-{
+void ProgressBar::Update(float currentValue){
     this->active = true;
     if (currentValue == -1)
         this->active = false;
-    this->currentValue = currentValue;
+    this->currentValue = currentValue+shift;
 }
 
-float ProgressBar::GetProgress()
-{
+float ProgressBar::GetProgress(){
     return progress;
 }
 
-void ProgressBar::SetActive(bool value)
-{
+void ProgressBar::SetActive(bool value){
     this->active = value;
 }
 
-bool ProgressBar::GetActive()
-{
+bool ProgressBar::GetActive(){
     return this->active;
 }

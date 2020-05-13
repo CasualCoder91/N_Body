@@ -51,6 +51,7 @@ public:
      @param maxNStars the maximum amount of stars to calculate the running time for.
      @param nTimesteps the amount of timesteps used for each number of stars.
      @param integrator the integrator used for integration over time.
+     @param parameters Parameters read from cfg, passed as argument to avoid unnecessary reads. 
      */
 	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator, Parameters* parameters);
 
