@@ -94,3 +94,7 @@ else:
     breathe_projects = {
     "N_Body": "../docs/docs/doxygen/xml/",
     }
+
+exclude_patterns = [
+                    'sqlite3.c'
+                    ]
