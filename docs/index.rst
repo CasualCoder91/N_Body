@@ -29,3 +29,6 @@ Indices and tables
 * :ref:`search`
 
 …
+
+.. doxygenclass:: Plot
+   :members:
