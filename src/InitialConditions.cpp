@@ -26,9 +26,6 @@ double InitialConditions::farthermostFromZero(double a, double b){
 	return b;
 }
 
-InitialConditions::InitialConditions():gen((std::random_device())()) {
-}
-
 InitialConditions::InitialConditions(Parameters* parameters, Potential* potential):gen((std::random_device())()),Parameters(parameters){
 	this->potential = potential;
 }

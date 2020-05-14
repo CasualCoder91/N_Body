@@ -41,7 +41,8 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 	for (int n = 2; n <= maxNStars; ++n) {
 
 		//init
-		InitialConditions initialConditions = InitialConditions();
+		Potential potential = Potential(parameters);
+		InitialConditions initialConditions = InitialConditions(parameters,&potential);
 		int starID = 0;
 		std::vector<Star*> stars = initialConditions.initStars(starID);
 		double totalMass = initialConditions.initialMassSalpeter(stars, 0.08, 100);

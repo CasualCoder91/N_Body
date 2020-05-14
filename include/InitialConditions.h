@@ -27,8 +27,6 @@ private:
 	Potential* potential;
 
 public:
-	/**@brief Default constructor. Only \ref gen is initialized */
-	InitialConditions();
 	/**@brief Prefered constructor. All member variables are initialized */
 	InitialConditions(Parameters* parameters, Potential* potential);
 	/**
@@ -89,9 +87,19 @@ public:
 	@see sampleBulgePositions
 	*/
 	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
-
+	/**
+	@brief Adds velocity (circular with dispersion) at given /rev position to /ref velocity 
+	@param [in,out] velocity [km/s]
+	@param [in] position [pc]
+	@see sampleDiskVelocities
+	*/
 	void sampleDiskVelocity(Vec3D& velocity, Vec3D& position);
-
+	/**
+	@brief Adds velocity (circular with dispersion) at given star positions to corresponding star velocities.
+	@param [in,out] velocity [km/s]
+	@param [in] position [pc]
+	@see sampleDiskVelocity
+	*/
 	double sampleDiskVelocities(std::vector<Star*> stars);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the bulge.

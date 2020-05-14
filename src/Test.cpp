@@ -23,8 +23,9 @@ void Test::sampleFieldStarPositionsOutput(std::string path, int nStars) {
 	std::vector<Star*> bulgeStars = InitialConditions::initStars(0, nStars);
 
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
-
-	InitialConditions initialConditions = InitialConditions();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions initialConditions = InitialConditions(&parameters,&potential);
 	initialConditions.sampleDiskPositions(diskStars, Vec3D(-40000, -40000, -20000), Vec3D(80000, 80000, 40000));
 	initialConditions.sampleBulgePositions(bulgeStars, Vec3D(-6000, -6000, -6000), Vec3D(12000, 12000, 12000));
 
@@ -75,11 +76,13 @@ void Test::potentialCircularVelocityOutput(std::string path){
 }
 
 void Test::initialConditionsMassSalpeterOutput(int nStars) {
-	InitialConditions testInitialConditions = InitialConditions();
-	testInitialConditions.setNStars(nStars);
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
+	initialConditions.setNStars(nStars);
 	int starID = 0;
-	std::vector<Star*> stars = testInitialConditions.initStars(starID);
-	testInitialConditions.initialMassSalpeter(stars, 0.08, 100);
+	std::vector<Star*> stars = initialConditions.initStars(starID);
+	initialConditions.initialMassSalpeter(stars, 0.08, 100);
 	std::vector<double> index;
 	std::vector<double> mass;
 	double i = 0;
@@ -93,7 +96,9 @@ void Test::initialConditionsMassSalpeterOutput(int nStars) {
 }
 
 void Test::initialConditionsMassBulgeOutput(double totalMass){
-	InitialConditions initialConditions = InitialConditions();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initialMassBulge(totalMass, starID);
 	std::vector<double> index;
@@ -134,7 +139,7 @@ void Test::potentialSurfaceDensityDisk(){
 void Test::initialConditionsSampleDisk(){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
-	InitialConditions initialConditions = InitialConditions();
+	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
 	double gridResolution = 0.001;
 	Vec3D position = Vec3D(5, 5, 0);
 	Vec3D volumeElement = Vec3D(gridResolution, gridResolution, gridResolution);
@@ -280,8 +285,9 @@ void Test::velocityBulgeR() {
 }
 
 void Test::initialConditionsSampleBulgeVelocity(){
-	Parameters testParameters = Parameters();
-	InitialConditions initialConditions = InitialConditions();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
 	initialConditions.setNStars(1);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initStars(0, starID);
@@ -325,7 +331,9 @@ void Test::escapeVelocity(){
 
 void Test::initialConditionsInitFieldStars(){
 	std::cout << "Testing field star creation" << std::endl;
-	InitialConditions initialConditions = InitialConditions();
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initFieldStars(starID); //0.00029088833
