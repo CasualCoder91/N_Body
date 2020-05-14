@@ -64,9 +64,6 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-
-
-
 import subprocess, os
 
 def configureDoxyfile(input_dir, output_dir):
@@ -89,7 +86,7 @@ if read_the_docs_build:
     output_dir = 'build'
     configureDoxyfile(input_dir, output_dir)
     subprocess.call('doxygen', shell=True)
-    breathe_projects["N_Body"] = output_dir + '/xml'
+    breathe_projects["N_Body"] = output_dir + '/xml/'
 else:
     breathe_projects = {
     "N_Body": "../docs/docs/doxygen/xml/",

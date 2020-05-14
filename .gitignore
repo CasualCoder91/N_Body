@@ -344,11 +344,11 @@ docs/html
 docs/latex
 docs/Doxyfile
 !docs/N-Body-Simulation
-!docs/source/conf.py
+!docs/conf.py
 !doc/Doxyfile.in
 !docs/CMakeList.txt
 !Doxyfile.in
-!Doxyfile
+!doc/Doxyfile
 !Output/
 Output/*
 !Output/empty.txt
