@@ -88,7 +88,7 @@ public:
 	*/
 	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 	/**
-	@brief Adds velocity (circular with dispersion) at given /rev position to /ref velocity 
+	@brief Adds velocity (circular with dispersion) at given \p position to \p velocity 
 	@param [in,out] velocity [km/s]
 	@param [in] position [pc]
 	@see sampleDiskVelocities
