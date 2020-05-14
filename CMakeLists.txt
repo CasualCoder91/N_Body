@@ -25,17 +25,17 @@ include_directories(include)
 #add_executable(main main.cpp)
 add_executable(N_Body ${SOURCES})
 
-SET( LIBS OpenMP::OpenMP_CXX )
+SET( LIBS OpenMP::OpenMP_CXX sqlite )
 target_link_libraries(N_Body ${LIBS}  )
 
 add_subdirectory (docs)
 
 configure_file("${PROJECT_SOURCE_DIR}/docs/stars0.jpg" "${PROJECT_SOURCE_DIR}/build/docs/stars0.jpg" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/docs/conf.py" "${PROJECT_SOURCE_DIR}/build/docs/conf.py" COPYONLY)
-#configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/sqlite3.dll" COPYONLY)
-#configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/sqlite3.lib" COPYONLY)
-#configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.dll" COPYONLY)
-#configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.lib" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/sqlite3.dll" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/sqlite3.lib" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/sqlite3.dll" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.dll" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/sqlite3.lib" "${PROJECT_SOURCE_DIR}/build/Release/sqlite3.lib" COPYONLY)
 
 configure_file("${PROJECT_SOURCE_DIR}/src/Plots/potentialCircularVelocity.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/potentialCircularVelocity.py" COPYONLY)
 configure_file("${PROJECT_SOURCE_DIR}/src/Plots/initialConditionsMassBulge.py" "${PROJECT_SOURCE_DIR}/docs/pyplots/initialConditionsMassBulge.py" COPYONLY)

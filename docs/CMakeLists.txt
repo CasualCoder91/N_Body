@@ -11,6 +11,14 @@ set(DOXYGEN_INDEX_FILE ${DOXYGEN_OUTPUT_DIR}/html/index.html)
 set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
 set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
+message(STATUS "print_all_variables------------------------------------------{")
+message(STATUS "DOXYGEN_INPUT_DIR=${DOXYGEN_INPUT_DIR}")
+message(STATUS "DOXYGEN_OUTPUT_DIR=${DOXYGEN_OUTPUT_DIR}")
+message(STATUS "DOXYGEN_INDEX_FILE=${DOXYGEN_INDEX_FILE}")
+message(STATUS "DOXYFILE_IN=${DOXYFILE_IN}")
+message(STATUS "DOXYFILE_OUT=${DOXYFILE_OUT}")
+message(STATUS "print_all_variables------------------------------------------}")
+
 #Replace variables inside @@ with the current values
 configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
 
