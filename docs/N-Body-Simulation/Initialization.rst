@@ -8,7 +8,7 @@ Initial Mass Function (IMF)
 Salpeter (1955)
 ^^^^^^^^^^^^^^^
 
-.. doxygenfunction:: initialMassSalpeter
+.. doxygenfunction:: InitialConditions::initialMassSalpeter
 
 .. plot:: pyplots/initialConditionsMassSalpeter.py
 
