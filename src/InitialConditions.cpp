@@ -26,13 +26,11 @@ double InitialConditions::farthermostFromZero(double a, double b){
 	return b;
 }
 
-InitialConditions::InitialConditions(bool printDetails):gen((std::random_device())()) {
-	this->printDetails = printDetails;
+InitialConditions::InitialConditions():gen((std::random_device())()) {
 }
 
-InitialConditions::InitialConditions(Parameters* parameters, Potential* potential, bool printDetails):gen((std::random_device())()),Parameters(parameters){
+InitialConditions::InitialConditions(Parameters* parameters, Potential* potential):gen((std::random_device())()),Parameters(parameters){
 	this->potential = potential;
-	this->printDetails = printDetails;
 }
 
 std::vector<Star*> InitialConditions::initStars(int& firstID){
@@ -327,9 +325,9 @@ std::vector<Star*> InitialConditions::massDisk(double totalMass, int& starID){
 		else
 			break;
 	}
-	if (stars.size() > 0 && printDetails)
+	if (stars.size() > 0 && debug)
 		std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
-	if(printDetails)
+	if(debug)
 		std::cout << "Proposed mass of disk: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
 	return stars;
 }
@@ -375,9 +373,9 @@ std::vector<Star*> InitialConditions::initialMassBulge(double totalMass, int& st
 		else
 			break;
 	}
-	if (stars.size()>0 && printDetails)
+	if (stars.size()>0 && debug)
 		std::cout << "Mean mass: " << pickedTotalMass / stars.size() << std::endl;
-	if (printDetails)
+	if (debug)
 		std::cout << "Proposed mass of Bulge: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
 	return stars;
 }

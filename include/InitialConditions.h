@@ -15,19 +15,22 @@
 #include "Potential.h"
 #include "ProgressBar.h"
 
+extern bool debug;
+
 class InitialConditions : Parameters {
 private:
+	/**@brief 1km divided by 1pc*/
 	static double kmInpc;
-
+	/**@brief pseudo-random generator used for sampling various distributions*/
 	std::mt19937 gen;
-
+	/**@brief The Potential used during simulation. Initial conditions heavily depend on it.*/
 	Potential* potential;
 
-	bool printDetails = false;
-
 public:
-	InitialConditions(bool printDetails = false);
-	InitialConditions(Parameters* parameters, Potential* potential, bool printDetails = false);
+	/**@brief Default constructor. Only \ref gen is initialized */
+	InitialConditions();
+	/**@brief Prefered constructor. All member variables are initialized */
+	InitialConditions(Parameters* parameters, Potential* potential);
 	/**
 	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
 	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
@@ -40,9 +43,13 @@ public:
 	@see initStars(int& firstID)
 	*/
 	static std::vector<Star*> initStars(int firstID, int nStars);
-
+	/**
+	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
+	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
+	@param Amount of stars given by Parameters::nStars
+	@see initStars(int& firstID)
+	*/
 	std::vector<Star*> initFieldStars(int& firstID);
-
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
 	@param [in,out] stars The mass of these stars will be modified.

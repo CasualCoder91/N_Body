@@ -19,6 +19,7 @@ Simulating stellar motions for open clusters in the Milky Way
    N-Body-Simulation/Initialization
    N-Body-Simulation/Database
    N-Body-Simulation/Potential
+   N-Body-Simulation/Code
 
 
 Indices and tables
@@ -29,6 +30,3 @@ Indices and tables
 * :ref:`search`
 
 …
-
-.. doxygenclass:: Plot
-   :members:
