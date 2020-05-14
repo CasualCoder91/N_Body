@@ -29,14 +29,3 @@ Indices and tables
 * :ref:`search`
 
 …
-
-Docs
-====
-
-Tests
-
-.. doxygenclass:: InitialConditions
-   :members:
-
-.. doxygenclass:: Database
-  :members:

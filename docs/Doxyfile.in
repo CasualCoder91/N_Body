@@ -937,7 +937,7 @@ EXCLUDE_PATTERNS  = */docs/*
 EXCLUDE_PATTERNS += */Output/*
 EXCLUDE_PATTERNS += */Data/*
 EXCLUDE_PATTERNS += */build/*
-EXCLUDE_PATTERNS += */src/sqlite3.c
+EXCLUDE_PATTERNS += */src/*
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
