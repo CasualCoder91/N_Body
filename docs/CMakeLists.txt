@@ -15,6 +15,7 @@ set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
 
 file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}) #Doxygen won't create this for us
+file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR}/xml) #Doxygen won't create this for us
 
 add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
                    DEPENDS ${N_BODY_PUBLIC_HEADERS}
@@ -30,7 +31,7 @@ set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/docs/sphinx)
 add_custom_target(Sphinx ALL
                   COMMAND
                   ${SPHINX_EXECUTABLE} -b html -c ./
-		  -Dbreathe_projects.CatCutifier=${DOXYGEN_OUTPUT_DIR}
+		  -Dbreathe_projects.N_Body=${DOXYGEN_OUTPUT_DIR}/xml
                   ${SPHINX_SOURCE} ${SPHINX_BUILD}
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                   COMMENT "Generating documentation with Sphinx")

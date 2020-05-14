@@ -86,7 +86,7 @@ if read_the_docs_build:
     output_dir = 'build'
     configureDoxyfile(input_dir, output_dir)
     subprocess.call('doxygen', shell=True)
-    breathe_projects["N_Body"] = output_dir
+    breathe_projects["N_Body"] = output_dir + '/xml'
 else:
     breathe_projects = {
     "N_Body": "../docs/docs/doxygen/xml/",

@@ -25,7 +25,7 @@ include_directories(include)
 #add_executable(main main.cpp)
 add_executable(N_Body ${SOURCES})
 
-SET( LIBS OpenMP::OpenMP_CXX sqlite3 )
+SET( LIBS OpenMP::OpenMP_CXX )
 target_link_libraries(N_Body ${LIBS}  )
 
 add_subdirectory (docs)
