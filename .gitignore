@@ -348,6 +348,7 @@ docs/Doxyfile
 !doc/Doxyfile.in
 !docs/CMakeList.txt
 !Doxyfile.in
+!Doxyfile
 !Output/
 Output/*
 !Output/empty.txt
