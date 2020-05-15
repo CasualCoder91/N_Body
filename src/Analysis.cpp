@@ -42,11 +42,11 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 
 		//init
 		Potential potential = Potential(parameters);
-		InitialConditions initialConditions = InitialConditions(parameters,&potential);
+		InitialConditions initialConditions = InitialConditions(&potential);
 		int starID = 0;
-		std::vector<Star*> stars = initialConditions.initStars(starID);
+		std::vector<Star*> stars = initialConditions.initStars(starID,parameters->getNStars());
 		double totalMass = initialConditions.initialMassSalpeter(stars, 0.08, 100);
-		initialConditions.plummerSphere(stars, 1, totalMass);
+		initialConditions.plummerSphere(stars, totalMass,parameters->getBoxLength(),parameters->getG());
 
 		startTime = std::chrono::steady_clock::now();
 		for (int i = 0; i < nTimesteps; i++) {
@@ -105,6 +105,10 @@ double Analysis::dispersion(std::vector<Vec3D*>& vectors){
 }
 
 void Analysis::write(){
+	if (time.size() != totE.size()) {
+		std::cout << "time and energy vectors must have equal size! Aborting." << std::endl;
+		return;
+	}
 	if (bEnergy) {
 		InOut::write(time, totE, "TotalEnergy.dat");
 		InOut::write(time, kinE, "KinetikEnergy.dat");

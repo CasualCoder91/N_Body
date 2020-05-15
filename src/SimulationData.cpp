@@ -117,6 +117,10 @@ int SimulationData::getNStars() {
 	return nStars;
 }
 
+void SimulationData::setNStars(int N){
+	this->nStars = N;
+}
+
 
 void SimulationData::initParameterFromCfg(std::string name, double& value){
 	if (!config.Get(name, value)) {

@@ -18,14 +18,14 @@ void Test::sampleFieldStarPositions(int nStars){
 }
 
 void Test::sampleFieldStarPositionsOutput(std::string path, int nStars) {
-
-	std::vector<Star*> diskStars = InitialConditions::initStars(0, nStars);
-	std::vector<Star*> bulgeStars = InitialConditions::initStars(0, nStars);
+	int firstID = 0;
+	std::vector<Star*> diskStars = InitialConditions::initStars(firstID, nStars);
+	std::vector<Star*> bulgeStars = InitialConditions::initStars(firstID, nStars);
 
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
-	InitialConditions initialConditions = InitialConditions(&parameters,&potential);
+	InitialConditions initialConditions = InitialConditions(&potential);
 	initialConditions.sampleDiskPositions(diskStars, Vec3D(-40000, -40000, -20000), Vec3D(80000, 80000, 40000));
 	initialConditions.sampleBulgePositions(bulgeStars, Vec3D(-6000, -6000, -6000), Vec3D(12000, 12000, 12000));
 
@@ -77,11 +77,11 @@ void Test::potentialCircularVelocityOutput(std::string path){
 
 void Test::initialConditionsMassSalpeterOutput(int nStars) {
 	Parameters parameters = Parameters();
+	parameters.setNStars(nStars);
 	Potential potential = Potential(&parameters);
-	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
-	initialConditions.setNStars(nStars);
+	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initStars(starID);
+	std::vector<Star*> stars = initialConditions.initStars(starID,parameters.getNStars());
 	initialConditions.initialMassSalpeter(stars, 0.08, 100);
 	std::vector<double> index;
 	std::vector<double> mass;
@@ -98,7 +98,7 @@ void Test::initialConditionsMassSalpeterOutput(int nStars) {
 void Test::initialConditionsMassBulgeOutput(double totalMass){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
-	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
+	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initialMassBulge(totalMass, starID);
 	std::vector<double> index;
@@ -139,7 +139,7 @@ void Test::potentialSurfaceDensityDisk(){
 void Test::initialConditionsSampleDisk(){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
-	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
+	InitialConditions initialConditions = InitialConditions(&potential);
 	double gridResolution = 0.001;
 	Vec3D position = Vec3D(5, 5, 0);
 	Vec3D volumeElement = Vec3D(gridResolution, gridResolution, gridResolution);
@@ -230,11 +230,11 @@ void Test::massDistributionTimer(){
 	std::cout << "totalMass: " << totalMass << std::endl;
 }
 
-void Test::velocityDistributionBulge(){
+void Test::velocityDispersionBulge(){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
 	for (double r = 100; r < 6000; r += 100) {
-		std::cout << "r: " << r << " | velocityDistribution: " << potential.velocityDistributionBulge(r) << std::endl;
+		std::cout << "r: " << r << " | velocityDistribution: " << potential.velocityDispersionBulge(r) << std::endl;
 	}
 }
 
@@ -255,7 +255,7 @@ void Test::velocityBulge(){
 			double z = distance * sin(b * 0.0174533);
 			double r = gsl_hypot3(x, y, z);
 			double R = gsl_hypot(x, y);
-			double disp = potential.velocityDistributionBulge(r);
+			double disp = potential.velocityDispersionBulge(r);
 			//std::cout << "r: " << r << " | vel dist: " << disp << std::endl;
 			dispersion.push_back(disp);
 			//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
@@ -275,7 +275,7 @@ void Test::velocityBulgeR() {
 	Potential potential = Potential(&parameters);
 	for (double r = 10; r < 1000; r += 1) {
 		radius.push_back(r);
-		double disp = potential.velocityDistributionBulge(r);
+		double disp = potential.velocityDispersionBulge(r);
 		std::cout << "r: " << r << " | vel dist: " << disp << std::endl;
 		dispersion.push_back(disp);
 		//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
@@ -286,11 +286,11 @@ void Test::velocityBulgeR() {
 
 void Test::initialConditionsSampleBulgeVelocity(){
 	Parameters parameters = Parameters();
+	parameters.setNStars(1);
 	Potential potential = Potential(&parameters);
-	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
-	initialConditions.setNStars(1);
+	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initStars(0, starID);
+	std::vector<Star*> stars = initialConditions.initStars(starID, parameters.getNStars());
 	double delta = 100;
 	std::vector<double> bValues{ -4, -6, -8 };
 	std::vector<double> longitude;
@@ -331,12 +331,11 @@ void Test::escapeVelocity(){
 
 void Test::initialConditionsInitFieldStars(){
 	std::cout << "Testing field star creation" << std::endl;
-	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
-	InitialConditions initialConditions = InitialConditions(&parameters, &potential);
+	Potential potential = Potential(this);
+	InitialConditions initialConditions = InitialConditions(&potential);
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initFieldStars(starID); //0.00029088833
+	std::vector<Star*> stars = initialConditions.initFieldStars(starID,focus,viewPoint,distance,dx,angle); //0.00029088833
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	std::cout << "Time needed for calucation: " << time_span.count() << "seconds" << std::endl;

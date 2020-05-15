@@ -1,6 +1,6 @@
 #include "Integrator.h"
 
-double Integrator::dayInSec = 86400;
+double Integrator::secInDay = 86400;
 double Integrator::kmInpc = 3.086e-13;
 
 Integrator::Integrator(double dt){
@@ -23,8 +23,8 @@ void Integrator::euler(std::vector<Star*> stars, double dt){
 	//#pragma omp parallel for //1:10
 	for (int i = 0; i < stars.size(); ++i){
 		//root->applyForce(stars.at(i)->position, &stars.at(i)->acceleration);
-		stars.at(i)->velocity += (stars.at(i)->acceleration * this->dt * this->dayInSec);
-		stars.at(i)->position += (stars.at(i)->velocity * this->dt*this->kmInpc* this->dayInSec);
+		stars.at(i)->velocity += (stars.at(i)->acceleration * this->dt * this->secInDay);
+		stars.at(i)->position += (stars.at(i)->velocity * this->dt*this->kmInpc* this->secInDay);
 	}
 }
 

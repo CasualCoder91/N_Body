@@ -1,5 +1,5 @@
 /**
- * SQLite Helper. Link between Database and Objects like Stars, Analysis, Simulation.
+ * SQLite Helper. Link between database and objects like stars, analysis, simulation, ...
  *
  * @author Alarich Herzner
  * @version 0.9 05.03.2020
@@ -25,7 +25,13 @@ class Database{
 	bool isOpen;
 
 private:
+	/**
+	@brief Executes sql statement.
+	@param sql The statement which shall be executed.
+	*/
+	bool exec(char* sql);
 
+	int getLastID();
 public:
 	Database();
 	/**
@@ -33,23 +39,46 @@ public:
 	@param name file path of the database. If not passed \ref Database.dataBaseDataPath is used. If name is given, that database will be used/created.
 	*/
 	bool open(char* name ="");
-	bool exec(char* sql);
+	/** @brief Creates all tables (and database) if they do not exist yet. */
 	void setup();
-	int getLastID();
+	/** @brief returns the largest id from the given \p table */
 	int selectLastID(std::string table);
+	/** @brief inserts the given parameters into the "simulation" table and returns the id of the new simulation*/
 	int insert(Parameters* parameters);
+	/** @brief inserts the stars (including positions and velocities)*/
 	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0);
+	/** @brief inserts (or replaces/updates) the analysis parameters for the given simulation*/
 	int insertAnalysis(int simulationID, Analysis analysis);
+	/** @brief inserts (or replaces/updates) one record of kinetic, potential and total energy */
 	void insertAnalysisdtEnergy(int analysisID,int dt, double kinE, double potE);
+	/** @brief inserts (or replaces/updates) one record of the average velocity */
 	void insertAnalysisdtVelocity(int analysisID, int dt, double velocity);
+	/** @brief inserts positions and velocities of given \p stars and \p timestep */
 	void timestep(int timestep, std::vector<Star*>& stars);
+	/** 
+	@brief inserts one star (including positions and velocities)
+	@note for multiple stars use insertStars instead!
+	*/
 	void insertStar(int simulationID, Star* star, int& timestep);
+	/**
+	@brief inserts the position of one star
+	@note extensive use (loop) is not recommended
+	*/
 	void insertPosition(int& idStar, Vec3D& position, int& timestep);
+	/**
+	@brief inserts the velocity of one star
+	@note extensive use (loop) is not recommended
+	*/
 	void insertVelocity(int& idStar, Vec3D& velocity, int& timestep);
+	/** @brief returns all saved simulations data by default. specify \p ID to retrieve a specific record */
 	std::vector<SimulationData> selectSimulationData(int ID = -1);
+	/** @brief returns all velocities at the given \p timestep */
 	std::vector<Vec3D> selectVelocities(int timestep);
+	/** @brief returns all timesteps */
 	std::vector<int> selectTimesteps();
+	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) */
 	std::vector<Star*> selectStars(int simulationID, int timeStep);
+	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath);
 };
 

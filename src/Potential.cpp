@@ -99,7 +99,7 @@ double Potential::gslVelocityBulge(double r, void* p){
 	double temp = 1/(pow(gsl_pow_2(fp->aBulge)+r2,2.5))*(
 		fp->mMassBlackHole / r2 
 		+ fp->mMassBulge*r / pow(gsl_pow_2(fp->aBulge) + gsl_pow_2(r),1.5)
-		+ Potential::sphericalAveragedDisk(r) 
+		+ Potential::sphericalAveragedDisc(r) 
 		- fp->mMassHalo / (r2 + r * fp->rHalo) + fp->mMassHalo * log((r + fp->rHalo) / fp->rHalo) / r2
 		);
 	//double temp = 1 / (r * gsl_pow_3(fp->aBulge + r)) * (fp->mMassBlackHole / r2 + fp->mMassBulge / gsl_pow_2(fp->aBulge + r) + fp->mMassDisk * r / pow(gsl_pow_2(fp->aDisk + fp->bDisk) + r2, 1.5) - haloTemp / (r2 + r * fp->rHalo) + haloTemp * log((r + fp->rHalo) / fp->rHalo) / r2);
@@ -141,7 +141,7 @@ Potential::Potential(Parameters* parameters):Parameters(parameters), velocityDis
 	}
 }
 
-double Potential::sphericalAveragedDisk(double r){
+double Potential::sphericalAveragedDisc(double r){
 	//gslSphericalAveragedDisk(double theta, void* p) {
 	//struct gslSphericalAveragedDiskParams* fp = (struct gslSphericalAveragedDiskParams*)p;
 
@@ -431,7 +431,7 @@ double Potential::azimuthalStreamingVelocity(Vec3D position){
 	return sqrt(gsl_pow_2(radialVelocityDispersionDisk(R,position.z)) * (1.0 - gsl_pow_2(epicyclicFrequency(R, position.z)) / (4.0 * gsl_pow_2(angularVelocity(R))) - 2.0 * R / aDisk) + gsl_pow_2(circularVelocity(&position)));
 }
 
-double Potential::velocityDistributionBulge(double r){
+double Potential::velocityDispersionBulge(double r){
 	if (r == 0 && debug) {
 		std::cout << "\nr=0 not allowed." << std::endl;
 		return 0;
@@ -467,7 +467,7 @@ void Potential::generateVelocityDistributionBulgeLookupTable(double rMax){
 		progressBar.Update(r);
 		progressBar.Print();
 		rVec.push_back(r);
-		velDist.push_back(velocityDistributionBulge(r));
+		velDist.push_back(velocityDispersionBulge(r));
 	}
 	lookupTable.setMap(rVec, velDist);
 	lookupTable.makeFile(velocityDistributionBulgeTableFilename, header);

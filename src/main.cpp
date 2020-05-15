@@ -75,7 +75,7 @@ int main() {
 			int simulationID = 0;
 			std::cin >> simulationID;
 			std::cin.clear();
-			Simulation simulation = Simulation(simulationID, &db.selectSimulationData(simulationID).at(0));
+			Simulation simulation = Simulation(simulationID,&db, &db.selectSimulationData(simulationID).at(0));
 			std::cout << "[1] Ouput\n[2] Analysis" << std::endl;
 			std::cin >> selection;
 			std::cin.clear();

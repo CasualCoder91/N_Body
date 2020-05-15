@@ -34,13 +34,13 @@ public:
     std::vector<double> time;
 
     /**
-     @brief The total potential energy of the given stars is calculated.
+     @brief The total potential energy of the given stars is calculated and stored into potE
      @param stars Vector of star pointers of which the potential energy is calculated.
      @return The potential energy of the given stars
      */
 	double potentialEnergy(std::vector<Star*>& stars);
     /**
-     @brief The total kinetic energy of the given stars is calculated.
+     @brief The total kinetic energy of the given stars is calculated and stored into kinE
      @param stars Vector of star pointers of which the kinetic energy is calculated.
      @return The kinetic energy of the given stars
      */
@@ -60,11 +60,17 @@ public:
     bool getbAverageVelocity();
 
     bool getbAverage2DVelocity();
-
+    /**
+     @static
+     @brief calculates the average vector of the given \p vectors
+     */
     static double average(std::vector<Vec3D*>& vectors);
-
+    /**
+     @static
+     @brief calculates the dispersion (= variability/scatter/spread) of the given \p vectors
+     */
     static double dispersion(std::vector<Vec3D*>& vectors);
-
+    /** @brief saves the calculated energy values for each timestep to .dat Files (TotalEnergy.dat, KinetikEnergy.dat,PotentialEnergy.dat)*/
     void write();
 };
 

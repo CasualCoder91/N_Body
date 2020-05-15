@@ -1,3 +1,11 @@
+/**
+ * Stores all parameters needed for the simulation. 
+ * Parameters are loaded from the simulation.cfg or from the database.
+ *
+ * @author Alarich Herzner
+ * @version 0.9 05.03.2020
+*/
+
 #pragma once
 
 #include <string>
@@ -45,11 +53,14 @@ protected:
     void initParameterFromCfg(std::string name, std::string& value);
     void initParameterFromCfg(std::string name, Vec3D& value);
 public:
-    //used when loading from Database
+    /**@brief: All values except \p id are read from simulation.cfg */
     SimulationData(int id);
+    /**@brief: used when loading from database */
     SimulationData(int id, std::string title,int nStars, double boxLength, double dt, int nTimesteps, int outputTimestep);
     SimulationData(int id, SimulationData* simulationData);
+    /**@brief: Simulation id is not set! */
     SimulationData(SimulationData* simulationData);
+    /**@brief: returns a formated string containing ID, title and amount of cluster stars*/
     std::string print();
     double getBoxLength(); //[pc]
     double getdt();
@@ -62,4 +73,6 @@ public:
     double getAlpha();
     double getG();
     int getNStars();
+    /** @brief Sets amount of cluster stars. If possible use the simulation.cfg file instead*/
+    void setNStars(int N);
 };

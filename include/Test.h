@@ -12,7 +12,7 @@
 #include "ProgressBar.h"
 #include "Plot.h"
 
-class Test {
+class Test : Parameters {
 private: 
 	static void pythonScript(std::string fileName);
 	static std::string absolutePath;
@@ -46,7 +46,7 @@ public:
 
 	static void escapeVelocity();
 
-	static void initialConditionsInitFieldStars();
+	void initialConditionsInitFieldStars();
 
-	static void velocityDistributionBulge();
+	static void velocityDispersionBulge();
 };

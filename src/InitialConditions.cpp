@@ -26,29 +26,20 @@ double InitialConditions::farthermostFromZero(double a, double b){
 	return b;
 }
 
-InitialConditions::InitialConditions(Parameters* parameters, Potential* potential):gen((std::random_device())()),Parameters(parameters){
+InitialConditions::InitialConditions(Potential* potential):gen((std::random_device())()){
 	this->potential = potential;
 }
 
-std::vector<Star*> InitialConditions::initStars(int& firstID){
+std::vector<Star*> InitialConditions::initStars(int& firstID,int nStars){
 	std::vector<Star*> stars = {};
-	for (; firstID < this->nStars; firstID++) {
+	for (; firstID < nStars; firstID++) {
 		Star* star = new Star(firstID);
 		stars.push_back(star);
 	}
 	return stars;
 }
 
-std::vector<Star*> InitialConditions::initStars(int firstID, int nStars){
-	std::vector<Star*> stars = {};
-	for (int i = 0; i < nStars; i++) {
-		Star* star = new Star(firstID + i);
-		stars.push_back(star);
-	}
-	return stars;
-}
-
-std::vector<Star*> InitialConditions::initFieldStars(int& starID){
+std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle){
 	std::cout << "Initializing field stars" << std::endl;
 	Vec3D direction = (focus - viewPoint).normalize();
 	int nSteps = (distance+dx) / dx;
@@ -377,12 +368,12 @@ std::vector<Star*> InitialConditions::initialMassBulge(double totalMass, int& st
 	return stars;
 }
 
-void InitialConditions::plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass){
+void InitialConditions::plummerSphere(std::vector<Star*>& stars, double totalMass, double scaleParameter, double G){
 	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
 	for (Star* star : stars) {
-		double distance = structuralLength / sqrt(pow(dis(gen), -2. / 3.) - 1);
+		double distance = scaleParameter /sqrt(pow(dis(gen), -2. / 3.) - 1);
 		star->position = Vec3D::randomVector(distance);
-		plummerVelocity(star, structuralLength, distance, totalMass);
+		plummerVelocity(star, scaleParameter, distance, totalMass, G);
 	}
 }
 
@@ -392,17 +383,13 @@ void InitialConditions::offsetCluster(std::vector<Star*>& stars, Vec3D& offset){
 	}
 }
 
-void InitialConditions::setNStars(int N){
-	this->nStars = N;
-}
-
-double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass){
+double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass, double G){
 	//return sqrt(2.) * pow(distance * distance + structuralLength, -0.25);
 	//https://github.com/bacook17/behalf/blob/master/behalf/initialConditions.py
-	return sqrt(2. * this->G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
+	return sqrt(2. * G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
 }
 
-void InitialConditions::plummerVelocity(Star* star, double structuralLength, double distance, double totalMass){
+void InitialConditions::plummerVelocity(Star* star, double structuralLength, double distance, double totalMass, double G){
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	//Rejection Technique
 	std::uniform_real_distribution<> dis_g(0.0, 0.1);
@@ -412,7 +399,7 @@ void InitialConditions::plummerVelocity(Star* star, double structuralLength, dou
 		q = dis(gen);
 		g = dis_g(gen);
 	}
-	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass)/1.01;
+	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass, G)/1.01;
 	star->velocity = Vec3D::randomAngles(velocity);
 }
 

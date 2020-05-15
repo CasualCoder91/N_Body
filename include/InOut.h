@@ -1,5 +1,6 @@
 /**
  * Collection of functions handling reading from and writing to files.
+ * Writing into the path of the executable is not possible. If the passed path contains only the filename the file will be written to /Output.
  *
  * @author Alarich Herzner
  * @version 0.9 05.03.2020
@@ -66,18 +67,16 @@ namespace InOut{
      @attention do **not** call this function
      */
     void writeRecursively(std::ofstream* file_ptr, Node* node_ptr);
-
     /**
-     @brief Each Vec3D entry is written into one separate line.
+     @brief Each Vec3D entry is written into one separate line into the passed \p filename.
      */
     void write(std::vector<Vec3D> line, std::string filename);
     /**
-     @brief wip! Will read Vec3D objects from file
+     @brief reads Vec3D objects from file (format for each line: x,y,z).
+     @todo: test it ;-)
      */
     std::vector<Vec3D> readVectors(std::string filename);
-
-    std::vector<std::vector<double>> readDoubleMatrix(std::string filname);
-
+    /** @brief checks if the given \p inputString can be converted into a double. */
     bool checkIsDouble(std::string inputString);
 
 };

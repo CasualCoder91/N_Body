@@ -2,7 +2,7 @@
  * Handles initialization of mass, position and velocity of Stars.
  *
  * @author Alarich Herzner
- * @version 0.1 09.04.2020
+ * @version 0.2 15.05.2020
 */
 
 #pragma once
@@ -17,7 +17,7 @@
 
 extern bool debug;
 
-class InitialConditions : Parameters {
+class InitialConditions{
 private:
 	/**@brief 1km divided by 1pc*/
 	static double kmInpc;
@@ -28,26 +28,23 @@ private:
 
 public:
 	/**@brief Prefered constructor. All member variables are initialized */
-	InitialConditions(Parameters* parameters, Potential* potential);
-	/**
-	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
-	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
-	*/
-	std::vector<Star*> initStars(int& firstID);
+	InitialConditions(Potential* potential);
 	/**
 	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
 	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
 	@param nStars Amout of stars generated
-	@see initStars(int& firstID)
 	*/
-	static std::vector<Star*> initStars(int firstID, int nStars);
+	static std::vector<Star*> initStars(int& firstID, int nStars);
 	/**
-	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
+	@brief Creates field stars in the field of view defined by \p focus, \p viewPoint, \p distance and \p angle.
+	@param dx The step size along the line of sight in pc
 	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
-	@param Amount of stars given by Parameters::nStars
-	@see initStars(int& firstID)
+	@param focus one point along the line of sight (0,0,0) would be the center of the MW.
+	@param viewPoint the position of the observer.
+	@param distance how far the observer can see/the render distance
+	@param angle the angle of view
 	*/
-	std::vector<Star*> initFieldStars(int& firstID);
+	std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle);
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
 	@param [in,out] stars The mass of these stars will be modified.
@@ -96,8 +93,7 @@ public:
 	void sampleDiskVelocity(Vec3D& velocity, Vec3D& position);
 	/**
 	@brief Adds velocity (circular with dispersion) at given star positions to corresponding star velocities.
-	@param [in,out] velocity [km/s]
-	@param [in] position [pc]
+	@param [in,out] stars
 	@see sampleDiskVelocity
 	*/
 	double sampleDiskVelocities(std::vector<Star*> stars);
@@ -109,19 +105,49 @@ public:
 	@see sampleDiskPositions
 	*/
 	void sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
-
+	/**
+	@brief Adds velocity (circular with dispersion) at given \p position to \p velocity
+	@param [in,out] velocity [km/s]
+	@param [in] position [pc]
+	@see sampleBulgeVelocities
+	*/
 	void sampleBulgeVelocity(Vec3D& velocity, Vec3D& position); //todo:test!
+	/**
+	@brief Adds velocity (circular with dispersion) at given star positions to corresponding star velocities.
+	@param [in,out] stars
+	@see sampleBulgeVelocity
+	*/
 	void sampleBulgeVelocities(std::vector<Star*> stars);
-
-	void plummerSphere(std::vector<Star*>& stars, double structuralLength, double totalMass); // structuralLength = a = softening parameter
-
+	/**
+	@brief Sets position and velocity of \p stars overwriting(!) current values. Used to setup clusters.
+	@param [in,out] stars Obtain this parameter with for instance initStars(int& firstID)
+	@param totalMass The sum of star masses.
+	@param scaleParameter size of the cluster core [pc]
+	@param G gravitational constant
+	*/
+	void plummerSphere(std::vector<Star*>& stars, double totalMass, double scaleParameter, double G);
+	/**
+	@brief Adds \p offset to positions of \p stars 
+	@param [in,out] stars
+	@param offset [pc]
+	*/
 	void offsetCluster(std::vector<Star*>& stars, Vec3D& offset);
 
-	void setNStars(int N);
 private:
-	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass); // in km*s^-1
-	void plummerVelocity(Star* star, double structuralLength, double distance, double totalMass);
+	/** @brief Calculates the local escape velocity [km*s^-1] in the Plummer model */
+	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass, double G);
+	/**
+	@brief Sets the (isotropic) velocity of the \p star in a plummer sphere.
+	@param [in,out] star
+	@param scaleParameter size of the cluster core [pc]
+	@param distance of the \p star from the center of the sphere [pc]
+	@param totalMass [SolarMass] of the cluster
+	@param G gravitational constant
+	*/
+	void plummerVelocity(Star* star, double scaleParameter, double distance, double totalMass, double G);
+	/** @brief calculates the value which is closest to zero in the intervall [a,b] */
 	static double closestToZero(double a, double b);
+	/** @brief calculates the value which is farthest away from zero in the intervall [a,b] */
 	static double farthermostFromZero(double a, double b);
 };
 

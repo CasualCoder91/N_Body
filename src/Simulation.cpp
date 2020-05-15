@@ -1,20 +1,15 @@
 #include "Simulation.h"
 
-Simulation::Simulation(int id, Database* database){
-	this->database = database;
-	this->simulationID = id;
-	this->potential = new Potential(this);
-}
-
 Simulation::Simulation(int id){
 	this->simulationID = id;
 	this->database = new Database();
 	this->potential = new Potential(this);
 }
 
-Simulation::Simulation(int id, SimulationData* simulationData){
+Simulation::Simulation(int id, Database* database, SimulationData* simulationData){
 	this->simulationID = id;
 	this->potential = new Potential(this);
+	this->database = database;
 }
 
 Simulation::Simulation(int id, Database* database, Parameters* parameters) :Parameters{ parameters } {
@@ -31,21 +26,15 @@ int Simulation::getID(){
 	return this->simulationID;
 }
 
-std::string Simulation::print(){
-	return "ID: " + std::to_string(this->simulationID) +
-		" | Title: " + this->title + 
-		" #Stars: " + std::to_string(this->nStars) +'\n';
-}
-
 void Simulation::run(){
 	//Init stars
-	InitialConditions initialConditions = InitialConditions(this,Simulation::potential);
+	InitialConditions initialConditions = InitialConditions(Simulation::potential);
 
 	//Init clusterStars
 	int nextStarIndex = database->selectLastID("star") + 1;
-	std::vector<Star*> clusterStars = initialConditions.initStars(nextStarIndex);
-	double totalMass = initialConditions.initialMassSalpeter(clusterStars,0.08,100);
-	initialConditions.plummerSphere(clusterStars, 1, totalMass);
+	std::vector<Star*> clusterStars = initialConditions.initStars(nextStarIndex,nStars);
+	double totalMass = initialConditions.initialMassSalpeter(clusterStars,minMass,maxMass);
+	initialConditions.plummerSphere(clusterStars, totalMass,boxLength,G);
 	initialConditions.offsetCluster(clusterStars, clusterLocation);
 	Vec3D clusterVelocity = Vec3D();
 	initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
@@ -60,7 +49,7 @@ void Simulation::run(){
 	//	initialConditions.sampleDiskPositions(fieldStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
 	//	initialConditions.sampleDiskVelocities(fieldStars);
 	//}
-	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex); //0.00029088833
+	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex,focus,viewPoint,distance,dx,angle); //0.00029088833
 	database->insertStars(this->getID(), fieldStars, 0);
 
 	std::cout << "Starting integration" << std::endl;

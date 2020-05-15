@@ -1,11 +1,6 @@
 #include "..\include\Plot.h"
 
-Plot::Plot(){
-	dataDirectory = "/docs/pyplots/";
-	plotDirectory = "/Output/";
-	pythonFile = std::filesystem::current_path().string() + "/src/Plots/plotCentral.py";
-	showPlot = false;
-}
+Plot::Plot(){}
 
 Plot::Plot(std::string dataDirectory, std::string plotDirectory, bool showPlot){
 	this->dataDirectory = dataDirectory;

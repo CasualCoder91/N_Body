@@ -15,7 +15,9 @@ double LookupTable::get(double key){
     low = map.lower_bound(key); // lowest value above used key
     if (low == map.end()) {
         std::cout << "UhOh! No matching value found in LookupTable.." << std::endl;
+        std::cin.clear();
         std::cin.get();
+        return -1;
     }
     else if (low == map.begin()) {
         return low->second;

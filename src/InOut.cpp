@@ -79,38 +79,24 @@ void InOut::writeRecursively(std::ofstream* file_ptr,Node* node_ptr) {
 std::vector<Vec3D> InOut::readVectors(std::string filename){
 	std::vector<Vec3D> vectors;
 	std::string line;
+	std::string delimiter = ",";
 	std::ifstream sVectors(filename);
 	if (sVectors.is_open()){
 		while (std::getline(sVectors, line)){
-			std::cout << line << '\n';
+			std::string firstToken = line.substr(0, line.find(delimiter));
+			if (checkIsDouble(firstToken)) {
+				size_t pos = line.find(delimiter);
+				double x = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				double y = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				double z = std::stod(line, nullptr);
+				vectors.push_back(Vec3D(x, y, z));
+			}
 		}
 		sVectors.close();
 	}
 	return vectors;
-}
-
-std::vector<std::vector<double>> InOut::readDoubleMatrix(std::string filname){
-	std::string line;
-	std::ifstream file(filname);
-	std::vector<double> row;
-	std::vector<std::vector<double>> matrix;
-	std::string delimiter = ",";
-
-	while (std::getline(file, line)){
-		std::string firstToken = line.substr(0, line.find(delimiter));
-		if (checkIsDouble(firstToken)) {
-			size_t pos = 0;
-			while ((pos = line.find(delimiter)) != std::string::npos) {
-				row.push_back(std::stod(line.substr(0, pos), nullptr));
-				line.erase(0, pos + delimiter.length());
-			}
-			row.push_back(std::stod(line, nullptr));
-			matrix.push_back(row);
-			row.clear();
-		}
-	}
-
-	return matrix;
 }
 
 bool InOut::checkIsDouble(std::string inputString){
@@ -144,3 +130,29 @@ void InOut::write(std::vector<Vec3D> line, std::string filename) {
 	}
 	file.close();
 }
+
+
+//@Note: replaced by LookupTable
+//std::vector<std::vector<double>> InOut::readDoubleMatrix(std::string filname){
+//	std::string line;
+//	std::ifstream file(filname);
+//	std::vector<double> row;
+//	std::vector<std::vector<double>> matrix;
+//	std::string delimiter = ",";
+//
+//	while (std::getline(file, line)){
+//		std::string firstToken = line.substr(0, line.find(delimiter));
+//		if (checkIsDouble(firstToken)) {
+//			size_t pos = 0;
+//			while ((pos = line.find(delimiter)) != std::string::npos) {
+//				row.push_back(std::stod(line.substr(0, pos), nullptr));
+//				line.erase(0, pos + delimiter.length());
+//			}
+//			row.push_back(std::stod(line, nullptr));
+//			matrix.push_back(row);
+//			row.clear();
+//		}
+//	}
+//
+//	return matrix;
+//}

@@ -2,7 +2,8 @@
  * The Milky Way Potential. A combination of the potentials for the black hole, bulge, disk and dark matter halo.
  *
  * @author Alarich Herzner
- * @version 0.2 16.04.2020
+ * @version 0.3 15.05.2020
+ * @todo: remove inheritance from Parameters.
 */
 
 #pragma once
@@ -50,33 +51,51 @@ public:
 
 private:
 	static double closestToZero(double a, double b);
-	
+	static double gslDensity(double x[], size_t dim, void* p);
+	static double gslDensity(double z, void* p);
+	static double gslVelocityBulge(double r, void* p);
+	static double gslDensityDisk(double x[], size_t dim, void* p);
+	static double gslDensityDisk(double z, void* p);
+	/**
+	@brief Calculates (numerical integration) the sperical averaged value of the disc potential derived by r.
+	This function is used to generate the bulge velocity dispersion
+	@param r The radius [pc]
+	*/
+	static double sphericalAveragedDisc(double r);
+	double angularVelocity(double R); // return in s^-1, new Bulge/Halo
+	double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
+	double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
 public:
 	Potential(Parameters * parameters);
-
-	static double sphericalAveragedDisk(double r);
-	double circularVelocity(Vec3D* position); // return in km/s
+	/** @brief the total (all potentials considered) circular velocity [km/s] at the \p position [pc] */
+	double circularVelocity(Vec3D* position);
+	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the disc potential*/
 	double circularVelocityDisk(Vec3D* position);
+	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the black hole potential*/
 	double circularVelocityBlackHole(Vec3D* position);
-	double circularVelocityBulge(Vec3D* position); // with new Bulge!
+	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the bulge potential*/
+	double circularVelocityBulge(Vec3D* position);
+	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the dark matter halo potential*/
 	double circularVelocityHalo(Vec3D* position);
-
+	/** @brief the local escape velocity at the given \p position*/
 	double escapeVelocity(Vec3D* position);
-
+	/** @brief the local density of the disc*/
 	static double densityDisk(double R, double z);
+	/** @brief the local density of the disc*/
 	static double densityDisk(double x, double y, double z);
 	/**
-	@brief Caluclate the surface mass density of the disk at a given radial distance R.
+	@brief Caluclate the surface mass density of the disk at a given radial distance \p R.
 	The GSL function gsl_integration_qagiu is used.
 	@param R The radius [pc] at which the surface mass density is calculated.
 	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
 	double surfaceDensityDisk(double R);
-	//static Vec3D sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
-
-	static double densityBulge(double r); //new Bulge
-	static double densityBulge(double R, double z); //new Bulge
-	static double densityBulge(double x, double y, double z); //new Bulge
+	/** @brief the local density of the bulge*/
+	static double densityBulge(double r);
+	/** @brief the local density of the bulge*/
+	static double densityBulge(double R, double z);
+	/** @brief the local density of the bulge*/
+	static double densityBulge(double x, double y, double z);
 	/**
 	@brief Caluclate the surface mass density of the bulge at a given radial distance R.
 	The GSL function gsl_integration_qagiu is used.
@@ -84,35 +103,32 @@ public:
 	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
 	double surfaceDensityBulge(double R); //new Bulge
-	//static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
-
-	//Mass of Disk and Bulge inside volume
-	//double frequencyDistribution(Vec3D position, Vec3D volumeElement);
+	/**@brief: Mass of the disc inside the \p volumeElement relative to the given \p position*/
 	double massDisk(Vec3D position, Vec3D volumeElement);
+	/**@brief: Mass of the bulge inside the \p volumeElement relative to the given \p position*/
 	double massBulge(Vec3D position, Vec3D volumeElement);
 
 	//all Potentials
-	double angularVelocity(double R); // return in s^-1, new Bulge/Halo
-	double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
-	double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
-	double radialVelocityDispersionDisk(double R, double z); // return in km/s
-	double verticalVelocityDispersion(double R); // return in km/s
-	double azimuthalVelocityDispersion(double R, double z); // return in km/s
+	/**@brief the radial (R) velocity dispersion [km/s] for stars belonging to the disc*/
+	double radialVelocityDispersionDisk(double R, double z);
+	/**@brief the vertical (z) velocity dispersion [km/s] for stars belonging to the disc*/
+	double verticalVelocityDispersion(double R);
+	/**@brief the azimuthal velocity dispersion [km/s] for stars belonging to the disc (tangential to circle around the center)*/
+	double azimuthalVelocityDispersion(double R, double z);
+	/**@brief the average azimuthal velocity [km/s] for stars belonging to the disc (tangential to circle around the center)*/
 	double azimuthalStreamingVelocity(Vec3D position);
-
-	//todo: test this, check Dimensions!
-	double velocityDistributionBulge(double r); // working with new potential?
-	double velocityDistributionBulgeTableValue(double r); // working with new potential?
+	/** 
+	@brief: the velocity dispersion due to the bulge potential at radius \p r
+	@note: This function is resource intensive and should only be used to create a lookup table.
+	@see: velocityDistributionBulgeTableValue
+	*/
+	double velocityDispersionBulge(double r);
+	/** @brief: the velocity dispersion due to the bulge potential at radius \p r read from a lookup table */
+	double velocityDistributionBulgeTableValue(double r);
+	/** @brief: creates a lookup table for the velocity distribution of the bulge. It does **not** initialize the lookuptable for the potential. */
 	void generateVelocityDistributionBulgeLookupTable(double rMax);
-	
+	/** @brief: adds acceleration based on the potential to the acceleration of the stars. */
 	void applyForce(Star* star);
-
-
-	static double gslDensity(double x[], size_t dim, void* p);
-	static double gslDensity(double z, void* p);
-	static double gslVelocityBulge(double r, void* p);
-	static double gslDensityDisk(double x[], size_t dim, void* p);
-	static double gslDensityDisk(double z, void* p);
 
 	//static double potentialEnergy(Vec3D& position);
 	//static double potentialEnergy(double R, double z);
@@ -123,5 +139,9 @@ public:
 	//static double particleEnergy(Star* star); // Energy per unit mass (not relative energy)
 	//static double particleEnergy(Vec3D& position, Vec3D& velocity);
 	//static double particleEnergy(Vec3D& position, double velocity);
+
+	//moved into InitialConditions
+	//static Vec3D sampleDisk(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
+	//static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 };
