@@ -54,6 +54,11 @@ public:
      @return lenght of the vector.
      */
     double length();
+
+    double phi();
+
+    double theta();
+
     /**
      @brief Calculates normalized vector with direction of caller.
      @return Vector with lenght=1 and direction of caller.

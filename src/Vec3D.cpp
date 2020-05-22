@@ -46,6 +46,14 @@ double Vec3D::length(){
 	return sqrt(this->x*this->x+this->y*this->y+this->z*this->z);
 }
 
+double Vec3D::phi(){
+	return atan2(y, x);
+}
+
+double Vec3D::theta(){
+	return acos(z / this->length());
+}
+
 Vec3D Vec3D::normalize(){
 	double n = this->length();
 	return Vec3D(x/n,y/n,z/n);

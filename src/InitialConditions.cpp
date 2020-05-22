@@ -233,7 +233,7 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 		va = potential->azimuthalStreamingVelocity(position);
 	}
 
-	double theta = atan2(position.y , position.x);
+	double theta = position.theta();
 
 	velocity += Vec3D(vR * cos(theta) + va * cos(theta+M_PI_2), vR * sin(theta) + va * sin(theta + M_PI_2), vz);
 }
@@ -297,8 +297,8 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 	std::normal_distribution<> velocityDistribution{ 0,delta };
 	double vRand = velocityDistribution(gen);
 
-	double theta = atan2(position.y, position.x);
-	double phi = asin(position.z / position.length());
+	double theta = position.theta();
+	double phi = position.phi();
 	velocity = Vec3D(vCirc * cos(theta + M_PI_2) + cos(phi)*cos(theta)*vRand, vCirc * sin(theta + M_PI_2) + cos(phi) * sin(theta) * vRand, sin(phi)*vRand);
 
 }

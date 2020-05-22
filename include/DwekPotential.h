@@ -15,7 +15,7 @@ class DwekPotential {
 	double rs = 1e3; //pc
 
 
-	static double denisty(double x, double y, double z);
+	double denisty(double x, double y, double z);
 
 	double PotentialNLM(unsigned int n, unsigned int l, unsigned int m, Vec3D position); //Basis function for Potential
 
