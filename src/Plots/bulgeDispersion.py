@@ -35,3 +35,6 @@ def bulgeDispersion(dataPath='',showPlot=True,arguments=[]):
 
     if showPlot:
         plt.show()
+
+if __name__ == "__main__":
+    bulgeDispersion()

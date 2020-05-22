@@ -49,4 +49,7 @@ public:
 	void initialConditionsInitFieldStars();
 
 	static void velocityDispersionBulge();
+
+	static void bulgeMass();
+
 };

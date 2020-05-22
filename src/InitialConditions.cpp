@@ -33,7 +33,7 @@ InitialConditions::InitialConditions(Potential* potential):gen((std::random_devi
 std::vector<Star*> InitialConditions::initStars(int& firstID,int nStars){
 	std::vector<Star*> stars = {};
 	for (; firstID < nStars; firstID++) {
-		Star* star = new Star(firstID);
+		Star* star = &Star(firstID);
 		stars.push_back(star);
 	}
 	return stars;
@@ -41,13 +41,14 @@ std::vector<Star*> InitialConditions::initStars(int& firstID,int nStars){
 
 std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle){
 	std::cout << "Initializing field stars" << std::endl;
+	angle = angle * 0.0174533; //convert degrees in rad
 	Vec3D direction = (focus - viewPoint).normalize();
 	int nSteps = (distance+dx) / dx;
 	ProgressBar progressBar = ProgressBar(0, nSteps, true);
 	std::vector<Star*> fieldStars;
 	//#pragma omp parallel for
 	for (int step = 1; step <= nSteps; ++step) {//steps along direction (line of sight)
-		double r = step*dx * tan(angle); //distance from line of sight at current step
+		double r = 0.5*step*dx * tan(angle); //distance from line of sight at current step
 		double aBoid = 2 * r;
 		if (aBoid < 1) //if cubes are smaller 1pc^3 density is aproximated 0
 			continue;
@@ -69,13 +70,69 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, V
 		std::vector<Star*> bulgeStars = initialMassBulge(bulgeMass,starID);
 		if (bulgeStars.size() > 0) {
 			sampleBulgePositions(bulgeStars, corner, volumeElement); //test
-			sampleBulgeVelocities(bulgeStars);
+			//sampleBulgeVelocities(bulgeStars);
 			fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
 		}
 		progressBar.Update(step);
 		progressBar.Print();
 	}
 	return fieldStars;
+}
+
+double InitialConditions::bulgeStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle){
+	std::cout << "Calculating Bulge Star Mass" << std::endl;
+	angle = angle * 0.0174533; //convert degrees in rad
+	Vec3D direction = (focus - viewPoint).normalize();
+	int nSteps = (distance + dx) / dx;
+	ProgressBar progressBar = ProgressBar(0, nSteps, true);
+	double totalMass = 0;
+	//#pragma omp parallel for
+	for (int step = 1; step <= nSteps; ++step) {//steps along direction (line of sight)
+		double r = 0.5 * step * dx * tan(angle); //distance from line of sight at current step
+		double aBoid = 2 * r;
+		if (aBoid < 1) //if cubes are smaller 1pc^3 density is aproximated 0
+			continue;
+		Vec3D rVec = sqrt(2) * r * Vec3D::crossProduct(&Vec3D(-1, 1, -1), &direction).normalize();
+		rVec.x = -abs(rVec.x);
+		rVec.y = -abs(rVec.y);
+		rVec.z = -abs(rVec.z);
+		Vec3D corner = viewPoint + direction * ((double)step - 1) * dx + rVec;
+		//std::cout << corner.print() << std::endl;
+		Vec3D volumeElement = direction * dx - 2 * rVec;
+		totalMass += potential->massBulge(corner, volumeElement);
+		progressBar.Update(step);
+		progressBar.Print();
+	}
+	return totalMass;
+}
+
+double InitialConditions::diskStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle){
+	std::cout << "Calculating Disk Star Mass" << std::endl;
+	angle = angle * 0.0174533; //convert degrees in rad
+	Vec3D direction = (focus - viewPoint).normalize();
+	int nSteps = (distance + dx) / dx;
+	ProgressBar progressBar = ProgressBar(0, nSteps, true);
+	double totalMass = 0;
+	//#pragma omp parallel for
+	for (int step = 1; step <= nSteps; ++step) {//steps along direction (line of sight)
+		double r = 0.5 * step * dx * tan(angle); //distance from line of sight at current step
+		double aBoid = 2 * r;
+		if (aBoid < 1) //if cubes are smaller 1pc^3 density is aproximated 0
+			continue;
+		Vec3D rVec = sqrt(2) * r * Vec3D::crossProduct(&Vec3D(-1, 1, -1), &direction).normalize();
+		rVec.x = -abs(rVec.x);
+		rVec.y = -abs(rVec.y);
+		rVec.z = -abs(rVec.z);
+		Vec3D corner = viewPoint + direction * ((double)step - 1) * dx + rVec;
+		if (corner.length() > potential->aBulge)
+			continue;
+		//std::cout << corner.print() << std::endl;
+		Vec3D volumeElement = direction * dx - 2 * rVec;
+		totalMass += potential->massDisk(corner, volumeElement);
+		progressBar.Update(step);
+		progressBar.Print();
+	}
+	return totalMass;
 }
 
 double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha){

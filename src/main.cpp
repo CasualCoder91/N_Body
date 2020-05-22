@@ -119,11 +119,12 @@ int main() {
 			simulation.run();
 		}
 		else if (selection == 3) {
-			Test::potentialCircularVelocity();
-			Test::massDistribution(500,15000);
-			Test::sampleFieldStarPositions(2000);
+			//Test::potentialCircularVelocity();
+			//Test::massDistribution(500,15000);
+			//Test::sampleFieldStarPositions(2000);
 			Test::velocityBulge();
-			Test::initialConditionsSampleBulgeVelocity();
+			//Test::initialConditionsSampleBulgeVelocity();
+			//Test::bulgeMass();
 		}
 		else if (selection == 4) {
 			return 0;

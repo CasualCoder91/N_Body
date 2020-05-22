@@ -1,7 +1,7 @@
 #include "..\include\Test.h"
 
-std::string Test::path = "/src/Test/";
-std::string Test::absolutePath = std::filesystem::current_path().string() + path;
+std::string Test::path = "src/Test/";
+std::string Test::absolutePath = std::filesystem::current_path().string() +"/" + path;
 
 void Test::pythonScript(std::string fileName){
 	std::string filename = path + fileName;
@@ -238,6 +238,39 @@ void Test::velocityDispersionBulge(){
 	}
 }
 
+void Test::bulgeMass(){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions conditions = InitialConditions(&potential);
+	std::cout << "DensityProfileBulge: start" << std::endl;
+	double rBulge = 2e3; //pc
+	double dEarth = 8e3; //pc
+	int starID = 0;
+	std::vector<double> longitude;
+	std::vector<double> mass;
+	//std::vector<double> bValues{-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	std::vector<double> bValues{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	const double degInRad = 0.0174533;
+	for (double b : bValues) {
+		for (double l = -10; l <= 10; l += 1) {
+			longitude.push_back(l);
+			double x = dEarth - dEarth *cos(b * degInRad) * cos(l * degInRad);
+			double y = dEarth*cos(b * degInRad) * sin(l * degInRad);
+			double z = dEarth*sin(b * degInRad);
+			Vec3D focus = Vec3D(x, y, z);
+			double r = focus.length();
+			double totalMass = conditions.bulgeStarMass(focus, Vec3D(dEarth,0,0), dEarth+rBulge, 100, 1);
+			totalMass += conditions.diskStarMass(focus, Vec3D(dEarth, 0, 0), dEarth + rBulge, 100, 1);
+			mass.push_back(totalMass);
+		}
+		InOut::write(longitude, mass, "testBulgeMass" + std::to_string((int)b) + ".dat");
+		longitude.clear();
+		mass.clear();
+	}
+	//Plot plot = Plot(path, path, true);
+	//plot.plot("bulgeDispersion", { });
+}
+
 void Test::velocityBulge(){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
@@ -260,11 +293,11 @@ void Test::velocityBulge(){
 			dispersion.push_back(disp);
 			//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
 		}
-		InOut::write(longitude, dispersion, path + "/bulgeDispersion" + std::to_string((int)b)+".dat");
+		InOut::write(longitude, dispersion, path + "bulgeDispersion" + std::to_string((int)b)+".dat");
 		longitude.clear();
 		dispersion.clear();
 	}
-	Plot plot = Plot(path, path, true);
+	Plot plot = Plot(absolutePath, absolutePath, true);
 	plot.plot("bulgeDispersion", { });
 }
 

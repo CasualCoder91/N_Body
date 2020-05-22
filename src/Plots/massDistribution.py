@@ -48,6 +48,5 @@ def massDistribution(dataPath='',showPlot=True,arguments=[]):
     if showPlot:
         plt.show()
 
-massDistribution()
-#ax = fig.add_subplot(111, projection='3d')
-#ax.scatter(data[:,0], data[:,1], data[:,2], s=10,c='red')
+if __name__ == "__main__":
+    massDistribution()

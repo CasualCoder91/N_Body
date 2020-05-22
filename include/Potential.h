@@ -31,8 +31,8 @@ private:
 	static const double mMassBlackHole; // SolarMassUnit
 	static const double mMassDisk; // SolarMassUnit
 	static const double aDisk; //kpc
-	static const double bDisk; //kpc
 	static const double mMassBulge; // SolarMassUnit
+	static const double mMassSmallBulge; // SolarMassUnit
 	static const double rHalo; // kpc
 	static const double mMassHalo; // SolarMassUnit
 	/** @brief 1 km divided by 1 pc */
@@ -45,7 +45,8 @@ private:
 public:
 	static const double characteristicVelocityBulge; // km/s
 	static const double aBulge; // SolarMassUnit
-
+	static const double aSmallBulge; // SolarMassUnit
+	static const double bDisk; //kpc
 	static const std::string velocityDistributionBulgeTableFilename;
 	LookupTable velocityDistributionBulgeTable;
 
@@ -56,6 +57,8 @@ private:
 	static double gslVelocityBulge(double r, void* p);
 	static double gslDensityDisk(double x[], size_t dim, void* p);
 	static double gslDensityDisk(double z, void* p);
+	static double gslDensityBulge(double z, void* p);
+	static double gslDensityBulge(double x[], size_t dim, void* p);
 	/**
 	@brief Calculates (numerical integration) the sperical averaged value of the disc potential derived by r.
 	This function is used to generate the bulge velocity dispersion
@@ -83,6 +86,8 @@ public:
 	static double densityDisk(double R, double z);
 	/** @brief the local density of the disc*/
 	static double densityDisk(double x, double y, double z);
+
+	static double denistyDwek(double x, double y, double z);
 	/**
 	@brief Caluclate the surface mass density of the disk at a given radial distance \p R.
 	The GSL function gsl_integration_qagiu is used.

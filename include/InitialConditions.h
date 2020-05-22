@@ -42,9 +42,13 @@ public:
 	@param focus one point along the line of sight (0,0,0) would be the center of the MW.
 	@param viewPoint the position of the observer.
 	@param distance how far the observer can see/the render distance
-	@param angle the angle of view
+	@param angle the angle of view in degrees
 	*/
 	std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle);
+
+	double bulgeStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle);
+
+	double diskStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle);
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
 	@param [in,out] stars The mass of these stars will be modified.

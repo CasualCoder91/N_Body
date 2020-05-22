@@ -30,4 +30,5 @@ def initialConditionsMassSalpeter(dataPath='',showPlot=True,arguments=[]):
     if showPlot:
         plt.show()
 
-initialConditionsMassSalpeter()
+if __name__ == "__main__":
+    initialConditionsMassSalpeter()

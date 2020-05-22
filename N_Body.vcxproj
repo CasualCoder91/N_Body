@@ -162,6 +162,7 @@
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Configuration.h" />
     <ClInclude Include="include\Database.h" />
+    <ClInclude Include="include\DwekPotential.h" />
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="include\InOut.h" />
     <ClInclude Include="include\Integrator.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="src\Analysis.cpp" />
     <ClCompile Include="src\Configuration.cpp" />
     <ClCompile Include="src\Database.cpp" />
+    <ClCompile Include="src\DwekPotential.cpp" />
     <ClCompile Include="src\InitialConditions.cpp" />
     <ClCompile Include="src\InOut.cpp" />
     <ClCompile Include="src\Integrator.cpp" />

@@ -23,4 +23,5 @@ def potentialCircularVelocity(dataPath='',showPlot=True,arguments=[]):
     if showPlot:
         plt.show()
 
-potentialCircularVelocity()
+if __name__ == "__main__":
+    potentialCircularVelocity()
