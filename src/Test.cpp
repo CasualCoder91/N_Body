@@ -271,6 +271,24 @@ void Test::bulgeMass(){
 	//plot.plot("bulgeDispersion", { });
 }
 
+void Test::checkBrokenPowerLaw(){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions initialConditions = InitialConditions(&potential);
+	int starID = 0;
+	std::vector<Star*> stars = initialConditions.initStars(starID, parameters.getNStars());
+	std::vector<double> massLimits = { 0.01,0.08,0.5,1,125 };
+	std::vector<double> exponents = { 0.5,0.5,0.5,2.3 };
+	initialConditions.brokenPowerLaw(stars, massLimits, exponents);
+	std::vector<double> starMass;
+	std::vector<double> index;
+	for (int i = 0; i < stars.size();i++) {
+		starMass.push_back(stars.at(i)->mass);
+		index.push_back(i);
+	}
+	InOut::write(index, starMass,"testingBrokenPowerLaw.dat");
+}
+
 void Test::velocityBulge(){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);

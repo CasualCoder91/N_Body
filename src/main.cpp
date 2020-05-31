@@ -122,9 +122,10 @@ int main() {
 			//Test::potentialCircularVelocity();
 			//Test::massDistribution(500,15000);
 			//Test::sampleFieldStarPositions(2000);
-			Test::velocityBulge();
+			//Test::velocityBulge();
 			//Test::initialConditionsSampleBulgeVelocity();
 			//Test::bulgeMass();
+			Test::checkBrokenPowerLaw();
 		}
 		else if (selection == 4) {
 			return 0;

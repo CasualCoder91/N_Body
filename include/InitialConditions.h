@@ -57,6 +57,8 @@ public:
 	@param alpha The exponent used in the IMF.
 	*/
 	double initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha= -2.35);
+
+	double brokenPowerLaw(std::vector<Star*>& stars, std::vector<double> massLimits, std::vector<double> exponents);
 	/**
 	@brief Creates stars belonging to the disk inside the given cuboid. 
 	Sub-cubes are created, the totall mass within which is calculated, the stars are sampled such that the total sampled mass comes close to the value optained by integration.

@@ -27,9 +27,14 @@ protected:
     int nTimesteps = 1000;
     int outputTimestep = 1;
     int simulationID = 1;
+
+    //cluster mass
     double minMass = 0.1;
     double maxMass = 125;
     double alpha = -2.35;
+    std::vector<double> massLimits; //broken powerlaw
+    std::vector<double> exponents; //broken powerlaw
+
 
     double angle = 0.00029088833; //rad
     double dx = 10; //pc

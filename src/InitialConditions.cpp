@@ -33,7 +33,7 @@ InitialConditions::InitialConditions(Potential* potential):gen((std::random_devi
 std::vector<Star*> InitialConditions::initStars(int& firstID,int nStars){
 	std::vector<Star*> stars = {};
 	for (; firstID < nStars; firstID++) {
-		Star* star = &Star(firstID);
+		Star* star =  new Star(firstID);
 		stars.push_back(star);
 	}
 	return stars;
@@ -145,6 +145,45 @@ double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double 
 		totalMass += star->mass;
 	}
 	return totalMass;
+}
+
+double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, std::vector<double> massLimits, std::vector<double> exponents){
+	int nIntervals = massLimits.size()-1;
+
+	for (double exponent : exponents) {
+		if (exponent == 1) {
+			std::cout << "Exponentvalue 1 in brokenPowerLaw not possible" << std::endl;
+			return -1;
+		}
+	}
+
+	double constant = 0;
+	for (int i = 0; i < nIntervals; i++) {
+		double exponentTemp = -exponents.at(i) + 1;
+		constant += (pow(massLimits.at(i + 1),exponentTemp) - pow(massLimits.at(i),exponentTemp)) / exponentTemp;
+	}
+	constant = 1 / constant;
+
+	std::vector<double>inverseTemps = {0};
+	double inverseTemp = 0;
+	for (int i = 0; i < nIntervals;i++) {
+		double exponentTemp = -exponents.at(i) + 1;
+		inverseTemp -= constant/exponentTemp * (pow(massLimits.at(i + 1), exponentTemp) - pow(massLimits.at(i), exponentTemp));
+		inverseTemps.push_back(inverseTemp);
+	}
+
+	std::uniform_real_distribution<> dis(0.0, 1.0);//avoid close to singularity	
+	for (Star* star : stars) {
+		double sample = dis(gen);
+		for (int i = 0; i < nIntervals; i++) {
+			if (sample < -inverseTemps.at(i+1)) {
+				double exponentTemp = -exponents.at(i) + 1;
+				star->mass = pow((inverseTemps.at(i) + sample) * exponentTemp / constant + pow(massLimits.at(i), exponentTemp), 1 / exponentTemp);
+				break;
+			}
+		}
+	}
+	return 0.0;
 }
 
 std::vector<Star*> InitialConditions::initDiskStars(int& starID, Vec3D tlf, Vec3D brf, double depth, double gridResolution){

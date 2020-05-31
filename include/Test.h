@@ -52,4 +52,6 @@ public:
 
 	static void bulgeMass();
 
+	static void checkBrokenPowerLaw();
+
 };

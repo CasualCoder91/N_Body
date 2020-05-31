@@ -8,5 +8,5 @@ double DwekPotential::denisty(double x, double y, double z){
 
 double DwekPotential::PotentialNLM(unsigned int n, unsigned int l, unsigned int m, Vec3D position){
 	double s = position.length() / rs;
-	return pow(s, l) / pow(1 + s, 2 * l + 1) * gsl_sf_gegenpoly_n(n, 2 * (double)l + 1.5, (s - 1) / (s + 1)) * gsl_sf_legendre_sphPlm(l, m, cos(position.theta())) * cos(m * position.phi());
+	return pow(s, l) / pow(1 + s, 2 * l + 1) * gsl_sf_gegenpoly_n(n, 2 * (double)l + 1.5, (s - 1) / (s + 1)) * gsl_sf_legendre_Plm(l, m, cos(position.theta())) * cos(m * position.phi());
 }
