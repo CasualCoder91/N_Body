@@ -59,6 +59,8 @@ public:
 
     double theta();
 
+    Vec3D cartesianToCylindrical();
+
     /**
      @brief Calculates normalized vector with direction of caller.
      @return Vector with lenght=1 and direction of caller.

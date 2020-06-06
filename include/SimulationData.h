@@ -36,7 +36,7 @@ protected:
     std::vector<double> exponents; //broken powerlaw
 
 
-    double angle = 0.00029088833; //rad
+    double angle = 1; //degrees
     double dx = 10; //pc
     double distance = 8000; //pc
     Vec3D viewPoint = Vec3D(8000, 0, 0);

@@ -54,6 +54,10 @@ double Vec3D::theta(){
 	return acos(z / this->length());
 }
 
+Vec3D Vec3D::cartesianToCylindrical(){
+	return Vec3D(this->length(),this->phi(),this->z);
+}
+
 Vec3D Vec3D::normalize(){
 	double n = this->length();
 	return Vec3D(x/n,y/n,z/n);

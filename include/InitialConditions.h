@@ -14,6 +14,7 @@
 #include "Parameters.h"
 #include "Potential.h"
 #include "ProgressBar.h"
+#include "DwekPotential.h"
 
 extern bool debug;
 
@@ -82,6 +83,8 @@ public:
 	@see initialMassBulge
 	*/
 	std::vector<Star*> initialMassBulge(double totalMass, int& starID);
+
+	void sampleWang(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc.
 	@param [in,out] stars The positions of these stars will be modified.

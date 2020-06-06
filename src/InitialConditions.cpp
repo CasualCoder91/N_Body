@@ -70,7 +70,7 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, V
 		std::vector<Star*> bulgeStars = initialMassBulge(bulgeMass,starID);
 		if (bulgeStars.size() > 0) {
 			sampleBulgePositions(bulgeStars, corner, volumeElement); //test
-			//sampleBulgeVelocities(bulgeStars);
+			sampleBulgeVelocities(bulgeStars);
 			fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
 		}
 		progressBar.Update(step);
@@ -462,6 +462,61 @@ std::vector<Star*> InitialConditions::initialMassBulge(double totalMass, int& st
 	if (debug)
 		std::cout << "Proposed mass of Bulge: " << totalMass << " Sampled mass: " << pickedTotalMass << std::endl;
 	return stars;
+}
+
+void InitialConditions::sampleWang(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement){
+	double maximumVelocity = 500; // replace with escape velocity
+	double smallestx = closestToZero(position.x, position.x + volumeElement.x);
+	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
+	double smallestz = closestToZero(position.z, position.z + volumeElement.z);
+	double largestx = farthermostFromZero(position.x, position.x + volumeElement.x);
+	double largesty = farthermostFromZero(position.y, position.y + volumeElement.y);
+	double largestz = farthermostFromZero(position.z, position.z + volumeElement.z);
+	double acceptUpperLimit = DwekPotential::distributionFunction(Vec3D(smallestx, smallesty, smallestz), Vec3D(0, 0, 0));
+	double acceptLowerLimit = DwekPotential::distributionFunction(Vec3D(largestx, largesty, largestz), Vec3D(maximumVelocity, maximumVelocity, maximumVelocity));
+
+	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);//lower limit is new -> speedup
+
+
+	double x1_low = std::min(position.x, position.x + volumeElement.x);
+	double x1_high = std::max(position.x, position.x + volumeElement.x);
+	double x2_low = std::min(position.y, position.y + volumeElement.y);
+	double x2_high = std::max(position.y, position.y + volumeElement.y);
+	double x3_low = std::min(position.z, position.z + volumeElement.z);
+	double x3_high = std::max(position.z, position.z + volumeElement.z);
+	std::uniform_real_distribution<> disx(x1_low, x1_high); //position
+	std::uniform_real_distribution<> disy(x2_low, x2_high);
+	std::uniform_real_distribution<> disz(x3_low, x3_high);
+
+	std::uniform_real_distribution<> disvx(0, 500); //velocity
+	std::uniform_real_distribution<> disvy(0, 500);
+	std::uniform_real_distribution<> disvz(0, 500);
+
+	for (Star* star : stars) {
+		while (true) {
+			double x = disx(gen);
+			double y = disy(gen);
+			double z = disz(gen);
+
+			double vx = disvx(gen);
+			double vy = disvy(gen);
+			double vz = disvz(gen);
+
+			double accept = disaccept(gen);
+			double temp = DwekPotential::distributionFunction(Vec3D(x, y, z), Vec3D(vx, vy, vz));
+
+			if (temp < acceptLowerLimit) {
+				std::cout << "sampleWang Error" << std::endl;
+			}
+
+			if (accept < temp) {
+				star->position = Vec3D(x, y, z);
+				star->velocity = Vec3D(vx, vy, vz);
+				break;
+			}
+		}
+	}
+	return;
 }
 
 void InitialConditions::plummerSphere(std::vector<Star*>& stars, double totalMass, double scaleParameter, double G){
