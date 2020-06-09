@@ -14,7 +14,7 @@
 #include "Parameters.h"
 #include "Potential.h"
 #include "ProgressBar.h"
-#include "DwekPotential.h"
+#include "WangPotential.h"
 
 extern bool debug;
 

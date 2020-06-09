@@ -87,7 +87,7 @@ public:
 	/** @brief the local density of the disc*/
 	static double densityDisk(double x, double y, double z);
 
-	static double denistyDwek(double x, double y, double z);
+	static double denistyWang(double x, double y, double z);
 	/**
 	@brief Caluclate the surface mass density of the disk at a given radial distance \p R.
 	The GSL function gsl_integration_qagiu is used.

@@ -75,7 +75,7 @@ double Potential::gslDensityBulge(double x[], size_t dim, void* p) {
 		fprintf(stderr, "error: dim != 3");
 		abort();
 	}
-	return Potential::denistyDwek(x[0], x[1], x[2]);
+	return Potential::denistyWang(x[0], x[1], x[2]);
 	return Potential::densityBulge(gsl_hypot3(x[0], x[1], x[2]));
 };
 
@@ -220,7 +220,7 @@ double Potential::densityDisk(double x, double y, double z){
 	return densityDisk(R,z);
 }
 
-double Potential::denistyDwek(double x, double y, double z){
+double Potential::denistyWang(double x, double y, double z){
 	double density0 = 2.1242;
 	double q = 0.6;
 	double z0 = 0.4e3;

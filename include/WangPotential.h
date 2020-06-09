@@ -9,7 +9,7 @@
 
 #include "Vec3D.h"
 
-class DwekPotential {
+class WangPotential {
 	static const double density0;
 	static const double q;
 	static const double z0; //pc

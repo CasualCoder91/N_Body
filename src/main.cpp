@@ -24,7 +24,7 @@
 #include "Database.h"
 #include "Simulation.h"
 #include "Potential.h"
-#include "DwekPotential.h"
+#include "WangPotential.h"
 
 #include "Test.h"
 #include "Plot.h"
@@ -126,10 +126,10 @@ int main() {
 			//Test::velocityBulge();
 			//Test::initialConditionsSampleBulgeVelocity();
 			//Test::bulgeMass();
-			Test::wang();
+			Test::wangPositions();
 			//Test::checkBrokenPowerLaw();
-			//std::cout << DwekPotential::ANLM(1, 0, 0) << std::endl;
-			//std::cout << DwekPotential::totalMass(-5e3, 5e3) << std::endl;
+			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;
+			//std::cout << WangPotential::totalMass(-5e3, 5e3) << std::endl;
 		}
 		else if (selection == 4) {
 			return 0;

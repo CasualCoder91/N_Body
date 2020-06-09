@@ -71,7 +71,7 @@
     <ClInclude Include="include\Plot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\DwekPotential.h">
+    <ClInclude Include="include\WangPotential.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -133,7 +133,7 @@
     <ClCompile Include="src\Plot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DwekPotential.cpp">
+    <ClCompile Include="src\WangPotential.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

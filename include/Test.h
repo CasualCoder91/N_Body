@@ -11,7 +11,7 @@
 #include "Analysis.h"
 #include "ProgressBar.h"
 #include "Plot.h"
-#include "DwekPotential.h"
+#include "WangPotential.h"
 
 class Test : Parameters {
 private: 
@@ -55,6 +55,6 @@ public:
 
 	static void checkBrokenPowerLaw();
 
-	static void wang();
+	static void wangPositions();
 
 };

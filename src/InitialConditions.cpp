@@ -472,8 +472,8 @@ void InitialConditions::sampleWang(std::vector<Star*> stars, Vec3D position, Vec
 	double largestx = farthermostFromZero(position.x, position.x + volumeElement.x);
 	double largesty = farthermostFromZero(position.y, position.y + volumeElement.y);
 	double largestz = farthermostFromZero(position.z, position.z + volumeElement.z);
-	double acceptUpperLimit = DwekPotential::distributionFunction(Vec3D(smallestx, smallesty, smallestz), Vec3D(0, 0, 0));
-	double acceptLowerLimit = DwekPotential::distributionFunction(Vec3D(largestx, largesty, largestz), Vec3D(maximumVelocity, maximumVelocity, maximumVelocity));
+	double acceptUpperLimit = WangPotential::distributionFunction(Vec3D(smallestx, smallesty, smallestz), Vec3D(0, 0, 0));
+	double acceptLowerLimit = WangPotential::distributionFunction(Vec3D(largestx, largesty, largestz), Vec3D(maximumVelocity, maximumVelocity, maximumVelocity));
 
 	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);//lower limit is new -> speedup
 
@@ -488,9 +488,7 @@ void InitialConditions::sampleWang(std::vector<Star*> stars, Vec3D position, Vec
 	std::uniform_real_distribution<> disy(x2_low, x2_high);
 	std::uniform_real_distribution<> disz(x3_low, x3_high);
 
-	std::uniform_real_distribution<> disvx(0, 500); //velocity
-	std::uniform_real_distribution<> disvy(0, 500);
-	std::uniform_real_distribution<> disvz(0, 500);
+	std::uniform_real_distribution<> disv(0, maximumVelocity/3.); //velocity
 
 	for (Star* star : stars) {
 		while (true) {
@@ -498,12 +496,12 @@ void InitialConditions::sampleWang(std::vector<Star*> stars, Vec3D position, Vec
 			double y = disy(gen);
 			double z = disz(gen);
 
-			double vx = disvx(gen);
-			double vy = disvy(gen);
-			double vz = disvz(gen);
+			double vx = disv(gen);
+			double vy = disv(gen);
+			double vz = disv(gen);
 
 			double accept = disaccept(gen);
-			double temp = DwekPotential::distributionFunction(Vec3D(x, y, z), Vec3D(vx, vy, vz));
+			double temp = WangPotential::distributionFunction(Vec3D(x, y, z), Vec3D(vx, vy, vz));
 
 			if (temp < acceptLowerLimit) {
 				std::cout << "sampleWang Error" << std::endl;
