@@ -69,8 +69,9 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, V
 		double bulgeMass = potential->massBulge(corner, volumeElement);
 		std::vector<Star*> bulgeStars = initialMassBulge(bulgeMass,starID);
 		if (bulgeStars.size() > 0) {
-			sampleBulgePositions(bulgeStars, corner, volumeElement); //test
-			sampleBulgeVelocities(bulgeStars);
+			sampleWang(bulgeStars, corner, volumeElement);
+			//sampleBulgePositions(bulgeStars, corner, volumeElement); //test
+			//sampleBulgeVelocities(bulgeStars);
 			fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
 		}
 		progressBar.Update(step);
@@ -100,6 +101,9 @@ double InitialConditions::bulgeStarMass(Vec3D focus, Vec3D viewPoint, double dis
 		//std::cout << corner.print() << std::endl;
 		Vec3D volumeElement = direction * dx - 2 * rVec;
 		totalMass += potential->massBulge(corner, volumeElement);
+		if (volumeElement.length() < potential->aBulge) {
+			totalMass += potential->massDisk(corner, volumeElement);
+		}
 		progressBar.Update(step);
 		progressBar.Print();
 	}
@@ -124,8 +128,6 @@ double InitialConditions::diskStarMass(Vec3D focus, Vec3D viewPoint, double dist
 		rVec.y = -abs(rVec.y);
 		rVec.z = -abs(rVec.z);
 		Vec3D corner = viewPoint + direction * ((double)step - 1) * dx + rVec;
-		if (corner.length() > potential->aBulge)
-			continue;
 		//std::cout << corner.print() << std::endl;
 		Vec3D volumeElement = direction * dx - 2 * rVec;
 		totalMass += potential->massDisk(corner, volumeElement);
@@ -332,14 +334,39 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 
 void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 	double delta = potential->velocityDistributionBulgeTableValue(position.length());
-	double vCirc = potential->circularVelocity(&position);
-	std::normal_distribution<> velocityDistribution{ 0,delta };
-	double vRand = velocityDistribution(gen);
+	/*double vCirc = potential->circularVelocity(&position);*/
+	double patternSpeed = 0.06; //km*s-1*pc-1
+	//std::normal_distribution<> velocityDistribution{ 0,delta };
+	//double vRand = velocityDistribution(gen);
 
-	double theta = position.theta();
-	double phi = position.phi();
-	velocity = Vec3D(vCirc * cos(theta + M_PI_2) + cos(phi)*cos(theta)*vRand, vCirc * sin(theta + M_PI_2) + cos(phi) * sin(theta) * vRand, sin(phi)*vRand);
+	std::uniform_real_distribution<> disaccept(0, 1);
+	std::uniform_real_distribution<> v(-300, 300);
 
+	while (true) {
+		double vx = v(gen);
+		double vy = v(gen);
+		double vz = v(gen);
+		double v2 = vx*vx+ vy*vy +vz*vz;
+		double d2 = gsl_pow_2(delta);
+		double accept = disaccept(gen);
+		double temp = 4 * M_PI * pow(1 / (2 * M_PI * d2), 1.5) * v2 * exp(-v2 / (2 * d2));
+
+		if (temp > 1) {
+			std::cout << "sample Error" << std::endl;
+		}
+
+		if (accept < temp) {
+			vx += patternSpeed * position.y;
+			vy -= patternSpeed * position.x;
+			velocity = Vec3D(vx, vy, vz);
+			break;
+		}
+	}
+	//double  phi = position.theta();
+	//double  theta = position.phi();
+
+	//velocity = Vec3D(vCirc * cos(theta + M_PI_2) + cos(phi)*cos(theta)*vRand, vCirc * sin(theta + M_PI_2) + cos(phi) * sin(theta) * vRand, sin(phi)*vRand);
+	//velocity = Vec3D(cos(phi)*cos(theta)*vRand + patternSpeed * position.y, cos(phi) * sin(theta) * vRand -patternSpeed*position.x, sin(phi)*vRand);
 }
 
 void InitialConditions::sampleBulgeVelocities(std::vector<Star*> stars){
@@ -466,16 +493,30 @@ std::vector<Star*> InitialConditions::initialMassBulge(double totalMass, int& st
 
 void InitialConditions::sampleWang(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement){
 	double maximumVelocity = 500; // replace with escape velocity
+	double patternSpeed = 0.06; //km*s-1*pc-1
 	double smallestx = closestToZero(position.x, position.x + volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
 	double smallestz = closestToZero(position.z, position.z + volumeElement.z);
 	double largestx = farthermostFromZero(position.x, position.x + volumeElement.x);
 	double largesty = farthermostFromZero(position.y, position.y + volumeElement.y);
 	double largestz = farthermostFromZero(position.z, position.z + volumeElement.z);
-	double acceptUpperLimit = WangPotential::distributionFunction(Vec3D(smallestx, smallesty, smallestz), Vec3D(0, 0, 0));
-	double acceptLowerLimit = WangPotential::distributionFunction(Vec3D(largestx, largesty, largestz), Vec3D(maximumVelocity, maximumVelocity, maximumVelocity));
+	double minMass = stars.at(0)->mass;
+	double maxMass = stars.at(0)->mass;
+	for (Star* star : stars) {
+		if (star->mass < minMass)
+			minMass = star->mass;
+		if (star->mass > maxMass)
+			maxMass = star->mass;
+	}
+	double acceptUpperLimit = WangPotential::distributionFunction(minMass,Vec3D(smallestx, smallesty, smallestz), Vec3D(0, 0, 0))*4; //todo: do it better
+	//double acceptLowerLimit = WangPotential::distributionFunction(maxMass,Vec3D(largestx, largesty, largestz), Vec3D(maximumVelocity + patternSpeed * abs(largesty), maximumVelocity + patternSpeed * abs(largestx), maximumVelocity));
 
-	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);//lower limit is new -> speedup
+	//std::cout << "r:" << position.length() << " acceptUpperLimit:" << acceptUpperLimit << std::endl;
+
+	if (isnan(acceptUpperLimit))
+		double fail = 1;
+
+	std::uniform_real_distribution<> disaccept(0, acceptUpperLimit);//lower limit is new -> speedup
 
 
 	double x1_low = std::min(position.x, position.x + volumeElement.x);
@@ -488,7 +529,16 @@ void InitialConditions::sampleWang(std::vector<Star*> stars, Vec3D position, Vec
 	std::uniform_real_distribution<> disy(x2_low, x2_high);
 	std::uniform_real_distribution<> disz(x3_low, x3_high);
 
-	std::uniform_real_distribution<> disv(0, maximumVelocity/3.); //velocity
+
+	//double vcl = 250 / (1 + pow(100 / (sqrt(pow(x1_high,2)+pow(x2_high,2))), 0.2));
+	//double theta = atan2(position.y, position.x);
+	//double r = sqrt(pow(position.x, 2) + pow(position.y, 2));
+	//std::uniform_real_distribution<> disvx(-100,100); //velocity
+	//std::uniform_real_distribution<> disvy(vcl - 50,vcl+ 50); //velocity
+	//std::uniform_real_distribution<> disvz(-100, 100); //velocity
+	std::uniform_real_distribution<> disvx(-maximumVelocity, maximumVelocity); //velocity
+	std::uniform_real_distribution<> disvy(-maximumVelocity, maximumVelocity); //velocity
+	std::uniform_real_distribution<> disvz(-maximumVelocity, maximumVelocity); //velocity
 
 	for (Star* star : stars) {
 		while (true) {
@@ -496,18 +546,29 @@ void InitialConditions::sampleWang(std::vector<Star*> stars, Vec3D position, Vec
 			double y = disy(gen);
 			double z = disz(gen);
 
-			double vx = disv(gen);
-			double vy = disv(gen);
-			double vz = disv(gen);
+			double vx = disvx(gen);
+			double vy = disvy(gen);
+			double vz = disvz(gen);
+			//Vec3D velCyl = Vec3D(vx, vy, vz);
+			//theta = atan2(y, x);
+			//r = sqrt(pow(x, 2) + pow(y, 2));
+			//Vec3D velCart = Vec3D(velCyl.x * cos(theta) - r * sin(theta) * velCyl.y, velCyl.x * sin(theta) + r * cos(theta) * velCyl.y, velCyl.z);
 
 			double accept = disaccept(gen);
-			double temp = WangPotential::distributionFunction(Vec3D(x, y, z), Vec3D(vx, vy, vz));
+			double temp = WangPotential::distributionFunction(star->mass,Vec3D(x, y, z), Vec3D(vx, vy, vz));
 
-			if (temp < acceptLowerLimit) {
+			if (temp > acceptUpperLimit) {
 				std::cout << "sampleWang Error" << std::endl;
 			}
 
 			if (accept < temp) {
+				vx += patternSpeed * position.y;
+				vy -= patternSpeed * position.x;
+				//double angle = -0.349066; //20 degree
+				//double xtemp = vx;
+				//double ytemp = vy;
+				//vx = xtemp * cos(angle) - ytemp * sin(angle);
+				//vy = xtemp * sin(angle) + ytemp * cos(angle);
 				star->position = Vec3D(x, y, z);
 				star->velocity = Vec3D(vx, vy, vz);
 				break;

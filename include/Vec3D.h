@@ -61,6 +61,10 @@ public:
 
     Vec3D cartesianToCylindrical();
 
+    Vec3D cartesianToCylindricalV(Vec3D cartesianPos);
+
+    Vec3D cartesianToSphericalV(Vec3D cartesianPos);
+
     /**
      @brief Calculates normalized vector with direction of caller.
      @return Vector with lenght=1 and direction of caller.

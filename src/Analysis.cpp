@@ -93,15 +93,34 @@ double Analysis::average(std::vector<Vec3D*>& vectors){
 	return average/vectors.size();
 }
 
+double Analysis::average(std::vector<double>& values) {
+	double average = 0;
+	for (double value : values) {
+		average += value;
+	}
+	return average / values.size();
+}
+
 double Analysis::dispersion(std::vector<Vec3D*>& vectors){
 	size_t n = vectors.size();
 	double average = Analysis::average(vectors);
 	double dispersion = 0;
 
 	for (Vec3D* vector : vectors) {
-		dispersion += abs(vector->length()-average);
+		dispersion += pow(vector->length()-average,2);
 	}
-	return dispersion / n;
+	return sqrt(dispersion / (n-1));
+}
+
+double Analysis::dispersion(std::vector<double>& values) {
+	size_t n = values.size();
+	double average = Analysis::average(values);
+	double dispersion = 0;
+
+	for (double value : values) {
+		dispersion += pow(value - average, 2);
+	}
+	return sqrt(dispersion / (n - 1));
 }
 
 void Analysis::write(){

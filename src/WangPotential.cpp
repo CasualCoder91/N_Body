@@ -14,8 +14,8 @@ struct gslExpansionCoeffParams { unsigned int n; unsigned int l; unsigned int m;
 double WangPotential::density(double xParam, double yParam, double zParam){
 	//the density is rotated around z axis by 20 degrees
 	double angle = 0.349066; //20 degree
-	double x = xParam * cos(angle) - yParam * sin(angle);
-	double y = xParam * sin(angle) + yParam * cos(angle);
+	double x = xParam* cos(angle) - yParam * sin(angle);
+	double y = xParam* sin(angle) + yParam * cos(angle);
 	double z = zParam;
 	double r1 = pow(gsl_pow_2(gsl_pow_2(x / x0) + gsl_pow_2(y / y0)) + gsl_pow_4(z / z0), 0.25);
 	double r2 = sqrt((gsl_pow_2(q) * (gsl_pow_2(x) + gsl_pow_2(y)) + gsl_pow_2(z)) / gsl_pow_2(z0));
@@ -72,18 +72,29 @@ double WangPotential::PotentialNLM(unsigned int n, unsigned int l, unsigned int 
 	return pow(s, l) / pow(1 + s, 2 * l + 1) * gsl_sf_gegenpoly_n(n, 2 * (double)l + 1.5, (s - 1) / (s + 1)) * gsl_sf_legendre_Plm(l, m, cos(position.theta())) * cos(m * position.phi());
 }
 
-double WangPotential::distributionFunction(Vec3D position, Vec3D velocity){
+double WangPotential::distributionFunction(double mass, Vec3D position, Vec3D velocity){
+	//double angle = -0.349066; //20 degree
+	//double x = position.x * cos(angle) - position.y * sin(angle);
+	//double y = position.x * sin(angle) + position.y * cos(angle);
+	//position.x = x;
+	//position.y = y;
+	//double xtemp = velocity.x;
+	//double ytemp = velocity.y;
+	//velocity.x = xtemp * cos(angle) - ytemp * sin(angle);
+	//velocity.y = xtemp * sin(angle) + ytemp * cos(angle);
+
+
 	Vec3D sigma1 = Vec3D(60, 60, 50); //prograde
 	Vec3D sigma2 = Vec3D(60, 60, 50); //retrograde
 	Vec3D sigma3 = Vec3D(100, 100, 60); //hot
 
-	Vec3D vC = velocity.cartesianToCylindrical();
-	Vec3D pC = position.cartesianToCylindrical();
-	double vcl = 250 / (1 + pow(0.0001 / pC.x, 0.2));
+	Vec3D mC = velocity.cartesianToCylindricalV(position); //momentum
+	Vec3D pC = position.cartesianToCylindrical(); //position
+	double vcl = 250 / (1 + pow(100 / pC.x, 0.2));
 
-	double temp = exp(-gsl_pow_2(vC.x) / (2 * gsl_pow_2(sigma1.x)) - gsl_pow_2(vC.y - vcl) / (2 * gsl_pow_2(sigma1.y)) - gsl_pow_2(vC.z) / (2 * gsl_pow_2(sigma1.z))) / (pow(2 * M_PI, 1.5) * sigma1.x * sigma1.y * sigma1.z);//prograde
-	temp += exp(-gsl_pow_2(vC.x) / (2 * gsl_pow_2(sigma2.x)) - gsl_pow_2(vC.y + vcl) / (2 * gsl_pow_2(sigma2.y)) - gsl_pow_2(vC.z) / (2 * gsl_pow_2(sigma2.z))) / (pow(2 * M_PI, 1.5) * sigma2.x * sigma2.y * sigma2.z);//retrograde
-	temp += exp(-gsl_pow_2(velocity.x) / (2 * gsl_pow_2(sigma3.x)) - gsl_pow_2(velocity.y) / (2 * gsl_pow_2(sigma3.y)) - gsl_pow_2(velocity.z) / (2 * gsl_pow_2(sigma3.z))) / (pow(2 * M_PI, 1.5) * sigma3.x * sigma3.y * sigma3.z);//hot
+	double temp = exp(-gsl_pow_2(mC.x) / (2 * gsl_pow_2(sigma1.x)) - gsl_pow_2(mC.y - vcl) / (2 * gsl_pow_2(sigma1.y)) - gsl_pow_2(mC.z) / (2 * gsl_pow_2(sigma1.z))) / (pow(2 * M_PI, 1.5) * sigma1.x * sigma1.y * sigma1.z);//prograde
+	temp += exp(-gsl_pow_2(mC.x) / (2 * gsl_pow_2(sigma2.x)) - gsl_pow_2(mC.y + vcl) / (2 * gsl_pow_2(sigma2.y)) - gsl_pow_2(mC.z) / (2 * gsl_pow_2(sigma2.z))) / (pow(2 * M_PI, 1.5) * sigma2.x * sigma2.y * sigma2.z);//retrograde
+	temp += exp(-gsl_pow_2(velocity.x) / (2 * gsl_pow_2(sigma3.x)) - gsl_pow_2( velocity.y) / (2 * gsl_pow_2(sigma3.y)) - gsl_pow_2( velocity.z) / (2 * gsl_pow_2(sigma3.z))) / (pow(2 * M_PI, 1.5) * sigma3.x * sigma3.y * sigma3.z);//hot
 	temp = temp * density(position.x, position.y, position.z);
 	return temp;
 }

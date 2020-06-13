@@ -8,6 +8,7 @@
 #include <math.h>       /* pow */
 
 #include "Vec3D.h"
+#include "Star.h"
 
 class WangPotential {
 	static const double density0;
@@ -25,7 +26,7 @@ class WangPotential {
 
 	double PotentialNLM(unsigned int n, unsigned int l, unsigned int m, Vec3D position); //Basis function for Potential
 public:
-	static double distributionFunction(Vec3D position, Vec3D velocity); //do: angle!
+	static double distributionFunction(double mass,Vec3D position, Vec3D velocity); //do: angle!
 	static double ANLM(unsigned int n, unsigned int l, unsigned int m);
 	static double totalMass(double min, double max);
 };

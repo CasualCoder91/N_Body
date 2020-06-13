@@ -51,11 +51,30 @@ double Vec3D::phi(){
 }
 
 double Vec3D::theta(){
+	double r = this->length();
+	if (r == 0)
+		return 0;
 	return acos(z / this->length());
 }
 
 Vec3D Vec3D::cartesianToCylindrical(){
-	return Vec3D(this->length(),this->phi(),this->z);
+	return Vec3D(sqrt(this->x* this->x+ this->y* this->y),this->phi(),this->z);
+}
+
+Vec3D Vec3D::cartesianToCylindricalV(Vec3D cartesianPos){
+	double phi = atan2(cartesianPos.y,cartesianPos.x);
+	return Vec3D(this->x * cos(phi) + this->y * sin(phi), -this->x * sin(phi) + this->y * cos(phi), this->z);
+}
+
+Vec3D Vec3D::cartesianToSphericalV(Vec3D cartesianPos){
+	double r = cartesianPos.length();
+	double R2 = cartesianPos.x * cartesianPos.x + cartesianPos.y * cartesianPos.y;
+	double xxd = cartesianPos.x * this->x;
+	double yyd = cartesianPos.y * this->y;
+	double zzd = cartesianPos.z * this->z;
+	return Vec3D((xxd+yyd+zzd)/r,
+		(this->x* cartesianPos.y- cartesianPos.x*this->y)/R2,
+		(cartesianPos.z*(xxd+yyd)-R2*this->z)/(pow(r,2)*sqrt(R2)));
 }
 
 Vec3D Vec3D::normalize(){

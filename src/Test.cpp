@@ -10,6 +10,8 @@ void Test::pythonScript(std::string fileName){
 	system(command.c_str());
 }
 
+Test::Test(){}
+
 void Test::sampleFieldStarPositions(int nStars){
 	std::cout << "Testing field star positions .." << std::endl;
 	sampleFieldStarPositionsOutput(absolutePath,nStars);
@@ -230,7 +232,7 @@ void Test::massDistributionTimer(){
 	std::cout << "totalMass: " << totalMass << std::endl;
 }
 
-void Test::velocityDispersionBulge(){
+void Test::velocityDispersionBulgerGC(){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
 	for (double r = 100; r < 6000; r += 100) {
@@ -238,18 +240,66 @@ void Test::velocityDispersionBulge(){
 	}
 }
 
-void Test::bulgeMass(){
+void Test::velocityBulge(){
 	Parameters parameters = Parameters();
 	Potential potential = Potential(&parameters);
 	InitialConditions conditions = InitialConditions(&potential);
-	std::cout << "DensityProfileBulge: start" << std::endl;
+	std::cout << "DispersionWang: start" << std::endl;
 	double rBulge = 2e3; //pc
 	double dEarth = 8e3; //pc
 	int starID = 0;
 	std::vector<double> longitude;
+	std::vector<double> velocityDispersion;
+	std::vector<double> averageVelocity;
+	std::vector<double> bValues{ -4,-6,-8 };
+	const double degInRad = 0.0174533;
+	for (double b : bValues) {
+		for (double l = -10; l <= 10; l += 1) {
+			double x = dEarth - dEarth * cos(b * degInRad) * cos(l * degInRad);
+			double y = dEarth * cos(b * degInRad) * sin(l * degInRad);
+			double z = dEarth * sin(b * degInRad);
+			Vec3D focus = Vec3D(x, y, z);
+			double r = focus.length();
+			//std::cout << "focus:" << focus.print() << " r:" << r << std::endl;
+			std::vector<Star*> stars = this->initBulgeStars(starID,focus, Vec3D(-dEarth, 0, 0), dEarth+rBulge, 100, 1);
+			std::vector<double> radialVelocities;
+			for (Star* star : stars) {
+				star->position.x += dEarth; //transform to heleocentric
+				Vec3D sphericalVelocity = star->velocity.cartesianToSphericalV(star->position);
+				radialVelocities.push_back(sphericalVelocity.x);
+			}
+			velocityDispersion.push_back(Analysis::dispersion(radialVelocities));
+			averageVelocity.push_back(Analysis::average(radialVelocities));
+			std::cout << "b:" << b << " l:" << l << " disp:" << velocityDispersion.back()<<" mean:" << averageVelocity.back() << std::endl;
+			for (Star* star : stars) {
+				delete star;
+			}
+			longitude.push_back(l);
+		}
+
+		InOut::write(longitude, velocityDispersion, path + "bulgeDispersion" + std::to_string((int)b) + ".dat");
+		InOut::write(longitude, averageVelocity, path + "bulgeMeanVelocity" + std::to_string((int)b) + ".dat");
+		longitude.clear();
+		velocityDispersion.clear();
+		averageVelocity.clear();
+	}
+	Plot plot = Plot(absolutePath, absolutePath, true);
+	plot.plot("bulgeDispersion", { });
+	plot.plot("bulgeMeanVelocity", { });
+}
+
+void Test::bulgeMass(){
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&parameters);
+	InitialConditions conditions = InitialConditions(&potential);
+	//std::cout << "Disk mass inside aBulge: " << potential.massDisk(Vec3D(-potential.aBulge, -potential.aBulge, -potential.aBulge), Vec3D(2 * potential.aBulge, 2 * potential.aBulge, 2 * potential.aBulge));
+	std::cout << "DensityProfileBulge: start" << std::endl;
+	double rBulge = 4e3; //pc
+	double dEarth = 8.5e3; //pc
+	int starID = 0;
+	std::vector<double> longitude;
 	std::vector<double> mass;
-	//std::vector<double> bValues{-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	std::vector<double> bValues{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	std::vector<double> bValues{ 0, 1, 2,3,4,5,6,7,8,9  };
 	const double degInRad = 0.0174533;
 	for (double b : bValues) {
 		for (double l = -10; l <= 10; l += 1) {
@@ -260,7 +310,6 @@ void Test::bulgeMass(){
 			Vec3D focus = Vec3D(x, y, z);
 			double r = focus.length();
 			double totalMass = conditions.bulgeStarMass(focus, Vec3D(dEarth,0,0), dEarth+rBulge, 100, 1);
-			totalMass += conditions.diskStarMass(focus, Vec3D(dEarth, 0, 0), dEarth + rBulge, 100, 1);
 			mass.push_back(totalMass);
 		}
 		InOut::write(longitude, mass, "testBulgeMass" + std::to_string((int)b) + ".dat");
@@ -303,35 +352,35 @@ void Test::wangPositions(){
 	InOut::write(positions, "wangPositions.dat");
 }
 
-void Test::velocityBulge(){
-	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
-	std::cout << "BulgeVelocityTest: start" << std::endl;
-	std::vector<double> longitude;
-	std::vector<double> dispersion;
-	std::vector<double> bValues{ -4, -6, -8 };
-	for (double b : bValues) {
-		for (double l = -10; l < 10; l += 0.2) {
-			longitude.push_back(l);
-			std::vector<Vec3D*> velocities;
-			double distance = 8490;
-			double x = (8500 - distance * cos(b * 0.0174533) * cos(l * 0.0174533));
-			double y = distance * cos(b * 0.0174533) * sin(l * 0.0174533);
-			double z = distance * sin(b * 0.0174533);
-			double r = gsl_hypot3(x, y, z);
-			double R = gsl_hypot(x, y);
-			double disp = potential.velocityDispersionBulge(r);
-			//std::cout << "r: " << r << " | vel dist: " << disp << std::endl;
-			dispersion.push_back(disp);
-			//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
-		}
-		InOut::write(longitude, dispersion, path + "bulgeDispersion" + std::to_string((int)b)+".dat");
-		longitude.clear();
-		dispersion.clear();
-	}
-	Plot plot = Plot(absolutePath, absolutePath, true);
-	plot.plot("bulgeDispersion", { });
-}
+//void Test::velocityBulge(){
+//	Parameters parameters = Parameters();
+//	Potential potential = Potential(&parameters);
+//	std::cout << "BulgeVelocityTest: start" << std::endl;
+//	std::vector<double> longitude;
+//	std::vector<double> dispersion;
+//	std::vector<double> bValues{ -4, -6, -8 };
+//	for (double b : bValues) {
+//		for (double l = -10; l < 10; l += 0.2) {
+//			longitude.push_back(l);
+//			std::vector<Vec3D*> velocities;
+//			double distance = 8490;
+//			double x = (8500 - distance * cos(b * 0.0174533) * cos(l * 0.0174533));
+//			double y = distance * cos(b * 0.0174533) * sin(l * 0.0174533);
+//			double z = distance * sin(b * 0.0174533);
+//			double r = gsl_hypot3(x, y, z);
+//			double R = gsl_hypot(x, y);
+//			double disp = potential.velocityDispersionBulge(r);
+//			//std::cout << "r: " << r << " | vel dist: " << disp << std::endl;
+//			dispersion.push_back(disp);
+//			//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
+//		}
+//		InOut::write(longitude, dispersion, path + "bulgeDispersion" + std::to_string((int)b)+".dat");
+//		longitude.clear();
+//		dispersion.clear();
+//	}
+//	Plot plot = Plot(absolutePath, absolutePath, true);
+//	plot.plot("bulgeDispersion", { });
+//}
 
 void Test::velocityBulgeR() {
 	std::vector<double> radius;
@@ -405,4 +454,36 @@ void Test::initialConditionsInitFieldStars(){
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	std::cout << "Time needed for calucation: " << time_span.count() << "seconds" << std::endl;
 	InOut::write(stars, path+"fieldStars.dat");
+}
+
+std::vector<Star*> Test::initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double r){
+	std::cout << "Initializing bulge stars in tube" << std::endl;
+	Vec3D direction = (focus - viewPoint).normalize();
+	int nSteps = (distance + dx) / dx;
+	ProgressBar progressBar = ProgressBar(0, nSteps, true);
+	std::vector<Star*> fieldStars;
+	//#pragma omp parallel for
+	for (int step = 1; step <= nSteps; ++step) {//steps along direction (line of sight)
+		double aBoid = 2 * r;
+		if (aBoid < 1) //if cubes are smaller 1pc^3 density is aproximated 0
+			continue;
+		Vec3D rVec = sqrt(2) * r * Vec3D::crossProduct(&Vec3D(-1, 1, -1), &direction).normalize();
+		rVec.x = -abs(rVec.x);
+		rVec.y = -abs(rVec.y);
+		rVec.z = -abs(rVec.z);
+		Vec3D corner = viewPoint + direction * ((double)step - 1) * dx + rVec;
+		Vec3D volumeElement = direction * dx - 2 * rVec;
+		double bulgeMass = potential.massBulge(corner, volumeElement);
+		std::vector<Star*> bulgeStars = initialConditions.initialMassBulge(bulgeMass, starID);
+		if (bulgeStars.size() > 0) {
+			//std::cout << "corner: " << corner.print() << " r:" <<corner.length()  << std::endl;
+			initialConditions.sampleBulgePositions(bulgeStars, corner, volumeElement);
+			initialConditions.sampleBulgeVelocities(bulgeStars);
+			//initialConditions.sampleWang(bulgeStars, corner, volumeElement);
+			fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
+		}
+		progressBar.Update(step);
+		progressBar.Print();
+	}
+	return fieldStars;
 }

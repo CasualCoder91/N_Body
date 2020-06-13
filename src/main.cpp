@@ -120,13 +120,14 @@ int main() {
 			simulation.run();
 		}
 		else if (selection == 3) {
+			Test test = Test();
 			//Test::potentialCircularVelocity();
 			//Test::massDistribution(500,15000);
 			//Test::sampleFieldStarPositions(2000);
 			//Test::velocityBulge();
-			//Test::initialConditionsSampleBulgeVelocity();
-			//Test::bulgeMass();
-			Test::wangPositions();
+			Test::bulgeMass();
+			//test.velocityBulge();
+			//Test::wangPositions();
 			//Test::checkBrokenPowerLaw();
 			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;
 			//std::cout << WangPotential::totalMass(-5e3, 5e3) << std::endl;

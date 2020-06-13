@@ -65,11 +65,17 @@ public:
      @brief calculates the average vector of the given \p vectors
      */
     static double average(std::vector<Vec3D*>& vectors);
+
+    static double average(std::vector<double>& values);
+
     /**
      @static
      @brief calculates the dispersion (= variability/scatter/spread) of the given \p vectors
      */
     static double dispersion(std::vector<Vec3D*>& vectors);
+
+    static double dispersion(std::vector<double>& values);
+
     /** @brief saves the calculated energy values for each timestep to .dat Files (TotalEnergy.dat, KinetikEnergy.dat,PotentialEnergy.dat)*/
     void write();
 };

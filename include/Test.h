@@ -17,8 +17,12 @@ class Test : Parameters {
 private: 
 	static void pythonScript(std::string fileName);
 	static std::string absolutePath;
+	Parameters parameters = Parameters();
+	Potential potential = Potential(&this->parameters);
+	InitialConditions initialConditions = InitialConditions(&potential);
 
 public:
+	Test();
 
 	static std::string path;
 
@@ -32,8 +36,6 @@ public:
 	static void potentialCircularVelocity();
 	static void potentialCircularVelocityOutput(std::string path = "");
 
-	static void velocityBulge();
-
 	void initialConditionsMassSalpeterOutput(int nStars = 10000);
 	static void initialConditionsMassBulgeOutput(double totalMass);
 	static void potentialSurfaceDensityBulge();
@@ -43,13 +45,14 @@ public:
 	static void massDistributionTimer();
 
 	static void velocityBulgeR();
+	static void velocityDispersionBulgerGC();
 	static void initialConditionsSampleBulgeVelocity();
+	void velocityBulge();
 
 	static void escapeVelocity();
 
 	void initialConditionsInitFieldStars();
-
-	static void velocityDispersionBulge();
+	std::vector<Star*> initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double r);
 
 	static void bulgeMass();
 
