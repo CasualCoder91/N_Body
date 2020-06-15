@@ -4,7 +4,7 @@
 #include <math.h>
 #include <filesystem>
 
-#include "Potential.h"
+#include "MWPotential.h"
 #include "InOut.h"
 #include "Parameters.h"
 #include "InitialConditions.h"
@@ -18,7 +18,7 @@ private:
 	static void pythonScript(std::string fileName);
 	static std::string absolutePath;
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&this->parameters);
+	MWPotential potential = MWPotential(&this->parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 
 public:

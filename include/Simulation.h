@@ -18,7 +18,7 @@ class Simulation : public Parameters{
 
 public:
     Database* database;
-    Potential* potential;
+    MWPotential* potential;
     
 public:
     Simulation(int id, Database* database, SimulationData* simulationData);

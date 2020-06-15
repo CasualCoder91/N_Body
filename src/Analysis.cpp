@@ -41,7 +41,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 	for (int n = 2; n <= maxNStars; ++n) {
 
 		//init
-		Potential potential = Potential(parameters);
+		MWPotential potential = MWPotential(parameters);
 		InitialConditions initialConditions = InitialConditions(&potential);
 		int starID = 0;
 		std::vector<Star*> stars = initialConditions.initStars(starID,parameters->getNStars());

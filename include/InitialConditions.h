@@ -12,7 +12,7 @@
 
 #include "Star.h"
 #include "Parameters.h"
-#include "Potential.h"
+#include "MWPotential.h"
 #include "ProgressBar.h"
 #include "WangPotential.h"
 
@@ -25,11 +25,11 @@ private:
 	/**@brief pseudo-random generator used for sampling various distributions*/
 	std::mt19937 gen;
 	/**@brief The Potential used during simulation. Initial conditions heavily depend on it.*/
-	Potential* potential;
+	MWPotential* potential;
 
 public:
 	/**@brief Prefered constructor. All member variables are initialized */
-	InitialConditions(Potential* potential);
+	InitialConditions(MWPotential* potential);
 	/**
 	@brief Creates stars with default member variables (mass, position, velocty, acceleration)
 	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.

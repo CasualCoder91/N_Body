@@ -26,7 +26,7 @@ void Test::sampleFieldStarPositionsOutput(std::string path, int nStars) {
 
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	initialConditions.sampleDiskPositions(diskStars, Vec3D(-40000, -40000, -20000), Vec3D(80000, 80000, 40000));
 	initialConditions.sampleBulgePositions(bulgeStars, Vec3D(-6000, -6000, -6000), Vec3D(12000, 12000, 12000));
@@ -34,8 +34,8 @@ void Test::sampleFieldStarPositionsOutput(std::string path, int nStars) {
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
-	//positionsDisk.push_back(Potential::sampleDisk(-40, 40, -40, 40, -20, 20));
-	//positionsBulge.push_back(Potential::sampleBuldge(-6, 6, -6, 6, -6, 6));
+	//positionsDisk.push_back(MWPotential::sampleDisk(-40, 40, -40, 40, -20, 20));
+	//positionsBulge.push_back(MWPotential::sampleBuldge(-6, 6, -6, 6, -6, 6));
 	InOut::write(diskStars, path + "potentialDiskPositionsSample"+std::to_string(nStars)+".dat");
 	InOut::write(bulgeStars, path + "potentialBulgePositionsSample" + std::to_string(nStars) + ".dat");
 }
@@ -51,7 +51,7 @@ void Test::potentialCircularVelocity() {
 
 void Test::potentialCircularVelocityOutput(std::string path){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 
 	std::vector<double> positions;
 	std::vector<double> velocities;
@@ -66,7 +66,7 @@ void Test::potentialCircularVelocityOutput(std::string path){
 		velocities.push_back(potential.circularVelocity(&position));
 		disk.push_back(potential.circularVelocityDisk(&position));
 		blackHole.push_back(potential.circularVelocityBlackHole(&position));
-		buldge.push_back(potential.circularVelocityBulge(&position));
+		buldge.push_back(potential.bulgePotential.circularVelocity(&position));
 		halo.push_back(potential.circularVelocityHalo(&position));
 	}
 	std::cout << " .. generating Output" << std::endl;
@@ -80,7 +80,7 @@ void Test::potentialCircularVelocityOutput(std::string path){
 void Test::initialConditionsMassSalpeterOutput(int nStars) {
 	Parameters parameters = Parameters();
 	parameters.setNStars(nStars);
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initStars(starID,parameters.getNStars());
@@ -99,7 +99,7 @@ void Test::initialConditionsMassSalpeterOutput(int nStars) {
 
 void Test::initialConditionsMassBulgeOutput(double totalMass){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initialMassBulge(totalMass, starID);
@@ -116,19 +116,19 @@ void Test::initialConditionsMassBulgeOutput(double totalMass){
 
 void Test::potentialSurfaceDensityBulge(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
 	for (double R = 100; R < 30000; R = R + 100) {
 		radius.push_back(R);
-		surfaceDensity.push_back(potential.surfaceDensityBulge(R));
+		surfaceDensity.push_back(potential.bulgePotential.surfaceDensity(R));
 	}
 	InOut::write(radius, surfaceDensity, "potentialSurfaceDensityBulge.dat");
 }
 
 void Test::potentialSurfaceDensityDisk(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	std::vector<double> surfaceDensity;
 	std::vector<double> radius;
 	for (double R = 100; R < 30000; R = R + 100) {
@@ -140,7 +140,7 @@ void Test::potentialSurfaceDensityDisk(){
 
 void Test::initialConditionsSampleDisk(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	double gridResolution = 0.001;
 	Vec3D position = Vec3D(5, 5, 0);
@@ -164,7 +164,7 @@ void Test::massDistribution(double z, double dx){
 
 void Test::massDistributionDiskOutput(std::string path, double z, double dx){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	std::vector<Vec3D> Output;
 	double border = 30000;
 	ProgressBar progressBar = ProgressBar(-border, border -dx);
@@ -184,14 +184,14 @@ void Test::massDistributionDiskOutput(std::string path, double z, double dx){
 
 void Test::massDistributionBulgeOutput(std::string path, double z, double dx){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	std::vector<Vec3D> Output;
 	double border = 30000;
 	ProgressBar progressBar = ProgressBar(-border, border-dx);
 	std::cout << "Generating disk mass distribution" << std::endl;
 	for (double x = -border; x < border; x += dx) {
 		for (double y = -border; y < border; y += dx) {
-			double starMass = potential.massBulge(Vec3D(x, y, z), Vec3D(dx, dx, 100));
+			double starMass = potential.bulgePotential.mass(Vec3D(x, y, z), Vec3D(dx, dx, 100));
 			Output.push_back(Vec3D(x, y, starMass));
 		}
 		progressBar.Update(x);
@@ -205,7 +205,7 @@ void Test::massDistributionBulgeOutput(std::string path, double z, double dx){
 void Test::massDistributionTimer(){
 	double totalMass = 0;
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	for (double x = 0; x < 10000; x = x + 100) {
 		Vec3D corner = Vec3D(x, 0, -50);
 		Vec3D volumeElement = Vec3D(10, 10, 10);
@@ -214,7 +214,7 @@ void Test::massDistributionTimer(){
 		std::cout << "Volume Element at (center): " << center.length() * 1e-3 << "kpc" << std::endl;
 		std::cout << "Volume Element dx:" << volumeElement.x * 1e-3 << "kpc" << std::endl;
 		//std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
-		double starMass = potential.massDisk(corner, volumeElement)+potential.massBulge(corner, volumeElement);
+		double starMass = potential.massDisk(corner, volumeElement)+potential.bulgePotential.mass(corner, volumeElement);
 		totalMass += starMass;
 
 		std::cout << "starMass: " << starMass << std::endl;
@@ -234,7 +234,7 @@ void Test::massDistributionTimer(){
 
 void Test::velocityDispersionBulgerGC(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	for (double r = 100; r < 6000; r += 100) {
 		std::cout << "r: " << r << " | velocityDistribution: " << potential.velocityDispersionBulge(r) << std::endl;
 	}
@@ -242,7 +242,7 @@ void Test::velocityDispersionBulgerGC(){
 
 void Test::velocityBulge(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions conditions = InitialConditions(&potential);
 	std::cout << "DispersionWang: start" << std::endl;
 	double rBulge = 2e3; //pc
@@ -290,7 +290,7 @@ void Test::velocityBulge(){
 
 void Test::bulgeMass(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions conditions = InitialConditions(&potential);
 	//std::cout << "Disk mass inside aBulge: " << potential.massDisk(Vec3D(-potential.aBulge, -potential.aBulge, -potential.aBulge), Vec3D(2 * potential.aBulge, 2 * potential.aBulge, 2 * potential.aBulge));
 	std::cout << "DensityProfileBulge: start" << std::endl;
@@ -322,7 +322,7 @@ void Test::bulgeMass(){
 
 void Test::checkBrokenPowerLaw(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initStars(starID, parameters.getNStars());
@@ -340,7 +340,7 @@ void Test::checkBrokenPowerLaw(){
 
 void Test::wangPositions(){
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initStars(starID, 5000);
@@ -354,7 +354,7 @@ void Test::wangPositions(){
 
 //void Test::velocityBulge(){
 //	Parameters parameters = Parameters();
-//	Potential potential = Potential(&parameters);
+//	MWPotential potential = MWPotential(&parameters);
 //	std::cout << "BulgeVelocityTest: start" << std::endl;
 //	std::vector<double> longitude;
 //	std::vector<double> dispersion;
@@ -372,7 +372,7 @@ void Test::wangPositions(){
 //			double disp = potential.velocityDispersionBulge(r);
 //			//std::cout << "r: " << r << " | vel dist: " << disp << std::endl;
 //			dispersion.push_back(disp);
-//			//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
+//			//std::cout << "radial dist:" << MWPotential::radialVelocityDispersionBulge(R, z) << std::endl;
 //		}
 //		InOut::write(longitude, dispersion, path + "bulgeDispersion" + std::to_string((int)b)+".dat");
 //		longitude.clear();
@@ -386,13 +386,13 @@ void Test::velocityBulgeR() {
 	std::vector<double> radius;
 	std::vector<double> dispersion;
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	for (double r = 10; r < 1000; r += 1) {
 		radius.push_back(r);
 		double disp = potential.velocityDispersionBulge(r);
 		std::cout << "r: " << r << " | vel dist: " << disp << std::endl;
 		dispersion.push_back(disp);
-		//std::cout << "radial dist:" << Potential::radialVelocityDispersionBulge(R, z) << std::endl;
+		//std::cout << "radial dist:" << MWPotential::radialVelocityDispersionBulge(R, z) << std::endl;
 	}
 	InOut::write(radius, dispersion, "bulgeDispersion.dat");
 
@@ -401,7 +401,7 @@ void Test::velocityBulgeR() {
 void Test::initialConditionsSampleBulgeVelocity(){
 	Parameters parameters = Parameters();
 	parameters.setNStars(1);
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
 	std::vector<Star*> stars = initialConditions.initStars(starID, parameters.getNStars());
@@ -437,7 +437,7 @@ void Test::initialConditionsSampleBulgeVelocity(){
 void Test::escapeVelocity(){
 	double delta = 50;
 	Parameters parameters = Parameters();
-	Potential potential = Potential(&parameters);
+	MWPotential potential = MWPotential(&parameters);
 	for(double x = 0; x < 10000; x += delta) {
 		std::cout << "r:" << x << " | velocity: " << potential.escapeVelocity(&Vec3D(x, 0, 0)) << std::endl;
 	}
@@ -445,7 +445,7 @@ void Test::escapeVelocity(){
 
 void Test::initialConditionsInitFieldStars(){
 	std::cout << "Testing field star creation" << std::endl;
-	Potential potential = Potential(this);
+	MWPotential potential = MWPotential(this);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	int starID = 0;
@@ -473,7 +473,7 @@ std::vector<Star*> Test::initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoin
 		rVec.z = -abs(rVec.z);
 		Vec3D corner = viewPoint + direction * ((double)step - 1) * dx + rVec;
 		Vec3D volumeElement = direction * dx - 2 * rVec;
-		double bulgeMass = potential.massBulge(corner, volumeElement);
+		double bulgeMass = potential.bulgePotential.mass(corner, volumeElement);
 		std::vector<Star*> bulgeStars = initialConditions.initialMassBulge(bulgeMass, starID);
 		if (bulgeStars.size() > 0) {
 			//std::cout << "corner: " << corner.print() << " r:" <<corner.length()  << std::endl;

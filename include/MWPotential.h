@@ -19,13 +19,16 @@
 #include "LookupTable.h"
 #include "ProgressBar.h"
 
+#include "Potential/Potential.h"
+#include "Potential/Hernquist.h"
+
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
 
 extern bool debug;
 
-class Potential : Parameters
+class MWPotential : Parameters
 {
 private:
 	static const double mMassBlackHole; // SolarMassUnit
@@ -49,6 +52,7 @@ public:
 	static const double bDisk; //kpc
 	static const std::string velocityDistributionBulgeTableFilename;
 	LookupTable velocityDistributionBulgeTable;
+	static Hernquist bulgePotential;
 
 private:
 	static double closestToZero(double a, double b);
@@ -57,8 +61,6 @@ private:
 	static double gslVelocityBulge(double r, void* p);
 	static double gslDensityDisk(double x[], size_t dim, void* p);
 	static double gslDensityDisk(double z, void* p);
-	static double gslDensityBulge(double z, void* p);
-	static double gslDensityBulge(double x[], size_t dim, void* p);
 	/**
 	@brief Calculates (numerical integration) the sperical averaged value of the disc potential derived by r.
 	This function is used to generate the bulge velocity dispersion
@@ -69,15 +71,13 @@ private:
 	double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
 	double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
 public:
-	Potential(Parameters * parameters);
+	MWPotential(Parameters * parameters);
 	/** @brief the total (all potentials considered) circular velocity [km/s] at the \p position [pc] */
 	double circularVelocity(Vec3D* position);
 	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the disc potential*/
 	double circularVelocityDisk(Vec3D* position);
 	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the black hole potential*/
 	double circularVelocityBlackHole(Vec3D* position);
-	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the bulge potential*/
-	double circularVelocityBulge(Vec3D* position);
 	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the dark matter halo potential*/
 	double circularVelocityHalo(Vec3D* position);
 	/** @brief the local escape velocity at the given \p position*/
@@ -95,23 +95,8 @@ public:
 	@return The calculated surface mass density [SolarMassUnit*pc^-2].
 	*/
 	double surfaceDensityDisk(double R);
-	/** @brief the local density of the bulge*/
-	static double densityBulge(double r);
-	/** @brief the local density of the bulge*/
-	static double densityBulge(double R, double z);
-	/** @brief the local density of the bulge*/
-	static double densityBulge(double x, double y, double z);
-	/**
-	@brief Caluclate the surface mass density of the bulge at a given radial distance R.
-	The GSL function gsl_integration_qagiu is used.
-	@param R The radius [pc] at which the surface mass density is calculated.
-	@return The calculated surface mass density [SolarMassUnit*pc^-2].
-	*/
-	double surfaceDensityBulge(double R); //new Bulge
 	/**@brief: Mass of the disc inside the \p volumeElement relative to the given \p position*/
 	double massDisk(Vec3D position, Vec3D volumeElement);
-	/**@brief: Mass of the bulge inside the \p volumeElement relative to the given \p position*/
-	double massBulge(Vec3D position, Vec3D volumeElement);
 
 	//all Potentials
 	/**@brief the radial (R) velocity dispersion [km/s] for stars belonging to the disc*/

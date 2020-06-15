@@ -3,19 +3,19 @@
 Simulation::Simulation(int id){
 	this->simulationID = id;
 	this->database = new Database();
-	this->potential = new Potential(this);
+	this->potential = new MWPotential(this);
 }
 
 Simulation::Simulation(int id, Database* database, SimulationData* simulationData){
 	this->simulationID = id;
-	this->potential = new Potential(this);
+	this->potential = new MWPotential(this);
 	this->database = database;
 }
 
 Simulation::Simulation(int id, Database* database, Parameters* parameters) :Parameters{ parameters } {
 	this->simulationID = id;
 	this->database = database;
-	this->potential = new Potential(this);
+	this->potential = new MWPotential(this);
 }
 
 void Simulation::setID(int id){

@@ -23,7 +23,7 @@
 #include "Analysis.h"
 #include "Database.h"
 #include "Simulation.h"
-#include "Potential.h"
+#include "MWPotential.h"
 #include "WangPotential.h"
 
 #include "Test.h"
@@ -39,7 +39,7 @@ int main() {
 
 	//Parameters testParameters = Parameters();
 	//InitialConditions testInitialConditions = InitialConditions(&testParameters);
-	//Potential testPotential = Potential(Vec3D(0, 0, 0));
+	//MWPotential testPotential = MWPotential(Vec3D(0, 0, 0));
 	//double boxSize = 0.002;
 	//std::vector<Star*> stars = testInitialConditions.initDiskStars(0, Vec3D(0.1, boxSize, 0), Vec3D(0.1+boxSize, 0, 0), 0.1, &testPotential);
 	//InOut::write(stars, "testInitialConditions.dat");
@@ -53,7 +53,7 @@ int main() {
 	//Test::initialConditionsSampleBulgeVelocity();
 	//Test::escapeVelocity();
 	//Test::initialConditionsInitFieldStars();
-	//Potential::generateVelocityDistributionBulgeLookupTable(25000);
+	//MWPotential::generateVelocityDistributionBulgeLookupTable(25000);
 	//std::vector<std::vector<double>> test = InOut::readDoubleMatrix("velocityDistributionBulgeTable.dat");
 
 	Database db = Database();
@@ -121,11 +121,11 @@ int main() {
 		}
 		else if (selection == 3) {
 			Test test = Test();
-			//Test::potentialCircularVelocity();
+			Test::potentialCircularVelocity();
 			//Test::massDistribution(500,15000);
 			//Test::sampleFieldStarPositions(2000);
 			//Test::velocityBulge();
-			Test::bulgeMass();
+			//Test::bulgeMass();
 			//test.velocityBulge();
 			//Test::wangPositions();
 			//Test::checkBrokenPowerLaw();

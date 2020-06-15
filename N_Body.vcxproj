@@ -162,6 +162,8 @@
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Configuration.h" />
     <ClInclude Include="include\Database.h" />
+    <ClInclude Include="include\Potential\Hernquist.h" />
+    <ClInclude Include="include\Potential\Potential.h" />
     <ClInclude Include="include\WangPotential.h" />
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="include\InOut.h" />
@@ -170,7 +172,7 @@
     <ClInclude Include="include\Node.h" />
     <ClInclude Include="include\Parameters.h" />
     <ClInclude Include="include\Plot.h" />
-    <ClInclude Include="include\Potential.h" />
+    <ClInclude Include="include\MWPotential.h" />
     <ClInclude Include="include\ProgressBar.h" />
     <ClInclude Include="include\Simulation.h" />
     <ClInclude Include="include\SimulationData.h" />
@@ -184,6 +186,8 @@
     <ClCompile Include="src\Analysis.cpp" />
     <ClCompile Include="src\Configuration.cpp" />
     <ClCompile Include="src\Database.cpp" />
+    <ClCompile Include="src\Potential\Hernquist.cpp" />
+    <ClCompile Include="src\Potential\Potential.cpp" />
     <ClCompile Include="src\WangPotential.cpp" />
     <ClCompile Include="src\InitialConditions.cpp" />
     <ClCompile Include="src\InOut.cpp" />
@@ -193,7 +197,7 @@
     <ClCompile Include="src\Node.cpp" />
     <ClCompile Include="src\Parameters.cpp" />
     <ClCompile Include="src\Plot.cpp" />
-    <ClCompile Include="src\Potential.cpp" />
+    <ClCompile Include="src\MWPotential.cpp" />
     <ClCompile Include="src\ProgressBar.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\SimulationData.cpp" />

@@ -26,7 +26,7 @@ double InitialConditions::farthermostFromZero(double a, double b){
 	return b;
 }
 
-InitialConditions::InitialConditions(Potential* potential):gen((std::random_device())()){
+InitialConditions::InitialConditions(MWPotential* potential):gen((std::random_device())()){
 	this->potential = potential;
 }
 
@@ -66,7 +66,7 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, V
 			sampleDiskVelocities(diskStars);
 			fieldStars.insert(std::end(fieldStars), std::begin(diskStars), std::end(diskStars));
 		}
-		double bulgeMass = potential->massBulge(corner, volumeElement);
+		double bulgeMass = potential->bulgePotential.mass(corner, volumeElement);
 		std::vector<Star*> bulgeStars = initialMassBulge(bulgeMass,starID);
 		if (bulgeStars.size() > 0) {
 			sampleWang(bulgeStars, corner, volumeElement);
@@ -100,7 +100,7 @@ double InitialConditions::bulgeStarMass(Vec3D focus, Vec3D viewPoint, double dis
 		Vec3D corner = viewPoint + direction * ((double)step - 1) * dx + rVec;
 		//std::cout << corner.print() << std::endl;
 		Vec3D volumeElement = direction * dx - 2 * rVec;
-		totalMass += potential->massBulge(corner, volumeElement);
+		totalMass += potential->bulgePotential.mass(corner, volumeElement);
 		if (volumeElement.length() < potential->aBulge) {
 			totalMass += potential->massDisk(corner, volumeElement);
 		}
@@ -293,8 +293,8 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 	double largestx = farthermostFromZero(position.x, position.x + volumeElement.x);
 	double largesty = farthermostFromZero(position.y, position.y + volumeElement.y);
 	double largestz = farthermostFromZero(position.z, position.z + volumeElement.z);
-	double acceptUpperLimit = potential->densityBulge(smallestx, smallesty, smallestz);
-	double acceptLowerLimit = potential->densityBulge(largestx, largesty, largestz);
+	double acceptUpperLimit = potential->bulgePotential.density(smallestx, smallesty, smallestz);
+	double acceptLowerLimit = potential->bulgePotential.density(largestx, largesty, largestz);
 	//create distribution with calculated limits
 	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);//lower limit is new -> speedup
 
@@ -312,7 +312,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 	std::uniform_real_distribution<> disy(x2_low, x2_high);
 	std::uniform_real_distribution<> disz(x3_low, x3_high);
 
-	//const double lamda = 1 / (Potential::aBulge * 2);
+	//const double lamda = 1 / (MWPotential::aBulge * 2);
 	//std::exponential_distribution<double> disr(lamda);
 	//std::exponential_distribution<double> disaccept(lamda);
 	for (Star* star : stars) {
@@ -321,7 +321,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 			double y = disy(gen);
 			double z = disz(gen);
 			double accept = disaccept(gen);
-			double temp = potential->densityBulge(x, y, z);
+			double temp = potential->bulgePotential.density(x, y, z);
 
 			if (accept < temp) {
 				star->position = Vec3D(x, y, z);
@@ -617,16 +617,16 @@ void InitialConditions::plummerVelocity(Star* star, double structuralLength, dou
 //void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 //	//std::random_device rd;  //Will be used to obtain a seed for the random number engine
 //	//std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-//	//double escapeVelocity = sqrt(-2 * Potential::potentialEnergy(position));
+//	//double escapeVelocity = sqrt(-2 * MWPotential::potentialEnergy(position));
 //	//std::uniform_real_distribution<> distributionVelocity(0.0, escapeVelocity); // Use escape velocity instead!
-//	//double maximumEnergy = Potential::particleEnergy(position, Vec3D(0, 0, 0));
-//	//double maxDF = Potential::distributionFunctionBulge(-maximumEnergy);//(gsl_pow_2(Potential::characteristicVelocityBulge)-1); // -1 to avoid division by zero
+//	//double maximumEnergy = MWPotential::particleEnergy(position, Vec3D(0, 0, 0));
+//	//double maxDF = MWPotential::distributionFunctionBulge(-maximumEnergy);//(gsl_pow_2(MWPotential::characteristicVelocityBulge)-1); // -1 to avoid division by zero
 //	//std::uniform_real_distribution<> distributionDF(0.0, maxDF);
 //	//while (true) {
 //	//	double mVelocity = distributionVelocity(gen);
 //	//	double randomDF = distributionDF(gen);
-//	//	double energy = Potential::particleEnergy(position, mVelocity);
-//	//	double attemptDF = Potential::distributionFunctionBulge(-energy);
+//	//	double energy = MWPotential::particleEnergy(position, mVelocity);
+//	//	double attemptDF = MWPotential::distributionFunctionBulge(-energy);
 //	//	if (randomDF < attemptDF) {
 //	//		position += Vec3D::randomVector(mVelocity);
 //	//		return;
@@ -634,10 +634,10 @@ void InitialConditions::plummerVelocity(Star* star, double structuralLength, dou
 //	//}
 //	double R = gsl_hypot(position.x, position.y);
 //	//std::cout << position.print() << std::endl;
-//	std::normal_distribution<> velocityDistribution{ 0,Potential::radialVelocityDispersionBulge(R, position.z) };
+//	std::normal_distribution<> velocityDistribution{ 0,MWPotential::radialVelocityDispersionBulge(R, position.z) };
 //	double vz = velocityDistribution(gen);
 //	double vR = velocityDistribution(gen);
-//	//std::normal_distribution<> velocityDistribution2{ 200,2*Potential::radialVelocityDispersionBulge(R, position.z) };
+//	//std::normal_distribution<> velocityDistribution2{ 200,2*MWPotential::radialVelocityDispersionBulge(R, position.z) };
 //	double va = velocityDistribution(gen);
 //
 //	double theta = atan2(position.y, position.x);
