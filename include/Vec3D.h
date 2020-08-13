@@ -88,7 +88,9 @@ public:
      @param a, b Vectors of which the cross product is calculated.
      @return distance between given vectors.
      */
-    static double distance(const Vec3D* a, Vec3D* b);
+    static double distance(const Vec3D* a, const Vec3D* b);
+
+    static double distance2(const Vec3D* a, const Vec3D* b);
     /**
     @brief Sets all member variables to 0.
     */

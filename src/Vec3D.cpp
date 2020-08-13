@@ -86,13 +86,20 @@ Vec3D Vec3D::crossProduct(Vec3D* v1, Vec3D* v2){
 	return Vec3D(v1->y * v2->z - v1->z * v2->y, v1->z * v2->x - v1->x * v2->z, v1->x * v2->y - v1->y * v2->x);
 }
 
-std::string Vec3D::print()
-{
+std::string Vec3D::print(){
 	return std::to_string(this->x) +','+ std::to_string(this->y) + ',' + std::to_string(this->z);
 }
 
-double Vec3D::distance(const Vec3D* a, Vec3D* b){
-	return sqrt(pow(a->x-b->x,2)+ pow(a->y - b->y, 2)+ pow(a->z - b->z, 2));
+double Vec3D::distance(const Vec3D* a, const Vec3D* b){
+	return sqrt(distance2(a,b));
+	//return sqrt(pow(a->x-b->x,2)+ pow(a->y - b->y, 2)+ pow(a->z - b->z, 2));
+}
+
+double Vec3D::distance2(const Vec3D* a, const Vec3D* b){
+	double dx = a->x - b->x;
+	double dy = a->y - b->y;
+	double dz = a->z - b->z;
+	return dx * dx + dy * dy + dz * dz;
 }
 
 void Vec3D::reset(){

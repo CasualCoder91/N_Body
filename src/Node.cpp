@@ -199,10 +199,10 @@ void Node::calculateMassDistribution(){
 }
 
 void Node::applyForce(Star* star){
-	Node::applyForce(star->position, &star->acceleration);
+	Node::applyForce(star->position, star->acceleration);
 }
 
-void Node::applyForce(const Vec3D position,Vec3D* acceleration){
+void Node::applyForce(const Vec3D position,Vec3D& acceleration){
 	//if (!this->isRoot())
 	//	throw "Only root may call this one.";
 	double temp = 0;
@@ -216,19 +216,23 @@ void Node::applyForce(const Vec3D position,Vec3D* acceleration){
 			//kmInpc needed to get acceleration in km*s^-2
 			temp = this->G * this->star->mass / pow(temp + this->softening * this->softening, 3 / 2) * this->kmInpc;
 			//star->acceleration += Vec3D(temp * dx, temp * dy, temp * dz);
-			acceleration->x += temp * dx;
-			acceleration->y += temp * dy;
-			acceleration->z += temp * dz;
+			acceleration.x += temp * dx;
+			acceleration.y += temp * dy;
+			acceleration.z += temp * dz;
 		}
 		return;
 	}
-	double distStarCOM = Vec3D::distance(&(position), &(this->centerOfMass));
+	//double distStarCOM = Vec3D::distance(&(position), &(this->centerOfMass));
+	double dx = this->centerOfMass.x - position.x;
+	double dy = this->centerOfMass.y - position.y;
+	double dz = this->centerOfMass.z - position.z;
+	double distStarCOM = sqrt(dx * dx + dy * dy + dz * dz);
 	if ((this->bottom_right_back.x - this->top_left_front.x) / distStarCOM < precission && this->star != star && distStarCOM>0) {
 		temp = this->G * this->mass / pow(distStarCOM + softening, 3) * this->kmInpc;
 		//star->acceleration += Vec3D(temp * (star->position.x - this->centerOfMass.x), temp * (star->position.y - this->centerOfMass.y), temp * (star->position.z - this->centerOfMass.z));
-		acceleration->x += temp * (this->centerOfMass.x - position.x);
-		acceleration->y += temp * (this->centerOfMass.y - position.y);
-		acceleration->z += temp * (this->centerOfMass.z - position.z);
+		acceleration.x += temp * dx;
+		acceleration.y += temp * dy;
+		acceleration.z += temp * dz;
 	}
 	else {
 		#pragma omp parallel for

@@ -119,6 +119,7 @@ public:
 	void generateVelocityDistributionBulgeLookupTable(double rMax);
 	/** @brief: adds acceleration based on the potential to the acceleration of the stars. */
 	void applyForce(Star* star);
+	void applyForce(const Vec3D position, Vec3D& acceleration);
 
 	//static double potentialEnergy(Vec3D& position);
 	//static double potentialEnergy(double R, double z);

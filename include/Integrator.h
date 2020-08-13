@@ -11,6 +11,7 @@
 
 #include "Star.h"
 #include "Node.h"
+#include "MWPotential.h"
 
 class Integrator
 {
@@ -23,9 +24,6 @@ public:
     /**@brief amount of pc in one km*/
     static double kmInpc;
 
-    Vec3D* C[4]; //RK4
-    Vec3D* K[4]; //RK4
-
 	Integrator(double dt = 0.01);
 
     /**
@@ -36,11 +34,13 @@ public:
 	void euler(std::vector<Star*> stars, double dt= 0);
     //https://math.stackexchange.com/questions/2023819/using-the-runge-kuttas-method-to-solve-a-2nd-derivative-question
 
-private:
     /**
     @brief Implementetion of "the" Runge Kutta algorithm.
     @todo check how to do this since now the update of the acceleration shall no longer be part of the integration step.
     */
-    void RK4(std::vector<Star*> stars, Node* root, double dt = 0);
+    void RK4(std::vector<Star*> stars, Node* root, MWPotential* potential, double dt = 0);
+    void RK4(std::vector<Star*> stars, MWPotential* potential, double dt = 0);
+private:
+
 };
 

@@ -22,6 +22,7 @@ void SimulationData::getParametersFromConfig(){
 	initParameterFromCfg("nStars", nStars);
 	initParameterFromCfg("offset", clusterLocation);
 	initParameterFromCfg("G", G);
+	initParameterFromCfg("dt", dt);
 }
 
 SimulationData::SimulationData(){
@@ -64,6 +65,7 @@ SimulationData::SimulationData(SimulationData* simulationData){
 	this->viewPoint = simulationData->viewPoint;
 	this->G = simulationData->G;
 	this->nStars = simulationData->nStars;
+	this->clusterLocation = simulationData->clusterLocation;
 }
 
 std::string SimulationData::print() {

@@ -352,7 +352,11 @@ docs/Doxyfile
 !Output/
 Output/*
 !Output/empty.txt
+Data/eintest.txt
 
 !build/
 build/*
 !build/.gitignore
+/gsl.dll
+/gslcblas.dll
+/N_Body.exe

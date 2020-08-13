@@ -9,6 +9,7 @@
 #define SIMULATION_H
 
 #include <string>
+#include <chrono>
 
 #include "Database.h"
 #include "Parameters.h"

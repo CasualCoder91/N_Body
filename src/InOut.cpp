@@ -107,6 +107,45 @@ bool InOut::checkIsDouble(std::string inputString){
 	return true;
 }
 
+std::vector<Star*> InOut::readMcLuster(int firstID, std::string filename){
+	std::vector<Star*> stars;
+	std::string line;
+	std::string delimiter = "\t";
+	std::ifstream sStars(filename);
+	int id = firstID;
+	if (sStars.is_open()) {
+		while (std::getline(sStars, line)) {
+			std::string firstToken = line.substr(0, line.find(delimiter));
+			if (checkIsDouble(firstToken)) {
+				size_t pos = line.find(delimiter);
+				double mass = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				pos = line.find(delimiter);
+				double x = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				pos = line.find(delimiter);
+				double y = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				pos = line.find(delimiter);
+				double z = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				pos = line.find(delimiter);
+				double vx = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				pos = line.find(delimiter);
+				double vy = std::stod(line.substr(0, pos));
+				line.erase(0, pos + delimiter.length());
+				double vz = std::stod(line, nullptr);
+
+				stars.push_back(new Star(id,mass,x, y, z,vx,vy,vz));
+				id++;
+			}
+		}
+		sStars.close();
+	}
+	return stars;
+}
+
 void InOut::write(std::vector<double> x, std::vector<double> y, std::string filename, std::string header){
 	if (x.size() != y.size()) {
 		throw  "Vector size must be equal";

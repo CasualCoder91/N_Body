@@ -79,5 +79,7 @@ namespace InOut{
     /** @brief checks if the given \p inputString can be converted into a double. */
     bool checkIsDouble(std::string inputString);
 
+    std::vector<Star*> readMcLuster(int firstID, std::string filename);
+
 };
 

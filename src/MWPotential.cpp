@@ -118,6 +118,7 @@ MWPotential::MWPotential(Parameters* parameters):Parameters(parameters), velocit
 		generateVelocityDistributionBulgeLookupTable(25000);
 		velocityDistributionBulgeTable = LookupTable(velocityDistributionBulgeTableFilename);
 	}
+	this->bulgePotential = Hernquist(mMassBulge, aBulge, G);
 }
 
 double MWPotential::sphericalAveragedDisc(double r){
@@ -362,8 +363,8 @@ void MWPotential::generateVelocityDistributionBulgeLookupTable(double rMax){
 
 void MWPotential::applyForce(Star* star){
 	double r = star->position.length();
-	double r2 = gsl_pow_2(r);
-	double r3 = gsl_pow_3(r);
+	double r2 = r*r;
+	double r3 = r2*r;
 	//BH, Halo & Bulge
 	double temp = -G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo*r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo)/ r3)*kmInpc;
 	star->acceleration.x += temp * star->position.x;
@@ -376,6 +377,24 @@ void MWPotential::applyForce(Star* star){
 	star->acceleration.x += temp * star->position.x;
 	star->acceleration.y += temp * star->position.y;
 	star->acceleration.z += -G * mMassDisk * star->position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * kmInpc;
+}
+
+void MWPotential::applyForce(Vec3D position, Vec3D& acceleration){
+	double r = position.length();
+	double r2 = r * r;
+	double r3 = r2 * r;
+	//BH, Halo & Bulge
+	double temp = -G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo * r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo) / r3) * kmInpc;
+	acceleration.x += temp * position.x;
+	acceleration.y += temp * position.y;
+	acceleration.z += temp * position.z;
+	//Disk
+	double x2y2 = gsl_pow_2(position.x) + gsl_pow_2(position.y);
+	double sqrtb2z2 = gsl_hypot(bDisk, position.z);
+	temp = -G * mMassDisk / pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5) * kmInpc;
+	acceleration.x += temp * position.x;
+	acceleration.y += temp * position.y;
+	acceleration.z += -G * mMassDisk * position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * kmInpc;
 }
 
 

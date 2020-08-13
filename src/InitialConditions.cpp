@@ -32,7 +32,8 @@ InitialConditions::InitialConditions(MWPotential* potential):gen((std::random_de
 
 std::vector<Star*> InitialConditions::initStars(int& firstID,int nStars){
 	std::vector<Star*> stars = {};
-	for (; firstID < nStars; firstID++) {
+	int max = firstID + nStars;
+	for (; firstID < max; firstID++) {
 		Star* star =  new Star(firstID);
 		stars.push_back(star);
 	}
@@ -610,7 +611,7 @@ void InitialConditions::plummerVelocity(Star* star, double structuralLength, dou
 		g = dis_g(gen);
 	}
 	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass, G)/1.01;
-	star->velocity = Vec3D::randomAngles(velocity);
+	star->velocity = Vec3D::randomVector(velocity);
 }
 
 
