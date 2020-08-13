@@ -60,3 +60,28 @@ Analysis
     - **Find mass bins where 90% of input stars are detected**
     - Reconstruct IMF for cluster based on stars with >50%, >85%, >95% membership probabilites
     - **Compare reconstructed IMF to input IMF**
+
+
+Notes
+-----
+
+What we need to simulate observations
++++++++++++++++++++++++++++++++++++++
+
+Star charts:
+
+A table containing the following columns::
+
+    dx      dy      dist    mass    age(?)  population
+    arcsec  arcsec  pc      msun    myr     (fore/back/cluster)
+
+Where
+- (dx, dy) are on-sky coordinates relative to the centre of the field of view.
+  E.g. if we centre our telescope on the coordinates of the cluster at (x, y) [could also be (ra, dec)],
+  then (dx, dy) are the offsets of each star from this central coordinate
+- dist is the distance from the sun in [pc], used when calculating the apparent luminosity of the star
+- mass used for assigning an absolute luminosity to the star
+- age will only be used later iff we start to use isochrones for the absolute luminosities
+- population is just a flag in case we want to show which stars are cluster members and which are not.
+
+Step 1: Create a single table, and format it in such a way that SceopSim likes it

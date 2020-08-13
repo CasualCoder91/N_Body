@@ -1,11 +1,15 @@
 Download and Installation
 =========================
 
-Documentation status:
+Documentation
+-------------
 
 .. image:: https://readthedocs.org/projects/n-body/badge/?version=latest
    :target: https://n-body.readthedocs.io/en/latest/?badge=latest
    :alt: Here be dragons!
+
+`https://n-body.readthedocs.io/en/latest/?badge=latest
+<https://n-body.readthedocs.io/en/latest/?badge=latest>`_
 
 Clone repository
 ----------------
