@@ -12,7 +12,7 @@ double Analysis::potentialEnergy(std::vector<Star*>& stars){
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size()-1;++i) {
 		for (int j = i+1; j < stars.size(); ++j) {
-			potentialEnergy -= this->G * stars.at(i)->mass * stars.at(j)->mass / Vec3D::distance(&stars.at(i)->position, &stars.at(j)->position);
+			potentialEnergy -= this->G * stars[i]->mass * stars[j]->mass / Vec3D::distance(&stars[i]->position, &stars[j]->position);
 		}
 	}
 	this->potE.push_back(potentialEnergy);
@@ -23,7 +23,7 @@ double Analysis::kineticEnergy(std::vector<Star*>& stars){
 	double kineticEnergy = 0;
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size(); ++i) {
-		kineticEnergy += stars.at(i)->mass * (stars.at(i)->velocity * stars.at(i)->velocity);
+		kineticEnergy += stars[i]->mass * (stars[i]->velocity * stars[i]->velocity);
 	}
 	kineticEnergy *= 0.5;
 	this->kinE.push_back(kineticEnergy);
@@ -59,8 +59,8 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 			root.calculateMassDistribution();
 			#pragma omp parallel for //1:10
 			for (int i = 0; i < stars.size(); ++i) {
-				stars.at(i)->acceleration.reset(); // reset acceleration to 0,0,0
-				root.applyForce(stars.at(i));
+				stars[i]->acceleration.reset(); // reset acceleration to 0,0,0
+				root.applyForce(stars[i]);
 			}
 			integrator.euler(stars);
 		}

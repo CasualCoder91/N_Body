@@ -46,7 +46,7 @@ public:
 	/** @brief inserts the given parameters into the "simulation" table and returns the id of the new simulation*/
 	int insert(Parameters* parameters);
 	/** @brief inserts the stars (including positions and velocities)*/
-	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0);
+	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0, bool clusterStars=true);
 	/** @brief inserts (or replaces/updates) the analysis parameters for the given simulation*/
 	int insertAnalysis(int simulationID, Analysis analysis);
 	/** @brief inserts (or replaces/updates) one record of kinetic, potential and total energy */
@@ -59,7 +59,7 @@ public:
 	@brief inserts one star (including positions and velocities)
 	@note for multiple stars use insertStars instead!
 	*/
-	void insertStar(int simulationID, Star* star, int& timestep);
+	void insertStar(int simulationID, Star* star, int& timestep, bool clusterStar=true);
 	/**
 	@brief inserts the position of one star
 	@note extensive use (loop) is not recommended

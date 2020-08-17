@@ -18,6 +18,7 @@
 #include "InOut.h"
 #include "LookupTable.h"
 #include "ProgressBar.h"
+#include "Matrix.h"
 
 #include "Potential/Potential.h"
 #include "Potential/Hernquist.h"
@@ -61,6 +62,12 @@ private:
 	static double gslVelocityBulge(double r, void* p);
 	static double gslDensityDisk(double x[], size_t dim, void* p);
 	static double gslDensityDisk(double z, void* p);
+
+	//Density in cylinder volume along z Axis
+	static double gslDensityDiskx(double x, void* p);
+	static double gslDensityDisky(double y, void* p);
+	static double gslDensityDiskz(double z, void* p);
+
 	/**
 	@brief Calculates (numerical integration) the sperical averaged value of the disc potential derived by r.
 	This function is used to generate the bulge velocity dispersion
@@ -97,6 +104,7 @@ public:
 	double surfaceDensityDisk(double R);
 	/**@brief: Mass of the disc inside the \p volumeElement relative to the given \p position*/
 	double massDisk(Vec3D position, Vec3D volumeElement);
+	double massDisk(Matrix* transformation, double distance, double r);
 
 	//all Potentials
 	/**@brief the radial (R) velocity dispersion [km/s] for stars belonging to the disc*/

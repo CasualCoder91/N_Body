@@ -41,21 +41,16 @@ void Simulation::run(){
 	initialConditions.offsetCluster(clusterStars, clusterLocation);
 
 	double circVel = potential->circularVelocity(&clusterLocation);
-	Vec3D clusterVelocity = Vec3D(circVel*0.05,-circVel*0.9,10);
+	Vec3D clusterVelocity = Vec3D(0,-220,10);
 	//initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
 	for (Star* star : clusterStars) {
 		star->velocity += clusterVelocity;
 	}
-	database->insertStars(this->getID(), clusterStars, 0);
+	database->insertStars(this->getID(), clusterStars, 0,true);
+	nextStarIndex = database->selectLastID("star") + 1;
 
-	//std::vector<Star*> fieldStars = initialConditions.massDisk(30); //test
-	////Init fieldStars
-	//if (fieldStars.size() > 0) {
-	//	initialConditions.sampleDiskPositions(fieldStars, Vec3D(-30000, -30000, -6000), Vec3D(60000, 60000, 12000)); //test
-	//	initialConditions.sampleDiskVelocities(fieldStars);
-	//}
 	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex,focus,viewPoint,distance,dx,angle); //0.00029088833
-	database->insertStars(this->getID(), fieldStars, 0);
+	database->insertStars(this->getID(), fieldStars, 0,false);
 
 	std::cout << "Starting integration" << std::endl;
 	//Integrate
@@ -98,7 +93,7 @@ void Simulation::run(){
 			//}
 			//integrator.euler(clusterStars);
 
-			integrator.RK4(clusterStars, &root, this->potential);
+			integrator.Leapfrog(clusterStars, &root, this->potential);
 		}
 
 		//Force fieldStars -- use if Euler
@@ -111,7 +106,7 @@ void Simulation::run(){
 
 		if (fieldStars.size() > 0) {
 			//integrator.euler(fieldStars);
-			integrator.RK4(fieldStars, this->potential);
+			integrator.Leapfrog(fieldStars, this->potential);
 		}
 
 	}

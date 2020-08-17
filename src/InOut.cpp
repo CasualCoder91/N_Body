@@ -35,7 +35,7 @@ void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
 	setOutputDirectory(filename);
 	std::ofstream file(filename);
 	for (int i = 0; i < stars.size();++i) {
-		file << stars.at(i)->position.x << ',' << stars.at(i)->position.y << ',' << stars.at(i)->position.z << ',' << i << '\n';
+		file << stars[i]->position.x << ',' << stars[i]->position.y << ',' << stars[i]->position.z << ',' << i << '\n';
 	}
 	file.close();
 }
@@ -46,7 +46,7 @@ void InOut::writeAll(std::vector<Star*> stars, std::string filename){
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size(); ++i) {
 		file << "Star: " << i << '\n';
-		file << stars.at(i)->dump() << '\n';
+		file << stars[i]->dump() << '\n';
 	}
 	file.close();
 }
@@ -156,7 +156,7 @@ void InOut::write(std::vector<double> x, std::vector<double> y, std::string file
 		file << header << '\n';
 	//no NOT parallel this one
 	for (int i = 0; i < x.size(); ++i) {
-		file << x.at(i) <<','<< y.at(i) << '\n';
+		file << x[i] <<','<< y[i] << '\n';
 	}
 	file.close();
 }
@@ -165,7 +165,7 @@ void InOut::write(std::vector<Vec3D> line, std::string filename) {
 	setOutputDirectory(filename);
 	std::ofstream file(filename);
 	for (int i = 0; i < line.size(); ++i) {
-		file << line.at(i).print() << '\n';
+		file << line[i].print() << '\n';
 	}
 	file.close();
 }

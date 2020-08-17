@@ -53,13 +53,27 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, V
 		double aBoid = 2 * r;
 		if (aBoid < 1) //if cubes are smaller 1pc^3 density is aproximated 0
 			continue;
-		Vec3D rVec = sqrt(2) * r * Vec3D::crossProduct(&Vec3D(-1, 1, -1), &direction).normalize();
-		rVec.x = -abs(rVec.x);
-		rVec.y = -abs(rVec.y);
-		rVec.z = -abs(rVec.z);
-		Vec3D corner = viewPoint + direction * ((double)step - 1)*dx + rVec;
+		Vec3D x = Vec3D(-1, 0, 0).normalize();
+		Vec3D y = Vec3D(0, -1, 0).normalize();
+		Vec3D z = Vec3D(0, 0, -1).normalize();
+
+		Vec3D cPx = Vec3D::crossProduct(&direction, &x);
+		Vec3D cPxx = Vec3D::crossProduct(&cPx, &direction);
+		Vec3D cPy = Vec3D::crossProduct(&direction, &y);
+		Vec3D cPyy = Vec3D::crossProduct(&cPy, &direction);
+		Vec3D cPz = Vec3D::crossProduct(&direction, &z);
+		Vec3D cPzz = Vec3D::crossProduct(&cPz, &direction);
+
+		//Vec3D rVec = sqrt(2) * r * cPx.normalize();
+		Vec3D rVec = sqrt(2) * r * (cPxx+cPyy+cPzz).normalize();
+		double angle = acos(direction * rVec / (rVec.length() * direction.length()));
+
+		//rVec.x = -abs(rVec.x);
+		//rVec.y = -abs(rVec.y);
+		//rVec.z = -abs(rVec.z);
+		Vec3D corner = viewPoint + direction * ((double)step - 1)*dx - rVec;
 		//std::cout << corner.print() << std::endl;
-		Vec3D volumeElement = direction*dx-2*rVec;
+		Vec3D volumeElement = direction*dx+2*rVec;
 		double diskMass = potential->massDisk(corner, volumeElement);
 		std::vector<Star*> diskStars = massDisk(diskMass,starID);
 		if (diskStars.size() > 0) {
@@ -70,9 +84,9 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, Vec3D focus, V
 		double bulgeMass = potential->bulgePotential.mass(corner, volumeElement);
 		std::vector<Star*> bulgeStars = initialMassBulge(bulgeMass,starID);
 		if (bulgeStars.size() > 0) {
-			sampleWang(bulgeStars, corner, volumeElement);
-			//sampleBulgePositions(bulgeStars, corner, volumeElement); //test
-			//sampleBulgeVelocities(bulgeStars);
+			//sampleWang(bulgeStars, corner, volumeElement);
+			sampleBulgePositions(bulgeStars, corner, volumeElement); //test
+			sampleBulgeVelocities(bulgeStars);
 			fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
 		}
 		progressBar.Update(step);
@@ -162,16 +176,16 @@ double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, std::vector<
 
 	double constant = 0;
 	for (int i = 0; i < nIntervals; i++) {
-		double exponentTemp = -exponents.at(i) + 1;
-		constant += (pow(massLimits.at(i + 1),exponentTemp) - pow(massLimits.at(i),exponentTemp)) / exponentTemp;
+		double exponentTemp = -exponents[i] + 1;
+		constant += (pow(massLimits[i + 1],exponentTemp) - pow(massLimits[i],exponentTemp)) / exponentTemp;
 	}
 	constant = 1 / constant;
 
 	std::vector<double>inverseTemps = {0};
 	double inverseTemp = 0;
 	for (int i = 0; i < nIntervals;i++) {
-		double exponentTemp = -exponents.at(i) + 1;
-		inverseTemp -= constant/exponentTemp * (pow(massLimits.at(i + 1), exponentTemp) - pow(massLimits.at(i), exponentTemp));
+		double exponentTemp = -exponents[i] + 1;
+		inverseTemp -= constant/exponentTemp * (pow(massLimits[i + 1], exponentTemp) - pow(massLimits[i], exponentTemp));
 		inverseTemps.push_back(inverseTemp);
 	}
 
@@ -179,9 +193,9 @@ double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, std::vector<
 	for (Star* star : stars) {
 		double sample = dis(gen);
 		for (int i = 0; i < nIntervals; i++) {
-			if (sample < -inverseTemps.at(i+1)) {
-				double exponentTemp = -exponents.at(i) + 1;
-				star->mass = pow((inverseTemps.at(i) + sample) * exponentTemp / constant + pow(massLimits.at(i), exponentTemp), 1 / exponentTemp);
+			if (sample < -inverseTemps[i+1]) {
+				double exponentTemp = -exponents[i] + 1;
+				star->mass = pow((inverseTemps[i] + sample) * exponentTemp / constant + pow(massLimits[i], exponentTemp), 1 / exponentTemp);
 				break;
 			}
 		}
@@ -277,7 +291,7 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 
 	double theta = position.theta();
 
-	velocity += Vec3D(vR * cos(theta) + va * cos(theta+M_PI_2), vR * sin(theta) + va * sin(theta + M_PI_2), vz);
+	velocity += Vec3D(vR * sin(theta) + va * sin(theta + M_PI_2), vR * cos(theta) + va * cos(theta + M_PI_2), vz);
 }
 
 double InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){

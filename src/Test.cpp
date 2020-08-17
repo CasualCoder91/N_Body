@@ -332,7 +332,7 @@ void Test::checkBrokenPowerLaw(){
 	std::vector<double> starMass;
 	std::vector<double> index;
 	for (int i = 0; i < stars.size();i++) {
-		starMass.push_back(stars.at(i)->mass);
+		starMass.push_back(stars[i]->mass);
 		index.push_back(i);
 	}
 	InOut::write(index, starMass,"testingBrokenPowerLaw.dat");
@@ -350,6 +350,23 @@ void Test::wangPositions(){
 		positions.push_back(star->position);
 	}
 	InOut::write(positions, "wangPositions.dat");
+}
+
+void Test::transformation(){
+	Vec3D rotationVec = Vec3D(1, 0, 0);
+	Vec3D translationVec = Vec3D(-8300, 0, 0);
+
+	Parameters parameters = Parameters();
+	MWPotential potential = MWPotential(&parameters);
+	InitialConditions conditions = InitialConditions(&potential);
+
+	Matrix rotationM = Matrix::transformation(rotationVec, translationVec);
+
+	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 1, 1) << std::endl;
+	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 1, 2) << std::endl;
+	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 2, 1) << std::endl;
+	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 3, 1) << std::endl;
+	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 4, 1) << std::endl;
 }
 
 //void Test::velocityBulge(){

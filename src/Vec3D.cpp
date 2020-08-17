@@ -79,6 +79,7 @@ Vec3D Vec3D::cartesianToSphericalV(Vec3D cartesianPos){
 
 Vec3D Vec3D::normalize(){
 	double n = this->length();
+	if (n == 0) return Vec3D();
 	return Vec3D(x/n,y/n,z/n);
 }
 

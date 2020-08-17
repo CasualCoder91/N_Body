@@ -19,6 +19,10 @@ public:
     /** @brief Timestepsize used for integration. Dimension is day since the expected timeframe of interest is in range 0-10 years */
 	double dt = 1; // [day]
     double dt2 = 0.5; //dt/2
+    double dts; //[s]
+    double dts2; //s/2
+    double positionDetla; // dt*kmInpc*secInDay
+    double positionDetla2; // 0.5*positionDetla
     /**@brief amount of seconds in one day. Needed because velocity is given in km/s and dt in days*/
     static double secInDay;
     /**@brief amount of pc in one km*/
@@ -36,10 +40,12 @@ public:
 
     /**
     @brief Implementetion of "the" Runge Kutta algorithm.
-    @todo check how to do this since now the update of the acceleration shall no longer be part of the integration step.
     */
-    void RK4(std::vector<Star*> stars, Node* root, MWPotential* potential, double dt = 0);
-    void RK4(std::vector<Star*> stars, MWPotential* potential, double dt = 0);
+    void RK4(std::vector<Star*> stars, Node* root, MWPotential* potential);
+    void RK4(std::vector<Star*> stars, MWPotential* potential);
+
+    void Leapfrog(std::vector<Star*> stars, Node* root, MWPotential* potential);
+    void Leapfrog(std::vector<Star*> stars, MWPotential* potential);
 private:
 
 };
