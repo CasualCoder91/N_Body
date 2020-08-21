@@ -117,6 +117,6 @@ public:
 	@param position position at which acceleration is calucated according to the potential of the stars contained within the node.
 	@note Should be called by root node only. Star does not have to be "part" of the tree.
 	*/
-	void Node::applyForce(const Vec3D position, Vec3D* acceleration);
+	void Node::applyForce(const Vec3D position, Vec3D& acceleration);
 };
 

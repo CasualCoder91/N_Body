@@ -36,7 +36,7 @@ void LookupTable::setMap(std::vector<double> keys, std::vector<double> values){
         throw  "Vector size must be equal";
     }
     for (int i = 0; i < keys.size(); i++) {
-        map.insert(std::make_pair(keys.at(i), values.at(i)));
+        map.insert(std::make_pair(keys[i], values[i]));
     }
 }
 

@@ -76,7 +76,7 @@ int main() {
 			int simulationID = 0;
 			std::cin >> simulationID;
 			std::cin.clear();
-			Simulation simulation = Simulation(simulationID,&db, &db.selectSimulationData(simulationID).at(0));
+			Simulation simulation = Simulation(simulationID,&db, &db.selectSimulationData(simulationID)[0]);
 			std::cout << "[1] Ouput\n[2] Analysis" << std::endl;
 			std::cin >> selection;
 			std::cin.clear();
@@ -121,7 +121,8 @@ int main() {
 		}
 		else if (selection == 3) {
 			Test test = Test();
-			Test::potentialCircularVelocity();
+			//Test::potentialCircularVelocity();
+			test.transformation();
 			//Test::massDistribution(500,15000);
 			//Test::sampleFieldStarPositions(2000);
 			//Test::velocityBulge();

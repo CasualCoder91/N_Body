@@ -57,8 +57,9 @@ void Database::setup(){
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS star("
 		"id INTEGER NOT NULL,"
-		"mass REAL NOT NULL,"
 		"id_simulation INTEGER NOT NULL,"
+		"mass REAL NOT NULL,"
+		"isCluster INTEGER NOT NULL,"
 		"PRIMARY KEY (id),"
 		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
@@ -179,26 +180,27 @@ int Database::insert(Parameters* parameters){
 	return simulationID;
 }
 
-void Database::insertStars(int simulationID, std::vector<Star*>& stars, int timestep){
+void Database::insertStars(int simulationID, std::vector<Star*>& stars, int timestep, bool clusterStars){
 	std::cout << "Adding stars to database" << std::endl;
 	if (!this->isOpen)
 		this->open();
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	char buffer[] = "INSERT INTO star (id,mass,id_simulation) VALUES (?1,?2,?3)";
+	char buffer[] = "INSERT INTO star (id,mass,id_simulation,isCluster) VALUES (?1,?2,?3,?4)";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
 	//#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
-		sqlite3_bind_int(stmt, 1, stars.at(i)->id);
-		sqlite3_bind_double(stmt, 2, stars.at(i)->mass);
+		sqlite3_bind_int(stmt, 1, stars[i]->id);
+		sqlite3_bind_double(stmt, 2, stars[i]->mass);
 		sqlite3_bind_int(stmt, 3, simulationID);
+		sqlite3_bind_int(stmt, 4, int(clusterStars));
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
 			printf("Commit Failed!\n");
 		}
 		sqlite3_reset(stmt);
-		//insertStar(simulationID, stars.at(i), timestep);
+		//insertStar(simulationID, stars[i], timestep);
 	}
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
 	sqlite3_finalize(stmt);
@@ -268,10 +270,10 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
 	for (unsigned i = 0; i < stars.size(); i++){
-		sqlite3_bind_double(stmt, 1, stars.at(i)->velocity.x);
-		sqlite3_bind_double(stmt, 2, stars.at(i)->velocity.y);
-		sqlite3_bind_double(stmt, 3, stars.at(i)->velocity.z);
-		sqlite3_bind_int(stmt, 4, stars.at(i)->id);
+		sqlite3_bind_double(stmt, 1, stars[i]->velocity.x);
+		sqlite3_bind_double(stmt, 2, stars[i]->velocity.y);
+		sqlite3_bind_double(stmt, 3, stars[i]->velocity.z);
+		sqlite3_bind_int(stmt, 4, stars[i]->id);
 		sqlite3_bind_int(stmt, 5, timestep);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
@@ -288,10 +290,10 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	char buffer2[] = "INSERT INTO position (x,y,z,id_star,timestep) VALUES (?1,?2,?3,?4,?5)";
 	sqlite3_prepare_v2(db, buffer2, strlen(buffer2), &stmt, NULL);
 	for (unsigned i = 0; i < stars.size(); i++) {
-		sqlite3_bind_double(stmt, 1, stars.at(i)->position.x);
-		sqlite3_bind_double(stmt, 2, stars.at(i)->position.y);
-		sqlite3_bind_double(stmt, 3, stars.at(i)->position.z);
-		sqlite3_bind_int(stmt, 4, stars.at(i)->id);
+		sqlite3_bind_double(stmt, 1, stars[i]->position.x);
+		sqlite3_bind_double(stmt, 2, stars[i]->position.y);
+		sqlite3_bind_double(stmt, 3, stars[i]->position.z);
+		sqlite3_bind_int(stmt, 4, stars[i]->id);
 		sqlite3_bind_int(stmt, 5, timestep);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
@@ -304,20 +306,21 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 
 	//#pragma omp parallel for
 	//for (int i = 0; i < stars.size(); ++i) {
-	//	insertVelocity(stars.at(i)->id,stars.at(i)->velocity, timestep);
-	//	insertPosition(stars.at(i)->id, stars.at(i)->position, timestep);
+	//	insertVelocity(stars[i]->id,stars[i]->velocity, timestep);
+	//	insertPosition(stars[i]->id, stars[i]->position, timestep);
 	//}
 }
 
-void Database::insertStar(int simulationID, Star* star, int& timestep){
+void Database::insertStar(int simulationID, Star* star, int& timestep, bool clusterStar){
 	if (!this->isOpen)
 		this->open();
-	std::string sql = "INSERT INTO star (id,mass,id_simulation) VALUES (?1,?2,?3)";
+	std::string sql = "INSERT INTO star (id,mass,id_simulation,isCluster) VALUES (?1,?2,?3,?4)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, star->id);
 	sqlite3_bind_double(st, 2, star->mass);
 	sqlite3_bind_int(st, 3, simulationID);
+	sqlite3_bind_int(st, 4, clusterStar);
 	int returnCode = sqlite3_step(st);
 	sqlite3_finalize(st);
 	insertVelocity(star->id, star->velocity, timestep);
