@@ -37,19 +37,19 @@ public:
 	*/
 	static std::vector<Star*> initStars(int& firstID, int nStars);
 	/**
-	@brief Creates field stars in the field of view defined by \p focus, \p viewPoint, \p distance and \p angle.
+	@brief Creates field stars in the field of view defined by \p focus, \p viewPoint, \p distance and \p angleOfView.
 	@param dx The step size along the line of sight in pc
 	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
 	@param focus one point along the line of sight (0,0,0) would be the center of the MW.
 	@param viewPoint the position of the observer.
 	@param distance how far the observer can see/the render distance
-	@param angle the angle of view in degrees
+	@param angleOfView the angle of view in degrees
 	*/
-	std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle);
+	std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
 
-	double bulgeStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle);
+	double bulgeStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
 
-	double diskStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angle);
+	double diskStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
 	@param [in,out] stars The mass of these stars will be modified.
@@ -69,20 +69,20 @@ public:
 	@param depth Depth of the cube in z direction [kpc]
 	@param gridResolution Lenght of one sub-cube [kpc]. This dictates the accuracy.
 	*/
-	std::vector<Star*> initDiskStars(int& starID, Vec3D tlf, Vec3D brf, double depth, double gridResolution = 0.001);
+	/*std::vector<Star*> initDiskStars(int& starID, Vec3D tlf, Vec3D brf, double depth, double gridResolution = 0.001);*/
 	/**
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	@param [in,out] starID ID of the first star in the return vector. Gets incremented with every added star.
 	*/
-	std::vector<Star*> massDisk(double totalMass, int& starID);
+	std::vector<Star*> diskIMF(double totalMass, int& starID);
 	/**
 	@brief Creates stars belonging to the bulge/spheroid with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	@param [in,out] starID ID of the first star in the return vector. Gets incremented with every added star.
-	@see initialMassBulge
+	@see bulgeIMF
 	*/
-	std::vector<Star*> initialMassBulge(double totalMass, int& starID);
+	std::vector<Star*> bulgeIMF(double totalMass, int& starID);
 
 	void sampleWang(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 	/**
@@ -93,6 +93,7 @@ public:
 	@see sampleBulgePositions
 	*/
 	double sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+	double sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
 	/**
 	@brief Adds velocity (circular with dispersion) at given \p position to \p velocity 
 	@param [in,out] velocity [km/s]
@@ -114,6 +115,7 @@ public:
 	@see sampleDiskPositions
 	*/
 	void sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+	void sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
 	/**
 	@brief Adds velocity (circular with dispersion) at given \p position to \p velocity
 	@param [in,out] velocity [km/s]
@@ -143,6 +145,7 @@ public:
 	void offsetCluster(std::vector<Star*>& stars, Vec3D& offset);
 
 private:
+	friend class Test;
 	/** @brief Calculates the local escape velocity [km*s^-1] in the Plummer model */
 	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass, double G);
 	/**
@@ -158,5 +161,7 @@ private:
 	static double closestToZero(double a, double b);
 	/** @brief calculates the value which is farthest away from zero in the intervall [a,b] */
 	static double farthermostFromZero(double a, double b);
+	static void setBoundaries(double& min, double& max);
+	static void setBoundaries(Vec3D& min, Vec3D& max);
 };
 

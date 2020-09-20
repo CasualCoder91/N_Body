@@ -49,7 +49,7 @@ void Simulation::run(){
 	database->insertStars(this->getID(), clusterStars, 0,true);
 	nextStarIndex = database->selectLastID("star") + 1;
 
-	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex,focus,viewPoint,distance,dx,angle); //0.00029088833
+	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex,focus,viewPoint,distance,dx,angleOfView); //0.00029088833
 	database->insertStars(this->getID(), fieldStars, 0,false);
 
 	std::cout << "Starting integration" << std::endl;
@@ -65,15 +65,11 @@ void Simulation::run(){
 
 	for (int i = 0; i <= this->getNTimesteps(); i++) {
 		std::cout << "Timestep: " << i << std::endl;
-		if (i % this->getOutputTimestep() == 0) {
-			//InOut::writeWithLabel(fieldStars, "Stars/5/fieldStars" + std::to_string(i) + ".dat");
-			//InOut::writeWithLabel(clusterStars, "Stars/4/clusterStars" + std::to_string(i) + ".dat");
-			//InOut::writeAll(clusterStars, "./Output/stars_all" + std::to_string(i) + ".dat");
+		if (i % this->getOutputTimestep() == 1) {
 			database->timestep(i, clusterStars);
 			database->timestep(i, fieldStars);
 			progressBar.Update(i);
 			progressBar.Print();
-			//std::cout << i << std::endl;
 		}
 
 		if (clusterStars.size() > 0) {
@@ -114,7 +110,7 @@ void Simulation::run(){
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	//InOut::write(clusterStars,"stars.dat");
 	//InOut::write(&root);
-	std::cout << "Time needed: " << time_span.count() << "seconds" << std::endl;
+	std::cout << "Time needed for integration: " << time_span.count() << "seconds" << std::endl;
 	std::cout << "done" << std::endl;
 }
 

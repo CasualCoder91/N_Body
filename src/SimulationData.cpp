@@ -14,7 +14,7 @@ void SimulationData::getParametersFromConfig(){
 	initParameterFromCfg("maxMass", maxMass);
 	initParameterFromCfg("softening", softening);
 	initParameterFromCfg("alpha", alpha);
-	initParameterFromCfg("angle", angle);
+	initParameterFromCfg("angle", angleOfView);
 	initParameterFromCfg("dx", dx);
 	initParameterFromCfg("distance", distance);
 	initParameterFromCfg("viewPoint", viewPoint);
@@ -59,7 +59,7 @@ SimulationData::SimulationData(SimulationData* simulationData){
 	this->precission = simulationData->precission;
 	this->title = simulationData->title;
 	this->focus = simulationData->focus;
-	this->angle = simulationData->angle;
+	this->angleOfView = simulationData->angleOfView;
 	this->dx = simulationData->dx;
 	this->distance = simulationData->distance;
 	this->viewPoint = simulationData->viewPoint;
@@ -85,6 +85,10 @@ double SimulationData::getdt() {
 
 int SimulationData::getNTimesteps() {
 	return nTimesteps;
+}
+
+double SimulationData::getDistance(){
+	return this->distance;
 }
 
 double SimulationData::getSoftening() {
@@ -117,6 +121,22 @@ double SimulationData::getG() {
 
 int SimulationData::getNStars() {
 	return nStars;
+}
+
+double SimulationData::getAngle(){
+	return this->angleOfView;
+}
+
+Vec3D SimulationData::getFocus(){
+	return focus;
+}
+
+Vec3D SimulationData::getViewPoint(){
+	return viewPoint;
+}
+
+Vec3D SimulationData::getClusterLocation(){
+	return this->clusterLocation;
 }
 
 void SimulationData::setNStars(int N){

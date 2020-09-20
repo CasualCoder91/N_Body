@@ -68,6 +68,11 @@ int main() {
 		std::cin.clear();
 		if (selection == 1) {
 			std::vector<SimulationData> simulations = db.selectSimulationData();
+			if (simulations.empty()) {
+				std::cout << "Database does not contain any simulations!" << std::endl;
+				continue;
+			}
+
 			std::cout << "Available Simulations:" << std::endl;
 			for (SimulationData sim : simulations) {
 				std::cout << sim.print();
@@ -77,17 +82,17 @@ int main() {
 			std::cin >> simulationID;
 			std::cin.clear();
 			Simulation simulation = Simulation(simulationID,&db, &db.selectSimulationData(simulationID)[0]);
-			std::cout << "[1] Ouput\n[2] Analysis" << std::endl;
+			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate 2D" << std::endl;
 			std::cin >> selection;
 			std::cin.clear();
 			if (selection == 1) {
 				std::string directory = "Simulation" + std::to_string(simulation.getID());
 				directory = InOut::makeDirectory(directory);
 				std::cout << "Files will be written to: " << directory << std::endl;
-				db.outputStars(simulation.getID(), directory + "/stars.dat");
+				db.outputStars(simulation.getID(), directory + "/stars",false,true,true);
 				std::cout << "done" << std::endl;
 			}
-			else {
+			else if(selection==2) {
 				std::cout << "Running analysis on selected simulation" << std::endl;
 				Parameters parameters = Parameters();
 				Analysis analysis = Analysis(parameters);
@@ -109,7 +114,11 @@ int main() {
 				}
 				std::cout << "Energy analysis done" << std::endl;
 			}
-
+			else {
+				std::cout << "generating 2D positions and velocities ..." << std::endl;
+				db.generate2D(simulation.getID());
+				std::cout << "done\n" << std::endl;
+			}
 		}
 		else if (selection == 2) {
 			Parameters parameters = Parameters();

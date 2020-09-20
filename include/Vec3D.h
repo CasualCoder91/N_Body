@@ -14,6 +14,8 @@
 #include <string>
 #include <random>
 
+#include "Matrix.h"
+
 class Vec3D{
 public:
     /** @brief x value of the vector */
@@ -76,7 +78,7 @@ public:
      @param a, b Vectors of which the cross product is calculated.
      @return cross product.
      */
-    static Vec3D crossProduct(Vec3D* a, Vec3D* b);
+    static Vec3D crossProduct(const Vec3D* a, const Vec3D* b);
     /**
      @brief creates string containing coordinates of the vector. Used for output.
      @return coordinates of vector as sting in format: x,y,z.
@@ -124,6 +126,8 @@ public:
     */
     friend Vec3D operator + (Vec3D lhs, Vec3D const& rhs);
     friend Vec3D operator - (Vec3D lhs, Vec3D const& rhs);
-    static Vec3D projection(Vec3D& target, Vec3D& normalVector);
+    static Vec3D projectPosition(const Vec3D& target, const Vec3D& lookAt, const Vec3D& origin, const double fovAngle);
+    static Vec3D project(Vec3D& position, Vec3D& velocity,  Vec3D& lookAt, Vec3D& origin);
+    static Vec3D projectVelocity(const Vec3D& target, const Vec3D& lookAt, const double fovAngle);
 };
 

@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include "Configuration.h"
+#include "Matrix.h"
 
 class SimulationData
 {
@@ -35,13 +36,12 @@ protected:
     std::vector<double> massLimits; //broken powerlaw
     std::vector<double> exponents; //broken powerlaw
 
-
-    double angle = 1; //degrees
+    //View cone
+    double angleOfView = 0.0174533; //rad
     double dx = 10; //pc
     double distance = 8000; //pc
-    Vec3D viewPoint = Vec3D(8000, 0, 0);
+    Vec3D viewPoint = Vec3D(8300, 0, 0);
     Vec3D focus = Vec3D(0, 0, 0);
-
 
     //General Parameters, todo: put into separate class
     /** @brief Gravitational constant in astronomical units: parsec/solar mass*km^2/s^2*/
@@ -70,6 +70,7 @@ public:
     double getBoxLength(); //[pc]
     double getdt();
     int getNTimesteps();
+    double getDistance();
     double getSoftening();
     double getPrecission();
     int getOutputTimestep();
@@ -78,6 +79,10 @@ public:
     double getAlpha();
     double getG();
     int getNStars();
+    double getAngle();
+    Vec3D getFocus();
+    Vec3D getViewPoint();
+    Vec3D getClusterLocation();
     /** @brief Sets amount of cluster stars. If possible use the simulation.cfg file instead*/
     void setNStars(int N);
 };

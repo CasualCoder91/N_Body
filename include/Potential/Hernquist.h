@@ -8,6 +8,7 @@
 
 #include "Vec3D.h"
 #include "Star.h"
+#include "Matrix.h"
 
 class Hernquist {
 
@@ -32,6 +33,7 @@ public:
 
 	/**@brief: Mass inside the \p volumeElement relative to the given \p position*/
 	double mass(Vec3D position, Vec3D volumeElement);
+	double mass(Matrix* transformationMatrix, double distance, double coneR);
 	/**
 	@brief Caluclate the surface mass density at a given radial distance R.
 	The GSL function gsl_integration_qagiu is used.
@@ -54,4 +56,10 @@ public:
 	@brief Potential 2x derived from r with G=1. Used for epicyclic frequency.
 	*/
 	double potentialdr2(double r);
+
+private:
+	//Density in cylinder volume along z Axis
+	static double gslDensityX(double x, void* p);
+	static double gslDensityY(double y, void* p);
+	static double gslDensityZ(double z, void* p);
 };

@@ -33,7 +33,7 @@ def createConnection(db_file):
 def selectAllPositions(conn, simulationID):
     cur = conn.cursor()
     #cur.execute("SELECT star.id,mass,position.timestep,position.x,position.y,position.z FROM star INNER JOIN velocity on velocity.id_star = star.id INNER JOIN position on position.id_star = star.id where star.id_simulation = ?1 AND position.timestep = velocity.timestep order by position.timestep", (simulationID,))
-    cur.execute("SELECT star.id,mass,position.timestep,position.x,position.y,position.z FROM star INNER JOIN position on position.id_star = star.id where star.id_simulation = ?1 and star.isCluster=0  order by position.timestep LIMIT 900", (simulationID,)) #LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
+    cur.execute("SELECT star.id,mass,position.timestep,position.x,position.y,position.z FROM star INNER JOIN position on position.id_star = star.id where star.id_simulation = ?1 order by position.timestep", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
     rows = np.array(cur.fetchall())
     return rows
 
@@ -91,23 +91,25 @@ def plotProjection(output,data):
     origin = np.array([8300, 0, 0])
     focus = np.array([9594,-640,-52])-origin
     focus = focus / np.linalg.norm(focus)
-    fov = 0.1*0.0174533
+    fov = 10*0.0174533
     for i in np.unique(data[:,2]):
         timestepData = data[data[:,2] == i]
         timestepData = timestepData[:,3:]
         #com,maxDist = plotDimensions(timestepData)
         fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_aspect(1)
         for position in timestepData:
             position = position-origin
             length = np.linalg.norm(position)
             position_u = position / length
             angleXY = np.arctan2(focus[1],focus[0]) - np.arctan2(position_u[1],position_u[0])
-            if angleXY > np.pi:
-                angleXY = angleXY - 2*np.pi
-            if angleXY < -np.pi:
-                angleXY = angleXY + 2*np.pi
+            #if angleXY > np.pi:
+            #    angleXY = angleXY - 2*np.pi
+            #if angleXY < -np.pi:
+            #    angleXY = angleXY + 2*np.pi
             #lengthXY = np.linalg.norm(position[:2])
-            angleXZ = np.arcsin(np.abs(focus[2])) - np.arcsin(np.abs(position_u[2]))
+            angleXZ = np.arcsin(focus[2]) - np.arcsin(position_u[2])
             #lengthXZ = np.abs(np.cross(position, focus)*focus)[2]
             #print("lengthXZ",lengthXZ)
             #print("position",position)
@@ -196,7 +198,7 @@ def plot2DCylinder(output,data):
         plt.close(fig)
 
 def main():
-    simulationID = 1
+    simulationID = 4
     database = r"E:\Master_Thesis\VS_Project\N_Body\Output\Database\default.db"
     output = r"E:\Master_Thesis\VS_Project\N_Body\Output\NGC2244"# + str(simulationID)
     # create a database connection

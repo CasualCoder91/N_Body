@@ -22,7 +22,7 @@ const std::string MWPotential::velocityDistributionBulgeTableFilename = "velocit
 
 struct gslRParam { double R; };
 
-struct gslDensityDiskConeParam { Matrix* transformation; double distance; double r; double x; double y; };
+struct gslDensityConeParams { Matrix* transformation; double distance; double r; double x; double y; };
 
 struct gslSphericalAveragedDiskParams { double mMassDisk; double aDisk; double bDisk; double G; double r; };
 
@@ -76,7 +76,7 @@ double MWPotential::gslDensityDisk(double z, void* p) {
 double MWPotential::gslDensityDiskx(double x, void* p){
 	gsl_function F;
 	F.function = &gslDensityDisky;
-	struct gslDensityDiskConeParam* fp = (struct gslDensityDiskConeParam*)p;
+	struct gslDensityConeParams* fp = (struct gslDensityConeParams*)p;
 	fp->x = x;
 	F.params = fp;
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
@@ -90,7 +90,7 @@ double MWPotential::gslDensityDiskx(double x, void* p){
 double MWPotential::gslDensityDisky(double y, void* p){
 	gsl_function F;
 	F.function = &gslDensityDiskz;
-	struct gslDensityDiskConeParam* fp = (struct gslDensityDiskConeParam*)p;
+	struct gslDensityConeParams* fp = (struct gslDensityConeParams*)p;
 	fp->y = y;
 	F.params = fp;
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
@@ -101,7 +101,7 @@ double MWPotential::gslDensityDisky(double y, void* p){
 }
 
 double MWPotential::gslDensityDiskz(double z, void* p){
-	struct gslDensityDiskConeParam* fp = (struct gslDensityDiskConeParam*)p;
+	struct gslDensityConeParams* fp = (struct gslDensityConeParams*)p;
 	Vec3D location = Vec3D(fp->x, fp->y, z);
 	location = *(fp->transformation) * location;
 
@@ -294,7 +294,7 @@ double MWPotential::massDisk(Vec3D position, Vec3D volumeElement){
 double MWPotential::massDisk(Matrix* transformation, double distance, double r){
 	gsl_function F;
 	F.function = &gslDensityDiskx;
-	gslDensityDiskConeParam densityDiskConeParam{ transformation, distance, r,0,0 };
+	gslDensityConeParams densityDiskConeParam{ transformation, distance, r,0,0 };
 	F.params = &densityDiskConeParam;
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
 	double result, error;

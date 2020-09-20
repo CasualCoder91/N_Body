@@ -25,6 +25,8 @@ class Database{
 	bool isOpen;
 
 private:
+
+	static double kmInpc;
 	/**
 	@brief Executes sql statement.
 	@param sql The statement which shall be executed.
@@ -55,6 +57,7 @@ public:
 	void insertAnalysisdtVelocity(int analysisID, int dt, double velocity);
 	/** @brief inserts positions and velocities of given \p stars and \p timestep */
 	void timestep(int timestep, std::vector<Star*>& stars);
+	void generate2D(int simulationID);
 	/** 
 	@brief inserts one star (including positions and velocities)
 	@note for multiple stars use insertStars instead!
@@ -73,13 +76,13 @@ public:
 	/** @brief returns all saved simulations data by default. specify \p ID to retrieve a specific record */
 	std::vector<SimulationData> selectSimulationData(int ID = -1);
 	/** @brief returns all velocities at the given \p timestep */
-	std::vector<Vec3D> selectVelocities(int timestep);
+	std::vector<Vec3D> selectVelocities(int timestep = -1);
 	/** @brief returns all timesteps */
 	std::vector<int> selectTimesteps();
 	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) */
 	std::vector<Star*> selectStars(int simulationID, int timeStep);
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
-	void outputStars(int simulationID, std::string filePath);
+	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
 };
 
 #endif

@@ -4,12 +4,19 @@ Matrix::Matrix(){
 	this->m11 = 0;
 	this->m12 = 0;
 	this->m13 = 0;
+	this->m14 = 0;
 	this->m21 = 0;
 	this->m22 = 0;
 	this->m23 = 0;
+	this->m24 = 0;
 	this->m31 = 0;
 	this->m32 = 0;
 	this->m33 = 0;
+	this->m34 = 0;
+	this->m41 = 0;
+	this->m42 = 0;
+	this->m43 = 0;
+	this->m44 = 0;
 }
 
 Matrix::Matrix(double m11, double m12, double m13, double m14, double m21, double m22, double m23, double m24, double m31, double m32, double m33, double m34, double m41, double m42, double m43, double m44){
@@ -30,15 +37,15 @@ Matrix Matrix::transformation(Vec3D rotation, Vec3D translation){
 	double m11 = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
 	double m12 = 2 * (q1 * q2 - q0 * q3);
 	double m13 = 2 * (q1 * q3 + q0 * q2);
-	double m14 = m11*translation.x + m12 * translation.y + m13 * translation.z;
+	double m14 = translation.x;
 	double m21 = 2 * (q2 * q1 + q0 * q3);
 	double m22 = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
 	double m23 = 2 * (q2 * q3 - q0 * q1);
-	double m24 = m21 * translation.x + m22 * translation.y + m23 * translation.z;
+	double m24 = translation.y;
 	double m31 = 2 * (q3 * q1 - q0 * q2);
 	double m32 = 2 * (q3 * q2 + q0 * q1);
 	double m33 = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
-	double m34 = m31 * translation.x + m32 * translation.y + m33 * translation.z;
+	double m34 = translation.z;
 	double m41 = 0; 
 	double m42 = 0; 
 	double m43 = 0;

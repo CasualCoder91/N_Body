@@ -102,7 +102,7 @@ void Test::initialConditionsMassBulgeOutput(double totalMass){
 	MWPotential potential = MWPotential(&parameters);
 	InitialConditions initialConditions = InitialConditions(&potential);
 	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initialMassBulge(totalMass, starID);
+	std::vector<Star*> stars = initialConditions.bulgeIMF(totalMass, starID);
 	std::vector<double> index;
 	std::vector<double> mass;
 	double i = 0;
@@ -147,7 +147,7 @@ void Test::initialConditionsSampleDisk(){
 	Vec3D volumeElement = Vec3D(gridResolution, gridResolution, gridResolution);
 	double massInCell = potential.massDisk(position, volumeElement);
 	int starID = 0;
-	std::vector<Star*> starsInCell = initialConditions.massDisk(massInCell,starID); //stars with mass
+	std::vector<Star*> starsInCell = initialConditions.diskIMF(massInCell,starID); //stars with mass
 	initialConditions.sampleDiskPositions(starsInCell, position, volumeElement);
 	initialConditions.sampleDiskVelocities(starsInCell);
 }
@@ -353,16 +353,27 @@ void Test::wangPositions(){
 }
 
 void Test::transformation(){
-	Vec3D rotationVec = Vec3D(1, 0, 0);
-	Vec3D translationVec = Vec3D(-8300, 0, 0);
-
 	Parameters parameters = Parameters();
 	MWPotential potential = MWPotential(&parameters);
 	InitialConditions conditions = InitialConditions(&potential);
 
+	Vec3D rotationVec = (parameters.getFocus() - parameters.getViewPoint()).normalize();;
+	Vec3D translationVec = parameters.getViewPoint();
+
 	Matrix rotationM = Matrix::transformation(rotationVec, translationVec);
 
-	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 1, 1) << std::endl;
+	double angleOfView = parameters.getAngle();
+	double r = 0.5 * parameters.getDistance() * tan(angleOfView);
+	Vec3D boundary1 = Vec3D(-r, -r, 0);
+	Vec3D boundary2 = Vec3D(r,	r, parameters.getDistance());
+
+	boundary1 = rotationM * boundary1;
+	boundary2 = rotationM * boundary2;
+
+	std::cout << "boundary1: " << boundary1.print() << std::endl;
+	std::cout << "boundary2: " << boundary2.print() << std::endl;
+
+	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 1000, 500) << std::endl;
 	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 1, 2) << std::endl;
 	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 2, 1) << std::endl;
 	std::cout << "DiskMass: " << potential.massDisk(&rotationM, 3, 1) << std::endl;
@@ -466,7 +477,7 @@ void Test::initialConditionsInitFieldStars(){
 	InitialConditions initialConditions = InitialConditions(&potential);
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initFieldStars(starID,focus,viewPoint,distance,dx,angle); //0.00029088833
+	std::vector<Star*> stars = initialConditions.initFieldStars(starID,focus,viewPoint,distance,dx,angleOfView);
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	std::cout << "Time needed for calucation: " << time_span.count() << "seconds" << std::endl;
@@ -476,31 +487,24 @@ void Test::initialConditionsInitFieldStars(){
 std::vector<Star*> Test::initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double r){
 	std::cout << "Initializing bulge stars in tube" << std::endl;
 	Vec3D direction = (focus - viewPoint).normalize();
-	int nSteps = (distance + dx) / dx;
-	ProgressBar progressBar = ProgressBar(0, nSteps, true);
-	std::vector<Star*> fieldStars;
-	//#pragma omp parallel for
-	for (int step = 1; step <= nSteps; ++step) {//steps along direction (line of sight)
-		double aBoid = 2 * r;
-		if (aBoid < 1) //if cubes are smaller 1pc^3 density is aproximated 0
-			continue;
-		Vec3D rVec = sqrt(2) * r * Vec3D::crossProduct(&Vec3D(-1, 1, -1), &direction).normalize();
-		rVec.x = -abs(rVec.x);
-		rVec.y = -abs(rVec.y);
-		rVec.z = -abs(rVec.z);
-		Vec3D corner = viewPoint + direction * ((double)step - 1) * dx + rVec;
-		Vec3D volumeElement = direction * dx - 2 * rVec;
-		double bulgeMass = potential.bulgePotential.mass(corner, volumeElement);
-		std::vector<Star*> bulgeStars = initialConditions.initialMassBulge(bulgeMass, starID);
-		if (bulgeStars.size() > 0) {
-			//std::cout << "corner: " << corner.print() << " r:" <<corner.length()  << std::endl;
-			initialConditions.sampleBulgePositions(bulgeStars, corner, volumeElement);
-			initialConditions.sampleBulgeVelocities(bulgeStars);
-			//initialConditions.sampleWang(bulgeStars, corner, volumeElement);
-			fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
-		}
-		progressBar.Update(step);
-		progressBar.Print();
+
+	angleOfView = angleOfView * 0.0174533; //convert degrees in rad
+	double coneD = distance * tan(angleOfView);
+	double coneR = 0.5 * coneD;
+	Matrix transformationMatrix = Matrix::transformation(direction, viewPoint);
+	Vec3D coneBoundaryMin = transformationMatrix * Vec3D(-coneR, -coneR, 0);
+	Vec3D coneBoundaryMax = transformationMatrix * Vec3D(coneR, coneR, distance * 1.01); //1.01 to make sure boundary is not inside cone.
+	initialConditions.setBoundaries(coneBoundaryMin, coneBoundaryMax);
+
+	std::vector<Star*> fieldStars; //return vector
+
+	double bulgeMass = potential.bulgePotential.mass(&transformationMatrix, distance, coneR);
+	std::vector<Star*> bulgeStars = initialConditions.bulgeIMF(bulgeMass, starID);
+	if (bulgeStars.size() > 0) {
+		//sampleWang(bulgeStars, corner, volumeElement);
+		initialConditions.sampleBulgePositions(bulgeStars, coneBoundaryMin, coneBoundaryMax, coneR, distance, &transformationMatrix); //test
+		initialConditions.sampleBulgeVelocities(bulgeStars);
+		fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
 	}
 	return fieldStars;
 }
