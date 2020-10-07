@@ -33,7 +33,20 @@ def createConnection(db_file):
 def selectAllPositions(conn, simulationID):
     cur = conn.cursor()
     #cur.execute("SELECT star.id,mass,position.timestep,position.x,position.y,position.z FROM star INNER JOIN velocity on velocity.id_star = star.id INNER JOIN position on position.id_star = star.id where star.id_simulation = ?1 AND position.timestep = velocity.timestep order by position.timestep", (simulationID,))
-    cur.execute("SELECT star.id,mass,position.timestep,position.x,position.y,position.z FROM star INNER JOIN position on position.id_star = star.id where star.id_simulation = ?1 order by position.timestep", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
+    cur.execute("""SELECT star.id,mass,position.timestep,position.x,position.y,position.z
+        FROM star
+        INNER JOIN position on position.id_star = star.id
+        where star.id_simulation = ?1
+        order by position.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
+    rows = np.array(cur.fetchall())
+    return rows
+
+def select2DPositions(conn, simulationID):
+    cur = conn.cursor()
+    cur.execute("""SELECT star.id,mass,position.timestep,position2D.x,position2D.y FROM star
+       INNER JOIN position on position.id_star = star.id
+       INNER JOIN position2D on position.id=position2D.fk_position
+       where star.id_simulation = ?1 order by position.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
     rows = np.array(cur.fetchall())
     return rows
 
@@ -53,19 +66,21 @@ def plot_star_series(output,data):
 #returns center of mass and max distance
 def plotDimensions(data):
     com =  np.zeros(3)
+    maxDist =  np.zeros(3)
     com[0] = np.mean(data[:,3])
     com[1] = np.mean(data[:,4])
-    com[2] = np.mean(data[:,5])
-    maxDist =  np.zeros(3)
+    print(np.size(data, 1))
+    if(np.size(data, 1)>5):
+        com[2] = np.mean(data[:,5])
+        for z in data[:,5]:
+            if abs(z-com[2])>maxDist[2]:
+                maxDist[2]=abs(z-com[2])
     for x in data[:,3]:
         if abs(x-com[0])>maxDist[0]:
             maxDist[0]=abs(x-com[0])
     for y in data[:,4]:
         if abs(y-com[1])>maxDist[1]:
             maxDist[1]=abs(y-com[1])
-    for z in data[:,5]:
-        if abs(z-com[2])>maxDist[2]:
-            maxDist[2]=abs(z-com[2])
     return com,maxDist
 
 def toCylinder(x,y,z):
@@ -79,10 +94,14 @@ def plot2Dxy(output,data):
         timestepData = data[data[:,2] == i]
         com,maxDist = plotDimensions(timestepData)
         fig = plt.figure()
-        plt.plot(plotData[:,3], plotData[:,4], 'ro')
-        plt.xlim(com[0]-maxDist[0])
-        plt.ylim(com[1]-maxDist[1])
+        print(maxDist[0],maxDist[1])
+        plotDist = np.minimum(maxDist[0],maxDist[1])
+        plt.xlim(com[0]-plotDist, com[0]+plotDist)
+        plt.ylim(com[1]-plotDist, com[1]+plotDist)
+        plt.plot(timestepData[:,3], timestepData[:,4], 'ro')
+        print(plotDist)
         name = output+'\starPositions'+str(int(i))
+        plt.show()
         plt.savefig(name+'.jpg')
         plt.close(fig)
 
@@ -198,14 +217,14 @@ def plot2DCylinder(output,data):
         plt.close(fig)
 
 def main():
-    simulationID = 4
+    simulationID = 1
     database = r"E:\Master_Thesis\VS_Project\N_Body\Output\Database\default.db"
     output = r"E:\Master_Thesis\VS_Project\N_Body\Output\NGC2244"# + str(simulationID)
     # create a database connection
     conn = createConnection(database)
     with conn:
-        data = selectAllPositions(conn, simulationID)
-        plot_star_series(output, data)
+        data = select2DPositions(conn, simulationID)
+        plot2Dxy(output, data)
         #plotProjection(output, data)
 
 if __name__ == '__main__':

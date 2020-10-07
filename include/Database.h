@@ -15,6 +15,7 @@
 #include "Star.h"
 #include "Analysis.h"
 #include "SimulationData.h"
+#include "Projection.h"
 
 using Record = std::vector<std::string>;
 using Records = std::vector<Record>;
@@ -26,7 +27,6 @@ class Database{
 
 private:
 
-	static double kmInpc;
 	/**
 	@brief Executes sql statement.
 	@param sql The statement which shall be executed.

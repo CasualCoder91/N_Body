@@ -167,6 +167,7 @@
     <ClInclude Include="include\Matrix.h" />
     <ClInclude Include="include\Potential\Hernquist.h" />
     <ClInclude Include="include\Potential\Potential.h" />
+    <ClInclude Include="include\Projection.h" />
     <ClInclude Include="include\WangPotential.h" />
     <ClInclude Include="include\InitialConditions.h" />
     <ClInclude Include="include\InOut.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Potential\Hernquist.cpp" />
     <ClCompile Include="src\Potential\Potential.cpp" />
+    <ClCompile Include="src\Projection.cpp" />
     <ClCompile Include="src\WangPotential.cpp" />
     <ClCompile Include="src\InitialConditions.cpp" />
     <ClCompile Include="src\InOut.cpp" />

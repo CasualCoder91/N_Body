@@ -2,8 +2,6 @@
 
 char* Database::dataBaseDataPath = "Output/Database/Default.db";
 
-double Database::kmInpc = 3.086e-13;
-
 Database::Database(){
 	this->isOpen = false;
 	this->open();
@@ -379,34 +377,14 @@ void Database::generate2D(int simulationID){
 		}
 		position = Vec3D(sqlite3_column_double(stmt, 1), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3));
 		velocity = Vec3D(sqlite3_column_double(stmt, 5), sqlite3_column_double(stmt, 6), sqlite3_column_double(stmt, 7));
-		position = Vec3D::projectPosition(position, lookAt, viewPoint,angle);
+		Projection::project(position, velocity, lookAt, viewPoint);
+
+		//position = Projection::projectPosition(position, lookAt, viewPoint,angle);
 		rowInsert positionInsert = { sqlite3_column_int(stmt, 0),position.x,position.y };
 		positionsInsert.emplace_back(positionInsert);
-		//velocity = velocity * kmInpc; // [km/s] to [pc/s]
-		velocity = Vec3D::projectVelocity(velocity, lookAt, angle);
+		//velocity = Projection::projectVelocity(velocity, lookAt, angle);
 		rowInsert velocityInsert = { sqlite3_column_int(stmt, 4),velocity.x,velocity.y };
 		velocitiesInsert.emplace_back(velocityInsert);
-		//velocity = velocity * 1 / kmInpc; // [pc/s] to [km/s]
-		/*query = "INSERT INTO position2D (fk_position,x,y) VALUES (?1,?2,?3)";
-		sqlite3_stmt* st;
-		sqlite3_prepare(db, query.c_str(), -1, &st, NULL);
-		sqlite3_bind_int(st, 1, sqlite3_column_int(stmt, 0));
-		sqlite3_bind_double(st, 2, position.x);
-		sqlite3_bind_double(st, 3, position.y);
-		if (sqlite3_step(st) != SQLITE_DONE){
-			printf("Commit Failed!\n");
-		}
-		sqlite3_finalize(st);
-
-		query = "INSERT INTO velocity2D (fk_velocity,x,y) VALUES (?1,?2,?3)";
-		sqlite3_prepare(db, query.c_str(), -1, &st, NULL);
-		sqlite3_bind_int(st, 1, sqlite3_column_int(stmt, 4));
-		sqlite3_bind_double(st, 2, velocity.x);
-		sqlite3_bind_double(st, 3, velocity.y);
-		if (sqlite3_step(st) != SQLITE_DONE) {
-			printf("Commit Failed!\n");
-		}
-		sqlite3_finalize(st);*/
 
 	}
 	sqlite3_finalize(stmt);

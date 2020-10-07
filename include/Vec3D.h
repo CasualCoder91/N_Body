@@ -14,7 +14,7 @@
 #include <string>
 #include <random>
 
-#include "Matrix.h"
+//#include "Matrix.h"
 
 class Vec3D{
 public:
@@ -126,8 +126,5 @@ public:
     */
     friend Vec3D operator + (Vec3D lhs, Vec3D const& rhs);
     friend Vec3D operator - (Vec3D lhs, Vec3D const& rhs);
-    static Vec3D projectPosition(const Vec3D& target, const Vec3D& lookAt, const Vec3D& origin, const double fovAngle);
-    static Vec3D project(Vec3D& position, Vec3D& velocity,  Vec3D& lookAt, Vec3D& origin);
-    static Vec3D projectVelocity(const Vec3D& target, const Vec3D& lookAt, const double fovAngle);
 };
 

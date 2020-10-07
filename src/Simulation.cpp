@@ -64,8 +64,7 @@ void Simulation::run(){
 	std::chrono::high_resolution_clock::time_point endTime;
 
 	for (int i = 0; i <= this->getNTimesteps(); i++) {
-		std::cout << "Timestep: " << i << std::endl;
-		if (i % this->getOutputTimestep() == 1) {
+		if (i>0 && i % this->outputTimestep == 0) {
 			database->timestep(i, clusterStars);
 			database->timestep(i, fieldStars);
 			progressBar.Update(i);
