@@ -134,3 +134,7 @@ void Analysis::write(){
 		InOut::write(time, potE, "PotentialEnergy.dat");
 	}
 }
+
+void Analysis::cluster(){
+	std::vector<std::vector<Point>> points = Database::selectPoints();
+}

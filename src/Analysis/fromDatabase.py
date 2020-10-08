@@ -91,19 +91,20 @@ def main():
         df = pd.read_sql_query("""SELECT star.id,mass,position.timestep,position2D.x,position2D.y FROM star
            INNER JOIN position on position.id_star = star.id
            INNER JOIN position2D on position.id=position2D.fk_position
-           where star.id_simulation = 1 and position.timestep<2 order by position.timestep""", con)
+           where star.id_simulation = 1 and position.timestep<10 order by position.timestep""", con) #
         print(df.head())
     con.close()
-    df['x'] = (df['x'] - df['x'].min()) / (df['x'].max() - df['x'].min())
-    df['y'] = (df['y'] - df['y'].min()) / (df['y'].max() - df['y'].min())
+    #df['x'] = (df['x'] - df['x'].min()) / (df['x'].max() - df['x'].min())
+    #df['y'] = (df['y'] - df['y'].min()) / (df['y'].max() - df['y'].min())
     # transform to numpy array
     data = df.loc[:, ['timestep','x','y']].values
     print(len(data))
-    st_dbscan = ST_DBSCAN(eps1 = 0.05, eps2 = 1, min_samples = 5)
-    data = st_dbscan.fit_frame_split(data, frame_size = 2)
+    st_dbscan = ST_DBSCAN(eps1 = 0.005, eps2 = 5, min_samples = 100)
+    st_dbscan.fit(data)
+    #st_dbscan.fit_frame_split(data, frame_size = 3)
     #st_dbscan.fit(data)
-
-    #plot(data[:,1:], st_dbscan.labels)
+    print(st_dbscan.labels)
+    plot(data[:,1:], st_dbscan.labels)
 
 
 if __name__ == '__main__':

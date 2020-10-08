@@ -16,6 +16,7 @@
 #include "Analysis.h"
 #include "SimulationData.h"
 #include "Projection.h"
+#include "Point.h"
 
 using Record = std::vector<std::string>;
 using Records = std::vector<Record>;
@@ -83,6 +84,8 @@ public:
 	std::vector<Star*> selectStars(int simulationID, int timeStep);
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
+
+	std::vector<std::vector<Point>>selectPoints(int simulationID=1, int timeStep=0, int nTimeSteps = 2);
 };
 
 #endif
