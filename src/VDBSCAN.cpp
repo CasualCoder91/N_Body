@@ -1,23 +1,22 @@
 #include "VDBSCAN.h"
 
-VDBSCAN::VDBSCAN(int n, double epsSpace, int minPts, std::vector<Point> points) {
-    this->n = n;
+VDBSCAN::VDBSCAN(double epsSpace, double epsTime, int minPts) {
     this->epsSpace = epsSpace;
+    this->epsTime = epsTime;
     this->minPts = minPts;
-    this->points = points;
-    this->size = (int)points.size();
-    adjPoints.resize(size);
     this->clusterIdx = -1;
 }
 
-void VDBSCAN::run() {
-    checkNearPoints();
+void VDBSCAN::run(std::vector<Point>& points) {
+    this->size = (int)points.size();
+    adjPoints.resize(size);
+    checkNearPoints(points);
 
     for (int i = 0; i < size; i++) {
         if (points[i].cluster != NOT_CLASSIFIED) continue;
 
-        if (isCoreObject(i)) {
-            depthFirstSearch(i, ++clusterIdx);
+        if (isCoreObject(i, points)) {
+            depthFirstSearch(i, ++clusterIdx, points);
         }
         else {
             points[i].cluster = NOISE;
@@ -32,17 +31,17 @@ void VDBSCAN::run() {
     }
 }
 
-void VDBSCAN::depthFirstSearch(int now, int c) {
+void VDBSCAN::depthFirstSearch(int now, int c, std::vector<Point>& points) {
     points[now].cluster = c;
-    if (!isCoreObject(now)) return;
+    if (!isCoreObject(now, points)) return;
 
     for (auto& next : adjPoints[now]) {
         if (points[next].cluster != NOT_CLASSIFIED) continue;
-        depthFirstSearch(next, c);
+        depthFirstSearch(next, c, points);
     }
 }
 
-void VDBSCAN::checkNearPoints() {
+void VDBSCAN::checkNearPoints(std::vector<Point>& points) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             if (i == j) continue;
@@ -54,7 +53,7 @@ void VDBSCAN::checkNearPoints() {
     }
 }
 
-bool VDBSCAN::isCoreObject(int idx) {
+bool VDBSCAN::isCoreObject(int idx, std::vector<Point>& points) {
     return points[idx].nNeighbors >= minPts;
 }
 

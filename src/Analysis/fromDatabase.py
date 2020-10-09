@@ -97,27 +97,26 @@ def main():
     #df['x'] = (df['x'] - df['x'].min()) / (df['x'].max() - df['x'].min())
     #df['y'] = (df['y'] - df['y'].min()) / (df['y'].max() - df['y'].min())
     # transform to numpy array
-    data = df.loc[:, ['timestep','x','y']].values
-    print(len(data))
-    st_dbscan = ST_DBSCAN(eps1 = 0.005, eps2 = 5, min_samples = 100)
-    st_dbscan.fit(data)
+    #data = df.loc[:, ['timestep','x','y']].values
+    #print(len(data))
+    #st_dbscan = ST_DBSCAN(eps1 = 0.005, eps2 = 5, min_samples = 100)
+    #st_dbscan.fit(data)
     #st_dbscan.fit_frame_split(data, frame_size = 3)
     #st_dbscan.fit(data)
+
+    data = select2D(conn, simulationID)
+    t0 = data[data[:,3] == 0] # data at timestep 0
+    t0 = t0[:, [4,5]] # only x and y
+    t1 = data[data[:,3] == 1] # data at timestep 1
+    t1 = t1[:, [4,5]] # x, y at timestep 1
+    tree = spatial.cKDTree(t1)
+    mindist, minid = tree.query(t0)
+    print(mindist)
+    print(minid)
+
     print(st_dbscan.labels)
     plot(data[:,1:], st_dbscan.labels)
 
 
 if __name__ == '__main__':
     main()
-
-
-
-#data = select2D(conn, simulationID)
-#t0 = data[data[:,3] == 0] # data at timestep 0
-#t0 = t0[:, [4,5]] # only x and y
-#t1 = data[data[:,3] == 1] # data at timestep 1
-#t1 = t1[:, [4,5]] # x, y at timestep 1
-#tree = spatial.cKDTree(t1)
-#mindist, minid = tree.query(t0)
-#print(mindist)
-#print(minid)

@@ -640,7 +640,7 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 		std::cout << "Amount of timesteps must be at least 1" << std::endl;
 		return points;
 	}
-	std::string query = "SELECT star.id,position.timestep,position2D.x,position2D.y "
+	std::string query = "SELECT star.id,position.timestep,position2D.x,position2D.y,star.isCluster "
 		"FROM star "
 		"INNER JOIN position on position.id_star = star.id "
 		"INNER JOIN position2D on position.id = position2D.fk_position "
@@ -659,9 +659,10 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 			timeStepPoints.clear();
 			currentTimeStep = sqlite3_column_int(stmt, 1);
 		}
-		timeStepPoints.emplace_back(sqlite3_column_int(stmt, 0), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3));
+		timeStepPoints.emplace_back(sqlite3_column_int(stmt, 0), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3),sqlite3_column_int(stmt,4));
 
 	}
+	points.emplace_back(timeStepPoints);//gotta insert Points at last timestep
 	sqlite3_finalize(stmt);
 
 	return points;

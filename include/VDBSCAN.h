@@ -9,30 +9,31 @@
 
 #include "Point.h"
 
-const int NOISE = -2;
-const int NOT_CLASSIFIED = -1;
-
 class VDBSCAN {
 public:
-    int n, minPts;
+
+    static const int NOISE = -2;
+    static const int NOT_CLASSIFIED = -1;
+
+    int minPts;
     double epsSpace;
-    double epsTime;
-    std::vector<Point> points;
+    double epsTime = 2;
+    //std::vector<Point> points;
     int size;
     std::vector<std::vector<int> > adjPoints;
     std::vector<bool> visited;
     std::vector<std::vector<int> > cluster;
     int clusterIdx;
 
-    VDBSCAN(int n, double epsSpace, int minPts, std::vector<Point> points);
+    VDBSCAN(double epsSpace, double epsTime, int minPts);
 
-    void run();
+    void run(std::vector<Point>& points);
 
-    void depthFirstSearch(int now, int c);
+    void depthFirstSearch(int now, int c, std::vector<Point>& points);
 
-    void checkNearPoints();
+    void checkNearPoints(std::vector<Point>& points);
     
-    bool isCoreObject(int pointID);
+    bool isCoreObject(int pointID, std::vector<Point>& points);
 
     std::vector<std::vector<int> > getCluster();
 

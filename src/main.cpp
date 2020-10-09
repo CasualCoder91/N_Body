@@ -97,7 +97,7 @@ int main() {
 				Parameters parameters = Parameters();
 				Analysis analysis = Analysis(parameters);
 				int analysisID = db.insertAnalysis(simulationID, analysis);
-				std::vector<int> timeSteps = db.selectTimesteps();
+				/*std::vector<int> timeSteps = db.selectTimesteps();
 				for (int timeStep : timeSteps) {
 					std::vector<Star*> stars = db.selectStars(selection, timeStep);
 					if (analysis.getbEnergy()) {
@@ -112,7 +112,10 @@ int main() {
 						db.insertAnalysisdtVelocity(analysisID, timeStep, analysis.average(velocities));
 					}
 				}
-				std::cout << "Energy analysis done" << std::endl;
+				std::cout << "Energy analysis done" << std::endl;*/
+				std::cout << "Running cluster analysis ..." << std::endl;
+				analysis.cluster(db.selectPoints(simulationID,0,2));
+				std::cout << "Cluster analysis done" << std::endl;
 			}
 			else {
 				std::cout << "generating 2D positions and velocities ..." << std::endl;

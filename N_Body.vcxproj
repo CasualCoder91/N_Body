@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Analysis.h" />
+    <ClInclude Include="include\ClosestPair.h" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Configuration.h" />
     <ClInclude Include="include\Database.h" />
@@ -190,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Analysis.cpp" />
+    <ClCompile Include="src\ClosestPair.cpp" />
     <ClCompile Include="src\Configuration.cpp" />
     <ClCompile Include="src\Database.cpp" />
     <ClCompile Include="src\Matrix.cpp" />

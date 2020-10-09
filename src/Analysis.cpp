@@ -1,6 +1,7 @@
 #include "Analysis.h"
 
-Analysis::Analysis(Parameters parameters){
+
+Analysis::Analysis(Parameters parameters) {
 	this->bEnergy = parameters.doEnergyAnalysis();
 	this->bAverageVelocity = parameters.doAverageVelocity();
 	this->bAverage2DVelocity = parameters.doAverage2DVelocity();
@@ -135,6 +136,44 @@ void Analysis::write(){
 	}
 }
 
-void Analysis::cluster(){
-	std::vector<std::vector<Point>> points = Database::selectPoints();
+void Analysis::cluster(std::vector<std::vector<Point>>& points){
+
+	for (int i = 0; i < points.size() - 1; ++i) { //loop through timesteps excluding last one
+		for (Point& point0 : points[i]) { // loop through all points at timestep i
+			double minDist = -1;
+			Point futurePoint;
+			for (Point& point1 : points[i + 1]) { //compare to all points at timestep i+1
+				double currentDist = point0.getDistance(point1);
+				if ((point0.id != point1.id && currentDist < minDist) || minDist == -1) {
+					minDist = currentDist;
+					futurePoint = point1;
+				}
+			}
+			point0.vx = futurePoint.x-point0.x; //tecnically division by dt needed but dt is equal for all points
+			point0.vy = futurePoint.y - point0.y;
+		}
+	}
+
+	VDBSCAN scanner = VDBSCAN(0.03, 0.0001, 5);
+	scanner.run(points[0]);
+
+	int nFalsePositive = 0;
+	int nFalseNegative = 0;
+	int nTruePositive = 0;
+	int nTrueNegative = 0;
+
+	for (Point point : points[0]) {
+		if (point.cluster > -1 && point.clusterStar)
+			nTruePositive++;
+		if (point.cluster > -1 && !point.clusterStar)
+			nFalsePositive++;
+		if (point.cluster == VDBSCAN::NOISE && point.clusterStar)
+			nFalseNegative++;
+		if (point.cluster == VDBSCAN::NOISE && !point.clusterStar)
+			nTrueNegative++;
+	}
+	std::cout << "nFalsePositive: " << nFalsePositive << std::endl;
+	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
+	std::cout << "nTruePositive: " << nTruePositive << std::endl;
+	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
 }

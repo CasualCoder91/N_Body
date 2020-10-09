@@ -16,7 +16,8 @@
 #include "Node.h"
 #include "InOut.h"
 #include "InitialConditions.h"
-#include "Database.h"
+#include "Point.h"
+#include "VDBSCAN.h"
 
 class Analysis
 {
@@ -80,6 +81,6 @@ public:
     /** @brief saves the calculated energy values for each timestep to .dat Files (TotalEnergy.dat, KinetikEnergy.dat,PotentialEnergy.dat)*/
     void write();
 
-    void cluster();
+    void cluster(std::vector<std::vector<Point>>& points);
 };
 
