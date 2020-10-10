@@ -1,5 +1,7 @@
 #include "Point.h"
 
+const std::string Point::header = "id,cluster,clusterStar,x,y,vx,vy";
+
 double Point::getDistance(const Point& pt2) {
     return sqrt((x - pt2.x) * (x - pt2.x) + (y - pt2.y) * (y - pt2.y));
 }

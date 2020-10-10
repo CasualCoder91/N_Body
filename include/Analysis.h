@@ -18,6 +18,7 @@
 #include "InitialConditions.h"
 #include "Point.h"
 #include "VDBSCAN.h"
+#include "Plot.h"
 
 class Analysis
 {
@@ -26,6 +27,9 @@ private:
     bool bAverageVelocity;
     bool bAverage2DVelocity;
     double G;
+
+    static std::string path;
+
 public:
 
     Analysis(Parameters parameters);

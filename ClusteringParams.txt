@@ -1,0 +1,27 @@
+(0.03,0.0005, 10)
+
+VDBSCAN
+nFalsePositive: 448
+nFalseNegative: 281
+nTruePositive: 197
+nTrueNegative: 871
+
+DBSCAN
+nFalsePositive: 1319
+nFalseNegative: 31
+nTruePositive: 447
+nTrueNegative: 0
+
+
+0.05, 0.0002, 15
+
+
+
+
+0.07, 0.0001, 10
+
+VDBSCAN
+nFalsePositive: 893
+nFalseNegative: 392
+nTruePositive: 86
+nTrueNegative: 2692

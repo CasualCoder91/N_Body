@@ -16,6 +16,7 @@
 
 #include "Star.h"
 #include "Node.h"
+#include "Point.h"
 
 namespace InOut{
 
@@ -62,6 +63,9 @@ namespace InOut{
      @param header If given this will be written at the start of the generated file.
      */
 	void write(std::vector<double> x, std::vector<double> y, std::string filename, std::string header = "");
+
+    void write(std::vector<Point> points , std::string filename);
+
     /**
      @brief Function used by write(Node* tree, std::string filename).
      @attention do **not** call this function

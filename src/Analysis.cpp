@@ -1,5 +1,6 @@
 #include "Analysis.h"
 
+std::string Analysis::path = "src/Test/";
 
 Analysis::Analysis(Parameters parameters) {
 	this->bEnergy = parameters.doEnergyAnalysis();
@@ -138,23 +139,28 @@ void Analysis::write(){
 
 void Analysis::cluster(std::vector<std::vector<Point>>& points){
 
-	for (int i = 0; i < points.size() - 1; ++i) { //loop through timesteps excluding last one
-		for (Point& point0 : points[i]) { // loop through all points at timestep i
-			double minDist = -1;
-			Point futurePoint;
-			for (Point& point1 : points[i + 1]) { //compare to all points at timestep i+1
-				double currentDist = point0.getDistance(point1);
-				if ((point0.id != point1.id && currentDist < minDist) || minDist == -1) {
-					minDist = currentDist;
-					futurePoint = point1;
-				}
+	//for (int i = 0; i < points.size() - 1; ++i) { //loop through timesteps excluding last one
+	for (Point& point0 : points[0]) { // loop through all points at timestep i
+		double minDist = -1;
+		Point futurePoint;
+		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
+			double currentDist = point0.getDistance(point1);
+			if (currentDist < minDist || minDist == -1) {
+				minDist = currentDist;
+				futurePoint = point1;
 			}
-			point0.vx = futurePoint.x-point0.x; //tecnically division by dt needed but dt is equal for all points
-			point0.vy = futurePoint.y - point0.y;
 		}
+		//std::cout << point0.id << " " << futurePoint.id << std::endl;
+		point0.vx = futurePoint.x-point0.x; //tecnically division by dt needed but dt is equal for all points
+		point0.vy = futurePoint.y - point0.y;
 	}
+	//}
 
-	VDBSCAN scanner = VDBSCAN(0.03, 0.0001, 5);
+	//InOut::write(points[0], "src/Test/clusteringVelocity.dat");
+	//Plot plot = Plot(path, path, true);
+	//plot.plot("clusteringVelocity", {});
+
+	VDBSCAN scanner = VDBSCAN(0.05, 0.0000001, 60);
 	scanner.run(points[0]);
 
 	int nFalsePositive = 0;

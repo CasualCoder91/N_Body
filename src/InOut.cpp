@@ -170,6 +170,14 @@ void InOut::write(std::vector<Vec3D> line, std::string filename) {
 	file.close();
 }
 
+void InOut::write(std::vector<Point> points, std::string filename) {
+	setOutputDirectory(filename);
+	std::ofstream file(filename);
+	for (Point point : points) {
+		file << point << '\n';
+	}
+	file.close();
+}
 
 //@Note: replaced by LookupTable
 //std::vector<std::vector<double>> InOut::readDoubleMatrix(std::string filname){
