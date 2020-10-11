@@ -13,6 +13,8 @@
 class Configuration
 {
 public:
+
+    Configuration(const std::string& file);
     // clear all values
     void Clear();
 
@@ -29,6 +31,7 @@ public:
     bool Get(const std::string& key, double& value) const;
     bool Get(const std::string& key, bool& value) const;
     bool Get(const std::string& key, Vec3D& value) const;
+    double GetDouble(const std::string& key) const;
 
 private:
     // the container

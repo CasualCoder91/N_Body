@@ -15,6 +15,8 @@
 #include "Parameters.h"
 #include "ProgressBar.h"
 
+#include "Constants.h"
+
 class Simulation : public Parameters{
 
 public:

@@ -18,7 +18,7 @@ class SimulationData
 protected:
 
     std::string filePath = "./simulation.cfg";
-    Configuration config = Configuration();
+    Configuration config = Configuration(filePath);
 
     double softening = 0.16;
     double precission = 0.5;

@@ -16,7 +16,7 @@
 class Parameters : public SimulationData{
 protected:
     std::string filePath = "./simulation.cfg";
-    Configuration config = Configuration();
+    Configuration config = Configuration(filePath);
 
     //Analysis Parameters
     bool bEnergy = false;

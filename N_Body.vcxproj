@@ -165,6 +165,7 @@
     <ClInclude Include="include\ClosestPair.h" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Configuration.h" />
+    <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Database.h" />
     <ClInclude Include="include\Matrix.h" />
     <ClInclude Include="include\Point.h" />

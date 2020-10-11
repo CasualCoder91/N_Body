@@ -1,5 +1,9 @@
 #include "Configuration.h"
 
+Configuration::Configuration(const std::string& file) {
+    Load(file);
+}
+
 void Configuration::Clear(){
     data.clear();
 }
@@ -97,6 +101,21 @@ bool Configuration::Get(const std::string& key, double& value) const
         return false;
     }
 }
+
+double Configuration::GetDouble(const std::string& key) const
+{
+    std::string str;
+
+    if (Get(key, str)) {
+        return atof(str.c_str());
+    }
+    else {
+        return 1;
+    }
+}
+
+
+
 
 bool Configuration::Get(const std::string& key, bool& value) const
 {

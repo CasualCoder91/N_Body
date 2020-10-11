@@ -27,6 +27,9 @@ int Simulation::getID(){
 }
 
 void Simulation::run(){
+
+	std::cout << "boxlength: " << Constants::boxLength << std::endl;
+	std::cin.get();
 	//Init stars
 	InitialConditions initialConditions = InitialConditions(Simulation::potential);
 
