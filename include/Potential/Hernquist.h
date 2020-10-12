@@ -9,15 +9,15 @@
 #include "Vec3D.h"
 #include "Star.h"
 #include "Matrix.h"
+#include "Constants.h"
 
 class Hernquist {
 
 	static double mMass;
 	static double mScaleLength; // SolarMassUnit
-	static double G;
 
 public:
-	Hernquist(double mass, double scaleLength, double G);
+	Hernquist(double mass, double scaleLength);
 
 	/** @brief the local density*/
 	static double density(double r);
@@ -43,7 +43,7 @@ public:
 	double surfaceDensity(double R);
 
 	/** @brief the circular velocity [km/s] at the \p position [pc]*/
-	double circularVelocity(Vec3D* position);
+	double circularVelocity(const Vec3D* position);
 
 	double escapeVelocity(double r);
 	double escapeVelocity(Vec3D* position);

@@ -2,19 +2,14 @@
 
 std::string Analysis::path = "src/Test/";
 
-Analysis::Analysis(Parameters parameters) {
-	this->bEnergy = parameters.doEnergyAnalysis();
-	this->bAverageVelocity = parameters.doAverageVelocity();
-	this->bAverage2DVelocity = parameters.doAverage2DVelocity();
-	this->G = parameters.getG();
-}
+Analysis::Analysis() {}
 
 double Analysis::potentialEnergy(std::vector<Star*>& stars){
 	double potentialEnergy = 0;
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size()-1;++i) {
 		for (int j = i+1; j < stars.size(); ++j) {
-			potentialEnergy -= this->G * stars[i]->mass * stars[j]->mass / Vec3D::distance(&stars[i]->position, &stars[j]->position);
+			potentialEnergy -= Constants::G * stars[i]->mass * stars[j]->mass / Vec3D::distance(&stars[i]->position, &stars[j]->position);
 		}
 	}
 	this->potE.push_back(potentialEnergy);
@@ -32,7 +27,7 @@ double Analysis::kineticEnergy(std::vector<Star*>& stars){
 	return kineticEnergy;
 }
 
-void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Parameters* parameters){
+void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 	Vec3D tlf = Vec3D(), brb = Vec3D();
 
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
@@ -43,18 +38,18 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 	for (int n = 2; n <= maxNStars; ++n) {
 
 		//init
-		MWPotential potential = MWPotential(parameters);
+		MWPotential potential = MWPotential();
 		InitialConditions initialConditions = InitialConditions(&potential);
 		int starID = 0;
-		std::vector<Star*> stars = initialConditions.initStars(starID,parameters->getNStars());
+		std::vector<Star*> stars = initialConditions.initStars(starID,Constants::nStars);
 		double totalMass = initialConditions.initialMassSalpeter(stars, 0.08, 100);
-		initialConditions.plummerSphere(stars, totalMass,parameters->getBoxLength(),parameters->getG());
+		initialConditions.plummerSphere(stars, totalMass, Constants::boxLength, Constants::G);
 
 		startTime = std::chrono::steady_clock::now();
 		for (int i = 0; i < nTimesteps; i++) {
 
 			Node::findCorners(tlf, brb, stars);
-			Node root = Node(tlf, brb, nullptr, parameters);
+			Node root = Node(tlf, brb, nullptr);
 			for (Star* star : stars) {
 				root.insert(star);
 			}
@@ -76,15 +71,15 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator, Pa
 }
 
 bool Analysis::getbEnergy(){
-	return this->bEnergy;
+	return Constants::bEnergy;
 }
 
 bool Analysis::getbAverageVelocity(){
-	return this->bAverageVelocity;
+	return Constants::bAverageVelocity;
 }
 
 bool Analysis::getbAverage2DVelocity(){
-	return this->bAverage2DVelocity;
+	return Constants::bAverage2DVelocity;
 }
 
 double Analysis::average(std::vector<Vec3D*>& vectors){
@@ -130,7 +125,7 @@ void Analysis::write(){
 		std::cout << "time and energy vectors must have equal size! Aborting." << std::endl;
 		return;
 	}
-	if (bEnergy) {
+	if (Constants::bEnergy) {
 		InOut::write(time, totE, "TotalEnergy.dat");
 		InOut::write(time, kinE, "KinetikEnergy.dat");
 		InOut::write(time, potE, "PotentialEnergy.dat");

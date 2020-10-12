@@ -110,7 +110,69 @@ double Configuration::GetDouble(const std::string& key) const
         return atof(str.c_str());
     }
     else {
+        std::cout << key << " missing in cfg file!" << std::endl;
+        std::cout << "Using default value: 1" << std::endl;
         return 1;
+    }
+}
+
+int Configuration::GetInt(const std::string& key) const{
+    std::string str;
+
+    if (Get(key, str)) {
+        return atoi(str.c_str());
+    }
+    else {
+        std::cout << key << " missing in cfg file!" << std::endl;
+        std::cout << "Using default value: 1" << std::endl;
+        return 1;
+    }
+}
+
+Vec3D Configuration::GetVec3D(const std::string& key) const{
+    std::string str;
+    Vec3D returnValue = Vec3D(0,0,0);
+    if (Get(key, str)) {
+        str = str.substr(1, str.size() - 2);
+        std::stringstream ss(str);
+        std::string item;
+        std::getline(ss, item, ',');
+        returnValue.x = std::stod(item);
+        std::getline(ss, item, ',');
+        returnValue.y = std::stod(item);
+        std::getline(ss, item, ',');
+        returnValue.z = std::stod(item);
+        return returnValue;
+    }
+    else {
+        std::cout << key << " missing in cfg file!" << std::endl;
+        std::cout << "Using default value: (0,0,0)" << std::endl;
+        return returnValue;
+    }
+}
+
+std::string Configuration::GetString(const std::string& key) const{
+    std::map<std::string, std::string>::const_iterator iter = data.find(key);
+    if (iter != data.end()) {
+        return iter->second;
+    }
+    else {
+        std::cout << key << " missing in cfg file!" << std::endl;
+        std::cout << "Using default value: NotFound" << std::endl;
+        return "NotFound";
+    }
+}
+
+bool Configuration::GetBool(const std::string& key) const{
+    std::string str;
+
+    if (Get(key, str)) {
+        return (str == "true");
+    }
+    else {
+        std::cout << key << " missing in cfg file!" << std::endl;
+        std::cout << "Using default value: false" << std::endl;
+        return false;
     }
 }
 

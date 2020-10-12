@@ -1,29 +1,23 @@
 #include "Simulation.h"
 
 Simulation::Simulation(int id){
-	this->simulationID = id;
+	Constants::simulationID = id;
 	this->database = new Database();
-	this->potential = new MWPotential(this);
+	this->potential = new MWPotential();
 }
 
-Simulation::Simulation(int id, Database* database, SimulationData* simulationData){
-	this->simulationID = id;
-	this->potential = new MWPotential(this);
+Simulation::Simulation(int id, Database* database){
+	Constants::simulationID = id;
+	this->potential = new MWPotential();
 	this->database = database;
-}
-
-Simulation::Simulation(int id, Database* database, Parameters* parameters) :Parameters{ parameters } {
-	this->simulationID = id;
-	this->database = database;
-	this->potential = new MWPotential(this);
 }
 
 void Simulation::setID(int id){
-	this->simulationID = id;
+	Constants::simulationID = id;
 }
 
 int Simulation::getID(){
-	return this->simulationID;
+	return Constants::simulationID;
 }
 
 void Simulation::run(){
@@ -41,9 +35,9 @@ void Simulation::run(){
 	//initialConditions.plummerSphere(clusterStars, totalMass,boxLength,G);
 
 	std::vector<Star*> clusterStars = InOut::readMcLuster(nextStarIndex, "Data/eintest.txt");
-	initialConditions.offsetCluster(clusterStars, clusterLocation);
+	initialConditions.offsetCluster(clusterStars, Constants::clusterLocation);
 
-	double circVel = potential->circularVelocity(&clusterLocation);
+	double circVel = potential->circularVelocity(&Constants::clusterLocation);
 	Vec3D clusterVelocity = Vec3D(0,-220,10);
 	//initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
 	for (Star* star : clusterStars) {
@@ -52,22 +46,22 @@ void Simulation::run(){
 	database->insertStars(this->getID(), clusterStars, 0,true);
 	nextStarIndex = database->selectLastID("star") + 1;
 
-	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex,focus,viewPoint,distance,dx,angleOfView); //0.00029088833
+	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex, Constants::focus, Constants::viewPoint, Constants::distance, Constants::dx, Constants::angleOfView); //0.00029088833
 	database->insertStars(this->getID(), fieldStars, 0,false);
 
 	std::cout << "Starting integration" << std::endl;
 	//Integrate
-	Integrator integrator = Integrator(this->getdt());
+	Integrator integrator = Integrator(Constants::dt);
 	std::cout << "dt = " << integrator.dt << std::endl;
 	//std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	Vec3D tlf = Vec3D(), brb = Vec3D();
-	ProgressBar progressBar = ProgressBar(0, this->getNTimesteps());
+	ProgressBar progressBar = ProgressBar(0, Constants::nTimesteps);
 
 	std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();;
 	std::chrono::high_resolution_clock::time_point endTime;
 
-	for (int i = 0; i <= this->getNTimesteps(); i++) {
-		if (i>0 && i % this->outputTimestep == 0) {
+	for (int i = 0; i <= Constants::nTimesteps; i++) {
+		if (i>0 && i % Constants::outputTimestep == 0) {
 			database->timestep(i, clusterStars);
 			database->timestep(i, fieldStars);
 			progressBar.Update(i);
@@ -76,7 +70,7 @@ void Simulation::run(){
 
 		if (clusterStars.size() > 0) {
 			Node::findCorners(tlf, brb, clusterStars);
-			Node root = Node(tlf, brb, nullptr, this); // Cleanup/Destructor of tree needed in every timestep
+			Node root = Node(tlf, brb, nullptr); // Cleanup/Destructor of tree needed in every timestep
 
 			for (Star* star : clusterStars) {
 				root.insert(star);

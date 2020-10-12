@@ -55,7 +55,7 @@ public:
      @brief Calculates lenght (euclidean norm).
      @return lenght of the vector.
      */
-    double length();
+    double length() const;
 
     double phi();
 

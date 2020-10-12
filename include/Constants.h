@@ -6,35 +6,40 @@
 
 namespace Constants {
 
-	static const std::string filePath = "./simulation.cfg";
-	static Configuration config = Configuration(filePath);
+	extern std::string filePath;
+	extern Configuration config;
 
-	static const double softening = config.GetDouble(std::string("softening"));
-	static const double precission = config.GetDouble(std::string("precission"));
-	static const std::string title;
-	static const double boxLength = config.GetDouble(std::string("boxLength"));
-	static const double dt = config.GetDouble(std::string("dt")); //[day]
-	static const int nTimesteps;
-	static const int outputTimestep;
-	static const int simulationID;
+	extern double softening;
+	extern double precission;
+	extern std::string title;
+	extern double boxLength;
+	extern double dt; //[day]
+	extern int nTimesteps;
+	extern int outputTimestep;
+	extern int simulationID;
 
 	//cluster mass
-	static const double minMass;
-	static const double maxMass;
-	static const double alpha;
-	static const std::vector<double> massLimits; //broken powerlaw
-	static const std::vector<double> exponents; //broken powerlaw
+	extern double minMass;
+	extern double maxMass;
+	extern double alpha;
+	extern std::vector<double> massLimits; //broken powerlaw
+	extern std::vector<double> exponents; //broken powerlaw
 
 	//View cone
-	static const double angleOfView; //rad
-	static const double dx; //pc
-	static const double distance; //pc
-	static const Vec3D viewPoint;
-	static const Vec3D focus;
+	extern double angleOfView; //rad
+	extern double dx; //pc
+	extern double distance; //pc
+	extern Vec3D viewPoint;
+	extern Vec3D focus;
 
 	//General Parameters, todo: put into separate class
 	/** @brief Gravitational constant in astronomical units: parsec/solar mass*km^2/s^2*/
-	static const double G;// = 4.483e-3;
-	static const int nStars;
-	static const Vec3D clusterLocation;
+	extern double G;// = 4.483e-3;
+	extern int nStars;
+	extern Vec3D clusterLocation;
+
+	//Analysis Parameters
+	extern bool bEnergy;
+	extern bool bAverageVelocity;
+	extern bool bAverage2DVelocity;
 }

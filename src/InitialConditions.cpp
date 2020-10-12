@@ -343,6 +343,9 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 	double largestx = farthermostFromZero(position.x, position.x + volumeElement.x);
 	double largesty = farthermostFromZero(position.y, position.y + volumeElement.y);
 	double largestz = farthermostFromZero(position.z, position.z + volumeElement.z);
+	if (smallestx == smallesty == smallestz == 0) {
+		smallestx = 0.1;
+	}
 	double acceptUpperLimit = potential->bulgePotential.density(smallestx, smallesty, smallestz);
 	double acceptLowerLimit = potential->bulgePotential.density(largestx, largesty, largestz);
 	//create distribution with calculated limits
@@ -676,7 +679,7 @@ void InitialConditions::plummerSphere(std::vector<Star*>& stars, double totalMas
 	}
 }
 
-void InitialConditions::offsetCluster(std::vector<Star*>& stars, Vec3D& offset){
+void InitialConditions::offsetCluster(std::vector<Star*>& stars,static Vec3D& offset) const{
 	for (Star* star : stars) {
 		star->position += offset;
 	}

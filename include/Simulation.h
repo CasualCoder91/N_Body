@@ -12,20 +12,18 @@
 #include <chrono>
 
 #include "Database.h"
-#include "Parameters.h"
 #include "ProgressBar.h"
 
 #include "Constants.h"
 
-class Simulation : public Parameters{
+class Simulation{
 
 public:
     Database* database;
     MWPotential* potential;
     
 public:
-    Simulation(int id, Database* database, SimulationData* simulationData);
-    Simulation(int id, Database* database, Parameters* parameters);
+    Simulation(int id, Database* database);
     ~Simulation();
 
     void setID(int id);

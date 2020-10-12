@@ -32,6 +32,10 @@ public:
     bool Get(const std::string& key, bool& value) const;
     bool Get(const std::string& key, Vec3D& value) const;
     double GetDouble(const std::string& key) const;
+    int GetInt(const std::string& key) const;
+    Vec3D GetVec3D(const std::string& key) const;
+    std::string GetString(const std::string& key) const;
+    bool GetBool(const std::string& key) const;
 
 private:
     // the container

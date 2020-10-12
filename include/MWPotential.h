@@ -12,7 +12,6 @@
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_complex_math.h>
-#include "SimulationData.h"
 #include "Vec3D.h"
 #include "Star.h"
 #include "InOut.h"
@@ -29,7 +28,7 @@
 
 extern bool debug;
 
-class MWPotential : Parameters
+class MWPotential
 {
 private:
 	static const double mMassBlackHole; // SolarMassUnit
@@ -78,9 +77,9 @@ private:
 	double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
 	double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
 public:
-	MWPotential(Parameters * parameters);
+	MWPotential();
 	/** @brief the total (all potentials considered) circular velocity [km/s] at the \p position [pc] */
-	double circularVelocity(Vec3D* position);
+	double circularVelocity(const Vec3D* position);
 	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the disc potential*/
 	double circularVelocityDisk(Vec3D* position);
 	/** @brief the circular velocity [km/s] at the \p position [pc] only considereing the black hole potential*/

@@ -14,9 +14,9 @@
 #include "sqlite3.h"
 #include "Star.h"
 #include "Analysis.h"
-#include "SimulationData.h"
 #include "Projection.h"
 #include "Point.h"
+//#include "Constants.h"
 
 using Record = std::vector<std::string>;
 using Records = std::vector<Record>;
@@ -47,7 +47,7 @@ public:
 	/** @brief returns the largest id from the given \p table */
 	int selectLastID(std::string table);
 	/** @brief inserts the given parameters into the "simulation" table and returns the id of the new simulation*/
-	int insert(Parameters* parameters);
+	int Database::insertSimulation();
 	/** @brief inserts the stars (including positions and velocities)*/
 	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0, bool clusterStars=true);
 	/** @brief inserts (or replaces/updates) the analysis parameters for the given simulation*/
@@ -75,7 +75,12 @@ public:
 	*/
 	void insertVelocity(int& idStar, Vec3D& velocity, int& timestep);
 	/** @brief returns all saved simulations data by default. specify \p ID to retrieve a specific record */
-	std::vector<SimulationData> selectSimulationData(int ID = -1);
+	//std::vector<SimulationData> selectSimulationData(int ID = -1);
+
+	void selectSimulation(int ID);
+
+	bool printSimulations();
+
 	/** @brief returns all velocities at the given \p timestep */
 	std::vector<Vec3D> selectVelocities(int timestep = -1);
 	/** @brief returns all timesteps */

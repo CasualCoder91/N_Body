@@ -11,7 +11,6 @@
 #include <random>
 
 #include "Star.h"
-#include "Parameters.h"
 #include "MWPotential.h"
 #include "ProgressBar.h"
 #include "WangPotential.h"
@@ -142,7 +141,7 @@ public:
 	@param [in,out] stars
 	@param offset [pc]
 	*/
-	void offsetCluster(std::vector<Star*>& stars, Vec3D& offset);
+	void offsetCluster(std::vector<Star*>& stars, static Vec3D& offset) const;
 
 private:
 	friend class Test;

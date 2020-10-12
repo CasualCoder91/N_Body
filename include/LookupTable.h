@@ -16,8 +16,6 @@
 #include <fstream>
 #include <vector>
 
-#include "Parameters.h"
-
 extern bool debug;
 
 class LookupTable {

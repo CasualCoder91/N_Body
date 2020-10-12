@@ -6,7 +6,6 @@
 
 #include "MWPotential.h"
 #include "InOut.h"
-#include "Parameters.h"
 #include "InitialConditions.h"
 #include "Analysis.h"
 #include "ProgressBar.h"
@@ -14,12 +13,11 @@
 #include "WangPotential.h"
 #include "Matrix.h"
 
-class Test : Parameters {
+class Test {
 private: 
 	static void pythonScript(std::string fileName);
 	static std::string absolutePath;
-	Parameters parameters = Parameters();
-	MWPotential potential = MWPotential(&this->parameters);
+	MWPotential potential = MWPotential();
 	InitialConditions initialConditions = InitialConditions(&potential);
 
 public:

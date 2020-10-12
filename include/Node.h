@@ -21,7 +21,7 @@
 #include "Structs.h"
 #include "Vec3D.h"
 #include "Star.h"
-#include "Parameters.h"
+#include "Constants.h"
 
 class Node {
 	/** @brief location of the center of the Node. Used to find the octant a star in question lies within. */
@@ -37,11 +37,11 @@ class Node {
 	/** @brief The total mass located within the Nodes area. If there is only one star within the node area this equals the stars mass. */
 	double mass;
 	/** @brief Defines maximum distance between start and center of mass for force to be approximated, static to save memory. Usualy chosen to be ~1 */
-	static double precission; 
+	//static double precission; 
 	/** @brief Gravitational constant in astronomical units: parsec*solar mass^-1*km^2/s^2. Here needed for force calculation.*/
-	static double G;
+	//static double G;
 	/** @brief softening parameter for force calculation*/
-	static double softening;
+	//static double softening;
 	/** @brief 1 km divided by 1 pc */
 	static double kmInpc;
 public: //variables
@@ -53,8 +53,6 @@ public: //variables
 	Vec3D bottom_right_back;
 	/** @brief If a node has a child node this value is true. Redundant information to save cpu cycles. */
 	bool internalNode;
-private: //functions
-	Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, double G, double softening, double precission);
 public:
 	Node();
 	/** 
@@ -62,7 +60,7 @@ public:
 	@param parent Pointer to the parent of the node. Use null nullptr to create a root node.
 	@param parameters Parameters defined in simulation.cfg file. Member variables G, softening and precission are set via parameters.
 	*/
-	Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent, Parameters* parameters);
+	Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent);
 	~Node();
 	/**
 	@static

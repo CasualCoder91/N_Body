@@ -11,7 +11,6 @@
 #include <chrono> //for timer
 
 #include "Star.h"
-#include "Parameters.h"
 #include "Integrator.h"
 #include "Node.h"
 #include "InOut.h"
@@ -23,16 +22,12 @@
 class Analysis
 {
 private:
-    bool bEnergy;
-    bool bAverageVelocity;
-    bool bAverage2DVelocity;
-    double G;
 
     static std::string path;
 
 public:
 
-    Analysis(Parameters parameters);
+    Analysis();
 
     std::vector<double> totE;
     std::vector<double> potE;
@@ -57,9 +52,8 @@ public:
      @param maxNStars the maximum amount of stars to calculate the running time for.
      @param nTimesteps the amount of timesteps used for each number of stars.
      @param integrator the integrator used for integration over time.
-     @param parameters Parameters read from cfg, passed as argument to avoid unnecessary reads. 
      */
-	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator, Parameters* parameters);
+	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator);
 
     bool getbEnergy();
 

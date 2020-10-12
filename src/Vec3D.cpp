@@ -42,7 +42,7 @@ Vec3D Vec3D::randomAngles(double r){
 	return vec;
 }
 
-double Vec3D::length(){
+double Vec3D::length() const {
 	return sqrt(this->x*this->x+this->y*this->y+this->z*this->z);
 }
 

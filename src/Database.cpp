@@ -170,7 +170,7 @@ int Database::selectLastID(std::string table){
 	return ID;
 }
 
-int Database::insert(Parameters* parameters){
+int Database::insertSimulation(){
 	if (!this->isOpen)
 		this->open();
 	std::string sql = "INSERT INTO simulation (n_stars,boxLength,dt,n_timesteps,title,outputTimestep,softening,precission,minMass,maxMass,alpha,"
@@ -178,30 +178,30 @@ int Database::insert(Parameters* parameters){
 		"VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
-	sqlite3_bind_int(st, 1, parameters->getNStars());
-	sqlite3_bind_double(st, 2, parameters->getBoxLength());
-	sqlite3_bind_double(st, 3, parameters->getdt());
-	sqlite3_bind_int(st, 4, parameters->getNTimesteps());
-	char* cstr = new char[parameters->getTitle().length() + 1];
-	std::strcpy(cstr, parameters->getTitle().c_str());
+	sqlite3_bind_int(st, 1, Constants::nStars);
+	sqlite3_bind_double(st, 2, Constants::boxLength);
+	sqlite3_bind_double(st, 3, Constants::dt);
+	sqlite3_bind_int(st, 4, Constants::nTimesteps);
+	char* cstr = new char[Constants::title.length() + 1];
+	std::strcpy(cstr, Constants::title.c_str());
 	sqlite3_bind_text(st, 5, cstr, -1, SQLITE_TRANSIENT);
-	sqlite3_bind_int(st, 6, parameters->getOutputTimestep());
-	sqlite3_bind_double(st, 7, parameters->getSoftening());
-	sqlite3_bind_double(st, 8, parameters->getPrecission());
-	sqlite3_bind_double(st, 9, parameters->getMinMass());
-	sqlite3_bind_double(st, 10, parameters->getMaxMass());
-	sqlite3_bind_double(st, 11, parameters->getAlpha());
-	sqlite3_bind_double(st, 12, parameters->getClusterLocation().x);
-	sqlite3_bind_double(st, 13, parameters->getClusterLocation().y);
-	sqlite3_bind_double(st, 14, parameters->getClusterLocation().z);
-	sqlite3_bind_double(st, 15, parameters->getAngle());
-	sqlite3_bind_double(st, 16, parameters->getDistance());
-	sqlite3_bind_double(st, 17, parameters->getFocus().x);
-	sqlite3_bind_double(st, 18, parameters->getFocus().y);
-	sqlite3_bind_double(st, 19, parameters->getFocus().z);
-	sqlite3_bind_double(st, 20, parameters->getViewPoint().x);
-	sqlite3_bind_double(st, 21, parameters->getViewPoint().y);
-	sqlite3_bind_double(st, 22, parameters->getViewPoint().z);
+	sqlite3_bind_int(st, 6, Constants::outputTimestep);
+	sqlite3_bind_double(st, 7, Constants::softening);
+	sqlite3_bind_double(st, 8, Constants::precission);
+	sqlite3_bind_double(st, 9, Constants::minMass);
+	sqlite3_bind_double(st, 10, Constants::maxMass);
+	sqlite3_bind_double(st, 11, Constants::alpha);
+	sqlite3_bind_double(st, 12, Constants::clusterLocation.x);
+	sqlite3_bind_double(st, 13, Constants::clusterLocation.y);
+	sqlite3_bind_double(st, 14, Constants::clusterLocation.z);
+	sqlite3_bind_double(st, 15, Constants::angleOfView);
+	sqlite3_bind_double(st, 16, Constants::distance);
+	sqlite3_bind_double(st, 17, Constants::focus.x);
+	sqlite3_bind_double(st, 18, Constants::focus.y);
+	sqlite3_bind_double(st, 19, Constants::focus.z);
+	sqlite3_bind_double(st, 20, Constants::viewPoint.x);
+	sqlite3_bind_double(st, 21, Constants::viewPoint.y);
+	sqlite3_bind_double(st, 22, Constants::viewPoint.z);
 
 	int returnCode = sqlite3_step(st);
 	if (returnCode != SQLITE_DONE){
@@ -474,23 +474,67 @@ void Database::insertVelocity(int& idStar, Vec3D& velocity, int& timestep){
 	sqlite3_finalize(st);
 }
 
-std::vector<SimulationData> Database::selectSimulationData(int ID){
-	std::vector<SimulationData> simulations = {};
+//std::vector<SimulationData> Database::selectSimulationData(int ID){
+//	std::vector<SimulationData> simulations = {};
+//	if (!this->isOpen)
+//		this->open();
+//	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
+//	if (ID != -1) {
+//		query += " Where ID = " + std::to_string(ID);
+//	}
+//	sqlite3_stmt* stmt;
+//	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+//
+//	while (sqlite3_step(stmt) == SQLITE_ROW) {
+//		simulations.push_back(SimulationData(sqlite3_column_int(stmt, 0), reinterpret_cast<const char*>(sqlite3_column_text(stmt,1)), sqlite3_column_int(stmt, 2),
+//			sqlite3_column_double(stmt, 3), sqlite3_column_double(stmt, 4), sqlite3_column_int(stmt, 5), sqlite3_column_int(stmt, 6)));
+//	}
+//	sqlite3_finalize(stmt);
+//	return simulations;
+//}
+
+void Database::selectSimulation(int ID){
 	if (!this->isOpen)
 		this->open();
 	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
-	if (ID != -1) {
-		query += " Where ID = " + std::to_string(ID);
-	}
+					    " Where ID = " + std::to_string(ID);
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		simulations.push_back(SimulationData(sqlite3_column_int(stmt, 0), reinterpret_cast<const char*>(sqlite3_column_text(stmt,1)), sqlite3_column_int(stmt, 2),
-			sqlite3_column_double(stmt, 3), sqlite3_column_double(stmt, 4), sqlite3_column_int(stmt, 5), sqlite3_column_int(stmt, 6)));
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		Constants::simulationID = sqlite3_column_int(stmt, 0);
+		Constants::title = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+		Constants::nStars = sqlite3_column_int(stmt, 2);
+		Constants::boxLength = sqlite3_column_double(stmt, 3);
+		Constants::dt = sqlite3_column_double(stmt, 4);
+		Constants::nTimesteps = sqlite3_column_int(stmt, 5);
+		Constants::outputTimestep = sqlite3_column_int(stmt, 6);
 	}
 	sqlite3_finalize(stmt);
-	return simulations;
+	return;
+}
+
+bool Database::printSimulations(){
+	if (!this->isOpen)
+		this->open();
+	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
+
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	bool containsSimulations = false;
+	std::string availableSimulations = "Available Simulations:\n";
+	while(sqlite3_step(stmt) == SQLITE_ROW) {
+		containsSimulations = true;
+		availableSimulations += "ID: " + std::to_string(sqlite3_column_int(stmt, 0)) + " | Title: " + reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)) + '\n';
+	}
+	sqlite3_finalize(stmt);
+	if (!containsSimulations) {
+		std::cout << "Database does not contain any simulations!" << std::endl;
+	}
+	else {
+		std::cout << availableSimulations;
+	}
+	return containsSimulations;
 }
 
 std::vector<Vec3D> Database::selectVelocities(int timestep){

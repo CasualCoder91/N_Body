@@ -37,8 +37,7 @@ bool debug = false;
 
 int main() {
 
-	//Parameters testParameters = Parameters();
-	//InitialConditions testInitialConditions = InitialConditions(&testParameters);
+	//InitialConditions testInitialConditions = InitialConditions();
 	//MWPotential testPotential = MWPotential(Vec3D(0, 0, 0));
 	//double boxSize = 0.002;
 	//std::vector<Star*> stars = testInitialConditions.initDiskStars(0, Vec3D(0.1, boxSize, 0), Vec3D(0.1+boxSize, 0, 0), 0.1, &testPotential);
@@ -67,21 +66,14 @@ int main() {
 		std::cin >> selection;
 		std::cin.clear();
 		if (selection == 1) {
-			std::vector<SimulationData> simulations = db.selectSimulationData();
-			if (simulations.empty()) {
-				std::cout << "Database does not contain any simulations!" << std::endl;
+			if(!db.printSimulations())
 				continue;
-			}
-
-			std::cout << "Available Simulations:" << std::endl;
-			for (SimulationData sim : simulations) {
-				std::cout << sim.print();
-			}
 			std::cout << "Input ID to select simulation" << std::endl;
 			int simulationID = 0;
 			std::cin >> simulationID;
 			std::cin.clear();
-			Simulation simulation = Simulation(simulationID,&db, &db.selectSimulationData(simulationID)[0]);
+			db.selectSimulation(simulationID);
+			Simulation simulation = Simulation(simulationID,&db);
 			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate 2D" << std::endl;
 			std::cin >> selection;
 			std::cin.clear();
@@ -94,8 +86,7 @@ int main() {
 			}
 			else if(selection==2) {
 				std::cout << "Running analysis on selected simulation" << std::endl;
-				Parameters parameters = Parameters();
-				Analysis analysis = Analysis(parameters);
+				Analysis analysis = Analysis();
 				int analysisID = db.insertAnalysis(simulationID, analysis);
 				/*std::vector<int> timeSteps = db.selectTimesteps();
 				for (int timeStep : timeSteps) {
@@ -124,26 +115,25 @@ int main() {
 			}
 		}
 		else if (selection == 2) {
-			Parameters parameters = Parameters();
-			simulationID = db.insert(&parameters);
-			Simulation simulation = Simulation(simulationID, &db, &parameters);
+			simulationID = db.insertSimulation();
+			Simulation simulation = Simulation(simulationID, &db);
 			std::cout << "New simulation created. ID = " << simulationID << std::endl;
 			std::cout << "Starting simulation" << std::endl;
 			simulation.run();
 		}
 		else if (selection == 3) {
 			Test test = Test();
-			//Test::potentialCircularVelocity();
+			Test::potentialCircularVelocity();
 			test.transformation();
-			//Test::massDistribution(500,15000);
-			//Test::sampleFieldStarPositions(2000);
-			//Test::velocityBulge();
-			//Test::bulgeMass();
-			//test.velocityBulge();
+			Test::massDistribution(500,15000);
+			Test::sampleFieldStarPositions(200);
+			//Test::velocityBulgeR();
+			Test::bulgeMass();
+			test.velocityBulge();
 			//Test::wangPositions();
 			//Test::checkBrokenPowerLaw();
-			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;
-			//std::cout << WangPotential::totalMass(-5e3, 5e3) << std::endl;
+			std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;
+			std::cout << WangPotential::totalMass(-5e3, 5e3) << std::endl;
 		}
 		else if (selection == 4) {
 			return 0;

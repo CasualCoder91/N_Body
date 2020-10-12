@@ -27,7 +27,7 @@ def main():
     global functionName
     if len(sys.argv) != 1:
         dataPath=exePath+sys.argv[1]
-        print(dataPath)
+        #print(dataPath)
         showPlot = sys.argv[2].lower() == 'true'
         functionName = sys.argv[3]
         plotPath = exePath+sys.argv[4]

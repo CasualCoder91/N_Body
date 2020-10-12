@@ -179,12 +179,10 @@
     <ClInclude Include="include\Integrator.h" />
     <ClInclude Include="include\LookupTable.h" />
     <ClInclude Include="include\Node.h" />
-    <ClInclude Include="include\Parameters.h" />
     <ClInclude Include="include\Plot.h" />
     <ClInclude Include="include\MWPotential.h" />
     <ClInclude Include="include\ProgressBar.h" />
     <ClInclude Include="include\Simulation.h" />
-    <ClInclude Include="include\SimulationData.h" />
     <ClInclude Include="include\sqlite3.h" />
     <ClInclude Include="include\Star.h" />
     <ClInclude Include="include\Structs.h" />
@@ -195,6 +193,7 @@
     <ClCompile Include="src\Analysis.cpp" />
     <ClCompile Include="src\ClosestPair.cpp" />
     <ClCompile Include="src\Configuration.cpp" />
+    <ClCompile Include="src\Constants.cpp" />
     <ClCompile Include="src\Database.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Point.cpp" />
@@ -209,12 +208,10 @@
     <ClCompile Include="src\LookupTable.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Node.cpp" />
-    <ClCompile Include="src\Parameters.cpp" />
     <ClCompile Include="src\Plot.cpp" />
     <ClCompile Include="src\MWPotential.cpp" />
     <ClCompile Include="src\ProgressBar.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
-    <ClCompile Include="src\SimulationData.cpp" />
     <ClCompile Include="src\sqlite3.c">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>

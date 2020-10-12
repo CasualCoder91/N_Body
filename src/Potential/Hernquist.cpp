@@ -2,15 +2,13 @@
 
 double Hernquist::mMass = 1.8e10; // SolarMassUnit
 double Hernquist::mScaleLength = 0.9e3; // pc
-double Hernquist::G = 4.483e-3;
 
 struct gslRParam { double R; };
 struct gslDensityConeParams { Matrix* transformation; double distance; double r; double x; double y; };
 
-Hernquist::Hernquist(double mass, double scaleLength, double G){
+Hernquist::Hernquist(double mass, double scaleLength){
 	mMass = mass;
 	mScaleLength = scaleLength;
-	this->G = G;
 }
 
 double Hernquist::density(double r){
@@ -39,7 +37,7 @@ double Hernquist::gslDensity(double z, void* p){
 }
 
 double Hernquist::potential(double r){
-	return -G*mMass /(r+ mScaleLength);
+	return - Constants::G*mMass /(r+ mScaleLength);
 }
 
 double Hernquist::forceTemp(double r){
@@ -140,9 +138,9 @@ double Hernquist::surfaceDensity(double R){
 	return 2.0 * result;
 }
 
-double Hernquist::circularVelocity(Vec3D* position){
+double Hernquist::circularVelocity(const Vec3D* position){
 	double r = position->length();
-	return sqrt(G * mMass * r) / (r + mScaleLength);
+	return sqrt(Constants::G * mMass * r) / (r + mScaleLength);
 }
 
 double Hernquist::escapeVelocity(double r){
