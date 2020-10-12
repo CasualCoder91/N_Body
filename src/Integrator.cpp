@@ -1,14 +1,14 @@
 #include "Integrator.h"
 
 double Integrator::secInDay = 86400;
-double Integrator::kmInpc = 3.086e-13;
+//double Integrator::kmInpc = 3.086e-13;
 
 Integrator::Integrator(double dt){
 	this->dt = dt;
 	this->dt2 = 0.5 * dt;
 	this->dts = dt * secInDay;
 	this->dts2 = 0.5 * dts;
-	this->positionDetla = dts * this->kmInpc;
+	this->positionDetla = dts * Constants::kmInpc;
 	this->positionDetla2 = 0.5 * positionDetla;
 }
 
@@ -64,7 +64,7 @@ void Integrator::RK4(std::vector<Star*> stars, MWPotential* potential){
 }
 
 void Integrator::Leapfrog(std::vector<Star*> stars, Node* root, MWPotential* potential){
-	double spaceFactor = this->kmInpc * this->secInDay;
+	double spaceFactor = Constants::kmInpc * this->secInDay;
 	for (size_t i = 0; i < stars.size(); ++i) {
 		Vec3D xHalfStep = stars[i]->position + stars[i]->velocity * this->positionDetla2;
 		Vec3D aHalfStep;
@@ -76,7 +76,7 @@ void Integrator::Leapfrog(std::vector<Star*> stars, Node* root, MWPotential* pot
 }
 
 void Integrator::Leapfrog(std::vector<Star*> stars, MWPotential* potential){
-	double spaceFactor = this->kmInpc * this->secInDay;
+	double spaceFactor = Constants::kmInpc * this->secInDay;
 	for (size_t i = 0; i < stars.size(); ++i) {
 		Vec3D xHalfStep = stars[i]->position + stars[i]->velocity * this->dt2 * spaceFactor;
 		Vec3D aHalfStep;

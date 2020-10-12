@@ -39,7 +39,7 @@ private:
 	static const double rHalo; // kpc
 	static const double mMassHalo; // SolarMassUnit
 	/** @brief 1 km divided by 1 pc */
-	static const double kmInpc;
+	//static const double kmInpc;
 
 	static const double velocityDispersionScaleLength;
 

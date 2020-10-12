@@ -35,6 +35,8 @@ namespace Constants {
 	//General Parameters, todo: put into separate class
 	/** @brief Gravitational constant in astronomical units: parsec/solar mass*km^2/s^2*/
 	extern double G;// = 4.483e-3;
+	extern double degInRad;
+	extern double kmInpc;
 	extern int nStars;
 	extern Vec3D clusterLocation;
 

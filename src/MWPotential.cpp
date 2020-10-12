@@ -14,7 +14,7 @@ const double MWPotential::aSmallBulge = 0.35e3; // pc
 const double MWPotential::characteristicVelocityBulge = 444.4;  // km/s
 const double MWPotential::rHalo = 17e3; // pc
 const double MWPotential::mMassHalo = 5E11; // SolarMassUnit
-const double MWPotential::kmInpc = 3.086e-13;
+//const double MWPotential::kmInpc = 3.086e-13;
 const double MWPotential::velocityDispersionScaleLength = aDisk / 4.0;
 
 const std::string MWPotential::lookupTableLocation = "src/LookupTables/";
@@ -306,7 +306,7 @@ double MWPotential::massDisk(Matrix* transformation, double distance, double r){
 
 double MWPotential::angularVelocity(double R){
 	double R2 = gsl_pow_2(R);
-	return kmInpc*sqrt(Constants::G /R*(bulgePotential.potentialdr(R)+mMassDisk*R/pow(gsl_pow_2(aDisk+bDisk)+R2,1.5)
+	return Constants::kmInpc*sqrt(Constants::G /R*(bulgePotential.potentialdr(R)+mMassDisk*R/pow(gsl_pow_2(aDisk+bDisk)+R2,1.5)
 		+mMassBlackHole/R2+ mMassHalo/(R2+R*rHalo)+ mMassHalo*log((R+rHalo)/rHalo)/R2));
 }
 
@@ -345,14 +345,14 @@ double MWPotential::epicyclicFrequency(double R, double z){
 		std::cout << "Warning: Imaginary epicyclicFrequency. Setting 1e-10 to avoid crash" << std::endl;
 		temp = 1e-10;
 	}
-	temp = sqrt(Constants::G * temp)*kmInpc;
+	temp = sqrt(Constants::G * temp)* Constants::kmInpc;
 	return temp;
 }
 
 double MWPotential::radialVelocityDispersionDisk(double R, double z){
 	//3.36 * G * surfaceDensity(R) / epicyclicFrequency(R)*kmInpc;
 	//assumed to be normalized ...
-	double temp = exp(-gsl_pow_2(R) + 2 * gsl_pow_2(velocityDispersionScaleLength) / aDisk) * 3.36 * Constants::G * surfaceDensity(R) / epicyclicFrequency(R,z) * kmInpc;
+	double temp = exp(-gsl_pow_2(R) + 2 * gsl_pow_2(velocityDispersionScaleLength) / aDisk) * 3.36 * Constants::G * surfaceDensity(R) / epicyclicFrequency(R,z) * Constants::kmInpc;
 	if (temp < 0) {
 		std::cout << "Warning: Negative radial velocity dispersion. Setting 1 to avoid crash" << std::endl;
 		return 1;
@@ -419,17 +419,17 @@ void MWPotential::applyForce(Star* star){
 	double r2 = r*r;
 	double r3 = r2*r;
 	//BH, Halo & Bulge
-	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo*r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo)/ r3)*kmInpc;
+	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo*r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo)/ r3)* Constants::kmInpc;
 	star->acceleration.x += temp * star->position.x;
 	star->acceleration.y += temp * star->position.y;
 	star->acceleration.z += temp * star->position.z;
 	//Disk
 	double x2y2 = gsl_pow_2(star->position.x) + gsl_pow_2(star->position.y);
 	double sqrtb2z2 = gsl_hypot(bDisk, star->position.z);
-	temp = -Constants::G * mMassDisk / pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)*kmInpc;
+	temp = -Constants::G * mMassDisk / pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)* Constants::kmInpc;
 	star->acceleration.x += temp * star->position.x;
 	star->acceleration.y += temp * star->position.y;
-	star->acceleration.z += -Constants::G * mMassDisk * star->position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * kmInpc;
+	star->acceleration.z += -Constants::G * mMassDisk * star->position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * Constants::kmInpc;
 }
 
 void MWPotential::applyForce(Vec3D position, Vec3D& acceleration){
@@ -437,17 +437,17 @@ void MWPotential::applyForce(Vec3D position, Vec3D& acceleration){
 	double r2 = r * r;
 	double r3 = r2 * r;
 	//BH, Halo & Bulge
-	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo * r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo) / r3) * kmInpc;
+	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo * r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo) / r3) * Constants::kmInpc;
 	acceleration.x += temp * position.x;
 	acceleration.y += temp * position.y;
 	acceleration.z += temp * position.z;
 	//Disk
 	double x2y2 = gsl_pow_2(position.x) + gsl_pow_2(position.y);
 	double sqrtb2z2 = gsl_hypot(bDisk, position.z);
-	temp = -Constants::G * mMassDisk / pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5) * kmInpc;
+	temp = -Constants::G * mMassDisk / pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5) * Constants::kmInpc;
 	acceleration.x += temp * position.x;
 	acceleration.y += temp * position.y;
-	acceleration.z += -Constants::G * mMassDisk * position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * kmInpc;
+	acceleration.z += -Constants::G * mMassDisk * position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * Constants::kmInpc;
 }
 
 

@@ -20,7 +20,7 @@ extern bool debug;
 class InitialConditions{
 private:
 	/**@brief 1km divided by 1pc*/
-	static double kmInpc;
+	//static double kmInpc;
 	/**@brief pseudo-random generator used for sampling various distributions*/
 	std::mt19937 gen;
 	/**@brief The Potential used during simulation. Initial conditions heavily depend on it.*/

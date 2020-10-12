@@ -240,12 +240,12 @@ void Test::velocityBulge(){
 	std::vector<double> velocityDispersion;
 	std::vector<double> averageVelocity;
 	std::vector<double> bValues{ -4,-6,-8 };
-	const double degInRad = 0.0174533;
+	//const double degInRad = 0.0174533;
 	for (double b : bValues) {
 		for (double l = -10; l <= 10; l += 1) {
-			double x = dEarth - dEarth * cos(b * degInRad) * cos(l * degInRad);
-			double y = dEarth * cos(b * degInRad) * sin(l * degInRad);
-			double z = dEarth * sin(b * degInRad);
+			double x = dEarth - dEarth * cos(b * Constants::degInRad) * cos(l * Constants::degInRad);
+			double y = dEarth * cos(b * Constants::degInRad) * sin(l * Constants::degInRad);
+			double z = dEarth * sin(b * Constants::degInRad);
 			Vec3D focus = Vec3D(x, y, z);
 			double r = focus.length();
 			//std::cout << "focus:" << focus.print() << " r:" << r << std::endl;
@@ -287,13 +287,13 @@ void Test::bulgeMass(){
 	std::vector<double> longitude;
 	std::vector<double> mass;
 	std::vector<double> bValues{ 0, 1, 2,3,4,5,6,7,8,9  };
-	const double degInRad = 0.0174533;
+	//const double degInRad = 0.0174533;
 	for (double b : bValues) {
 		for (double l = -10; l <= 10; l += 1) {
 			longitude.push_back(l);
-			double x = dEarth - dEarth *cos(b * degInRad) * cos(l * degInRad);
-			double y = dEarth*cos(b * degInRad) * sin(l * degInRad);
-			double z = dEarth*sin(b * degInRad);
+			double x = dEarth - dEarth *cos(b * Constants::degInRad) * cos(l * Constants::degInRad);
+			double y = dEarth*cos(b * Constants::degInRad) * sin(l * Constants::degInRad);
+			double z = dEarth*sin(b * Constants::degInRad);
 			Vec3D focus = Vec3D(x, y, z);
 			double r = focus.length();
 			double totalMass = conditions.bulgeStarMass(focus, Vec3D(dEarth,0,0), dEarth+rBulge, 100, 1);

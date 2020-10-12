@@ -1,6 +1,6 @@
 #include "Projection.h"
 
-double Projection::kmInpc = 3.086e-13;
+//double Projection::kmInpc = 3.086e-13;
 
 Vec3D Projection::projectPosition(const Vec3D& target, const Vec3D& lookAt, const Vec3D& origin, const double fovAngle) {
 	Vec3D returnValue = target - origin;

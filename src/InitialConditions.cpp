@@ -1,6 +1,6 @@
 #include "InitialConditions.h"
 
-double InitialConditions::kmInpc = 3.086e-13;
+
 
 double InitialConditions::closestToZero(double a, double b) {
 	double temp = 0;

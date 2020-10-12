@@ -26,7 +26,7 @@ public:
     /**@brief amount of seconds in one day. Needed because velocity is given in km/s and dt in days*/
     static double secInDay;
     /**@brief amount of pc in one km*/
-    static double kmInpc;
+    //static double kmInpc;
 
 	Integrator(double dt = 0.01);
 

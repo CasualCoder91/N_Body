@@ -43,7 +43,7 @@ class Node {
 	/** @brief softening parameter for force calculation*/
 	//static double softening;
 	/** @brief 1 km divided by 1 pc */
-	static double kmInpc;
+	//static double kmInpc;
 public: //variables
 	/** @brief Pointer array to child nodes where indexing according to ::Octant. @note May contain null_ptrs */
 	Node* children[8] = {};

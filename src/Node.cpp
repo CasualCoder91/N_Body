@@ -3,7 +3,7 @@
 //double Node::precission = 0.5;
 //double Node::G = 4.483e-3; //overwritten by parameter
 //double Node::softening = 0.16;
-double Node::kmInpc = 3.086e-13;
+//double Node::kmInpc = 3.086e-13;
 
 Node::Node(Vec3D top_left_front, Vec3D bottom_right_back, Node* parent){
 	this->top_left_front = top_left_front;
@@ -208,7 +208,7 @@ void Node::applyForce(const Vec3D position,Vec3D& acceleration){
 		temp = dx * dx + dy * dy + dz * dz;
 		if (temp > 0) {
 			//kmInpc needed to get acceleration in km*s^-2
-			temp = Constants::G * this->star->mass / pow(temp + Constants::softening * Constants::softening, 3 / 2) * this->kmInpc;
+			temp = Constants::G * this->star->mass / pow(temp + Constants::softening * Constants::softening, 3 / 2) * Constants::kmInpc;
 			//star->acceleration += Vec3D(temp * dx, temp * dy, temp * dz);
 			acceleration.x += temp * dx;
 			acceleration.y += temp * dy;
@@ -222,7 +222,7 @@ void Node::applyForce(const Vec3D position,Vec3D& acceleration){
 	double dz = this->centerOfMass.z - position.z;
 	double distStarCOM = sqrt(dx * dx + dy * dy + dz * dz);
 	if ((this->bottom_right_back.x - this->top_left_front.x) / distStarCOM < Constants::precission && this->star != star && distStarCOM>0) {
-		temp = Constants::G * this->mass / pow(distStarCOM + Constants::softening, 3) * this->kmInpc;
+		temp = Constants::G * this->mass / pow(distStarCOM + Constants::softening, 3) * Constants::kmInpc;
 		//star->acceleration += Vec3D(temp * (star->position.x - this->centerOfMass.x), temp * (star->position.y - this->centerOfMass.y), temp * (star->position.z - this->centerOfMass.z));
 		acceleration.x += temp * dx;
 		acceleration.y += temp * dy;
