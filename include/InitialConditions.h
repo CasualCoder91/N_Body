@@ -58,6 +58,7 @@ public:
 	*/
 	double initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha= -2.35);
 
+
 	double brokenPowerLaw(std::vector<Star*>& stars, std::vector<double> massLimits, std::vector<double> exponents);
 	/**
 	@brief Creates stars belonging to the disk inside the given cuboid. 

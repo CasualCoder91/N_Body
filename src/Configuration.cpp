@@ -32,7 +32,7 @@ bool Configuration::Load(const std::string& file){
 
         // split line into key and value
         if (!line.empty()){
-            int pos = line.find('=');
+            size_t pos = line.find('=');
 
             if (pos != std::string::npos){
                 std::string key = Trim(line.substr(0, pos));
@@ -176,11 +176,33 @@ bool Configuration::GetBool(const std::string& key) const{
     }
 }
 
+std::vector<double> Configuration::GetDoubleVector(const std::string& key) const{
+    std::string str;
+    std::vector<double> returnValue = {};
+    if (Get(key, str)) {
+        std::string temp;
 
+        size_t i = 0, start = 0, end;
+        do {
+            end = str.find_first_of(',', start);
+            temp = str.substr(start, end);
+            if (isdigit(temp[0])){
+                returnValue.push_back(atof(temp.c_str()));
+                ++i;
+            }
+            start = end + 1;
+        } while (start);
+        return returnValue;
+    }
+    else {
+        std::cout << key << " missing in cfg file!" << std::endl;
+        returnValue.emplace_back(1);
+        std::cout << "Using default value: {1}" << std::endl;
+        return returnValue;
+    }
+}
 
-
-bool Configuration::Get(const std::string& key, bool& value) const
-{
+bool Configuration::Get(const std::string& key, bool& value) const{
     std::string str;
 
     if (Get(key, str)){

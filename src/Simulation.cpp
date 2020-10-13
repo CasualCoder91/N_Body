@@ -22,23 +22,25 @@ int Simulation::getID(){
 
 void Simulation::run(){
 
-	std::cout << "boxlength: " << Constants::boxLength << std::endl;
-	std::cin.get();
 	//Init stars
 	InitialConditions initialConditions = InitialConditions(Simulation::potential);
 
 	//Init clusterStars
 	int nextStarIndex = database->selectLastID("star") + 1;
-
-	//std::vector<Star*> clusterStars = initialConditions.initStars(nextStarIndex,nStars);
-	//double totalMass = initialConditions.initialMassSalpeter(clusterStars,minMass,maxMass);
-	//initialConditions.plummerSphere(clusterStars, totalMass,boxLength,G);
-
-	std::vector<Star*> clusterStars = InOut::readMcLuster(nextStarIndex, "Data/eintest.txt");
+	std::vector<Star*> clusterStars;
+	if (Constants::bMcLuster) {
+		clusterStars = InOut::readMcLuster(nextStarIndex, Constants::mcLusterFilePath);
+	}
+	else {
+		clusterStars = initialConditions.initStars(nextStarIndex, Constants::nStars);
+		//double totalMass = initialConditions.initialMassSalpeter(clusterStars, Constants::minMass, Constants::maxMass);
+		double totalMass = initialConditions.brokenPowerLaw(clusterStars, Constants::massLimits, Constants::exponents);
+		initialConditions.plummerSphere(clusterStars, totalMass, Constants::boxLength, Constants::G);
+	}
 	initialConditions.offsetCluster(clusterStars, Constants::clusterLocation);
 
 	double circVel = potential->circularVelocity(&Constants::clusterLocation);
-	Vec3D clusterVelocity = Vec3D(0,-220,10);
+	Vec3D clusterVelocity = Vec3D(0,-circVel,10);
 	//initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
 	for (Star* star : clusterStars) {
 		star->velocity += clusterVelocity;
@@ -52,7 +54,7 @@ void Simulation::run(){
 	std::cout << "Starting integration" << std::endl;
 	//Integrate
 	Integrator integrator = Integrator(Constants::dt);
-	std::cout << "dt = " << integrator.dt << std::endl;
+	//std::cout << "dt = " << integrator.dt << std::endl;
 	//std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	Vec3D tlf = Vec3D(), brb = Vec3D();
 	ProgressBar progressBar = ProgressBar(0, Constants::nTimesteps);

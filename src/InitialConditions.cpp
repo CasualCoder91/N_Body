@@ -163,7 +163,7 @@ double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double 
 
 double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, std::vector<double> massLimits, std::vector<double> exponents){
 	int nIntervals = massLimits.size()-1;
-
+	double totalMass = 0;
 	for (double exponent : exponents) {
 		if (exponent == 1) {
 			std::cout << "Exponentvalue 1 in brokenPowerLaw not possible" << std::endl;
@@ -193,11 +193,12 @@ double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, std::vector<
 			if (sample < -inverseTemps[i+1]) {
 				double exponentTemp = -exponents[i] + 1;
 				star->mass = pow((inverseTemps[i] + sample) * exponentTemp / constant + pow(massLimits[i], exponentTemp), 1 / exponentTemp);
+				totalMass += star->mass;
 				break;
 			}
 		}
 	}
-	return 0.0;
+	return totalMass;
 }
 
 /*std::vector<Star*> InitialConditions::initDiskStars(int& starID, Vec3D tlf, Vec3D brf, double depth, double gridResolution){

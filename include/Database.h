@@ -59,6 +59,7 @@ public:
 	/** @brief inserts positions and velocities of given \p stars and \p timestep */
 	void timestep(int timestep, std::vector<Star*>& stars);
 	void generate2D(int simulationID);
+	void insertPowerLaw(int simulationID, std::vector<double> massLimits, std::vector<double> exponents);
 	/** 
 	@brief inserts one star (including positions and velocities)
 	@note for multiple stars use insertStars instead!

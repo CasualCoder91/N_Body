@@ -59,7 +59,7 @@ def plot_star_series(output,data):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(plotData[:,3], plotData[:,4], plotData[:,5], s=1,c='red')
-        plt.show()
+        #plt.show()
         plt.savefig(name+'.jpg')
         plt.close(fig)
 
@@ -225,7 +225,9 @@ def main():
     conn = createConnection(database)
     with conn:
         data = select2DPositions(conn, simulationID)
-        plot2Dxy(output, data)
+        plot2Dxy(output,data)
+        #data = selectAllPositions(conn, simulationID)
+        #plot_star_series(output, data)
         #plotProjection(output, data)
 
 if __name__ == '__main__':

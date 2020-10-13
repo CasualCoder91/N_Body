@@ -12,12 +12,12 @@ int Constants::nTimesteps = config.GetInt("nTimesteps");
 int Constants::outputTimestep = config.GetInt("outputTimestep");
 int Constants::simulationID = 1;
 
-//cluster mass
-double Constants::minMass = config.GetDouble("minMass");
-double Constants::maxMass = config.GetDouble("maxMass");
-double Constants::alpha = config.GetDouble("alpha");
-std::vector<double> Constants::massLimits; //broken powerlaw
-std::vector<double> Constants::exponents; //broken powerlaw
+//cluster
+std::vector<double> Constants::massLimits = config.GetDoubleVector("massLimits"); //broken powerlaw
+std::vector<double> Constants::exponents = config.GetDoubleVector("exponents"); //broken powerlaw
+Vec3D Constants::clusterLocation = config.GetVec3D("offset");
+bool Constants::bMcLuster = config.GetBool("bMcLuster");
+std::string Constants::mcLusterFilePath = config.GetString("mcLusterFilePath");
 
 //View cone
 double Constants::angleOfView = config.GetDouble("angle"); //rad
@@ -32,7 +32,6 @@ double Constants::G = config.GetDouble("G");// = 4.483e-3;
 double Constants::degInRad = 0.0174533;
 double Constants::kmInpc = 3.086e-13;
 int Constants::nStars = config.GetInt("nStars");
-Vec3D Constants::clusterLocation = config.GetVec3D("offset");
 
 //Analysis Parameters
 bool Constants::bEnergy = config.GetBool("bEnergy");

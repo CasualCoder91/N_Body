@@ -18,12 +18,12 @@ namespace Constants {
 	extern int outputTimestep;
 	extern int simulationID;
 
-	//cluster mass
-	extern double minMass;
-	extern double maxMass;
-	extern double alpha;
+	//cluster
 	extern std::vector<double> massLimits; //broken powerlaw
 	extern std::vector<double> exponents; //broken powerlaw
+	extern Vec3D clusterLocation;
+	extern bool bMcLuster;
+	extern std::string mcLusterFilePath;
 
 	//View cone
 	extern double angleOfView; //rad
@@ -38,7 +38,6 @@ namespace Constants {
 	extern double degInRad;
 	extern double kmInpc;
 	extern int nStars;
-	extern Vec3D clusterLocation;
 
 	//Analysis Parameters
 	extern bool bEnergy;

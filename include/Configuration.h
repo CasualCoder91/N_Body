@@ -36,6 +36,7 @@ public:
     Vec3D GetVec3D(const std::string& key) const;
     std::string GetString(const std::string& key) const;
     bool GetBool(const std::string& key) const;
+    std::vector<double> GetDoubleVector(const std::string& key) const;
 
 private:
     // the container

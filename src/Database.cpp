@@ -51,9 +51,6 @@ void Database::setup(){
 		"outputTimestep INTEGER NOT NULL,"
 		"softening REAL NOT NULL,"
 		"precission REAL NOT NULL,"
-		"minMass REAL NOT NULL,"
-		"maxMass REAL NOT NULL,"
-		"alpha REAL NOT NULL,"
 		"offsetX REAL NOT NULL,"
 		"offsetY REAL NOT NULL,"
 		"offsetZ REAL NOT NULL,"
@@ -64,7 +61,8 @@ void Database::setup(){
 		"focusZ REAL NOT NULL,"
 		"viewPointX REAL NOT NULL,"
 		"viewPointY REAL NOT NULL,"
-		"viewPointZ REAL NOT NULL"
+		"viewPointZ REAL NOT NULL,"
+		"bMcLuster INTEGER NOT NULL"
 		");";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS star("
@@ -143,6 +141,17 @@ void Database::setup(){
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
+	sql = "CREATE TABLE IF NOT EXISTS powerLaw("
+		"id_simulation INTEGER NOT NULL,"
+		"position INTEGER NOT NULL,"
+		"massLimit REAL,"
+		"exponent REAL,"
+		"PRIMARY KEY(id_simulation,position),"
+		"FOREIGN KEY (id_simulation) "
+		"REFERENCES simulation(id) "
+		"ON DELETE CASCADE "
+		"ON UPDATE NO ACTION);";
+	this->exec(sql);
 }
 
 int Database::getLastID(){
@@ -173,9 +182,9 @@ int Database::selectLastID(std::string table){
 int Database::insertSimulation(){
 	if (!this->isOpen)
 		this->open();
-	std::string sql = "INSERT INTO simulation (n_stars,boxLength,dt,n_timesteps,title,outputTimestep,softening,precission,minMass,maxMass,alpha,"
-		"offsetX,offsetY,offsetZ,angle,distance,focusX,focusY,focusZ,viewPointX,viewPointY,viewPointZ)"
-		"VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22)";
+	std::string sql = "INSERT INTO simulation (n_stars,boxLength,dt,n_timesteps,title,outputTimestep,softening,precission,"
+		"offsetX,offsetY,offsetZ,angle,distance,focusX,focusY,focusZ,viewPointX,viewPointY,viewPointZ,bMcLuster)"
+		"VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, Constants::nStars);
@@ -188,20 +197,18 @@ int Database::insertSimulation(){
 	sqlite3_bind_int(st, 6, Constants::outputTimestep);
 	sqlite3_bind_double(st, 7, Constants::softening);
 	sqlite3_bind_double(st, 8, Constants::precission);
-	sqlite3_bind_double(st, 9, Constants::minMass);
-	sqlite3_bind_double(st, 10, Constants::maxMass);
-	sqlite3_bind_double(st, 11, Constants::alpha);
-	sqlite3_bind_double(st, 12, Constants::clusterLocation.x);
-	sqlite3_bind_double(st, 13, Constants::clusterLocation.y);
-	sqlite3_bind_double(st, 14, Constants::clusterLocation.z);
-	sqlite3_bind_double(st, 15, Constants::angleOfView);
-	sqlite3_bind_double(st, 16, Constants::distance);
-	sqlite3_bind_double(st, 17, Constants::focus.x);
-	sqlite3_bind_double(st, 18, Constants::focus.y);
-	sqlite3_bind_double(st, 19, Constants::focus.z);
-	sqlite3_bind_double(st, 20, Constants::viewPoint.x);
-	sqlite3_bind_double(st, 21, Constants::viewPoint.y);
-	sqlite3_bind_double(st, 22, Constants::viewPoint.z);
+	sqlite3_bind_double(st, 9, Constants::clusterLocation.x);
+	sqlite3_bind_double(st, 10, Constants::clusterLocation.y);
+	sqlite3_bind_double(st, 11, Constants::clusterLocation.z);
+	sqlite3_bind_double(st, 12, Constants::angleOfView);
+	sqlite3_bind_double(st, 13, Constants::distance);
+	sqlite3_bind_double(st, 14, Constants::focus.x);
+	sqlite3_bind_double(st, 15, Constants::focus.y);
+	sqlite3_bind_double(st, 16, Constants::focus.z);
+	sqlite3_bind_double(st, 17, Constants::viewPoint.x);
+	sqlite3_bind_double(st, 18, Constants::viewPoint.y);
+	sqlite3_bind_double(st, 19, Constants::viewPoint.z);
+	sqlite3_bind_int(st, 20, Constants::bMcLuster);
 
 	int returnCode = sqlite3_step(st);
 	if (returnCode != SQLITE_DONE){
@@ -209,11 +216,16 @@ int Database::insertSimulation(){
 	}
 	sqlite3_finalize(st);
 	int simulationID = getLastID();
+
+	if (!Constants::bMcLuster) {
+		this->insertPowerLaw(simulationID, Constants::massLimits, Constants::exponents);
+	}
+
 	return simulationID;
 }
 
 void Database::insertStars(int simulationID, std::vector<Star*>& stars, int timestep, bool clusterStars){
-	std::cout << "Adding stars to database" << std::endl;
+	std::cout << "Adding " << stars.size() << " stars to database" << std::endl;
 	if (!this->isOpen)
 		this->open();
 	char* errorMessage;
@@ -426,6 +438,35 @@ void Database::generate2D(int simulationID){
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
 	sqlite3_finalize(stmt);
 
+}
+
+void Database::insertPowerLaw(int simulationID, std::vector<double> massLimits, std::vector<double> exponents){
+	if (!this->isOpen)
+		this->open();
+
+	if (exponents.size() == massLimits.size() - 1)
+		exponents.emplace_back(0);
+	int position = this->selectLastID("powerLaw");
+	position++;
+	char* errorMessage;
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	char buffer[] = "INSERT INTO powerLaw (id_simulation,position,massLimit,exponent) VALUES (?1,?2,?3,?4)";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	for (int i = 0; i < massLimits.size();++i) {
+		sqlite3_bind_int(stmt, 1, simulationID);
+		sqlite3_bind_int(stmt, 2, position+i);
+		sqlite3_bind_double(stmt, 3, massLimits[i]);
+		sqlite3_bind_double(stmt, 4, exponents[i]);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("Commit Failed!\n");
+		}
+
+		sqlite3_reset(stmt);
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
 }
 
 void Database::insertStar(int simulationID, Star* star, int& timestep, bool clusterStar){
