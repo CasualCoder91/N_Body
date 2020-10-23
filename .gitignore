@@ -353,6 +353,7 @@ docs/Doxyfile
 Output/*
 !Output/empty.txt
 Data/eintest.txt
+!Output/NGC2244
 
 !build/
 build/*

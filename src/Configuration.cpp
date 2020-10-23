@@ -23,7 +23,7 @@ bool Configuration::Load(const std::string& file){
 
         // filter out comments
         if (!line.empty()){
-            int pos = line.find('#');
+            size_t pos = line.find('#');
 
             if (pos != std::string::npos){
                 line = line.substr(0, pos);
@@ -234,10 +234,10 @@ bool Configuration::Get(const std::string& key, Vec3D& value) const{
 }
 
 std::string Configuration::Trim(const std::string& str){
-    int first = str.find_first_not_of(" \t");
+    size_t first = str.find_first_not_of(" \t");
 
     if (first != std::string::npos){
-        int last = str.find_last_not_of(" \t");
+        size_t last = str.find_last_not_of(" \t");
 
         return str.substr(first, last - first + 1);
     }

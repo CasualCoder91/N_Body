@@ -32,10 +32,12 @@ namespace Constants {
 	extern Vec3D viewPoint;
 	extern Vec3D focus;
 
-	//General Parameters, todo: put into separate class
+	//General Parameters
 	/** @brief Gravitational constant in astronomical units: parsec/solar mass*km^2/s^2*/
 	extern double G;// = 4.483e-3;
 	extern double degInRad;
+	extern double radInArcsec;
+	extern double radmyrInArcsecyr;
 	extern double kmInpc;
 	extern int nStars;
 
@@ -43,4 +45,9 @@ namespace Constants {
 	extern bool bEnergy;
 	extern bool bAverageVelocity;
 	extern bool bAverage2DVelocity;
+
+	//Transformation
+	extern Vec3D positionSun; //in cylinder coordinates [pc,rad,pc]
+	extern Vec3D velocitySun; //kms
+	extern double circularVelocitySun; //kms
 }

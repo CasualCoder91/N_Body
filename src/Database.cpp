@@ -232,7 +232,7 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	char buffer[] = "INSERT INTO star (id,mass,id_simulation,isCluster) VALUES (?1,?2,?3,?4)";
 	sqlite3_stmt* stmt;
-	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	sqlite3_prepare_v2(db, buffer, 71, &stmt, NULL);
 	//#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
 		sqlite3_bind_int(stmt, 1, stars[i]->id);
@@ -312,7 +312,7 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	char buffer[] = "INSERT INTO velocity (x,y,z,id_star,timestep) VALUES (?1,?2,?3,?4,?5)";
 	sqlite3_stmt* stmt;
-	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	sqlite3_prepare_v2(db, buffer, 69, &stmt, NULL);
 	for (unsigned i = 0; i < stars.size(); i++){
 		sqlite3_bind_double(stmt, 1, stars[i]->velocity.x);
 		sqlite3_bind_double(stmt, 2, stars[i]->velocity.y);
@@ -332,7 +332,7 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	//insert positions
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	char buffer2[] = "INSERT INTO position (x,y,z,id_star,timestep) VALUES (?1,?2,?3,?4,?5)";
-	sqlite3_prepare_v2(db, buffer2, strlen(buffer2), &stmt, NULL);
+	sqlite3_prepare_v2(db, buffer2, 69, &stmt, NULL);
 	for (unsigned i = 0; i < stars.size(); i++) {
 		sqlite3_bind_double(stmt, 1, stars[i]->position.x);
 		sqlite3_bind_double(stmt, 2, stars[i]->position.y);
@@ -347,12 +347,6 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	}
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
 	sqlite3_finalize(stmt);
-
-	//#pragma omp parallel for
-	//for (int i = 0; i < stars.size(); ++i) {
-	//	insertVelocity(stars[i]->id,stars[i]->velocity, timestep);
-	//	insertPosition(stars[i]->id, stars[i]->position, timestep);
-	//}
 }
 
 void Database::generate2D(int simulationID){
@@ -370,7 +364,7 @@ void Database::generate2D(int simulationID){
 
 	//local variables
 	double angle = 0;
-	Vec3D focus, viewPoint, lookAt, position, velocity;
+	Vec3D focus, viewPoint, lookAt, pGCA, vGCA;
 
 	//store rows for velocity2D table for better performance
 	struct rowInsert {
@@ -381,21 +375,25 @@ void Database::generate2D(int simulationID){
 	std::vector<rowInsert> positionsInsert;
 
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		if (angle == 0) { // Only need to init/read these variables once
-			angle = sqlite3_column_double(stmt, 8);
-			focus = Vec3D(sqlite3_column_double(stmt, 9), sqlite3_column_double(stmt, 10), sqlite3_column_double(stmt, 11));
-			viewPoint = Vec3D(sqlite3_column_double(stmt, 12), sqlite3_column_double(stmt, 13), sqlite3_column_double(stmt, 14));
-			lookAt = (focus - viewPoint).normalize();
-		}
-		position = Vec3D(sqlite3_column_double(stmt, 1), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3));
-		velocity = Vec3D(sqlite3_column_double(stmt, 5), sqlite3_column_double(stmt, 6), sqlite3_column_double(stmt, 7));
-		Projection::project(position, velocity, lookAt, viewPoint);
+		//if (angle == 0) { // Only need to init/read these variables once
+		//	angle = sqlite3_column_double(stmt, 8);
+		//	focus = Vec3D(sqlite3_column_double(stmt, 9), sqlite3_column_double(stmt, 10), sqlite3_column_double(stmt, 11));
+		//	viewPoint = Vec3D(sqlite3_column_double(stmt, 12), sqlite3_column_double(stmt, 13), sqlite3_column_double(stmt, 14));
+		//	lookAt = (focus - viewPoint).normalize();
+		//}
+		pGCA = Vec3D(sqlite3_column_double(stmt, 1), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3));
+		vGCA = Vec3D(sqlite3_column_double(stmt, 5), sqlite3_column_double(stmt, 6), sqlite3_column_double(stmt, 7));
+		Vec3D pLSR, vLSR, pHCA, vHCA, pHEQ, vHEQ;
+		Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
+		Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
+		Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
+		//Projection::project(pGCA, vGCA, lookAt, viewPoint);
 
 		//position = Projection::projectPosition(position, lookAt, viewPoint,angle);
-		rowInsert positionInsert = { sqlite3_column_int(stmt, 0),position.x,position.y };
+		rowInsert positionInsert = { sqlite3_column_int(stmt, 0),pHEQ.y*Constants::radInArcsec,pHEQ.z * Constants::radInArcsec};
 		positionsInsert.emplace_back(positionInsert);
 		//velocity = Projection::projectVelocity(velocity, lookAt, angle);
-		rowInsert velocityInsert = { sqlite3_column_int(stmt, 4),velocity.x,velocity.y };
+		rowInsert velocityInsert = { sqlite3_column_int(stmt, 4),vHEQ.y*Constants::radmyrInArcsecyr,vHEQ.z * Constants::radmyrInArcsecyr };
 		velocitiesInsert.emplace_back(velocityInsert);
 
 	}
@@ -405,7 +403,7 @@ void Database::generate2D(int simulationID){
 	//insert velocities
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	char buffer[] = "INSERT INTO velocity2D (fk_velocity,x,y) VALUES (?1,?2,?3)";
-	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	sqlite3_prepare_v2(db, buffer, 58, &stmt, NULL);
 	for (rowInsert row : velocitiesInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
 		sqlite3_bind_double(stmt, 2, row.x);
@@ -423,7 +421,7 @@ void Database::generate2D(int simulationID){
 	//insert positions
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	char buffer2[] = "INSERT INTO position2D (fk_position,x,y) VALUES (?1,?2,?3)";
-	sqlite3_prepare_v2(db, buffer2, strlen(buffer2), &stmt, NULL);
+	sqlite3_prepare_v2(db, buffer2, 58, &stmt, NULL);
 	for (rowInsert row : positionsInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
 		sqlite3_bind_double(stmt, 2, row.x);
@@ -452,14 +450,13 @@ void Database::insertPowerLaw(int simulationID, std::vector<double> massLimits, 
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	char buffer[] = "INSERT INTO powerLaw (id_simulation,position,massLimit,exponent) VALUES (?1,?2,?3,?4)";
 	sqlite3_stmt* stmt;
-	sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	sqlite3_prepare_v2(db, buffer, 85, &stmt, NULL);
 	for (int i = 0; i < massLimits.size();++i) {
 		sqlite3_bind_int(stmt, 1, simulationID);
 		sqlite3_bind_int(stmt, 2, position+i);
 		sqlite3_bind_double(stmt, 3, massLimits[i]);
 		sqlite3_bind_double(stmt, 4, exponents[i]);
-		if (sqlite3_step(stmt) != SQLITE_DONE)
-		{
+		if (sqlite3_step(stmt) != SQLITE_DONE){
 			printf("Commit Failed!\n");
 		}
 
@@ -515,32 +512,13 @@ void Database::insertVelocity(int& idStar, Vec3D& velocity, int& timestep){
 	sqlite3_finalize(st);
 }
 
-//std::vector<SimulationData> Database::selectSimulationData(int ID){
-//	std::vector<SimulationData> simulations = {};
-//	if (!this->isOpen)
-//		this->open();
-//	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
-//	if (ID != -1) {
-//		query += " Where ID = " + std::to_string(ID);
-//	}
-//	sqlite3_stmt* stmt;
-//	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
-//
-//	while (sqlite3_step(stmt) == SQLITE_ROW) {
-//		simulations.push_back(SimulationData(sqlite3_column_int(stmt, 0), reinterpret_cast<const char*>(sqlite3_column_text(stmt,1)), sqlite3_column_int(stmt, 2),
-//			sqlite3_column_double(stmt, 3), sqlite3_column_double(stmt, 4), sqlite3_column_int(stmt, 5), sqlite3_column_int(stmt, 6)));
-//	}
-//	sqlite3_finalize(stmt);
-//	return simulations;
-//}
-
 void Database::selectSimulation(int ID){
 	if (!this->isOpen)
 		this->open();
 	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
 					    " Where ID = " + std::to_string(ID);
 	sqlite3_stmt* stmt;
-	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	sqlite3_prepare_v2(db, query.c_str(), 79, &stmt, nullptr);
 
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		Constants::simulationID = sqlite3_column_int(stmt, 0);
@@ -621,7 +599,7 @@ std::vector<Star*> Database::selectStars(int simulationID, int timeStep){
 		"where position.timestep = ?1 AND velocity.timestep = ?1 AND star.id_simulation = ?2";
 	sqlite3_stmt* stmt;
 	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
-		// Error reporting and handling
+		printf("Database::selectStars error\n");
 	}
 	sqlite3_bind_int(stmt, 1, timeStep);
 	sqlite3_bind_int(stmt, 2, simulationID);

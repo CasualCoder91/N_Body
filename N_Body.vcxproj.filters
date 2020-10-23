@@ -86,9 +86,6 @@
     <ClInclude Include="include\Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ClosestPair.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -164,9 +161,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Point.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ClosestPair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Constants.cpp">

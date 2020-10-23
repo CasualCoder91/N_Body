@@ -47,8 +47,6 @@ public:
 	std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
 
 	double bulgeStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
-
-	double diskStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
 	/**
 	@brief Sets mass of stars by inverse transform sampling a Salpeter IMF.
 	@param [in,out] stars The mass of these stars will be modified.
@@ -165,3 +163,4 @@ private:
 	static void setBoundaries(Vec3D& min, Vec3D& max);
 };
 
+//double diskStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);

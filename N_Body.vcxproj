@@ -162,7 +162,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Analysis.h" />
-    <ClInclude Include="include\ClosestPair.h" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Configuration.h" />
     <ClInclude Include="include\Constants.h" />
@@ -191,7 +190,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Analysis.cpp" />
-    <ClCompile Include="src\ClosestPair.cpp" />
     <ClCompile Include="src\Configuration.cpp" />
     <ClCompile Include="src\Constants.cpp" />
     <ClCompile Include="src\Database.cpp" />

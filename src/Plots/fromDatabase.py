@@ -92,12 +92,12 @@ def plot2Dxy(output,data):
     #loop timesteps
     #for i in np.unique(data[:,2]):
     timestepData = data#= data[data[:,2] == i]
-    com,maxDist = plotDimensions(timestepData)
+    #com,maxDist = plotDimensions(timestepData)
     fig = plt.figure()
     print(maxDist[0],maxDist[1])
-    plotDist = np.minimum(maxDist[0],maxDist[1])
-    plt.xlim(com[0]-plotDist, com[0]+plotDist)
-    plt.ylim(com[1]-plotDist, com[1]+plotDist)
+    #plotDist = np.minimum(maxDist[0],maxDist[1])
+    #plt.xlim(com[0]-plotDist, com[0]+plotDist)
+    #plt.ylim(com[1]-plotDist, com[1]+plotDist)
     colors = np.where(timestepData[:,5]==1,'y','k')
     plt.scatter(timestepData[:,3], timestepData[:,4], c=colors)
     print(plotDist)
