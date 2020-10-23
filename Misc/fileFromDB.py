@@ -21,7 +21,8 @@ def select2dPositions(conn, simulationID):
     cur.execute("""SELECT position.timestep,position2D.x,position2D.y,star.mass FROM star
        INNER JOIN position on position.id_star = star.id
        INNER JOIN position2D on position.id=position2D.fk_position
-       where star.id_simulation = ?1 order by position.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
+       where star.id_simulation = ?1
+       order by position.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
     rows = np.array(cur.fetchall())
     return rows
 
@@ -33,12 +34,20 @@ def main():
     conn = createConnection(database)
     with conn:
         data = select2dPositions(conn, simulationID)
-        for i in np.unique(data[:,0]):
-            timestepData = data[data[:,0] == i]
+        data2save  = data[
+        np.logical_or(
+            np.logical_and(data[:,0]%4==0, data[:,0] < 52),
+            np.logical_and(data[:,0] > 52, data[:,0]%13 == 0),data[:,0] < 9
+        )]
+        np.savetxt(output+r"\NGC2244_pos.dat", data2save, delimiter=',')
+
+        #for i in np.unique(data[:,0]):
+        #    timestepData = data[data[:,0] == i]
             #plt.scatter(timestepData[:,1], timestepData[:,2])
             #plt.show()
-            if(i<9 or (i%4==0 and i<52) or (i%13==0 and i>52)):
-                np.savetxt(output+r"\NGC2244_pos_"+str(int(i))+'.dat', timestepData[:,1:], delimiter=',')   # X is an array
+        #    if(i<9 or (i%4==0 and i<52) or (i%13==0 and i>52)):
+        #        a = numpy.append(a, a[0])
+        #        np.savetxt(output+r"\NGC2244_pos_"+str(int(i))+'.dat', timestepData[:,1:], delimiter=',')   # X is an array
 
 if __name__ == '__main__':
     main()
