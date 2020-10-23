@@ -35,10 +35,10 @@ def main():
     with conn:
         data = select2dPositions(conn, simulationID)
         data2save  = data[
-        np.logical_or(
+        np.logical_or.reduce((
             np.logical_and(data[:,0]%4==0, data[:,0] < 52),
             np.logical_and(data[:,0] > 52, data[:,0]%13 == 0),data[:,0] < 9
-        )]
+        ))]
         np.savetxt(output+r"\NGC2244_pos.dat", data2save, delimiter=',')
 
         #for i in np.unique(data[:,0]):
