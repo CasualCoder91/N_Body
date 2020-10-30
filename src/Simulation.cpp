@@ -33,7 +33,6 @@ void Simulation::run(){
 	}
 	else {
 		clusterStars = initialConditions.initStars(nextStarIndex, Constants::nStars);
-		//double totalMass = initialConditions.initialMassSalpeter(clusterStars, Constants::minMass, Constants::maxMass);
 		double totalMass = initialConditions.brokenPowerLaw(clusterStars, Constants::massLimits, Constants::exponents);
 		initialConditions.plummerSphere(clusterStars, totalMass, Constants::boxLength, Constants::G);
 	}
@@ -46,9 +45,10 @@ void Simulation::run(){
 		star->velocity += clusterVelocity;
 	}
 	database->insertStars(this->getID(), clusterStars, 0,true);
-	nextStarIndex = database->selectLastID("star") + 1;
 
-	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex, Constants::focus, Constants::viewPoint, Constants::distance, Constants::dx, Constants::angleOfView); //0.00029088833
+	//Init field stars
+	nextStarIndex = database->selectLastID("star") + 1;
+	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex, Constants::focus, Constants::viewPoint, Constants::distance, Constants::angleOfView);
 	database->insertStars(this->getID(), fieldStars, 0,false);
 
 	std::cout << "Starting integration" << std::endl;
@@ -59,7 +59,7 @@ void Simulation::run(){
 	Vec3D tlf = Vec3D(), brb = Vec3D();
 	ProgressBar progressBar = ProgressBar(0, Constants::nTimesteps);
 
-	std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();;
+	std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
 	std::chrono::high_resolution_clock::time_point endTime;
 
 	for (int i = 0; i <= Constants::nTimesteps; i++) {

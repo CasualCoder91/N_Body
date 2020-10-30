@@ -458,7 +458,7 @@ void Test::initialConditionsInitFieldStars(){
 	InitialConditions initialConditions = InitialConditions(&potential);
 	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initFieldStars(starID,Constants::focus, Constants::viewPoint, Constants::distance, Constants::dx, Constants::angleOfView);
+	std::vector<Star*> stars = initialConditions.initFieldStars(starID,Constants::focus, Constants::viewPoint, Constants::distance, Constants::angleOfView);
 	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
 	std::cout << "Time needed for calucation: " << time_span.count() << "seconds" << std::endl;

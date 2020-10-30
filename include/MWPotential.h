@@ -103,6 +103,7 @@ public:
 	double surfaceDensityDisk(double R);
 	/**@brief: Mass of the disc inside the \p volumeElement relative to the given \p position*/
 	double massDisk(Vec3D position, Vec3D volumeElement);
+
 	double massDisk(Matrix* transformation, double distance, double r);
 
 	//all Potentials
@@ -143,3 +144,10 @@ public:
 	//static Vec3D sampleBuldge(double xMin, double xMax, double yMin, double yMax, double zMin, double zMax);
 
 };
+
+/*
+	static double gslDensityDiskxNew(double x, void* p);
+	static double gslDensityDiskyNew(double y, void* p);
+	static double gslDensityDiskzNew(double z, void* p);
+	double massDisk(Matrix* transformation, double minDist, double maxDist, double maxR);
+*/

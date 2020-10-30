@@ -44,7 +44,7 @@ public:
 	@param distance how far the observer can see/the render distance
 	@param angleOfView the angle of view in degrees
 	*/
-	std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
+	std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView);
 
 	double bulgeStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
 	/**
@@ -164,3 +164,9 @@ private:
 };
 
 //double diskStarMass(Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
+
+//double sampleDiskPositionsNew(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double minDist, double maxDist, double maxR, Matrix* transformationMatrix);
+
+//std::vector<Star*> initFieldStars(int& firstID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double angleOfView);
+
+//void sampleBulgePositionsNew(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double minDist, double maxDist, double maxR, Matrix* transformationMatrix);

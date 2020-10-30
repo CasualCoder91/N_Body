@@ -12,6 +12,9 @@ Hernquist::Hernquist(double mass, double scaleLength){
 }
 
 double Hernquist::density(double r){
+	if (r == 0) {
+		r = 0.1;
+	}
 	return mMass / (2 * M_PI) * mScaleLength / (r * gsl_pow_3(r + mScaleLength));
 }
 
@@ -66,6 +69,8 @@ double Hernquist::gslDensityY(double y, void* p) {
 	F.params = fp;
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
 	double result, error;
+	if (fp->x == 0 && fp->y == 0)
+		fp->x = 0.01;
 	gsl_integration_qag(&F, fp->distance / fp->r * sqrt(fp->x * fp->x + y * y), fp->distance, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
 	gsl_integration_workspace_free(iw);
 	return result;
@@ -158,3 +163,57 @@ double Hernquist::potentialdr(double r){
 double Hernquist::potentialdr2(double r){
 	return 2.*mMass / gsl_pow_3(mScaleLength + r);
 }
+
+/*
+struct gslDensityConeParamsNew { Matrix* transformation; double maxR; double maxZ; double z; double x; };
+
+double Hernquist::mass(Matrix* transformation, double minDist, double maxDist, double maxR){
+	gsl_function F;
+	F.function = &gslDensityZNew;
+
+	gslDensityConeParamsNew densityDiskConeParam{ transformation, maxR, maxDist, 0,0 };
+	F.params = &densityDiskConeParam;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+
+	gsl_integration_qag(&F, minDist, maxDist, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return result;
+}
+
+double Hernquist::gslDensityXNew(double x, void* p){
+	gsl_function F;
+	F.function = &gslDensityYNew;
+	struct gslDensityConeParamsNew* fp = (struct gslDensityConeParamsNew*)p;
+	fp->x = x;
+	F.params = fp;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+	double temp = fp->z * fp->maxR / fp->maxZ;
+	double boundary = sqrt(temp * temp - x * x);
+	gsl_integration_qag(&F, -boundary, boundary, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return result;
+}
+
+double Hernquist::gslDensityYNew(double y, void* p){
+	struct gslDensityConeParamsNew* fp = (struct gslDensityConeParamsNew*)p;
+	Vec3D location = Vec3D(fp->x, y, fp->z);
+	location = *(fp->transformation) * location;
+	return density(location.x, location.y, location.z);
+}
+
+double Hernquist::gslDensityZNew(double z, void* p){
+	gsl_function F;
+	F.function = &gslDensityXNew;
+	struct gslDensityConeParamsNew* fp = (struct gslDensityConeParamsNew*)p;
+	fp->z = z;
+	F.params = fp;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+	double boundary = fp->z * fp->maxR / fp->maxZ;
+	gsl_integration_qag(&F, -boundary, boundary, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return result;
+}
+*/

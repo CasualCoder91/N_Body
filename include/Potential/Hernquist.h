@@ -63,3 +63,12 @@ private:
 	static double gslDensityY(double y, void* p);
 	static double gslDensityZ(double z, void* p);
 };
+
+
+/*	
+	static double gslDensityXNew(double x, void* p);
+	static double gslDensityYNew(double y, void* p);
+	static double gslDensityZNew(double z, void* p);
+
+	double mass(Matrix* transformation, double minDist, double maxDist, double maxR);
+*/

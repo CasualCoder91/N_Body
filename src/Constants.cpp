@@ -20,7 +20,7 @@ bool Constants::bMcLuster = config.GetBool("bMcLuster");
 std::string Constants::mcLusterFilePath = config.GetString("mcLusterFilePath");
 
 //View cone
-double Constants::angleOfView = config.GetDouble("angle"); //rad
+double Constants::angleOfView = config.GetDouble("angle"); //degree
 double Constants::dx = config.GetDouble("dx"); //pc
 double Constants::distance = config.GetDouble("distance"); //pc
 Vec3D Constants::viewPoint = config.GetVec3D("viewPoint");

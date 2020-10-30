@@ -21,7 +21,6 @@ const std::string MWPotential::lookupTableLocation = "src/LookupTables/";
 const std::string MWPotential::velocityDistributionBulgeTableFilename = "velocityDistributionBulgeTable.dat";
 
 struct gslRParam { double R; };
-
 struct gslDensityConeParams { Matrix* transformation; double distance; double r; double x; double y; };
 
 struct gslSphericalAveragedDiskParams { double mMassDisk; double aDisk; double bDisk; double r; };
@@ -73,6 +72,7 @@ double MWPotential::gslDensityDisk(double z, void* p) {
 
 	return temp;
 }
+
 double MWPotential::gslDensityDiskx(double x, void* p){
 	gsl_function F;
 	F.function = &gslDensityDisky;
@@ -291,7 +291,7 @@ double MWPotential::massDisk(Vec3D position, Vec3D volumeElement){
 	return mass;
 }
 
-double MWPotential::massDisk(Matrix* transformation, double distance, double r){
+double MWPotential::massDisk(Matrix* transformation, double distance, double r) {
 	gsl_function F;
 	F.function = &gslDensityDiskx;
 	gslDensityConeParams densityDiskConeParam{ transformation, distance, r,0,0 };
@@ -403,7 +403,7 @@ void MWPotential::generateVelocityDistributionBulgeLookupTable(double rMax){
 	std::vector<double> rVec;
 	std::vector<double> velDist;
 	ProgressBar progressBar = ProgressBar(0, rMax);
-	for (double r = 0; r <= rMax; ++r) {
+	for (double r = 1; r <= rMax; ++r) {
 		progressBar.Update(r);
 		progressBar.Print();
 		rVec.push_back(r);
@@ -590,3 +590,62 @@ void MWPotential::applyForce(Vec3D position, Vec3D& acceleration){
 //	}
 //	return Vec3D();
 //}
+
+//double MWPotential::gslDensityDiskxNew(double x, void* p) {
+//	gsl_function F;
+//	F.function = &gslDensityDiskyNew;
+//	struct gslDensityConeParamsNew* fp = (struct gslDensityConeParamsNew*)p;
+//	fp->x = x;
+//	F.params = fp;
+//	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+//	double result, error;
+//	double temp = fp->z * fp->maxR / fp->maxZ;
+//	double boundary = sqrt(temp * temp - x * x);
+//	gsl_integration_qag(&F, -boundary, boundary, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+//	gsl_integration_workspace_free(iw);
+//	return result;
+//}
+//
+//double MWPotential::gslDensityDiskyNew(double y, void* p) {
+//	struct gslDensityConeParamsNew* fp = (struct gslDensityConeParamsNew*)p;
+//	Vec3D location = Vec3D(fp->x, y, fp->z);
+//	location = *(fp->transformation) * location;
+//
+//	double z2b2 = location.z * location.z + bDisk * bDisk;
+//	double sz2b2 = sqrt(z2b2);
+//	double R = gsl_hypot(location.x, location.y);
+//	double temp = gsl_pow_2(bDisk) * mMassDisk / (4 * M_PI) * (aDisk * pow(R, 2) + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(pow(R, 2) + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+//
+//	return temp;
+//}
+//
+//double MWPotential::gslDensityDiskzNew(double z, void* p) {
+//	gsl_function F;
+//	F.function = &gslDensityDiskxNew;
+//	struct gslDensityConeParamsNew* fp = (struct gslDensityConeParamsNew*)p;
+//	fp->z = z;
+//	F.params = fp;
+//	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+//	double result, error;
+//	double boundary = fp->z * fp->maxR / fp->maxZ;
+//	gsl_integration_qag(&F, -boundary, boundary, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+//	gsl_integration_workspace_free(iw);
+//	return result;
+//
+//}
+
+//double MWPotential::massDisk(Matrix* transformation, double minDist, double maxDist, double maxR) {
+//	gsl_function F;
+//	F.function = &gslDensityDiskzNew;
+//
+//	gslDensityConeParamsNew densityDiskConeParam{ transformation, maxR, maxDist, 0,0 };
+//	F.params = &densityDiskConeParam;
+//	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+//	double result, error;
+//
+//	gsl_integration_qag(&F, minDist, maxDist, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+//	gsl_integration_workspace_free(iw);
+//	return result;
+//}
+
+//struct gslDensityConeParamsNew { Matrix* transformation; double maxR; double maxZ; double z; double x; };
