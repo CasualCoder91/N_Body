@@ -7,6 +7,8 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
 from PIL.Image import core as Image
 from scipy.stats import gaussian_kde
 import scipy.spatial.distance
+from scipy import stats
+from mayavi import mlab
 
 def unit_vector(vector):
     return vector / np.linalg.norm(vector)
@@ -50,7 +52,7 @@ def select2DPositions(conn, simulationID):
     rows = np.array(cur.fetchall())
     return rows
 
-def plot_star_series(output,data):
+def plot_star_series(output,data,show=False):
     #loop timesteps
     for i in np.unique(data[:,2]):
         print(i)
@@ -59,9 +61,27 @@ def plot_star_series(output,data):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(plotData[:,3], plotData[:,4], plotData[:,5], s=1,c='red')
-        #plt.show()
+        if(show):
+            plt.show()
         plt.savefig(name+'.jpg')
         plt.close(fig)
+
+def plotDensity(output,data,show=False):
+    plotData = data[data[:,2] == 0]
+    x = plotData[:,3]
+    y = plotData[:,4]
+    z = plotData[:,5]
+    xyz = np.vstack([x,y,z])
+    kde = stats.gaussian_kde(xyz)
+    density = kde(xyz)
+
+    # Plot scatter with mayavi
+    figure = mlab.figure('DensityPlot')
+    pts = mlab.points3d(x, y, z, density, scale_mode='none', scale_factor=0.07)
+    mlab.axes()
+    mlab.show()
+
+    plt.show()
 
 #returns center of mass and max distance
 def plotDimensions(data):
@@ -218,16 +238,16 @@ def plot2DCylinder(output,data):
         plt.close(fig)
 
 def main():
-    simulationID = 1
+    simulationID = 2
     database = r"E:\Master_Thesis\VS_Project\N_Body\Output\Database\default.db"
     output = r"E:\Master_Thesis\VS_Project\N_Body\Output\NGC2244"# + str(simulationID)
     # create a database connection
     conn = createConnection(database)
     with conn:
-        data = select2DPositions(conn, simulationID)
-        plot2Dxy(output,data)
-        #data = selectAllPositions(conn, simulationID)
-        #plot_star_series(output, data)
+        #data = select2DPositions(conn, simulationID)
+        #plot2Dxy(output,data)
+        data = selectAllPositions(conn, simulationID)
+        plotDensity(output, data,True)
         #plotProjection(output, data)
 
 if __name__ == '__main__':

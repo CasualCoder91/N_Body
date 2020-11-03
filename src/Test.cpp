@@ -230,9 +230,8 @@ void Test::velocityDispersionBulgerGC(){
 }
 
 void Test::velocityBulge(){
-	MWPotential potential = MWPotential();
 	InitialConditions conditions = InitialConditions(&potential);
-	std::cout << "DispersionWang: start" << std::endl;
+	std::cout << "Test: velocityBulge() start" << std::endl;
 	double rBulge = 2e3; //pc
 	double dEarth = 8e3; //pc
 	int starID = 0;
@@ -240,21 +239,29 @@ void Test::velocityBulge(){
 	std::vector<double> velocityDispersion;
 	std::vector<double> averageVelocity;
 	std::vector<double> bValues{ -4,-6,-8 };
-	//const double degInRad = 0.0174533;
 	for (double b : bValues) {
 		for (double l = -10; l <= 10; l += 1) {
-			double x = dEarth - dEarth * cos(b * Constants::degInRad) * cos(l * Constants::degInRad);
-			double y = dEarth * cos(b * Constants::degInRad) * sin(l * Constants::degInRad);
-			double z = dEarth * sin(b * Constants::degInRad);
-			Vec3D focus = Vec3D(x, y, z);
+			Vec3D pHGP = Vec3D(dEarth, l * Constants::degInRad, b * Constants::degInRad); //position in Heliocentric Galactic Polar
+			Vec3D vHGP, pHCA, vHCA, pLSR, vLSR,pGCA,vGCA;
+			Projection::HGPtoHCA(pHGP, vHGP, pHCA, vHCA);
+			Projection::HCAtoLSR(pHCA, vHCA, pLSR, vLSR);
+			Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
+			//double x = dEarth - dEarth * cos(b * Constants::degInRad) * cos(l * Constants::degInRad);
+			//double y = dEarth * cos(b * Constants::degInRad) * sin(l * Constants::degInRad);
+			//double z = dEarth * sin(b * Constants::degInRad);
+			//Vec3D focus = Vec3D(x, y, z);
+			Vec3D focus = pGCA;
 			double r = focus.length();
 			//std::cout << "focus:" << focus.print() << " r:" << r << std::endl;
-			std::vector<Star*> stars = this->initBulgeStars(starID,focus, Vec3D(-dEarth, 0, 0), dEarth+rBulge, 100, 1);
+			std::vector<Star*> stars = this->initBulgeStars(starID,focus, Vec3D(-dEarth, 0, 27), dEarth+rBulge,0.01);
 			std::vector<double> radialVelocities;
 			for (Star* star : stars) {
-				star->position.x += dEarth; //transform to heleocentric
-				Vec3D sphericalVelocity = star->velocity.cartesianToSphericalV(star->position);
-				radialVelocities.push_back(sphericalVelocity.x);
+				Projection::GCAtoLSR(star->position, star->velocity, pLSR, vLSR);
+				Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
+				Projection::HCAtoHGP(pHCA, vHCA, pHGP,vHGP);
+				//star->position.x += dEarth; //transform to heleocentric
+				//Vec3D sphericalVelocity = star->velocity.cartesianToSphericalV(star->position);
+				radialVelocities.push_back(vHGP.x);
 			}
 			velocityDispersion.push_back(Analysis::dispersion(radialVelocities));
 			averageVelocity.push_back(Analysis::average(radialVelocities));
@@ -274,6 +281,10 @@ void Test::velocityBulge(){
 	Plot plot = Plot(absolutePath, absolutePath, true);
 	plot.plot("bulgeDispersion", { });
 	plot.plot("bulgeMeanVelocity", { });
+}
+
+void Test::velocityDisk(){
+
 }
 
 void Test::bulgeMass(){
@@ -465,12 +476,11 @@ void Test::initialConditionsInitFieldStars(){
 	InOut::write(stars, path+"fieldStars.dat");
 }
 
-std::vector<Star*> Test::initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double r){
-	std::cout << "Initializing bulge stars in tube" << std::endl;
+std::vector<Star*> Test::initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView){
+	std::cout << "Initializing bulge stars in cone" << std::endl;
 	Vec3D direction = (focus - viewPoint).normalize();
-	double angleOfViewRad = Constants::angleOfView * 0.0174533; //convert degrees in rad
-	double coneD = distance * tan(angleOfViewRad);
-	double coneR = 0.5 * coneD;
+	double angleOfViewRad = angleOfView * Constants::degInRad; //convert degrees in rad
+	double coneR = distance * tan(0.5 * angleOfViewRad);
 	Matrix transformationMatrix = Matrix::transformation(direction, viewPoint);
 	Vec3D coneBoundaryMin = transformationMatrix * Vec3D(-coneR, -coneR, 0);
 	Vec3D coneBoundaryMax = transformationMatrix * Vec3D(coneR, coneR, distance * 1.01); //1.01 to make sure boundary is not inside cone.

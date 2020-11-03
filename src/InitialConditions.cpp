@@ -268,7 +268,7 @@ double InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D co
 			//	std::cin.clear();
 			//	std::cin.get();
 			//}
-			if (accept < temp) {
+			if (accept < temp && trialPosition.length()>1) {
 				star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
 				break;
 			}
@@ -301,8 +301,11 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 	}
 
 	double theta = position.theta();
-
-	velocity += Vec3D(vR * sin(theta) + va * sin(theta + M_PI_2), vR * cos(theta) + va * cos(theta + M_PI_2), vz);
+	Vec3D sampledVelocity = Vec3D(vR * sin(theta) + va * sin(theta + M_PI_2), vR * cos(theta) + va * cos(theta + M_PI_2), vz);
+	double escapeVelocity = potential->escapeVelocity(&position);
+	if (escapeVelocity < sampledVelocity.length())
+		sampledVelocity = Vec3D::randomAngles(escapeVelocity);
+	velocity += sampledVelocity;
 }
 
 double InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){

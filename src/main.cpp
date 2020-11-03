@@ -155,28 +155,28 @@ int main() {
 			//Projection::HCAtoHGP(pHCA, vHCA, pHGP, vHGP);
 			//std::cout << "HGP: " << pHGP.print() << " | " << vHGP.print() << std::endl;
 
-			Vec3D pHGP = Vec3D(1719, 16.94 * Constants::degInRad, 0.8 * Constants::degInRad);
-			Vec3D vHGP = Vec3D();
+			//Vec3D pHGP = Vec3D(1719, 16.94 * Constants::degInRad, 0.8 * Constants::degInRad);
+			//Vec3D vHGP = Vec3D();
 
-			Vec3D pHCA, vHCA, pLSR, vLSR, pGCA, vGCA, pHEQ, vHEQ;
-			Projection::HGPtoHCA(pHGP, vHGP, pHCA, vHCA);
-			Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
-			pHEQ.y = pHEQ.y / Constants::degInRad;
-			pHEQ.z = pHEQ.z / Constants::degInRad;
-			std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
-			Projection::HCAtoLSR(pHCA, vHCA, pLSR, vLSR);
-			Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
-			std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
+			//Vec3D pHCA, vHCA, pLSR, vLSR, pGCA, vGCA, pHEQ, vHEQ;
+			//Projection::HGPtoHCA(pHGP, vHGP, pHCA, vHCA);
+			//Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
+			//pHEQ.y = pHEQ.y / Constants::degInRad;
+			//pHEQ.z = pHEQ.z / Constants::degInRad;
+			//std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
+			//Projection::HCAtoLSR(pHCA, vHCA, pLSR, vLSR);
+			//Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
+			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
 
 
-			//Test test = Test();
+			Test test = Test();
 			//Test::potentialCircularVelocity();
 			//test.transformation();
 			//Test::massDistribution(500,15000);
 			//Test::sampleFieldStarPositions(200);
 			////Test::velocityBulgeR();
 			//Test::bulgeMass();
-			//test.velocityBulge();
+			test.velocityBulge();
 			////Test::wangPositions();
 			////Test::checkBrokenPowerLaw();
 			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;

@@ -12,6 +12,7 @@
 #include "Plot.h"
 #include "WangPotential.h"
 #include "Matrix.h"
+#include "Projection.h"
 
 class Test {
 private: 
@@ -48,10 +49,12 @@ public:
 	static void initialConditionsSampleBulgeVelocity();
 	void velocityBulge();
 
+	void velocityDisk();
+
 	static void escapeVelocity();
 
 	void initialConditionsInitFieldStars();
-	std::vector<Star*> initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double dx, double r);
+	std::vector<Star*> initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView=0.005);
 
 	static void bulgeMass();
 
