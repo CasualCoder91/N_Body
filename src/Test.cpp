@@ -335,19 +335,6 @@ void Test::checkBrokenPowerLaw(){
 	InOut::write(index, starMass,"testingBrokenPowerLaw.dat");
 }
 
-void Test::wangPositions(){
-	MWPotential potential = MWPotential();
-	InitialConditions initialConditions = InitialConditions(&potential);
-	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initStars(starID, 5000);
-	initialConditions.sampleWang(stars, Vec3D(5000, 5000, 5000), Vec3D(-10000, -10000, -10000));
-	std::vector<Vec3D> positions;
-	for (Star* star : stars) {
-		positions.push_back(star->position);
-	}
-	InOut::write(positions, "wangPositions.dat");
-}
-
 void Test::transformation(){
 	MWPotential potential = MWPotential();
 	InitialConditions conditions = InitialConditions(&potential);

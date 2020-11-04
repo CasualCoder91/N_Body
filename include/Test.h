@@ -60,8 +60,6 @@ public:
 
 	static void checkBrokenPowerLaw();
 
-	static void wangPositions();
-
 	static void transformation();
 
 };

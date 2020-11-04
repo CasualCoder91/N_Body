@@ -38,6 +38,7 @@ namespace Constants {
 	extern double degInRad;
 	extern double radInArcsec;
 	extern double radmyrInArcsecyr;
+	/**@brief 1km divided by 1pc*/
 	extern double kmInpc;
 	extern int nStars;
 
