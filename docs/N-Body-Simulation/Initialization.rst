@@ -46,7 +46,7 @@ where x is a random number in range [0,1]
 Spheroid/Bulge - Chabrier (2003)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. doxygenfunction:: InitialConditions::initialMassBulge
+.. doxygenfunction:: InitialConditions::bulgeIMF
 
 .. plot:: pyplots/initialConditionsMassBulge.py
 
@@ -64,7 +64,7 @@ Present Day Mass Function (PDMF)
 Disk Stellar Mass Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. doxygenfunction:: InitialConditions::massDisk
+.. doxygenfunction:: InitialConditions::diskIMF
 
 .. plot:: pyplots/initialConditionsMassDisk.py
 
