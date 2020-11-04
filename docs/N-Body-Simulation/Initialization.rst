@@ -95,11 +95,11 @@ or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
 Positions
 ---------
 
-Individual Star positions within some volume are sampled directly from the density via rejection sampling.
+Individual Star positions within the cone of vision are sampled directly from the density via rejection sampling.
 
-.. doxygenfunction:: sampleDiskPositions
+.. doxygenfunction:: sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
 
-.. doxygenfunction:: sampleBulgePositions
+.. doxygenfunction:: sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
 
 .. plot:: pyplots/potentialPositions.py
 
