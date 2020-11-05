@@ -136,7 +136,16 @@ or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
 Positions
 ---------
 
-Individual Star positions within the cone of vision are sampled directly from the density via rejection sampling.
+Field star positions within the cone of vision are sampled directly from the density via rejection sampling.
+The cone of vision is defined by the angle of view, the view distance (height of the cone), the view point (location of the observer) and the focus (a point along the line of sight).
+
+Trial positions are drawn from continuous uniform distribution with bounds
+
+.. math::
+    |x|\leq R
+    |y|\leq \sqrt{R^{2}-x^{2}}
+    \frac{h}{R}\sqrt{x^{2}+y^{2}}\leq z\leq h
+
 
 .. doxygenfunction:: sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
 
