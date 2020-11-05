@@ -142,8 +142,8 @@ The cone of vision is defined by the angle of view, the view distance (height of
 Trial positions are drawn from continuous uniform distribution with bounds
 
 .. math::
-    |x|\leq R
-    |y|\leq \sqrt{R^{2}-x^{2}}
+    |x|\leq R \\
+    |y|\leq \sqrt{R^{2}-x^{2}} \\
     \frac{h}{R}\sqrt{x^{2}+y^{2}}\leq z\leq h
 
 
