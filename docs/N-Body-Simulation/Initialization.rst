@@ -46,6 +46,8 @@ where x is a random number in range [0,1]
 broken power law
 ^^^^^^^^^^^^^^^^
 
+As with Salpeter, inverse transform sampling is used.
+
 .. math::
     \xi(m)=m^{-\alpha(m)}
 
@@ -62,10 +64,10 @@ where :math:`\alpha(m)` is a piecewise constant function with :math:`n-1` interv
 The normalized cumulative distribution function (ncdf) can be calculated by integrating :math:`\xi(m)` over the mass interval and introducing a normalization constant :math:`A`.
 
 .. math::
-    F(m)=A\int_{m_{1}}^{m}m^{-\alpha(m)}
+    F(m)=A\int_{m_{1}}^{m}m^{-\alpha(m)}\,dm
 
 .. math::
-    A * \sum_{i=1}^{n-1} \left ( \int_{m_{i}}^{m_{i+1}}m^{-\alpha_{i}}dm \right ) = 1
+    A * \sum_{i=1}^{n-1} \left ( \int_{m_{i}}^{m_{i+1}}m^{-\alpha_{i}}\,dm \right ) = 1
 
 Inverting the ncdf leads to
 
@@ -78,9 +80,9 @@ Inverting the ncdf leads to
        \ \left \{ \left [ \sum_{i=1}^{n-2} \frac{A}{ \alpha_{i}-1}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )+y\right ]  \frac{1-\alpha_{n-1}}{A} - m_{n-1}^{1-\alpha_{n-1}} \right \}^{\frac{1}{1-\alpha_{n-1}}} &\quad\text{if }\sum_{i=1}^{n-2}\frac{A}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\leqslant y< \sum_{i=1}^{n-1}\frac{A}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )=1\\
      \end{cases}
 
-.. doxygenfunction:: InitialConditions::brokenPowerLaw
+where y is a random number in range [0,1]
 
-Sampling is done via inverse transform sampling.
+.. doxygenfunction:: InitialConditions::brokenPowerLaw
 
 Spheroid/Bulge - Chabrier (2003)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
