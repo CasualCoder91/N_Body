@@ -43,6 +43,26 @@ Inverting this function and some simplifications lead to:
 
 where x is a random number in range [0,1]
 
+broken power law
+^^^^^^^^^^^^^^^^
+
+.. math::
+    \xi(m)=m^{-\alpha(m)}
+
+where :math:`\alpha(m)` is a piecewise constant function, with an arbitrary amount of mass intervals.
+
+.. math::
+    \alpha(m)=\begin{cases}
+       \ \alpha_{1} &\quad\text{if }m_{1}\leqslant m< m_{2}\\
+       \ \alpha_{2} &\quad\text{if }m_{2}\leqslant m< m_{3}\\
+       \ ...  \\
+       \ \alpha_{n-1} &\quad\text{if }m_{n-1}\leqslant m< m_{n}\\
+     \end{cases}
+
+.. doxygenfunction:: InitialConditions::brokenPowerLaw
+
+Sampling is done via inverse transform sampling.
+
 Spheroid/Bulge - Chabrier (2003)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
