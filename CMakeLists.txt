@@ -12,10 +12,10 @@ set(CMAKE_CXX_STANDARD 17)
 # Don't add this line if you will try_compile with boost.
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SOURCES src/main.cpp src/Analysis.cpp src/InitialConditions.cpp src/InOut.cpp
-src/Integrator.cpp src/Node.cpp src/Parameters.cpp src/Star.cpp src/Vec3D.cpp src/Configuration.cpp
-src/Database.cpp src/Simulation.cpp src/Potential.cpp src/SimulationData.cpp src/Test.cpp
-src/ProgressBar.cpp src/LookupTable.cpp src/Plot.cpp)
+set(SOURCES src/Analysis.cpp src/Configuration.cpp src/Constants.cpp src/Database.cpp src/InitialConditions.cpp src/InOut.cpp
+src/Integrator.cpp src/LookupTable.cpp src/main.cpp src/Matrix.cpp src/MWPotential.cpp src/Node.cpp src/Parameters.cpp
+src/Plot.cpp src/Point src/ProgressBar.cpp src/Projection.cpp src/Simulation.cpp src/Star.cpp src/Vec3D.cpp
+src/VDBSCAN.cpp src/Test.cpp)
 
 
 include_directories(include)

@@ -16,6 +16,7 @@ Simulating stellar motions for open clusters in the Milky Way
 
    Project_Overview/Aims
    Project_Overview/Tasks
+   Project_Overview/MilkyWayClusters
    N-Body-Simulation/Initialization
    N-Body-Simulation/Database
    N-Body-Simulation/Potential

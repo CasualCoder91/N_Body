@@ -31,4 +31,5 @@ def initialConditionsMassDisk(dataPath='', showPlot=True, arguments=[]):
     if showPlot:
         plt.show()
 
-initialConditionsMassDisk()
+if __name__ == "__main__":
+    initialConditionsMassDisk()

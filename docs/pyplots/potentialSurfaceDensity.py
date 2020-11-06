@@ -18,4 +18,5 @@ def potentialSurfaceDensity(dataPath='',showPlot=True,arguments=[]):
     if showPlot:
         plt.show()
 
-potentialSurfaceDensity()
+if __name__ == "__main__":
+    potentialSurfaceDensity()

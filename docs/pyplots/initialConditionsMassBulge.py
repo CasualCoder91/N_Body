@@ -27,4 +27,6 @@ def initialConditionsMassBulge(dataPath='', showPlot=True, count = 10000):
     if showPlot:
         plt.show()
 
-initialConditionsMassBulge()
+
+if __name__ == "__main__":
+    initialConditionsMassBulge()

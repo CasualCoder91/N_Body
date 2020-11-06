@@ -34,4 +34,5 @@ def potentialPositions(dataPath='',showPlot=True,arguments=[]):
     if showPlot:
         plt.show()
 
-potentialPositions()
+if __name__ == "__main__":
+    potentialPositions()

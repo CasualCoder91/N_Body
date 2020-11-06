@@ -856,8 +856,7 @@ INPUT_ENCODING         = UTF-8
 # C comment), *.py, *.pyw, *.f90, *.f95, *.f03, *.f08, *.f, *.for, *.tcl, *.vhd,
 # *.vhdl, *.ucf, *.qsf and *.ice.
 
-FILE_PATTERNS          = *.c \
-                         *.cc \
+FILE_PATTERNS          = *.cc \
                          *.cxx \
                          *.cpp \
                          *.c++ \
@@ -889,7 +888,6 @@ FILE_PATTERNS          = *.c \
                          *.dox \
                          *.doc \
                          *.txt \
-                         *.py \
                          *.pyw \
                          *.f90 \
                          *.f95 \
@@ -938,6 +936,7 @@ EXCLUDE_PATTERNS  = */Output/*
 EXCLUDE_PATTERNS += */Data/*
 EXCLUDE_PATTERNS += */build/*
 EXCLUDE_PATTERNS += */src/*
+EXCLUDE_PATTERNS += */sqlite3.h
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the

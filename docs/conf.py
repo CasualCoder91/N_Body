@@ -34,9 +34,15 @@ extensions = [
     'breathe',
     'sphinx.ext.imgmath',
     'matplotlib.sphinxext.plot_directive',
-    'sphinxcontrib.bibtex'
+    'sphinxcontrib.bibtex',
+    'sphinxcontrib.tikz'
 ]
 needs_sphinx = '1.4.3'
+
+# tikz Configuration
+tikz_proc_suite = 'GhostScript'
+
+
 # Breathe Configuration
 breathe_projects = {
 "N_Body": "../docs/docs/doxygen/xml/",
