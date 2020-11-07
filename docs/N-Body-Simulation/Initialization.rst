@@ -173,12 +173,15 @@ The angle :math:\frac{\beta} between the vectors of interest can be calculated a
     =\textup{atan2}\left ( \frac{\textup{sin}\left ( \beta \right )}{\textup{cos}\left ( \beta \right )} \right )
     =\textup{atan2}\left ( \frac{\left \| \vec{z}\times\vec{l} \right \|}{\vec{z}\cdot \vec{l}} \right )
 
-Next, quarterion is converted to the rotation matrix like so:
+Next, quarterion is converted to the affine rotation matrix like so :cite:`Lee_1991` :
 
 .. math::
-
-
-Since the dot product of two vectors is the product of their magnitudes and the cosine of the angle between them and because
+    \textup{R}=\begin{bmatrix}
+    q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{4}+2q_{2}q_{3} & 2q_{1}q_{3}+2q_{2}q_{4} & 0\\
+    2q_{1}q_{4}+2q_{2}q_{3} & q_{1}^{2}-q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{2}+2q_{3}q_{4} & 0\\
+    -2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & 0\\
+    0  & 0 & 0 & 1
+    \end{bmatrix}
 
 .. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
 
