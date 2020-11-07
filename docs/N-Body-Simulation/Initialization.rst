@@ -146,9 +146,14 @@ Trial positions are drawn from continuous uniform distribution with bounds
     |y|\leq \sqrt{R^{2}-x^{2}} \\
     \frac{h}{R}\sqrt{x^{2}+y^{2}}\leq z\leq h
 
-.. tikz:: [>=latex',dotted,thick] \draw[->] (0,0) -- (1,1) -- (1,0)
-    -- (2,0);
-    :libs: arrows
+.. tikz:: Cone transformation
+
+    \coordinate (O) at (0,0,0);
+    \draw[->] (-6,0,0) -- (6,0,0) node[right] {$x$};
+    \draw[->] (0,-6,0) -- (0,6,0) node[right] {$y$};
+    \coneback[surface]{1.5}{2.5}{15}
+    \draw[->] (O) -- (0,0,5) node[above] {$z$};
+    \conefront[surface]{1.5}{2.5}{15}
 
 .. doxygenfunction:: sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
 

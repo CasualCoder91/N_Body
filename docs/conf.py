@@ -41,7 +41,7 @@ needs_sphinx = '1.4.3'
 
 # tikz Configuration
 tikz_proc_suite = 'GhostScript'
-
+tikz_tikzlibraries = 'tikz-3dplot'
 
 # Breathe Configuration
 breathe_projects = {
