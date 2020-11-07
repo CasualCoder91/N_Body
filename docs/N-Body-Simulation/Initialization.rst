@@ -139,23 +139,46 @@ Positions
 Field star positions within the cone of vision are sampled directly from the density via rejection sampling.
 The cone of vision is defined by the angle of view :math:`\alpha`, the view distance (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
-Trial positions are drawn from continuous uniform distribution with bounds
+Trial positions are drawn from continuous uniform distributions with bounds of an upside down cone which axis aligned with the z axis
 
 .. math::
     |x|\leq R \\
     |y|\leq \sqrt{R^{2}-x^{2}} \\
     \frac{h}{R}\sqrt{x^{2}+y^{2}}\leq z\leq h
 
-and then transformed via a transformation matrix. The transformation consists of both translation and rotation. Illustrated in the following figure.
+and then transformed via a transformation matrix.
+Per this transformation the tip of the cone is displaced from the origin to the view point :math:`vP` and its axis is rotated to align with the line of sight :math:`l`.
+Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
 
 .. figure:: Images/cone/cone.svg
     :align: center
 
     Transformation of the cone of vision
 
-The transformation matrix can be constructed as follows
+A unit quaterion :math:`\textbf{q}` is used in order to construct the rotation matrix. With rotation axis :math:`\vec{b}` and angle :math:`\beta` the quaternion is given by
+
+.. math::
+    \textbf{q} = \left ( \textup{cos}\left (\frac{\beta}{2}\right ), \vec{b}\textup{ sin}\left ( \frac{\beta}{2} \right )\right )
+
+The rotation axis :math:`\vec{b}` is the normalized cross product of the original (:math:`\vec{z}`) and target (:math:`l`) cone axis
+
+.. math::
+    \vec{b}=\frac{\vec{z}\times\vec{l}}{\left \| \vec{z}\times\vec{l} \right \|}
+
+The angle :math:\frac{\beta} between the vectors of interest can be calculated as follows
+
+.. math::
+    \beta
+    =\textup{atan2}\left ( \textup{tan}\left ( \beta \right ) \right )
+    =\textup{atan2}\left ( \frac{\textup{sin}\left ( \beta \right )}{\textup{cos}\left ( \beta \right )} \right )
+    =\textup{atan2}\left ( \frac{\left \| \vec{z}\times\vec{l} \right \|}{\vec{z}\cdot \vec{l}} \right )
+
+Next, quarterion is converted to the rotation matrix like so:
+
+.. math::
 
 
+Since the dot product of two vectors is the product of their magnitudes and the cosine of the angle between them and because
 
 .. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
 
