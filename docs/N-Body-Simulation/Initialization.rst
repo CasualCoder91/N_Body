@@ -137,7 +137,7 @@ Positions
 ---------
 
 Field star positions within the cone of vision are sampled directly from the density via rejection sampling.
-The cone of vision is defined by the angle of view, the view distance (height of the cone), the view point (location of the observer) and the focus (a point along the line of sight).
+The cone of vision is defined by the angle of view :math:`\alpha`, the view distance (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
 Trial positions are drawn from continuous uniform distribution with bounds
 
@@ -146,18 +146,20 @@ Trial positions are drawn from continuous uniform distribution with bounds
     |y|\leq \sqrt{R^{2}-x^{2}} \\
     \frac{h}{R}\sqrt{x^{2}+y^{2}}\leq z\leq h
 
-.. tikz:: Cone transformation
+and then transformed via a transformation matrix. The transformation consists of both translation and rotation. Illustrated in the following figure.
 
-    \coordinate (O) at (0,0,0);
-    \draw[->] (-6,0,0) -- (6,0,0) node[right] {$x$};
-    \draw[->] (0,-6,0) -- (0,6,0) node[right] {$y$};
-    \coneback[surface]{1.5}{2.5}{15}
-    \draw[->] (O) -- (0,0,5) node[above] {$z$};
-    \conefront[surface]{1.5}{2.5}{15}
+.. figure:: Images/cone/cone.svg
+    :align: center
 
-.. doxygenfunction:: sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
+    Transformation of the cone of vision
 
-.. doxygenfunction:: sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
+The transformation matrix can be constructed as follows
+
+
+
+.. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
+
+.. doxygenfunction:: InitialConditions::sampleBulgePositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
 
 .. plot:: pyplots/potentialPositions.py
 

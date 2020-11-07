@@ -1,0 +1,58 @@
+\documentclass[tikz,border=3.14mm]{standalone}
+\usepackage{tikz,tikz-3dplot} 
+\usetikzlibrary{3d,shadings}
+\makeatletter
+% small fix for canvas is xy plane at z % https://tex.stackexchange.com/a/48776/121799
+ \tikzoption{canvas is xy plane at z}[]{%
+    \def\tikz@plane@origin{\pgfpointxyz{0}{0}{#1}}%
+    \def\tikz@plane@x{\pgfpointxyz{1}{0}{#1}}%
+    \def\tikz@plane@y{\pgfpointxyz{0}{1}{#1}}%
+    \tikz@canvas@is@plane}
+\makeatother
+
+%% style for surfaces
+\tikzset{surface/.style={dash pattern=on 2pt off 2pt, draw=blue!70!black, fill=gray!40!white, fill opacity=.3}}
+\tikzset{surfaceR/.style={draw=blue!70!black, fill=gray!40!white, fill opacity=.6}}
+
+\newcommand{\coneback}[4][]{
+  %% start at the correct point on the circle, draw the arc, then draw to the origin of the diagram, then close the path
+  \draw[canvas is xy plane at z=#2, #1] (45-#4:#3) arc (45-#4:225+#4:#3) -- (O) --cycle;
+  }
+\newcommand{\conefront}[4][]{
+  \draw[canvas is xy plane at z=#2, #1] (45-#4:#3) arc (45-#4:-135+#4:#3) -- (O) --cycle;
+  }
+
+\begin{document}
+
+\tdplotsetmaincoords{80}{45} % - because of difference between active and passive transformations...
+\begin{tikzpicture}
+ %\draw (-5,-2.5) rectangle (1.5,5);
+ \coordinate (vP) at (4,2,1);
+ \begin{scope}[tdplot_main_coords,thick]
+  % just in case you want to get an intuition for the coordinates/projections
+    % origin
+    \coordinate (O) at (0,0,0);
+    \draw[->] (-1,0,0) -- (6,0,0) node[right] {$x$};
+    \draw[->] (0,-1,0) -- (0,6,0) node[right] {$y$};
+    \draw[->] (0,0,-0.5) -- (0,0,5) node[above] {$z$};
+    \draw[->] (O) -- (vP) node[midway,above left] {$\vec{t}$} node[below] {$vP$};
+  % top
+  \begin{scope}
+\coordinate (O) at (0,0,0);
+  \coneback[surface]{3}{2}{10}
+  \conefront[surface]{3}{2}{10}
+  \draw (0,1,1) arc(90:180:1) node[midway,below left]{$\alpha$};
+  \end{scope}
+  % left
+  \begin{scope}[rotate=-45,shift=(vP)]
+   %\draw[thick] (O) -- (0,0);
+  \coordinate (O) at (0,0,0);
+  \coordinate (focus) at (0,0,5);
+  \coneback[surfaceR]{3}{2}{10}
+    \draw[->] (O) -- (focus) node[above] {$F$};
+  \conefront[surfaceR]{3}{2}{10}
+    
+  \end{scope}
+ \end{scope}
+\end{tikzpicture}
+\end{document}
