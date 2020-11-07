@@ -165,7 +165,7 @@ The rotation axis :math:`\vec{b}` is the normalized cross product of the origina
 .. math::
     \vec{b}=\frac{\vec{z}\times\vec{l}}{\left \| \vec{z}\times\vec{l} \right \|}
 
-The angle :math:\frac{\beta} between the vectors of interest can be calculated as follows
+The angle :math:`\beta` between the vectors of interest can be calculated as follows
 
 .. math::
     \beta
