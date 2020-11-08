@@ -44,8 +44,8 @@ void InitialConditions::setBoundaries(Vec3D& min, Vec3D& max){
 	setBoundaries(min.x, max.x);
 	setBoundaries(min.y, max.y);
 	setBoundaries(min.z, max.z);
-	if (min.x == 0 && min.y == 0 && min.z == 0)
-		min.x = 1;
+	//if (min.x == 0 && min.y == 0 && min.z == 0) //remove singularity in bulge density instead
+	//	min.x = 1;
 }
 
 InitialConditions::InitialConditions(MWPotential* potential):gen((std::random_device())()){
@@ -86,7 +86,6 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, const Vec3D& f
 	double bulgeMass = potential->bulgePotential.mass(&transformationMatrix, distance, coneR);
 	std::vector<Star*> bulgeStars = bulgeIMF(bulgeMass, starID);
 	if (bulgeStars.size() > 0) {
-		//sampleWang(bulgeStars, corner, volumeElement);
 		sampleBulgePositions(bulgeStars, coneBoundaryMin, coneBoundaryMax, coneR, distance, &transformationMatrix); //test
 		sampleBulgeVelocities(bulgeStars);
 		fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
@@ -224,31 +223,41 @@ void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D cone
 	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);
 
 	std::uniform_real_distribution<> disx(-coneR, coneR);
+	std::uniform_real_distribution<> disy(-coneR, coneR);
+	std::uniform_real_distribution<> disz(0, distance);
 
 	for (Star* star : stars) {
 		while (true) {
 			double x = disx(gen);
-			double yBound = sqrt(coneR * coneR - x * x);
-			std::uniform_real_distribution<> disy(-yBound, yBound);
-			double y = disy(gen);
-			std::uniform_real_distribution<> disz(distance / coneR * sqrt(x * x + y * y), distance);
-			double z = disz(gen);
-			Vec3D trialPosition = Vec3D(x, y, z);
-			trialPosition = *transformationMatrix * trialPosition;
 
-			double accept = disaccept(gen);
-			double temp = potential->densityDisk(trialPosition.x, trialPosition.y, trialPosition.z);
-			//if (temp > acceptUpperLimit || temp < acceptLowerLimit) {
-			//	std::cerr << "Uhoh issue in sampleDiskPositions" << std::endl;
-			//	std::cerr << "coneBoundaryMin: " << coneBoundaryMin.print() << std::endl;
-			//	std::cerr << "coneBoundaryMax: " << coneBoundaryMax.print() << std::endl;
-			//	std::cerr << "trialPosition: " << trialPosition.print() << std::endl;
-			//	std::cin.clear();
-			//	std::cin.get();
-			//}
-			if (accept < temp && trialPosition.length()>1) {
-				star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
-				break;
+			//double yBound = sqrt(coneR * coneR - x * x);
+			//std::uniform_real_distribution<> disy(-yBound, yBound);
+			//double y = disy(gen);
+			//std::uniform_real_distribution<> disz(distance / coneR * sqrt(x * x + y * y), distance);
+			//double z = disz(gen);
+
+			double y = disy(gen);
+			double z = disz(gen);
+			double RTest = sqrt(x * x + y * y);
+
+			if (RTest< coneR && z>distance / coneR * RTest) {
+				Vec3D trialPosition = Vec3D(x, y, z);
+				trialPosition = *transformationMatrix * trialPosition;
+
+				double accept = disaccept(gen);
+				double temp = potential->densityDisk(trialPosition.x, trialPosition.y, trialPosition.z);
+				if (temp > acceptUpperLimit || temp < acceptLowerLimit) {
+					std::cerr << "Uhoh issue in sampleDiskPositions" << std::endl;
+					std::cerr << "coneBoundaryMin: " << coneBoundaryMin.print() << std::endl;
+					std::cerr << "coneBoundaryMax: " << coneBoundaryMax.print() << std::endl;
+					std::cerr << "trialPosition: " << trialPosition.print() << std::endl;
+					//std::cin.clear();
+					//std::cin.get();
+				}
+				if (accept < temp && trialPosition.length()>1) {
+					star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
+					break;
+				}
 			}
 		}
 	}
@@ -350,31 +359,40 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D con
 	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);
 
 	std::uniform_real_distribution<> disx(-coneR, coneR);
+	std::uniform_real_distribution<> disy(-coneR, coneR);
+	std::uniform_real_distribution<> disz(0, distance);
 
 	for (Star* star : stars) {
 		while (true) {
 			double x = disx(gen);
-			double yBound = sqrt(coneR * coneR - x * x);
-			std::uniform_real_distribution<> disy(-yBound, yBound);
-			double y = disy(gen);
-			std::uniform_real_distribution<> disz(distance / coneR * sqrt(x * x + y * y), distance);
-			double z = disz(gen);
-			Vec3D trialPosition = Vec3D(x, y, z);
-			trialPosition = *transformationMatrix * trialPosition;
 
-			double accept = disaccept(gen);
-			double temp = potential->bulgePotential.density(trialPosition.x, trialPosition.y, trialPosition.z);
-			//if (temp > acceptUpperLimit || temp < acceptLowerLimit) {
-			//	std::cout << "Uhoh issue in sampleBulgePositions" << std::endl;
-			//	std::cout << "coneBoundaryMin: " << coneBoundaryMin.print() << std::endl;
-			//	std::cout << "coneBoundaryMax: " << coneBoundaryMax.print() << std::endl;
-			//	std::cout << "trialPosition: " << trialPosition.print() << std::endl;
-			//	std::cin.clear();
-			//	std::cin.get();
-			//}
-			if (accept < temp) {
-				star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
-				break;
+			//double yBound = sqrt(coneR * coneR - x * x);
+			//std::uniform_real_distribution<> disy(-yBound, yBound);
+			//double y = disy(gen);
+			//std::uniform_real_distribution<> disz(distance / coneR * sqrt(x * x + y * y), distance);
+			//double z = disz(gen);
+
+			double y = disy(gen);
+			double z = disz(gen);
+			double RTest = sqrt(x * x + y * y);
+			if (RTest< coneR && z>distance / coneR * RTest) {
+				Vec3D trialPosition = Vec3D(x, y, z);
+				trialPosition = *transformationMatrix * trialPosition;
+
+				double accept = disaccept(gen);
+				double temp = potential->bulgePotential.density(trialPosition.x, trialPosition.y, trialPosition.z);
+				if (temp > acceptUpperLimit || temp < acceptLowerLimit) {
+					std::cout << "Uhoh issue in sampleBulgePositions" << std::endl;
+					std::cout << "coneBoundaryMin: " << coneBoundaryMin.print() << std::endl;
+					std::cout << "coneBoundaryMax: " << coneBoundaryMax.print() << std::endl;
+					std::cout << "trialPosition: " << trialPosition.print() << std::endl;
+					//	std::cin.clear();
+					//	std::cin.get();
+				}
+				if (accept < temp) {
+					star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
+					break;
+				}
 			}
 		}
 	}

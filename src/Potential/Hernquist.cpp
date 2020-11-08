@@ -12,7 +12,7 @@ Hernquist::Hernquist(double mass, double scaleLength){
 }
 
 double Hernquist::density(double r){
-	if (r == 0) {
+	if (r < 0.1) {
 		r = 0.1;
 	}
 	return mMass / (2 * M_PI) * mScaleLength / (r * gsl_pow_3(r + mScaleLength));

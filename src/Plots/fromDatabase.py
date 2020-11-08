@@ -9,6 +9,30 @@ from scipy.stats import gaussian_kde
 import scipy.spatial.distance
 from scipy import stats
 from mayavi import mlab
+import matplotlib.cm as cm
+
+# Functions from @Mateen Ulhaq and @karlo
+def set_axes_equal(ax: plt.Axes):
+    """Set 3D plot axes to equal scale.
+
+    Make axes of 3D plot have equal scale so that spheres appear as
+    spheres and cubes as cubes.  Required since `ax.axis('equal')`
+    and `ax.set_aspect('equal')` don't work on 3D.
+    """
+    limits = np.array([
+        ax.get_xlim3d(),
+        ax.get_ylim3d(),
+        ax.get_zlim3d(),
+    ])
+    origin = np.mean(limits, axis=1)
+    radius = 0.5 * np.max(np.abs(limits[:, 1] - limits[:, 0]))
+    _set_axes_radius(ax, origin, radius)
+
+def _set_axes_radius(ax, origin, radius):
+    x, y, z = origin
+    ax.set_xlim3d([x - radius, x + radius])
+    ax.set_ylim3d([y - radius, y + radius])
+    ax.set_zlim3d([z - radius, z + radius])
 
 def unit_vector(vector):
     return vector / np.linalg.norm(vector)
@@ -71,17 +95,32 @@ def plotDensity(output,data,show=False):
     x = plotData[:,3]
     y = plotData[:,4]
     z = plotData[:,5]
+
     xyz = np.vstack([x,y,z])
     kde = stats.gaussian_kde(xyz)
     density = kde(xyz)
 
-    # Plot scatter with mayavi
-    figure = mlab.figure('DensityPlot')
-    pts = mlab.points3d(x, y, z, density, scale_mode='none', scale_factor=0.07)
-    mlab.axes()
-    mlab.show()
+    idx = density.argsort()
+    x, y, z, density = x[idx], y[idx], z[idx], density[idx]
 
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.set_box_aspect([1,1,1])
+    cax = ax.scatter(x, y, z, c=density, s=0.1, cmap=cm.hot)
+    fig.colorbar(cax)
+    # ax.set_proj_type('ortho') # OPTIONAL - default is perspective (shown in image above)
+    set_axes_equal(ax) # IMPORTANT - this is also required
     plt.show()
+
+    # Plot scatter with mayavi
+    #figure = mlab.figure('DensityPlot')
+    #pts = mlab.points3d(x, y, z, density, scale_mode='none', scale_factor=0.01)
+    #print(pts)
+    #mlab.axes()
+    #mlab.show()
+    #imgmap = mlab.screenshot(mode='rgba', antialiased=True)
+    #plt.axis('off')
+    #plt.imsave(arr=imgmap, fname='rbf_concept_3d.pdf')
 
 #returns center of mass and max distance
 def plotDimensions(data):
@@ -238,7 +277,7 @@ def plot2DCylinder(output,data):
         plt.close(fig)
 
 def main():
-    simulationID = 2
+    simulationID = 5
     database = r"E:\Master_Thesis\VS_Project\N_Body\Output\Database\default.db"
     output = r"E:\Master_Thesis\VS_Project\N_Body\Output\NGC2244"# + str(simulationID)
     # create a database connection
