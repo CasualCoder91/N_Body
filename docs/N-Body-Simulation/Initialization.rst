@@ -155,6 +155,8 @@ Consequently, the transformation consists of both translation and rotation illus
 
     Transformation of the cone of vision
 
+Rotation and translation are both isometric transformations meaning area and volume of the cone are preserved :cite:`Gentle_2007` (p.175).
+
 A unit quaterion :math:`\textbf{q}` is used in order to construct the rotation matrix. With rotation axis :math:`\vec{b}` and angle :math:`\beta` the quaternion is given by
 
 .. math::
@@ -173,15 +175,37 @@ The angle :math:`\beta` between the vectors of interest can be calculated as fol
     =\textup{atan2}\left ( \frac{\textup{sin}\left ( \beta \right )}{\textup{cos}\left ( \beta \right )} \right )
     =\textup{atan2}\left ( \frac{\left \| \vec{z}\times\vec{l} \right \|}{\vec{z}\cdot \vec{l}} \right )
 
-Next, quarterion is converted to the affine rotation matrix like so :cite:`Lee_1991` :
+Next, quarterion is converted to the rotation matrix :cite:`Lee_1991`. Using the homogeneous notation :cite:`Vince_2006` (p. 57) the matrix becomes:
 
 .. math::
-    \textup{R}=\begin{bmatrix}
+    \mathbf{R}=\begin{bmatrix}
     q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{4}+2q_{2}q_{3} & 2q_{1}q_{3}+2q_{2}q_{4} & 0\\
     2q_{1}q_{4}+2q_{2}q_{3} & q_{1}^{2}-q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{2}+2q_{3}q_{4} & 0\\
     -2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & 0\\
     0  & 0 & 0 & 1
     \end{bmatrix}
+
+The translation matrix for the translation vector :math:`\vec{t}` reads :cite:`Vince_2006` (p. 66):
+
+.. math::
+    \mathbf{T_{translation}}=\begin{bmatrix}
+    1 & 0 & 0 & t_{x}\\
+    0 & 1 & 0 & t_{y}\\
+    0 & 0 & 1 & t_{z}\\
+    0  & 0 & 0 & 1
+    \end{bmatrix}
+
+The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}` and :math:`\mathbf{T_{translation}}`
+
+.. math::
+    \mathbf{T}=\begin{bmatrix}
+    q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{4}+2q_{2}q_{3} & 2q_{1}q_{3}+2q_{2}q_{4} & t_{x}\\
+    2q_{1}q_{4}+2q_{2}q_{3} & q_{1}^{2}-q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{2}+2q_{3}q_{4} & t_{y}\\
+    -2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & t_{z}\\
+    0  & 0 & 0 & 1
+    \end{bmatrix}
+
+
 
 .. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
 
