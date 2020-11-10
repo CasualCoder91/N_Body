@@ -43,13 +43,14 @@ Inverting this function and some simplifications lead to:
 
 where x is a random number in range [0,1]
 
-broken power law
+broken power law (wip)
 ^^^^^^^^^^^^^^^^
 
-As with Salpeter, inverse transform sampling is used.
-
 .. math::
-    \xi(m)=m^{-\alpha(m)}
+    \xi(m)\approx m^{-\alpha(m)}
+
+One example for a broken power law IMF can be found here `:cite:`Kroupa:2001jy`
+As with Salpeter, inverse transform sampling is used.
 
 where :math:`\alpha(m)` is a piecewise constant function with :math:`n-1` intervals.
 
