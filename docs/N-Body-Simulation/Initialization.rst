@@ -65,7 +65,7 @@ normalization constant :math:`A` and :math:`k_{i}` defined as
     k_{i} = k_{i-1}m_{i}^{\alpha_{i}-\alpha_{i-1}}
 
 This IMF has the benefit of being highly adaptable. It can be used to approximate any other IMF.
-The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003`
+The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003` (multi part power law), :cite:`Kroupa_2003` (single power law)
 
 As with Salpeter, inverse transform sampling is used.
 
