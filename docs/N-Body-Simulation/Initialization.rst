@@ -43,34 +43,43 @@ Inverting this function and some simplifications lead to:
 
 where x is a random number in range [0,1]
 
-broken power law (wip)
+Broken Power Law (BPL)
 ^^^^^^^^^^^^^^^^
 
-.. math::
-    \xi(m)\approx m^{-\alpha(m)}
+The following is a generalization of the equation given by :cite:`Kroupa:2001jy` for :math:`n-1` intervals.
 
-One example for a broken power law IMF can be found here `:cite:`Kroupa:2001jy`
+.. math::
+    \xi(m)=A
+    \begin{cases}
+        \ k_{1}m^{-\alpha_{1}} &\quad\text{if }m_{1}\leqslant m< m_{2}\\
+        \ k_{2}m^{-\alpha_{2}} &\quad\text{if }m_{2}\leqslant m< m_{3}\\
+        \ ...  \\
+        \ k_{n-1}m^{-\alpha_{n-1}} &\quad\text{if }m_{n-1}\leqslant m< m_{n}\\
+    \end{cases}
+
+normalization constant :math:`A` and :math:`k_{i}` defined as
+
+.. math::
+    k_{1} = m_{2}^{\alpha_{1}} \\
+    k_{2} = m_{2}^{\alpha_{2}} \\
+    k_{i} = k_{i-1}m_{i}^{\alpha_{i}-\alpha_{i-1}}
+
+This IMF has the benefit of being highly adaptable. It can be used to approximate any other IMF.
+The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003`
+
 As with Salpeter, inverse transform sampling is used.
 
-where :math:`\alpha(m)` is a piecewise constant function with :math:`n-1` intervals.
-
-.. math::
-    \alpha(m)=\begin{cases}
-       \ \alpha_{1} &\quad\text{if }m_{1}\leqslant m< m_{2}\\
-       \ \alpha_{2} &\quad\text{if }m_{2}\leqslant m< m_{3}\\
-       \ ...  \\
-       \ \alpha_{n-1} &\quad\text{if }m_{n-1}\leqslant m< m_{n}\\
-     \end{cases}
-
-The normalized cumulative distribution function (ncdf) can be calculated by integrating :math:`\xi(m)` over the mass interval and introducing a normalization constant :math:`A`.
+The normalized cumulative distribution function (NCFD) can be calculated by integrating :math:`\xi(m)` over the mass interval.
 
 .. math::
     F(m)=A\int_{m_{1}}^{m}m^{-\alpha(m)}\,dm
 
+Where A is defined by the normalization constraint:
+
 .. math::
     A * \sum_{i=1}^{n-1} \left ( \int_{m_{i}}^{m_{i+1}}m^{-\alpha_{i}}\,dm \right ) = 1
 
-Inverting the ncdf leads to
+Inverting the NCFD leads to
 
 .. math::
     F^{-1}(y)=
