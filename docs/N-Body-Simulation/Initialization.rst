@@ -44,7 +44,7 @@ Inverting this function and some simplifications lead to:
 where x is a random number in range [0,1]
 
 Broken Power Law (BPL)
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 The following is a generalization of the equation given by :cite:`Kroupa:2001jy` for :math:`n-1` intervals.
 
@@ -57,27 +57,27 @@ The following is a generalization of the equation given by :cite:`Kroupa:2001jy`
         \ k_{n-1}m^{-\alpha_{n-1}} &\quad\text{if }m_{n-1}\leqslant m< m_{n}\\
     \end{cases}
 
-normalization constant :math:`A` and :math:`k_{i}` defined as
+where :math:`A` is a normalization constant and :math:`k_{i}` is defined as
 
 .. math::
     k_{1} = m_{2}^{\alpha_{1}} \\
     k_{2} = m_{2}^{\alpha_{2}} \\
     k_{i} = k_{i-1}m_{i}^{\alpha_{i}-\alpha_{i-1}}
 
-This IMF has the benefit of being highly adaptable. It can be used to approximate any other IMF.
+This IMF has the benefit of being highly adaptable. It can be utilized to approximate any other IMF.
 The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003` (multi part power law), :cite:`Kroupa_2003` (single power law)
 
-As with Salpeter, inverse transform sampling is used.
+As with Salpeter, random samples are drawn with inverse transform sampling.
 
 The normalized cumulative distribution function (NCFD) can be calculated by integrating :math:`\xi(m)` over the mass interval.
 
 .. math::
-    F(m)=A\int_{m_{1}}^{m}m^{-\alpha(m)}\,dm
+    F(m)=\int_{m_{1}}^{m}\xi(m)\,dm
 
 Where A is defined by the normalization constraint:
 
 .. math::
-    A * \sum_{i=1}^{n-1} \left ( \int_{m_{i}}^{m_{i+1}}m^{-\alpha_{i}}\,dm \right ) = 1
+    A * \sum_{i=1}^{n-1} \left ( k_{i}\int_{m_{i}}^{m_{i+1}}m^{-\alpha_{i}}\,dm \right ) = 1
 
 Inverting the NCFD leads to
 
