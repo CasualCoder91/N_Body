@@ -84,10 +84,10 @@ Inverting the NCFD leads to
 .. math::
     F^{-1}(y)=
      \begin{cases}
-       \ \left [ \frac{(1-\alpha_{1})y}{A} +m_{1}^{1-\alpha_{1}}\right ]^{\frac{1}{1-\alpha_{1}}} &\quad\text{if }0\leqslant y< \frac{A}{1-\alpha_{1}}\left ( m_{2}^{1-\alpha_{1}}-m_{1}^{1-\alpha_{1}} \right )\\
-       \ \left \{ \left [\frac{A}{ \alpha_{1}-1}\left ( m_{2}^{1-\alpha_{1}}-m_{1}^{1-\alpha_{1}}+y \right )\right ]  \frac{1-\alpha_{2}}{A} - m_{2}^{1-\alpha_{1}} \right \}^{\frac{1}{1-\alpha_{2}}} &\quad\text{if }\frac{A}{1-\alpha_{1}}\left ( m_{2}^{1-\alpha_{1}}-m_{1}^{1-\alpha_{1}} \right )\leqslant y< \sum_{i=1}^{2}\frac{A}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\\
+       \ \left [ \frac{(1-\alpha_{1})y}{A*k_{1}} +m_{1}^{1-\alpha_{1}}\right ]^{\frac{1}{1-\alpha_{1}}} &\quad\text{if }0\leqslant y< \frac{A*k_{1}}{1-\alpha_{1}}\left ( m_{2}^{1-\alpha_{1}}-m_{1}^{1-\alpha_{1}} \right )\\
+       \ \left \{ \left [y-\frac{A*k_{1}}{1-\alpha_{1}}\left ( m_{2}^{1-\alpha_{1}}-m_{1}^{1-\alpha_{1}} \right )\right ]  \frac{1-\alpha_{2}}{A*k_{2}} + m_{2}^{1-\alpha_{2}} \right \}^{\frac{1}{1-\alpha_{2}}} &\quad\text{if }\frac{A*k_{1}}{1-\alpha_{1}}\left ( m_{2}^{1-\alpha_{1}}-m_{1}^{1-\alpha_{1}} \right )\leqslant y< \sum_{i=1}^{2}\frac{A*k_{i}}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\\
        \ ...  \\
-       \ \left \{ \left [ \sum_{i=1}^{n-2} \frac{A}{ \alpha_{i}-1}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )+y\right ]  \frac{1-\alpha_{n-1}}{A} - m_{n-1}^{1-\alpha_{n-1}} \right \}^{\frac{1}{1-\alpha_{n-1}}} &\quad\text{if }\sum_{i=1}^{n-2}\frac{A}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\leqslant y< \sum_{i=1}^{n-1}\frac{A}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )=1\\
+       \ \left \{ \left [ \sum_{i=1}^{n-2} y- \frac{A*k_{i}}{1- \alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\right ]  \frac{1-\alpha_{n-1}}{A*k_{i}} + m_{n-1}^{1-\alpha_{n-1}} \right \}^{\frac{1}{1-\alpha_{n-1}}} &\quad\text{if }\sum_{i=1}^{n-2}\frac{A*k_{i}}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\leqslant y< \sum_{i=1}^{n-1}\frac{A*k_{i}}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )=1\\
      \end{cases}
 
 where y is a random number in range [0,1]
