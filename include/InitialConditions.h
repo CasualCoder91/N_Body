@@ -135,7 +135,7 @@ public:
 	@param [in,out] stars
 	@param offset [pc]
 	*/
-	void offsetCluster(std::vector<Star*>& stars, static Vec3D& offset) const;
+	void offsetCluster(std::vector<Star*>& stars, const Vec3D& offset) const;
 
 private:
 	friend class Test;

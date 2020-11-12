@@ -319,12 +319,11 @@ void Test::bulgeMass(){
 }
 
 void Test::checkBrokenPowerLaw(){
-	MWPotential potential = MWPotential();
-	InitialConditions initialConditions = InitialConditions(&potential);
-	int starID = 0;
-	std::vector<Star*> stars = initialConditions.initStars(starID, Constants::nStars);
+	std::cout << "Test: brokenPowerLaw() start" << std::endl;
+	int starID = 0, nStars = 10000;
+	std::vector<Star*> stars = this->initialConditions.initStars(starID, nStars);
 	std::vector<double> massLimits = { 0.01,0.08,0.5,1,125 };
-	std::vector<double> exponents = { 0.5,0.5,0.5,2.3 };
+	std::vector<double> exponents = { 0.3,2.0,0.3,2.3 };
 	initialConditions.brokenPowerLaw(stars, massLimits, exponents);
 	std::vector<double> starMass;
 	std::vector<double> index;
@@ -332,7 +331,11 @@ void Test::checkBrokenPowerLaw(){
 		starMass.push_back(stars[i]->mass);
 		index.push_back(i);
 	}
-	InOut::write(index, starMass,"testingBrokenPowerLaw.dat");
+	InOut::write(index, starMass, path + "brokenPowerLaw"+std::to_string(nStars)+".dat");
+	std::cout << " .. plotting data" << std::endl;
+	Plot plot = Plot(path, path, true);
+	plot.plot("initialConditionsBrokenPowerLaw", { std::to_string(nStars)});
+	std::cout << " .. done" << std::endl;
 }
 
 void Test::transformation(){

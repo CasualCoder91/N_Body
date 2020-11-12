@@ -170,13 +170,14 @@ int main() {
 
 
 			Test test = Test();
+			test.checkBrokenPowerLaw();
 			//Test::potentialCircularVelocity();
 			//test.transformation();
 			//Test::massDistribution(500,15000);
 			//Test::sampleFieldStarPositions(200);
 			////Test::velocityBulgeR();
 			//Test::bulgeMass();
-			test.velocityBulge();
+			//test.velocityBulge();
 			////Test::wangPositions();
 			////Test::checkBrokenPowerLaw();
 			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;

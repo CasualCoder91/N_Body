@@ -58,7 +58,7 @@ public:
 
 	static void bulgeMass();
 
-	static void checkBrokenPowerLaw();
+	void checkBrokenPowerLaw();
 
 	static void transformation();
 

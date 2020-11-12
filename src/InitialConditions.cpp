@@ -136,7 +136,7 @@ double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double 
 }
 
 double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, const std::vector<double>& massLimits, const std::vector<double>& exponents){
-	size_t nIntervals = massLimits.size()-1;
+	size_t nIntervals = massLimits.size() - 1;
 	double totalMass = 0;
 	for (double exponent : exponents) {
 		if (exponent == 1) {
@@ -144,29 +144,34 @@ double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, const std::v
 			return -1;
 		}
 	}
+	std::vector<double> continuity(nIntervals); //k[i]
+	continuity[0] = pow(massLimits[1], exponents[0]);
+	continuity[1] = pow(massLimits[1], exponents[1]);
+	for (size_t i = 2; i < nIntervals; ++i) {
+		continuity[i] = continuity[i - 1] * pow(massLimits[i], exponents[i] - exponents[i - 1]);
+	}
 
-	double constant = 0;
+	std::vector<double> exponentTemp(nIntervals); // 1 - alpha 
+	double constant = 0; // normalization constant A
 	for (size_t i = 0; i < nIntervals; i++) {
-		double exponentTemp = -exponents[i] + 1;
-		constant += (pow(massLimits[i + 1],exponentTemp) - pow(massLimits[i],exponentTemp)) / exponentTemp;
+		exponentTemp[i] = 1-exponents[i];
+		constant += (continuity[i]*(pow(massLimits[i + 1], exponentTemp[i]) - pow(massLimits[i], exponentTemp[i]))) / exponentTemp[i];
 	}
 	constant = 1 / constant;
 
-	std::vector<double>inverseTemps = {0};
+	std::vector<double>inverseTemps = { 0 };
 	double inverseTemp = 0;
-	for (size_t i = 0; i < nIntervals;i++) {
-		double exponentTemp = -exponents[i] + 1;
-		inverseTemp -= constant/exponentTemp * (pow(massLimits[i + 1], exponentTemp) - pow(massLimits[i], exponentTemp));
+	for (size_t i = 0; i < nIntervals; i++) {
+		inverseTemp += constant* continuity[i] / exponentTemp[i] * (pow(massLimits[i + 1], exponentTemp[i]) - pow(massLimits[i], exponentTemp[i]));
 		inverseTemps.push_back(inverseTemp);
 	}
 
-	std::uniform_real_distribution<> dis(0.0, 1.0);//avoid close to singularity	
+	std::uniform_real_distribution<> dis(0.0, 1.0);
 	for (Star* star : stars) {
-		double sample = dis(gen);
-		for (int i = 0; i < nIntervals; i++) {
-			if (sample < -inverseTemps[i+1]) {
-				double exponentTemp = -exponents[i] + 1;
-				star->mass = pow((inverseTemps[i] + sample) * exponentTemp / constant + pow(massLimits[i], exponentTemp), 1 / exponentTemp);
+		double sample = dis(gen); // sample = y
+		for (size_t i = 0; i < nIntervals; i++) {
+			if (sample < inverseTemps[i + 1]) {
+				star->mass = pow((sample - inverseTemps[i]) * exponentTemp[i] / (constant * continuity[i]) + pow(massLimits[i], exponentTemp[i]), 1 / exponentTemp[i]);
 				totalMass += star->mass;
 				break;
 			}
@@ -567,7 +572,7 @@ void InitialConditions::plummerSphere(std::vector<Star*>& stars, double totalMas
 	}
 }
 
-void InitialConditions::offsetCluster(std::vector<Star*>& stars,static Vec3D& offset) const{
+void InitialConditions::offsetCluster(std::vector<Star*>& stars, const Vec3D& offset) const{
 	for (Star* star : stars) {
 		star->position += offset;
 	}
@@ -877,4 +882,44 @@ void InitialConditions::plummerVelocity(Star* star, double structuralLength, dou
 //		}
 //	}
 //	return;
+//}
+
+//double InitialConditions::brokenPowerLawOld(std::vector<Star*>& stars, const std::vector<double>& massLimits, const std::vector<double>& exponents) {
+//	size_t nIntervals = massLimits.size() - 1;
+//	double totalMass = 0;
+//	for (double exponent : exponents) {
+//		if (exponent == 1) {
+//			std::cout << "Exponentvalue 1 in brokenPowerLaw not possible" << std::endl;
+//			return -1;
+//		}
+//	}
+//
+//	double constant = 0;
+//	for (size_t i = 0; i < nIntervals; i++) {
+//		double exponentTemp = -exponents[i] + 1;
+//		constant += (pow(massLimits[i + 1], exponentTemp) - pow(massLimits[i], exponentTemp)) / exponentTemp;
+//	}
+//	constant = 1 / constant;
+//
+//	std::vector<double>inverseTemps = { 0 };
+//	double inverseTemp = 0;
+//	for (size_t i = 0; i < nIntervals; i++) {
+//		double exponentTemp = -exponents[i] + 1;
+//		inverseTemp -= constant / exponentTemp * (pow(massLimits[i + 1], exponentTemp) - pow(massLimits[i], exponentTemp));
+//		inverseTemps.push_back(inverseTemp);
+//	}
+//
+//	std::uniform_real_distribution<> dis(0.0, 1.0);//avoid close to singularity	
+//	for (Star* star : stars) {
+//		double sample = dis(gen);
+//		for (int i = 0; i < nIntervals; i++) {
+//			if (sample < -inverseTemps[i + 1]) {
+//				double exponentTemp = -exponents[i] + 1;
+//				star->mass = pow((inverseTemps[i] + sample) * exponentTemp / constant + pow(massLimits[i], exponentTemp), 1 / exponentTemp);
+//				totalMass += star->mass;
+//				break;
+//			}
+//		}
+//	}
+//	return totalMass;
 //}
