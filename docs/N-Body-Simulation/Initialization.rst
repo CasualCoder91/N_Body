@@ -67,7 +67,7 @@ where :math:`A` is a normalization constant and :math:`k_{i}` is defined as
 This IMF has the benefit of being highly adaptable. It can be utilized to approximate any other IMF.
 The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003` (multi part power law), :cite:`Kroupa_2003` (single power law)
 
-As with Salpeter, random samples are drawn with inverse transform sampling.
+As in the case of Salpeter, random samples are drawn with inverse transform sampling.
 
 The normalized cumulative distribution function (NCFD) can be calculated by integrating :math:`\xi(m)` over the mass interval.
 
