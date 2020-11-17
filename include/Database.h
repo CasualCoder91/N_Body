@@ -80,6 +80,8 @@ public:
 
 	void selectSimulation(int ID);
 
+	Analysis selectAnalysis(int ID);
+
 	bool printSimulations();
 
 	/** @brief returns all velocities at the given \p timestep */

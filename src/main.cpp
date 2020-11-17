@@ -87,24 +87,26 @@ int main() {
 			}
 			else if(selection==2) {
 				std::cout << "Running analysis on selected simulation" << std::endl;
-				Analysis analysis = Analysis();
+				Analysis analysis = db.selectAnalysis(simulationID);
 				int analysisID = db.insertAnalysis(simulationID, analysis);
-				/*std::vector<int> timeSteps = db.selectTimesteps();
-				for (int timeStep : timeSteps) {
-					std::vector<Star*> stars = db.selectStars(selection, timeStep);
-					if (analysis.getbEnergy()) {
-						db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
-					}
-					if (analysis.getbAverageVelocity()) {
-						std::vector<Vec3D*> velocities = {};
-						for (Star* star : stars) {
-							velocities.push_back(&star->velocity);
+				if (analysis.bTimestepAnalysis()) {
+					std::vector<int> timeSteps = db.selectTimesteps();
+					for (int timeStep : timeSteps) {
+						std::vector<Star*> stars = db.selectStars(selection, timeStep);
+						if (!analysis.bEnergyDone) {
+							db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
 						}
-						double test = analysis.average(velocities);
-						db.insertAnalysisdtVelocity(analysisID, timeStep, analysis.average(velocities));
+						if (!analysis.bVelocityDone) {
+							std::vector<Vec3D*> velocities = {};
+							for (Star* star : stars) {
+								velocities.push_back(&star->velocity);
+							}
+							double test = analysis.average(velocities);
+							db.insertAnalysisdtVelocity(analysisID, timeStep, analysis.average(velocities));
+						}
 					}
 				}
-				std::cout << "Energy analysis done" << std::endl;*/
+				std::cout << "Energy analysis done" << std::endl;
 				std::cout << "Running cluster analysis ..." << std::endl;
 				analysis.cluster(db.selectPoints(simulationID,0,2));
 				std::cout << "Cluster analysis done" << std::endl;
@@ -117,6 +119,7 @@ int main() {
 		}
 		else if (selection == 2) {
 			simulationID = db.insertSimulation();
+			db.insertAnalysis(simulationID, Analysis(false, false, false));
 			Simulation simulation = Simulation(simulationID, &db);
 			std::cout << "New simulation created. ID = " << simulationID << std::endl;
 			std::cout << "Starting simulation" << std::endl;

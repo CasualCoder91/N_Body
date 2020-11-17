@@ -120,9 +120,9 @@ void Database::setup(){
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS analysis("
 		"id_simulation INTEGER PRIMARY KEY,"
-		"doEnergy INTEGER NOT NULL,"
-		"doVelocity INTEGER NOT NULL,"
-		"doVelocity2D INTEGER NOT NULL,"
+		"energyDone INTEGER NOT NULL,"
+		"velocityDone INTEGER NOT NULL,"
+		"velocityDone2D INTEGER NOT NULL,"
 		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
 			"ON DELETE CASCADE "
@@ -130,7 +130,8 @@ void Database::setup(){
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS timeStepAnalysis("
 		"dt INTEGER NOT NULL,"
-		"averageVelocity REAL,"
+		"averageVelocity3D REAL,"
+		"averageVelocity2D REAL,"
 		"kinE REAL,"
 		"potE REAL,"
 		"totE REAL,"
@@ -254,7 +255,7 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 }
 
 int Database::insertAnalysis(int simulationID, Analysis analysis){
-	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,doEnergy,doVelocity,doVelocity2D) VALUES " 
+	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,energyDone,velocityDone,velocityDone2D) VALUES " 
 		"((select id_simulation from analysis where id_simulation = ?1),?2,?3,?4)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
@@ -268,9 +269,10 @@ int Database::insertAnalysis(int simulationID, Analysis analysis){
 }
 
 void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, double potE){
-	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,averageVelocity,kinE,potE,totE,id_analysis) VALUES "
+	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,averageVelocity3D,averageVelocity2D,kinE,potE,totE,id_analysis) VALUES "
 		"(?1,"
-		"(select averageVelocity from timeStepAnalysis where dt = ?1),"
+		"(select averageVelocity3D from timeStepAnalysis where dt = ?1),"
+		"(select averageVelocity2D from timeStepAnalysis where dt = ?1),"
 		"?2,"
 		"?3,"
 		"?4,"
@@ -287,9 +289,10 @@ void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, doubl
 }
 
 void Database::insertAnalysisdtVelocity(int analysisID, int dt, double velocity){
-	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,averageVelocity,kinE,potE,totE,id_analysis) VALUES "
+	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,averageVelocity3D,averageVelocity2D,kinE,potE,totE,id_analysis) VALUES "
 		"(?1,"
 		"?2,"
+		"(select averageVelocity2D from timeStepAnalysis where dt = ?1),"
 		"(select kinE from timeStepAnalysis where dt = ?1),"
 		"(select potE from timeStepAnalysis where dt = ?1),"
 		"(select totE from timeStepAnalysis where dt = ?1),"
@@ -531,6 +534,28 @@ void Database::selectSimulation(int ID){
 	}
 	sqlite3_finalize(stmt);
 	return;
+}
+
+Analysis Database::selectAnalysis(int ID){
+	if (!this->isOpen)
+		this->open();
+
+	std::string sql = "SELECT energyDone, velocityDone, velocityDone2D FROM analysis "
+					  " Where id_simulation = " + std::to_string(ID);
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &stmt, nullptr);
+
+	bool bEnergyDone = false;
+	bool bVelocityDone = false;
+	bool bVelocity2DDone = false;
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		bEnergyDone = sqlite3_column_int(stmt, 0);
+		bVelocityDone = sqlite3_column_int(stmt, 1);
+		bVelocity2DDone = sqlite3_column_int(stmt, 2);
+	}
+	sqlite3_finalize(stmt);
+
+	return Analysis(bEnergyDone, bVelocityDone, bVelocity2DDone);
 }
 
 bool Database::printSimulations(){

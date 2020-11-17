@@ -95,7 +95,7 @@ where y is a random number in range [0,1]
 .. doxygenfunction:: InitialConditions::brokenPowerLaw
 
 Spheroid/Bulge - Chabrier (2003)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. doxygenfunction:: InitialConditions::bulgeIMF
 
@@ -168,9 +168,9 @@ The conditions for acceptance are:
 
 This method ensures that the positions are indeed homogeneously distributed which is essential for the second step.
 
-The second step consist of rejection sampling the density distribution.
+The second step consists of rejection sampling the density distribution.
 The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
-If this test variable is smaller than the density at the trial position generated in step one the trial position is accepted and rejected otherwise.
+If this test variable is smaller than the density at the trial position generated in step two, the trial position is accepted and rejected otherwise.
 
 Then the accepted position is transformed via a transformation matrix.
 Per this transformation the tip of the cone is displaced from the origin to the view point :math:`vP` and its axis is rotated to align with the line of sight :math:`l`.
@@ -231,13 +231,20 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
     0  & 0 & 0 & 1
     \end{bmatrix}
 
-
-
 .. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
 
 .. doxygenfunction:: InitialConditions::sampleBulgePositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
 
 .. plot:: pyplots/potentialPositions.py
+
+Velocities
+----------
+
+Disk
+^^^^
+
+Bulge
+^^^^^
 
 
 .. bibliography:: bibtex.bib

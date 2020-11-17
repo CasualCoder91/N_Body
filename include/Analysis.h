@@ -25,9 +25,14 @@ private:
 
     static std::string path;
 
-public:
+public: //variables
+    bool bEnergyDone;
+    bool bVelocityDone;
+    bool bVelocity2DDone;
 
-    Analysis();
+public: //methods
+
+    Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone);
 
     std::vector<double> totE;
     std::vector<double> potE;
@@ -55,11 +60,8 @@ public:
      */
 	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator);
 
-    bool getbEnergy();
+    bool bTimestepAnalysis();
 
-    bool getbAverageVelocity();
-
-    bool getbAverage2DVelocity();
     /**
      @static
      @brief calculates the average vector of the given \p vectors
@@ -67,6 +69,11 @@ public:
     static double average(std::vector<Vec3D*>& vectors);
 
     static double average(std::vector<double>& values);
+    /**
+     @static
+     @brief calculates the average velocity of the given \p points
+     */
+    static double average(std::vector<Point>& points);
 
     /**
      @static
@@ -75,6 +82,11 @@ public:
     static double dispersion(std::vector<Vec3D*>& vectors);
 
     static double dispersion(std::vector<double>& values);
+    /**
+     @static
+     @brief calculates the velocity dispersion of the given \p points
+     */
+    static double dispersion(std::vector<Point>& points, double average = 0);
 
     /** @brief saves the calculated energy values for each timestep to .dat Files (TotalEnergy.dat, KinetikEnergy.dat,PotentialEnergy.dat)*/
     void write();

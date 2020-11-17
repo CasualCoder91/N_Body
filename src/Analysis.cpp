@@ -2,7 +2,11 @@
 
 std::string Analysis::path = "src/Test/";
 
-Analysis::Analysis() {}
+Analysis::Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone){
+	this->bEnergyDone = bEnergyDone;
+	this->bVelocityDone = bVelocityDone;
+	this->bVelocity2DDone = bVelocity2DDone;
+}
 
 double Analysis::potentialEnergy(std::vector<Star*>& stars){
 	double potentialEnergy = 0;
@@ -70,16 +74,8 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 	InOut::write(x,y,"NlogNtest.dat");
 }
 
-bool Analysis::getbEnergy(){
-	return Constants::bEnergy;
-}
-
-bool Analysis::getbAverageVelocity(){
-	return Constants::bAverageVelocity;
-}
-
-bool Analysis::getbAverage2DVelocity(){
-	return Constants::bAverage2DVelocity;
+bool Analysis::bTimestepAnalysis(){
+	return this->bEnergyDone || this->bVelocityDone || this->bVelocity2DDone;
 }
 
 double Analysis::average(std::vector<Vec3D*>& vectors){
@@ -96,6 +92,14 @@ double Analysis::average(std::vector<double>& values) {
 		average += value;
 	}
 	return average / values.size();
+}
+
+double Analysis::average(std::vector<Point>& points) {
+	double average = 0;
+	for (Point point : points) {
+		average += sqrt(point.vx* point.vx + point.vy* point.vy);
+	}
+	return average / points.size();
 }
 
 double Analysis::dispersion(std::vector<Vec3D*>& vectors){
@@ -118,6 +122,18 @@ double Analysis::dispersion(std::vector<double>& values) {
 		dispersion += pow(value - average, 2);
 	}
 	return sqrt(dispersion / (n - 1));
+}
+
+double Analysis::dispersion(std::vector<Point>& points, double average){
+	if (average == 0){ //average not passed as parameter
+		average = Analysis::average(points);
+	}
+
+	double dispersion = 0;
+	for (Point point : points) {
+		dispersion += pow(sqrt(point.vx * point.vx + point.vy * point.vy) - average, 2);
+	}
+	return sqrt(dispersion / (points.size() - 1));
 }
 
 void Analysis::write(){
