@@ -146,17 +146,33 @@ or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
 Positions
 ---------
 
-Field star positions within the cone of vision are sampled directly from the density via rejection sampling.
-The cone of vision is defined by the angle of view :math:`\alpha`, the view distance (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
+The positions of the field stars within the cone of vision are generated in two steps of rejection sampling followed by a transformation.
+The cone of vision is defined by the angle of view :math:`\alpha`, the view distance :math:`h` (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
-Trial positions are drawn from continuous uniform distributions with bounds of an upside down cone which axis aligned with the z axis
+In the first step trial positions are drawn from a uniform distribution within a cuboid containing the cone.
+The boundaries of the cuboid are given by
 
 .. math::
     |x|\leq R \\
-    |y|\leq \sqrt{R^{2}-x^{2}} \\
-    \frac{h}{R}\sqrt{x^{2}+y^{2}}\leq z\leq h
+    |y|\leq R \\
+    0\leq z\leq h
 
-and then transformed via a transformation matrix.
+where :math:`R=h*\textup{tan}\left ( \frac{\alpha}{2} \right )` is the base radius of the cone.
+
+Those trial positions are rejected in case they are outside the boundaries of the cone.
+The conditions for acceptance are:
+
+.. math::
+    \sqrt{x^{2}+y^{2}}\leq R \\
+    z\geq h*\frac{\sqrt{x^{2}+y^{2}}}{R} \\
+
+This method ensures that the positions are indeed homogeneously distributed which is essential for the second step.
+
+The second step consist of rejection sampling the density distribution.
+The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
+If this test variable is smaller than the density at the trial position generated in step one the trial position is accepted and rejected otherwise.
+
+Then the accepted position is transformed via a transformation matrix.
 Per this transformation the tip of the cone is displaced from the origin to the view point :math:`vP` and its axis is rotated to align with the line of sight :math:`l`.
 Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
 
