@@ -163,7 +163,7 @@ void Analysis::write(){
 		std::cout << "time and energy vectors must have equal size! Aborting." << std::endl;
 		return;
 	}
-	if (Constants::bEnergy) {
+	if (totE.size()>0) {
 		InOut::write(time, totE, "TotalEnergy.dat");
 		InOut::write(time, kinE, "KinetikEnergy.dat");
 		InOut::write(time, potE, "PotentialEnergy.dat");

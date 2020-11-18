@@ -42,10 +42,10 @@ namespace Constants {
 	extern double kmInpc;
 	extern int nStars;
 
-	//Analysis Parameters
-	extern bool bEnergy;
-	extern bool bAverageVelocity;
-	extern bool bAverage2DVelocity;
+	//Analysis Parameters (deprecated)
+	//extern bool bEnergy;
+	//extern bool bAverageVelocity;
+	//extern bool bAverage2DVelocity;
 
 	//Transformation
 	extern Vec3D positionSun; //in cylinder coordinates [pc,rad,pc]

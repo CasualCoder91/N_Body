@@ -36,9 +36,9 @@ double Constants::kmInpc = 3.086e-13;
 int Constants::nStars = config.GetInt("nStars");
 
 //Analysis Parameters
-bool Constants::bEnergy = config.GetBool("bEnergy");
-bool Constants::bAverageVelocity = config.GetBool("bAverageVelocity");
-bool Constants::bAverage2DVelocity = config.GetBool("bAverage2DVelocity");
+//bool Constants::bEnergy = config.GetBool("bEnergy");
+//bool Constants::bAverageVelocity = config.GetBool("bAverageVelocity");
+//bool Constants::bAverage2DVelocity = config.GetBool("bAverage2DVelocity");
 
 //Transformation
 Vec3D Constants::positionSun = Vec3D(8300, 0, 27).cartesianToCylindrical();
