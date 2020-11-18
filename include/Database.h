@@ -16,6 +16,7 @@
 #include "Analysis.h"
 #include "Projection.h"
 #include "Point.h"
+#include "Vec2D.h"
 //#include "Constants.h"
 
 using Record = std::vector<std::string>;
@@ -55,7 +56,9 @@ public:
 	/** @brief inserts (or replaces/updates) one record of kinetic, potential and total energy */
 	void insertAnalysisdtEnergy(int analysisID,int dt, double kinE, double potE);
 	/** @brief inserts (or replaces/updates) one record of the average velocity */
-	void insertAnalysisdtVelocity(int analysisID, int dt, double velocity);
+	void insertAnalysisdtVelocity3D(int analysisID, int dt, double avgVel3DCluster, double disp3DCluster, double avgVel3DFS, double disp3DFS);
+	void insertAnalysisdtVelocity2D(int analysisID, int dt, double avgVel2DCluster, double disp2DCluster, double avgVel2DFS, double disp2DFS);
+
 	/** @brief inserts positions and velocities of given \p stars and \p timestep */
 	void timestep(int timestep, std::vector<Star*>& stars);
 	void generate2D(int simulationID);
@@ -85,11 +88,12 @@ public:
 	bool printSimulations();
 
 	/** @brief returns all velocities at the given \p timestep */
-	std::vector<Vec3D> selectVelocities(int timestep = -1);
-	/** @brief returns all timesteps */
-	std::vector<int> selectTimesteps();
+	std::vector<Vec3D> selectVelocities3D(int simulationID, int timestep = -1, bool fieldStars= false, bool clusterStars=true);
+	std::vector<Vec2D> selectVelocities2D(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true);
+	/** @brief returns all timesteps for simulation with ID \p simulationID*/
+	std::vector<int> selectTimesteps(int simulationID);
 	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) */
-	std::vector<Star*> selectStars(int simulationID, int timeStep);
+	std::vector<Star> selectStars(int simulationID, int timeStep);
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
 

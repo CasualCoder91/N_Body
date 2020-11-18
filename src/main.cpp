@@ -86,30 +86,66 @@ int main() {
 				std::cout << "done" << std::endl;
 			}
 			else if(selection==2) {
-				std::cout << "Running analysis on selected simulation" << std::endl;
 				Analysis analysis = db.selectAnalysis(simulationID);
 				int analysisID = db.insertAnalysis(simulationID, analysis);
-				if (analysis.bTimestepAnalysis()) {
-					std::vector<int> timeSteps = db.selectTimesteps();
-					for (int timeStep : timeSteps) {
-						std::vector<Star*> stars = db.selectStars(selection, timeStep);
-						if (!analysis.bEnergyDone) {
-							db.insertAnalysisdtEnergy(analysisID, timeStep, analysis.kineticEnergy(stars), analysis.potentialEnergy(stars));
+				if (analysis.allDone()){
+					std::cout << "All available analysis already completed for this simulation" << std::endl;
+				}
+				else{
+					std::cout << "What would you like to analyze?" << std::endl;
+					std::cout << "[1] Energy\n[2] Velocity\n[3] Velocity2D" << std::endl;
+					std::cin >> selection;
+					std::cin.clear();
+					std::vector<int> timeSteps = db.selectTimesteps(simulationID);
+					if (selection == 1) {//Energy
+						for (int timeStep : timeSteps) {
+							std::vector<Star> stars = db.selectStars(simulationID, timeStep);
+							double kinE = analysis.kineticEnergy(stars);
+							double potE = analysis.potentialEnergy(stars);
+							db.insertAnalysisdtEnergy(analysisID, timeStep, kinE, potE);
 						}
-						if (!analysis.bVelocityDone) {
-							std::vector<Vec3D*> velocities = {};
-							for (Star* star : stars) {
-								velocities.push_back(&star->velocity);
-							}
-							double test = analysis.average(velocities);
-							db.insertAnalysisdtVelocity(analysisID, timeStep, analysis.average(velocities));
+						analysis.bEnergyDone = true;
+						db.insertAnalysis(simulationID, analysis);
+						std::cout << "Energy analysis done" << std::endl;
+					}
+					else if (selection == 2) { //Velocity3D
+						for (int timeStep : timeSteps) {
+							//std::vector<Star*> stars = db.selectStars(simulationID, timeStep);
+							std::vector<Vec3D> clusterVelocities = db.selectVelocities3D(simulationID, timeStep, false, true);
+							std::vector<Vec3D> fsVelocities = db.selectVelocities3D(simulationID, timeStep, true, false);
+							double avgVel3DCluster = analysis.average(clusterVelocities);
+							double disp3DCluster = analysis.dispersion(clusterVelocities, avgVel3DCluster);
+							double avgVel3DFS = analysis.average(fsVelocities);
+							double disp3DFS = analysis.dispersion(fsVelocities, avgVel3DFS);
+							db.insertAnalysisdtVelocity3D(analysisID, timeStep, avgVel3DCluster,disp3DCluster,avgVel3DFS,disp3DFS);
 						}
+						analysis.bVelocityDone = true;
+						db.insertAnalysis(simulationID, analysis);
+						std::cout << "3D velocity analysis done" << std::endl;
+					}
+					else if (selection == 3) { //Velocity2D
+						for (int timeStep : timeSteps) {
+							std::vector<Vec2D> clusterVelocities = db.selectVelocities2D(simulationID, timeStep, false, true);
+							std::vector<Vec2D> fsVelocities = db.selectVelocities2D(simulationID, timeStep, true, false);
+							double avgVel2DCluster = analysis.average(clusterVelocities);
+							double disp2DCluster = analysis.dispersion(clusterVelocities, avgVel2DCluster);
+							double avgVel2DFS = analysis.average(fsVelocities);
+							double disp2DFS = analysis.dispersion(fsVelocities, avgVel2DFS);
+							db.insertAnalysisdtVelocity2D(analysisID, timeStep, avgVel2DCluster, disp2DCluster, avgVel2DFS, disp2DFS);
+						}
+						analysis.bVelocity2DDone = true;
+						db.insertAnalysis(simulationID, analysis);
+						std::cout << "2D velocity analysis done" << std::endl;
+					}
+
+
+					else {
+						std::cout << "Feature not yet implemented" << std::endl;
 					}
 				}
-				std::cout << "Energy analysis done" << std::endl;
-				std::cout << "Running cluster analysis ..." << std::endl;
-				analysis.cluster(db.selectPoints(simulationID,0,2));
-				std::cout << "Cluster analysis done" << std::endl;
+				//std::cout << "Running cluster analysis ..." << std::endl;
+				//analysis.cluster(db.selectPoints(simulationID,0,2));
+				//std::cout << "Cluster analysis done" << std::endl;
 			}
 			else {
 				std::cout << "generating 2D positions and velocities ..." << std::endl;

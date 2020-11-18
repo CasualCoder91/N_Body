@@ -430,9 +430,9 @@ void Test::initialConditionsSampleBulgeVelocity(){
 			double r = gsl_hypot3(x, y, z);
 			initialConditions.sampleBulgePositions(stars, Vec3D(r, 0, 0), Vec3D(delta, delta, delta));
 			initialConditions.sampleBulgeVelocities(stars);
-			std::vector<Vec3D*> velocities;
+			std::vector<Vec3D> velocities;
 			for (Star* star : stars) {
-				velocities.push_back(&star->velocity);
+				velocities.push_back(star->velocity);
 			}
 			//std::cout << "r: " << r << " | average velocity: " << Analysis::average(velocities) << " | Dispersion: " << Analysis::dispersion(velocities) << std::endl;
 			averageVelocity.push_back(Analysis::average(velocities));

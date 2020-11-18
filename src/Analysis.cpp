@@ -8,23 +8,23 @@ Analysis::Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone){
 	this->bVelocity2DDone = bVelocity2DDone;
 }
 
-double Analysis::potentialEnergy(std::vector<Star*>& stars){
+double Analysis::potentialEnergy(const std::vector<Star>& stars){
 	double potentialEnergy = 0;
-	#pragma omp parallel for
+    #pragma omp parallel for reduction(-:potentialEnergy)
 	for (int i = 0; i < stars.size()-1;++i) {
 		for (int j = i+1; j < stars.size(); ++j) {
-			potentialEnergy -= Constants::G * stars[i]->mass * stars[j]->mass / Vec3D::distance(&stars[i]->position, &stars[j]->position);
+			potentialEnergy -= Constants::G * stars[i].mass * stars[j].mass / Vec3D::distance(stars[i].position, stars[j].position);
 		}
 	}
 	this->potE.push_back(potentialEnergy);
 	return potentialEnergy;
 }
 
-double Analysis::kineticEnergy(std::vector<Star*>& stars){
+double Analysis::kineticEnergy(const std::vector<Star>& stars){
 	double kineticEnergy = 0;
-	#pragma omp parallel for
+    #pragma omp parallel for reduction(+:kineticEnergy)
 	for (int i = 0; i < stars.size(); ++i) {
-		kineticEnergy += stars[i]->mass * (stars[i]->velocity * stars[i]->velocity);
+		kineticEnergy += stars[i].mass *(stars[i].velocity.x* stars[i].velocity.x + stars[i].velocity.y* stars[i].velocity.y + stars[i].velocity.z* stars[i].velocity.z);
 	}
 	kineticEnergy *= 0.5;
 	this->kinE.push_back(kineticEnergy);
@@ -74,16 +74,23 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 	InOut::write(x,y,"NlogNtest.dat");
 }
 
-bool Analysis::bTimestepAnalysis(){
-	return this->bEnergyDone || this->bVelocityDone || this->bVelocity2DDone;
+bool Analysis::allDone(){
+	return this->bEnergyDone && this->bVelocityDone && this->bVelocity2DDone;
 }
 
-double Analysis::average(std::vector<Vec3D*>& vectors){
+double Analysis::average(std::vector<Vec3D>& vectors){
 	double average = 0;
-	for (Vec3D* vector : vectors) {
-		average += vector->length();
+	for (Vec3D vector : vectors) {
+		average += vector.length();
 	}
 	return average/vectors.size();
+}
+double Analysis::average(std::vector<Vec2D>& vectors) {
+	double average = 0;
+	for (Vec2D vector : vectors) {
+		average += vector.length();
+	}
+	return average / vectors.size();
 }
 
 double Analysis::average(std::vector<double>& values) {
@@ -102,15 +109,30 @@ double Analysis::average(std::vector<Point>& points) {
 	return average / points.size();
 }
 
-double Analysis::dispersion(std::vector<Vec3D*>& vectors){
+double Analysis::dispersion(std::vector<Vec3D>& vectors, double average){
 	size_t n = vectors.size();
-	double average = Analysis::average(vectors);
-	double dispersion = 0;
+	if (average == 0) { //average not passed as parameter
+		average = Analysis::average(vectors);
+	}
 
-	for (Vec3D* vector : vectors) {
-		dispersion += pow(vector->length()-average,2);
+	double dispersion = 0;
+	for (Vec3D vector : vectors) {
+		dispersion += pow(vector.length()-average,2);
 	}
 	return sqrt(dispersion / (n-1));
+}
+
+double Analysis::dispersion(std::vector<Vec2D>& vectors, double average) {
+	size_t n = vectors.size();
+	if (average == 0) { //average not passed as parameter
+		average = Analysis::average(vectors);
+	}
+
+	double dispersion = 0;
+	for (Vec2D vector : vectors) {
+		dispersion += pow(vector.length() - average, 2);
+	}
+	return sqrt(dispersion / (n - 1));
 }
 
 double Analysis::dispersion(std::vector<double>& values) {
