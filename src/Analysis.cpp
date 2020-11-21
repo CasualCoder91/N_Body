@@ -10,12 +10,15 @@ Analysis::Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone){
 
 double Analysis::potentialEnergy(const std::vector<Star>& stars){
 	double potentialEnergy = 0;
-    #pragma omp parallel for reduction(-:potentialEnergy)
+    #pragma omp parallel for reduction(+:potentialEnergy)
 	for (int i = 0; i < stars.size()-1;++i) {
-		for (int j = i+1; j < stars.size(); ++j) {
-			potentialEnergy -= Constants::G * stars[i].mass * stars[j].mass / Vec3D::distance(stars[i].position, stars[j].position);
-		}
+		//for (int j = i+1; j < stars.size(); ++j) {
+			//potentialEnergy -= Constants::G * stars[i].mass * stars[j].mass / Vec3D::distance(stars[i].position, stars[j].position);
+		//}
+		double temp = stars[i].mass* MWPotential::potentialEnergy(stars[i].position);
+		potentialEnergy = potentialEnergy + temp;
 	}
+	potentialEnergy *= 0.5; //sure?
 	this->potE.push_back(potentialEnergy);
 	return potentialEnergy;
 }

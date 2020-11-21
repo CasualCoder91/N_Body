@@ -38,6 +38,7 @@ private:
 	static const double mMassSmallBulge; // SolarMassUnit
 	static const double rHalo; // kpc
 	static const double mMassHalo; // SolarMassUnit
+	static const double mDensityHalo; // SolarMassUnit * pc^-3
 	/** @brief 1 km divided by 1 pc */
 	//static const double kmInpc;
 
@@ -48,7 +49,7 @@ private:
 public:
 	static const double characteristicVelocityBulge; // km/s
 	static const double aBulge; // SolarMassUnit
-	static const double aSmallBulge; // SolarMassUnit
+	//static const double aSmallBulge; // SolarMassUnit
 	static const double bDisk; //kpc
 	static const std::string velocityDistributionBulgeTableFilename;
 	LookupTable velocityDistributionBulgeTable;
@@ -129,8 +130,8 @@ public:
 	void applyForce(Star* star);
 	void applyForce(const Vec3D position, Vec3D& acceleration);
 
-	//static double potentialEnergy(Vec3D& position);
-	//static double potentialEnergy(double R, double z);
+	static double potentialEnergy(const Vec3D& position);
+	static double potentialEnergy(double R, double z);
 
 	//static double radialVelocityDispersionBulge(double R, double z); // return in km/s
 	//static double infiniteDistributionFunctionBulge(double q); //q = sqrt(-E*characteristicVelocity^-2)

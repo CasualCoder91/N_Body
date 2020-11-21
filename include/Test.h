@@ -33,8 +33,8 @@ public:
 	static void massDistributionDiskOutput(std::string path = "", double z = 1000, double dx = 100); // [z] = [pc]
 	static void massDistributionBulgeOutput(std::string path = "", double z = 1000, double dx = 100); // [z] = [pc]
 
-	static void potentialCircularVelocity();
-	static void potentialCircularVelocityOutput(std::string path = "");
+	void potentialCircularVelocity();
+	void potentialCircularVelocityOutput(std::string path = "");
 
 	void initialConditionsMassSalpeterOutput(int nStars = 10000);
 	static void initialConditionsMassBulgeOutput(double totalMass);

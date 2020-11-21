@@ -88,10 +88,11 @@ void Database::setup(){
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
-	sql = "CREATE TABLE IF NOT EXISTS velocity2D("
+	sql = "CREATE TABLE IF NOT EXISTS velocityHEQ("
 		"fk_velocity INTEGER PRIMARY KEY,"
-		"x REAL NOT NULL,"
-		"y REAL NOT NULL,"
+		"r REAL NOT NULL,"
+		"a REAL NOT NULL,"
+		"d REAL NOT NULL,"
 		"FOREIGN KEY (fk_velocity) "
 			"REFERENCES velocity(id) "
 			"ON DELETE CASCADE "
@@ -109,10 +110,11 @@ void Database::setup(){
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
-	sql = "CREATE TABLE IF NOT EXISTS position2D("
+	sql = "CREATE TABLE IF NOT EXISTS positionHEQ("
 		"fk_position INTEGER PRIMARY KEY,"
-		"x REAL NOT NULL,"
-		"y REAL NOT NULL,"
+		"r REAL NOT NULL,"
+		"a REAL NOT NULL,"
+		"d REAL NOT NULL,"
 		"FOREIGN KEY (fk_position) "
 		"REFERENCES position(id) "
 		"ON DELETE CASCADE "
@@ -122,7 +124,7 @@ void Database::setup(){
 		"id_simulation INTEGER PRIMARY KEY,"
 		"energyDone INTEGER NOT NULL,"
 		"velocityDone INTEGER NOT NULL,"
-		"velocityDone2D INTEGER NOT NULL,"
+		"velocityDoneHEQ INTEGER NOT NULL,"
 		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
 			"ON DELETE CASCADE "
@@ -261,7 +263,7 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 }
 
 int Database::insertAnalysis(int simulationID, Analysis analysis){
-	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,energyDone,velocityDone,velocityDone2D) VALUES " 
+	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,energyDone,velocityDone,velocityDoneHEQ) VALUES " 
 		"((select id_simulation from analysis where id_simulation = ?1),?2,?3,?4)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
@@ -391,7 +393,7 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	sqlite3_finalize(stmt);
 }
 
-void Database::generate2D(int simulationID){
+void Database::generateHEQ(int simulationID){
 	if (!this->isOpen)
 		this->open();
 	std::string query = "SELECT position.id,position.x,position.y,position.z,velocity.id,velocity.x,velocity.y,velocity.z,"
@@ -411,7 +413,7 @@ void Database::generate2D(int simulationID){
 	//store rows for velocity2D table for better performance
 	struct rowInsert {
 		int fk;
-		double x, y;
+		double x, y,z;
 	};
 	std::vector<rowInsert> velocitiesInsert;
 	std::vector<rowInsert> positionsInsert;
@@ -432,27 +434,28 @@ void Database::generate2D(int simulationID){
 		//Projection::project(pGCA, vGCA, lookAt, viewPoint);
 
 		//position = Projection::projectPosition(position, lookAt, viewPoint,angle);
-		rowInsert positionInsert = { sqlite3_column_int(stmt, 0),pHEQ.y*Constants::radInArcsec,pHEQ.z * Constants::radInArcsec};
+		rowInsert positionInsert = { sqlite3_column_int(stmt, 0), pHEQ.x, pHEQ.y, pHEQ.z};
 		positionsInsert.emplace_back(positionInsert);
 		//velocity = Projection::projectVelocity(velocity, lookAt, angle);
-		rowInsert velocityInsert = { sqlite3_column_int(stmt, 4),vHEQ.y*Constants::radmyrInArcsecyr,vHEQ.z * Constants::radmyrInArcsecyr };
+		rowInsert velocityInsert = { sqlite3_column_int(stmt, 4), vHEQ.x, vHEQ.y, vHEQ.z};
 		velocitiesInsert.emplace_back(velocityInsert);
-
 	}
 	sqlite3_finalize(stmt);
 
 	char* errorMessage;
 	//insert velocities
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	char buffer[] = "INSERT INTO velocity2D (fk_velocity,x,y) VALUES (?1,?2,?3)";
-	sqlite3_prepare_v2(db, buffer, 58, &stmt, NULL);
+	std::string buffer = "INSERT INTO velocityHEQ (fk_velocity,r,a,d) VALUES (?1,?2,?3,?4)";
+	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, nullptr);
 	for (rowInsert row : velocitiesInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
 		sqlite3_bind_double(stmt, 2, row.x);
 		sqlite3_bind_double(stmt, 3, row.y);
+		sqlite3_bind_double(stmt, 4, row.z);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
 			printf("Commit Failed!\n");
+			printf(errorMessage);
 		}
 
 		sqlite3_reset(stmt);
@@ -462,12 +465,13 @@ void Database::generate2D(int simulationID){
 
 	//insert positions
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	char buffer2[] = "INSERT INTO position2D (fk_position,x,y) VALUES (?1,?2,?3)";
-	sqlite3_prepare_v2(db, buffer2, 58, &stmt, NULL);
+	buffer = "INSERT INTO positionHEQ (fk_position,r,a,d) VALUES (?1,?2,?3,?4)";
+	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
 	for (rowInsert row : positionsInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
 		sqlite3_bind_double(stmt, 2, row.x);
 		sqlite3_bind_double(stmt, 3, row.y);
+		sqlite3_bind_double(stmt, 4, row.z);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
 			printf("Commit Failed!\n");
@@ -579,7 +583,7 @@ Analysis Database::selectAnalysis(int ID){
 	if (!this->isOpen)
 		this->open();
 
-	std::string sql = "SELECT energyDone, velocityDone, velocityDone2D FROM analysis "
+	std::string sql = "SELECT energyDone, velocityDone, velocityDoneHEQ FROM analysis "
 					  " Where id_simulation = " + std::to_string(ID);
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &stmt, nullptr);
@@ -646,15 +650,15 @@ std::vector<Vec3D> Database::selectVelocities3D(int simulationID, int timestep, 
 	return velocities;
 }
 
-std::vector<Vec2D> Database::selectVelocities2D(int simulationID, int timestep, bool fieldStars, bool clusterStars){
+std::vector<Vec2D> Database::selectVelocitiesHEQ(int simulationID, int timestep, bool fieldStars, bool clusterStars){
 	std::vector<Vec2D> velocities = {};
 	if (!this->isOpen)
 		this->open();
 
-	std::string query = "SELECT velocity2D.x,velocity2D.y "
+	std::string query = "SELECT velocityHEQ.a,velocityHEQ.d "
 		"FROM star "
 		"INNER JOIN velocity on velocity.id_star = star.id "
-		"INNER JOIN velocity2D on velocity.id = velocity2D.fk_velocity "
+		"INNER JOIN velocityHEQ on velocity.id = velocityHEQ.fk_velocity "
 		"WHERE star.id_simulation =  " +std::to_string(simulationID);
 	if (timestep != -1) {
 		query += " AND velocity.timestep = " + std::to_string(timestep);
@@ -666,7 +670,7 @@ std::vector<Vec2D> Database::selectVelocities2D(int simulationID, int timestep, 
 		else if (clusterStars)
 			query += " AND star.isCluster = 1 ";
 		else
-			std::cout << "selectVelocities2D parameters make no sense. Selecting cluster and field stars" << std::endl;
+			std::cout << "selectVelocitiesHEQ parameters make no sense. Selecting cluster and field stars" << std::endl;
 	}
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
@@ -808,10 +812,10 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 		std::cout << "Amount of timesteps must be at least 1" << std::endl;
 		return points;
 	}
-	std::string query = "SELECT star.id,position.timestep,position2D.x,position2D.y,star.isCluster "
+	std::string query = "SELECT star.id,position.timestep,positionHEQ.x,positionHEQ.y,star.isCluster "
 		"FROM star "
 		"INNER JOIN position on position.id_star = star.id "
-		"INNER JOIN position2D on position.id = position2D.fk_position "
+		"INNER JOIN positionHEQ on position.id = positionHEQ.fk_position "
 		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) order by position.timestep";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);

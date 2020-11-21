@@ -61,7 +61,7 @@ public:
 
 	/** @brief inserts positions and velocities of given \p stars and \p timestep */
 	void timestep(int timestep, std::vector<Star*>& stars);
-	void generate2D(int simulationID);
+	void generateHEQ(int simulationID);
 	void insertPowerLaw(int simulationID, std::vector<double> massLimits, std::vector<double> exponents);
 	/** 
 	@brief inserts one star (including positions and velocities)
@@ -89,7 +89,7 @@ public:
 
 	/** @brief returns all velocities at the given \p timestep */
 	std::vector<Vec3D> selectVelocities3D(int simulationID, int timestep = -1, bool fieldStars= false, bool clusterStars=true);
-	std::vector<Vec2D> selectVelocities2D(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true);
+	std::vector<Vec2D> selectVelocitiesHEQ(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true);
 	/** @brief returns all timesteps for simulation with ID \p simulationID*/
 	std::vector<int> selectTimesteps(int simulationID);
 	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) */

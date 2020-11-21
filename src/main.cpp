@@ -75,7 +75,7 @@ int main() {
 			std::cin.clear();
 			db.selectSimulation(simulationID);
 			Simulation simulation = Simulation(simulationID,&db);
-			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate 2D" << std::endl;
+			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate HEQ" << std::endl;
 			std::cin >> selection;
 			std::cin.clear();
 			if (selection == 1) {
@@ -93,7 +93,7 @@ int main() {
 				}
 				else{
 					std::cout << "What would you like to analyze?" << std::endl;
-					std::cout << "[1] Energy\n[2] Velocity\n[3] Velocity2D" << std::endl;
+					std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHEQ" << std::endl;
 					std::cin >> selection;
 					std::cin.clear();
 					std::vector<int> timeSteps = db.selectTimesteps(simulationID);
@@ -123,19 +123,19 @@ int main() {
 						db.insertAnalysis(simulationID, analysis);
 						std::cout << "3D velocity analysis done" << std::endl;
 					}
-					else if (selection == 3) { //Velocity2D
+					else if (selection == 3) { //velocityHEQ
 						for (int timeStep : timeSteps) {
-							std::vector<Vec2D> clusterVelocities = db.selectVelocities2D(simulationID, timeStep, false, true);
-							std::vector<Vec2D> fsVelocities = db.selectVelocities2D(simulationID, timeStep, true, false);
-							double avgVel2DCluster = analysis.average(clusterVelocities);
-							double disp2DCluster = analysis.dispersion(clusterVelocities, avgVel2DCluster);
-							double avgVel2DFS = analysis.average(fsVelocities);
-							double disp2DFS = analysis.dispersion(fsVelocities, avgVel2DFS);
-							db.insertAnalysisdtVelocity2D(analysisID, timeStep, avgVel2DCluster, disp2DCluster, avgVel2DFS, disp2DFS);
+							std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHEQ(simulationID, timeStep, false, true);
+							std::vector<Vec2D> fsVelocities = db.selectVelocitiesHEQ(simulationID, timeStep, true, false);
+							double avgVelHEQCluster = analysis.average(clusterVelocities);
+							double dispHEQCluster = analysis.dispersion(clusterVelocities, avgVelHEQCluster);
+							double avgVelHEQFS = analysis.average(fsVelocities);
+							double dispHEQFS = analysis.dispersion(fsVelocities, avgVelHEQFS);
+							db.insertAnalysisdtVelocity2D(analysisID, timeStep, avgVelHEQCluster, dispHEQCluster, avgVelHEQFS, dispHEQFS);
 						}
 						analysis.bVelocity2DDone = true;
 						db.insertAnalysis(simulationID, analysis);
-						std::cout << "2D velocity analysis done" << std::endl;
+						std::cout << "HEQ velocity analysis done" << std::endl;
 					}
 
 
@@ -148,8 +148,8 @@ int main() {
 				//std::cout << "Cluster analysis done" << std::endl;
 			}
 			else {
-				std::cout << "generating 2D positions and velocities ..." << std::endl;
-				db.generate2D(simulation.getID());
+				std::cout << "generating HEQ positions and velocities ..." << std::endl;
+				db.generateHEQ(simulation.getID());
 				std::cout << "done\n" << std::endl;
 			}
 		}
@@ -209,14 +209,14 @@ int main() {
 
 
 			Test test = Test();
-			test.checkBrokenPowerLaw();
-			//Test::potentialCircularVelocity();
+			//test.checkBrokenPowerLaw();
+			test.potentialCircularVelocity();
 			//test.transformation();
 			//Test::massDistribution(500,15000);
 			//Test::sampleFieldStarPositions(200);
-			////Test::velocityBulgeR();
+			//Test::velocityBulgeR();
 			//Test::bulgeMass();
-			//test.velocityBulge();
+			test.velocityBulge(); // very time intensive
 			////Test::wangPositions();
 			////Test::checkBrokenPowerLaw();
 			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;

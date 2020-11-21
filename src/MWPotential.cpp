@@ -9,11 +9,12 @@ const double MWPotential::mMassSmallBulge = 0; // SolarMassUnit
 
 Hernquist MWPotential::bulgePotential = Hernquist(mMassBulge, aBulge);
 
-const double MWPotential::aBulge = 0.9e3;//0.35e3; // pc
-const double MWPotential::aSmallBulge = 0.35e3; // pc
+const double MWPotential::aBulge = 0.788e3;//0.35e3; // pc
+//const double MWPotential::aSmallBulge = 0.35e3; // pc
 const double MWPotential::characteristicVelocityBulge = 444.4;  // km/s
 const double MWPotential::rHalo = 17e3; // pc
-const double MWPotential::mMassHalo = 5E11; // SolarMassUnit
+const double MWPotential::mDensityHalo = 0.008; // SolarMassUnit * pc^-3
+const double MWPotential::mMassHalo = 4 * M_PI * mDensityHalo * pow(rHalo, 3) * (log(2) - 0.5);//5E11; // SolarMassUnit
 //const double MWPotential::kmInpc = 3.086e-13;
 const double MWPotential::velocityDispersionScaleLength = aDisk / 4.0;
 
@@ -118,9 +119,10 @@ double MWPotential::gslVelocityBulge(double r, void* p){
 	//struct gslVelocityBulgeParams* fp = (struct gslVelocityBulgeParams*)p;
 	//double temp = 1/(r * gsl_pow_3(fp->aBulge + r)) * (
 	double temp = mMassBlackHole / r2 + bulgePotential.potentialdr(r);
-		//- mMassHalo / (r2 + r * rHalo) + mMassHalo * log((r + rHalo) / rHalo) / r2;
-	if (r < aBulge)
+	temp = temp - mMassHalo / (log(2) - 0.5) / (r2 + r * rHalo) + mMassHalo / (log(2) - 0.5) * log((r + rHalo) / rHalo) / r2;
+	//if (r < aBulge)
 		temp += MWPotential::sphericalAveragedDisc(r);
+
 	temp = temp * MWPotential::bulgePotential.density(r);
 	//double temp = 1 / (r * gsl_pow_3(fp->aBulge + r)) * (fp->mMassBlackHole / r2 + fp->mMassBulge / gsl_pow_2(fp->aBulge + r) + fp->mMassDisk * r / pow(gsl_pow_2(fp->aDisk + fp->bDisk) + r2, 1.5) - haloTemp / (r2 + r * fp->rHalo) + haloTemp * log((r + fp->rHalo) / fp->rHalo) / r2);
 	//double temp = 1 / (r * gsl_pow_3(fp->aBulge + r)) * (fp->mMassBlackHole / r2 + fp->mMassBulge / gsl_pow_2(fp->aBulge + r) + fp->mMassDisk * r *(1/3*fp->aDisk+0.7698*sqrt(3*fp->bDisk+r2))/ (sqrt(gsl_pow_2(fp->bDisk)+r2/3)*pow(r2+gsl_pow_2(fp->aDisk+gsl_pow_2(fp->aDisk+sqrt(gsl_pow_2(fp->bDisk)+r2/3))),1.5)) - haloTemp / (r2 + r * fp->rHalo) + haloTemp * log((r + fp->rHalo) / fp->rHalo) / r2);
@@ -187,8 +189,8 @@ double MWPotential::circularVelocity(const Vec3D* position){
 	double velocity = sqrt(Constants::G * R2*mMassBlackHole/ r3
 		+ Constants::G * R2 * mMassDisk/ pow(pow(aDisk + sqrt(pow(bDisk, 2) + pow(z, 2)), 2) + R2, 1.5)
 		+ gsl_pow_2(bulgePotential.circularVelocity(position))
-		+ Constants::G * R2 * mMassHalo * log(r / rHalo + 1) / r3
-		- Constants::G * R2 * mMassHalo / (r2 * (rHalo  + r)));
+		+ Constants::G * R2 * mMassHalo / (log(2) - 0.5) * log(r / rHalo + 1) / r3
+		- Constants::G * R2 * mMassHalo / ((log(2) - 0.5)*r2 * (rHalo  + r)));
 	return velocity;
 }
 
@@ -216,14 +218,14 @@ double MWPotential::circularVelocityHalo(Vec3D* position){
 	double r2 = gsl_pow_2(r);
 	double z = distance.z;
 	double R2 = pow(distance.x, 2) + pow(distance.y, 2);
-	double velocity = sqrt(Constants::G * R2 * mMassHalo * ( log(r / rHalo + 1) / (r*r2) - 1 / (r2 * (r + rHalo))));
+	double velocity = sqrt(Constants::G * R2 * mMassHalo / (log(2) - 0.5) * ( log(r / rHalo + 1) / (r*r2) - 1 / (r2 * (r + rHalo))));
 	return velocity;
 }
 
 double MWPotential::escapeVelocity(Vec3D* position){
 	double r = position->length();
 	double R = gsl_hypot(position->x, position->y);
-	return sqrt(2* Constants::G *mMassBlackHole/r+ 2 * Constants::G * mMassDisk/sqrt(gsl_pow_2(R)+gsl_pow_2(aDisk+gsl_hypot(position->z,bDisk)))+ gsl_pow_2(bulgePotential.escapeVelocity(r))+ 2 * Constants::G * mMassHalo*log(1+r/rHalo)/r);
+	return sqrt(2* Constants::G *mMassBlackHole/r+ 2 * Constants::G * mMassDisk/sqrt(gsl_pow_2(R)+gsl_pow_2(aDisk+gsl_hypot(position->z,bDisk)))+ gsl_pow_2(bulgePotential.escapeVelocity(r))+ 2 * Constants::G * mMassHalo / (log(2) - 0.5) *log(1+r/rHalo)/r);
 }
 
 double MWPotential::densityDisk(double R, double z){
@@ -307,7 +309,7 @@ double MWPotential::massDisk(Matrix* transformation, double distance, double r) 
 double MWPotential::angularVelocity(double R){
 	double R2 = gsl_pow_2(R);
 	return Constants::kmInpc*sqrt(Constants::G /R*(bulgePotential.potentialdr(R)+mMassDisk*R/pow(gsl_pow_2(aDisk+bDisk)+R2,1.5)
-		+mMassBlackHole/R2+ mMassHalo/(R2+R*rHalo)+ mMassHalo*log((R+rHalo)/rHalo)/R2));
+		+mMassBlackHole/R2+ mMassHalo / (log(2) - 0.5) /(R2+R*rHalo)+ mMassHalo / (log(2) - 0.5) *log((R+rHalo)/rHalo)/R2));
 }
 
 double MWPotential::surfaceDensity(double R){
@@ -339,7 +341,7 @@ double MWPotential::epicyclicFrequency(double R, double z){
 	double temp = -3.0 * mMassBlackHole * R2 / r5 + 4.0 * mMassBlackHole / r3;
 	temp += 4.0 * mMassDisk / pow(gsl_pow_2(aDisk) + R2 + 2.0 * aDisk * sqrt(gsl_pow_2(bDisk) + gsl_pow_2(z)) + gsl_pow_2(bDisk) + gsl_pow_2(z), 1.5) - 3.0* mMassDisk * R2 / pow(gsl_pow_2(aDisk) + R2 + 2.0* aDisk*sqrt(gsl_pow_2(bDisk) + gsl_pow_2(z)) + gsl_pow_2(bDisk) + gsl_pow_2(z),2.5);
 	temp += bulgePotential.potentialdr2(R)+3./R*bulgePotential.potentialdr(R);
-	temp += mMassHalo*R2 / (r3 * gsl_pow_2(rHalo + r)) + 3 * R2* mMassHalo / (r4 * (rHalo + r)) - 4*mMassHalo / (r2 * (rHalo + r)) + mMassHalo * (4 / r3 - 3 * R2 / r5) * log((rHalo + r) / rHalo);
+	temp += mMassHalo / (log(2) - 0.5) *R2 / (r3 * gsl_pow_2(rHalo + r)) + 3 * R2* mMassHalo / (log(2) - 0.5) / (r4 * (rHalo + r)) - 4*mMassHalo / (log(2) - 0.5) / (r2 * (rHalo + r)) + mMassHalo / (log(2) - 0.5) * (4 / r3 - 3 * R2 / r5) * log((rHalo + r) / rHalo);
 
 	if (temp < 0) {
 		std::cout << "Warning: Imaginary epicyclicFrequency. Setting 1e-10 to avoid crash" << std::endl;
@@ -419,7 +421,7 @@ void MWPotential::applyForce(Star* star){
 	double r2 = r*r;
 	double r3 = r2*r;
 	//BH, Halo & Bulge
-	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo*r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo)/ r3)* Constants::kmInpc;
+	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (log(2) - 0.5) / (rHalo*r2 * (1 + r / rHalo)) + mMassHalo / (log(2) - 0.5) * log(1 + r / rHalo)/ r3)* Constants::kmInpc;
 	star->acceleration.x += temp * star->position.x;
 	star->acceleration.y += temp * star->position.y;
 	star->acceleration.z += temp * star->position.z;
@@ -437,7 +439,7 @@ void MWPotential::applyForce(Vec3D position, Vec3D& acceleration){
 	double r2 = r * r;
 	double r3 = r2 * r;
 	//BH, Halo & Bulge
-	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (rHalo * r2 * (1 + r / rHalo)) + mMassHalo * log(1 + r / rHalo) / r3) * Constants::kmInpc;
+	double temp = -Constants::G * (mMassBlackHole / r3 + bulgePotential.forceTemp(r) - mMassHalo / (log(2) - 0.5) / (rHalo * r2 * (1 + r / rHalo)) + mMassHalo / (log(2) - 0.5) * log(1 + r / rHalo) / r3) * Constants::kmInpc;
 	acceleration.x += temp * position.x;
 	acceleration.y += temp * position.y;
 	acceleration.z += temp * position.z;
@@ -450,7 +452,19 @@ void MWPotential::applyForce(Vec3D position, Vec3D& acceleration){
 	acceleration.z += -Constants::G * mMassDisk * position.z * (aDisk + sqrtb2z2) / (sqrtb2z2 * pow(x2y2 + gsl_pow_2(aDisk + sqrtb2z2), 1.5)) * Constants::kmInpc;
 }
 
+double MWPotential::potentialEnergy(const Vec3D& position) {
+	return MWPotential::potentialEnergy(gsl_hypot(position.x, position.y), position.z);
+}
 
+double MWPotential::potentialEnergy(double R, double z) {
+	double r = gsl_hypot(R, z);
+	double Ms = 4 * M_PI * 0.008 * pow(rHalo, 3) * (log(2) - 0.5);
+	//std::cout << "rs: " << rHalo << std::endl;
+	//std::cout << "Ms: " << Ms << std::endl;
+	//std::cout << "Msaved: " << mMassHalo << std::endl;
+
+	return bulgePotential.potential(r) - Constants::G * (mMassBlackHole / r + Ms / (log(2) - 0.5) * log(1 + r / rHalo) / r + mMassDisk / sqrt(gsl_pow_2(R) + gsl_pow_2(aDisk + sqrt(gsl_pow_2(z) + gsl_pow_2(bDisk))))); //
+}
 
 
 
@@ -507,17 +521,6 @@ void MWPotential::applyForce(Vec3D position, Vec3D& acceleration){
 //
 //double MWPotential::particleEnergy(Vec3D& position, double velocity){
 //	return 0.5 * gsl_pow_2(velocity) + potentialEnergy(position);
-//}
-
-
-//double MWPotential::potentialEnergy(Vec3D& position){
-//	return MWPotential::potentialEnergy(gsl_hypot(position.x,position.y), position.z);
-//}
-
-//double MWPotential::potentialEnergy(double R, double z){
-//	double r = gsl_hypot(R, z);
-//	return -G*(mMassBulge2 / (r + aBulge2));
-//	//return -G * (mMassBlackHole / r + mMassDisk / sqrt(gsl_pow_2(R) + gsl_pow_2(aDisk + sqrt(gsl_pow_2(z) + gsl_pow_2(bDisk))))+mMassBulge2/(r+aBulge2)+4*M_PI*gsl_pow_3(rHalo)*log(1+r/rHalo)/r);
 //}
 
 //double MWPotential::frequencyDistribution(Vec3D position, Vec3D volumeElement) {

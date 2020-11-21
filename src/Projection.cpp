@@ -59,26 +59,26 @@ Vec3D Projection::projectVelocity(const Vec3D& target, const Vec3D& lookAt, cons
 
 void Projection::GCAtoLSR(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut){
 	static double z = 0., s = 0., c = 1.;
-	positionOut.x = Constants::positionSun.x - positionIn.x;
-	positionOut.y = -positionIn.y;
-	positionOut.z = positionIn.z - Constants::positionSun.z;
-	velocityOut.x = -velocityIn.x;
-	velocityOut.y = Constants::circularVelocitySun - velocityIn.y;
-	velocityOut.z = velocityIn.z;
+	positionOut.x = Constants::positionSun.x - positionIn.x; //pc
+	positionOut.y = -positionIn.y; //pc
+	positionOut.z = positionIn.z - Constants::positionSun.z; //pc
+	velocityOut.x = -velocityIn.x; //km/s
+	velocityOut.y = Constants::circularVelocitySun - velocityIn.y; //km/s
+	velocityOut.z = velocityIn.z; //km/s
 	if (Constants::positionSun.z != 0) { // if not 0 -  need to rotate a bit for GC to have positionOut.z=0
 		double t;
 		if (z != Constants::positionSun.z) {
-			z = Constants::positionSun.z;
-			t = hypot(Constants::positionSun.z, Constants::positionSun.x);
-			s = Constants::positionSun.z / t;
-			c = Constants::positionSun.x / t;
+			z = Constants::positionSun.z; //pc
+			t = hypot(Constants::positionSun.z, Constants::positionSun.x); //pc
+			s = Constants::positionSun.z / t; //no unit
+			c = Constants::positionSun.x / t; //no unit
 		}
-		t = positionOut.x;
-		positionOut.x = c * t - s * positionOut.z;
-		positionOut.z = s * t + c * positionOut.z;
-		t = velocityOut.x;
-		velocityOut.x = c * t - s * velocityOut.z;
-		velocityOut.z = s * t + c * velocityOut.z;
+		t = positionOut.x; //pc
+		positionOut.x = c * t - s * positionOut.z; //pc
+		positionOut.z = s * t + c * positionOut.z; //pc
+		t = velocityOut.x; //km/s
+		velocityOut.x = c * t - s * velocityOut.z; //km/s
+		velocityOut.z = s * t + c * velocityOut.z; //km/s
 	}
 }
 
@@ -159,13 +159,18 @@ void Projection::HCAtoLSR(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3
 }
 
 void Projection::HCAtoHEQ(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut) {
+	//HCA internal: (kpc, kpc/Myr)
+	//HEQ internal: (kpc,radian,kpc/Myr,radian/Myr)
+	Vec3D positionInLocal = 0.001 * positionIn; //pc -> kpc
+	Vec3D velocityInLocal = 0.001 * velocityIn; //km/s -> kpc/Myr || kpc/Myr = 0.001 * pc/yr = 0.001 * (3,086e+13)km/(3,154e+7)s = 978 km/s
+
 	Vec3D h1,h2;
-	h1.x = positionIn.x * EtoP[0][0] + positionIn.y * EtoP[0][1] + positionIn.z * EtoP[0][2];
-	h1.y = positionIn.x * EtoP[1][0] + positionIn.y * EtoP[1][1] + positionIn.z * EtoP[1][2];
-	h1.z = positionIn.x * EtoP[2][0] + positionIn.y * EtoP[2][1] + positionIn.z * EtoP[2][2];
-	h2.x = velocityIn.x * EtoP[0][0] + velocityIn.y * EtoP[0][1] + velocityIn.z * EtoP[0][2];
-	h2.y = velocityIn.x * EtoP[1][0] + velocityIn.y * EtoP[1][1] + velocityIn.z * EtoP[1][2];
-	h2.z = velocityIn.x * EtoP[2][0] + velocityIn.y * EtoP[2][1] + velocityIn.z * EtoP[2][2];
+	h1.x = positionInLocal.x * EtoP[0][0] + positionInLocal.y * EtoP[0][1] + positionInLocal.z * EtoP[0][2];
+	h1.y = positionInLocal.x * EtoP[1][0] + positionInLocal.y * EtoP[1][1] + positionInLocal.z * EtoP[1][2];
+	h1.z = positionInLocal.x * EtoP[2][0] + positionInLocal.y * EtoP[2][1] + positionInLocal.z * EtoP[2][2];
+	h2.x = velocityInLocal.x * EtoP[0][0] + velocityInLocal.y * EtoP[0][1] + velocityInLocal.z * EtoP[0][2];
+	h2.y = velocityInLocal.x * EtoP[1][0] + velocityInLocal.y * EtoP[1][1] + velocityInLocal.z * EtoP[1][2];
+	h2.z = velocityInLocal.x * EtoP[2][0] + velocityInLocal.y * EtoP[2][1] + velocityInLocal.z * EtoP[2][2];
 
 	double R = hypot(h1.x, h1.y);
 	positionOut.x = hypot(R, h1.z);
@@ -180,6 +185,13 @@ void Projection::HCAtoHEQ(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3
 	velocityOut.x = cd * temp + sd * h2.z;
 	velocityOut.y = (positionOut.x == 0.) ? 0. : (ca * h2.y - sa * h2.x) / positionOut.x;
 	velocityOut.z = (positionOut.x == 0.) ? 0. : (cd * h2.z - sd * temp) / positionOut.x;
+
+	positionOut.x = positionOut.x * 1000; //kpc -> pc
+	positionOut.y = positionOut.y * Constants::radInArcsec; //rad -> arcsec
+	positionOut.z = positionOut.z * Constants::radInArcsec; //rad -> arcsec
+	velocityOut.x = velocityOut.x * 1000; //kpc/Myr -> km/s
+	velocityOut.y = velocityOut.y * Constants::radmyrInArcsecyr;
+	velocityOut.z = velocityOut.z * Constants::radmyrInArcsecyr;
 }
 
 void Projection::HEQtoHCA(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut){

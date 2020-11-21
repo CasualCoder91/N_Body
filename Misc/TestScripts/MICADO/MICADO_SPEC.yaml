@@ -1,0 +1,31 @@
+# yaml extension for the spectroscopy imaging mode
+object : instrument
+alias : INST
+name : MICADO_SPEC
+description : additional effects for the spectroscopy mode
+
+properties :
+    pixel_scale : 0.004
+    plate_scale : 0.2666666667
+
+effects :
+-   name : spec_mode_optics
+    description : list of extra mirrors needed for the spectroscopy mode
+    class : SurfaceList
+    kwargs :
+        filename : LIST_MICADO_mirrors_spec.dat
+
+- name : spectroscopic_slit_aperture
+  class : ApertureMask
+  kwargs :
+    filename : "!OBS.slit_file"
+
+- name : micado_spectral_traces
+  description : list of spectral order trace geometry on the focal plane
+  class : SpectralTraceList
+  kwargs :
+    filename : "!OBS.trace_file"
+    wave_colname : "lam"
+    s_colname : "xi"
+    col_number_start : 1
+    invalid_value : 0
