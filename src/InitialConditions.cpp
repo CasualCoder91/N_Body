@@ -295,9 +295,11 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 	double theta = position.theta();
 	Vec3D sampledVelocity = Vec3D(vR * sin(theta) + va * sin(theta + M_PI_2), vR * cos(theta) + va * cos(theta + M_PI_2), vz);
 	double escapeVelocity = potential->escapeVelocity(&position);
-	if (escapeVelocity < sampledVelocity.length())
-		std::cout << "sampleDiskVelocity: sampled velocity larger than escape velocity" << std::endl;
-		//sampledVelocity = Vec3D::randomAngles(escapeVelocity);
+	if (escapeVelocity < sampledVelocity.length()) {
+		if(debug)
+			std::cout << "sampleDiskVelocity: sampled velocity larger than escape velocity" << std::endl;
+		sampledVelocity = Vec3D::randomAngles(escapeVelocity);
+	}
 	velocity += sampledVelocity;
 }
 

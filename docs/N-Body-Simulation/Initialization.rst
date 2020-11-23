@@ -243,6 +243,34 @@ Velocities
 Disk
 ^^^^
 
+The velocity distribution of stars in the milky way disk is approximated with the help of Jeans equations as well as relations and constraints based on observations.
+
+For a flat rotation curve the radial velocity dispersion exponentially decreases with increasing radius :cite:`Kruit_1981` (p. 114)
+
+.. math::
+    \sigma_{v_{R}} \propto e^{-\frac{R}{h}}
+
+where :math:`h` in the case of the Miyamoto Nagai potential is the radial scale length :math:`a`.
+
+Relation (...) still requires a constant factor, which can be determined by means of the Toomre parameter :math:`Q` at some distance :math:`R_{ref}`
+
+:math:`Q` is the ratio between the actual and minimum velocity dispersion :cite:`Toomre_1964` (p. 1234)
+
+...math:
+    Q \equiv  \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }
+
+In the solar neighborhood :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
+
+
+
+
+The first moments of the collisionless Boltzmann equation (CBE) for cylindrically symmetric systems are given by
+
+
+
+
+
+
 Bulge
 ^^^^^
 
