@@ -256,12 +256,15 @@ Relation (...) still requires a constant factor, which can be determined by mean
 
 :math:`Q` is the ratio between the actual and minimum velocity dispersion :cite:`Toomre_1964` (p. 1234)
 
-...math:
+.. math::
     Q \equiv  \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }
 
 In the solar neighborhood :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
 
+In the case of an isothermal sheet, the vertical velocity dispersion only depends on the surface density :cite:`Kruit_1988` (p. 120)
 
+.. math::
+    \sigma_{v_{z}} = \pi G \Sigma \left ( R \right )z_{0}
 
 
 The first moments of the collisionless Boltzmann equation (CBE) for cylindrically symmetric systems are given by
