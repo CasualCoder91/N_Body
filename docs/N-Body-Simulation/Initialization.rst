@@ -264,7 +264,8 @@ In the solar neighborhood :math:`Q_{\ast} = 2.7 \pm 0.4` and :math:`\sigma_{v_{R
 
 The constant :math:`k` can therefor be approximated via
 
-
+.. math::
+    k \cong Q \sigma_{v_{R,min}}e^{\frac{R}{h}}
 
 Under the approximation of isothermal sheets (introduced in :cite:`Kruit_1981`), the vertical velocity dispersion only depends on the surface density :cite:`Kruit_1988`
 

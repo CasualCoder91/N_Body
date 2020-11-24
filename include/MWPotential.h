@@ -33,7 +33,6 @@ class MWPotential
 private:
 	static const double mMassBlackHole; // SolarMassUnit
 	static const double mMassDisk; // SolarMassUnit
-	static const double aDisk; //kpc
 	static const double mMassBulge; // SolarMassUnit
 	static const double mMassSmallBulge; // SolarMassUnit
 	static const double rHalo; // kpc
@@ -50,7 +49,8 @@ public:
 	static const double characteristicVelocityBulge; // km/s
 	static const double aBulge; // SolarMassUnit
 	//static const double aSmallBulge; // SolarMassUnit
-	static const double bDisk; //kpc
+	static const double aDisk; // pc
+	static const double bDisk; // pc
 	static const std::string velocityDistributionBulgeTableFilename;
 	LookupTable velocityDistributionBulgeTable;
 	static Hernquist bulgePotential;
@@ -76,7 +76,6 @@ private:
 	static double sphericalAveragedDisc(double r);
 	double angularVelocity(double R); // return in s^-1, new Bulge/Halo
 	double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
-	double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
 public:
 	MWPotential();
 	/** @brief the total (all potentials considered) circular velocity [km/s] at the \p position [pc] */
@@ -132,6 +131,10 @@ public:
 
 	static double potentialEnergy(const Vec3D& position);
 	static double potentialEnergy(double R, double z);
+
+
+	//returns [km/pc * 1/s]
+	double epicyclicFrequency(double R, double z); // in s^-1 new Bulge/Halo
 
 	//static double radialVelocityDispersionBulge(double R, double z); // return in km/s
 	//static double infiniteDistributionFunctionBulge(double q); //q = sqrt(-E*characteristicVelocity^-2)

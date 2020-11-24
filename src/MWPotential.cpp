@@ -2,8 +2,8 @@
 
 const double MWPotential::mMassBlackHole = 4e6; // SolarMassUnit
 const double MWPotential::mMassDisk = 6.51e10; // SolarMassUnit
-const double MWPotential::aDisk = 4.4e3; // pc
-const double MWPotential::bDisk = 0.267e3; // pc
+const double MWPotential::aDisk = 3.0e3; // pc (galpy)
+const double MWPotential::bDisk = 0.280e3; // pc (galpy)
 const double MWPotential::mMassBulge = 1.8e10; // SolarMassUnit
 const double MWPotential::mMassSmallBulge = 0; // SolarMassUnit
 
@@ -347,7 +347,7 @@ double MWPotential::epicyclicFrequency(double R, double z){
 		std::cout << "Warning: Imaginary epicyclicFrequency. Setting 1e-10 to avoid crash" << std::endl;
 		temp = 1e-10;
 	}
-	temp = sqrt(Constants::G * temp)* Constants::kmInpc;
+	temp = sqrt(Constants::G * temp);
 	return temp;
 }
 
