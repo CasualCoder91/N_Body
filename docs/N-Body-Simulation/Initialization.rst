@@ -252,14 +252,19 @@ For a flat rotation curve the radial velocity dispersion exponentially decreases
 
 where :math:`h` in the case of the Miyamoto Nagai potential is the radial scale length :math:`a`.
 
-Relation (...) still requires a constant factor, which can be determined by means of the Toomre parameter :math:`Q` at some distance :math:`R_{ref}`
+Relation (...) still requires a constant factor :math:`k`, which can be determined by means of the Toomre parameter :math:`Q` at some distance :math:`R_{ref}`
 
-:math:`Q` is the ratio between the actual and minimum velocity dispersion :cite:`Toomre_1964` (p. 1234)
+:math:`Q` is the ratio between the actual and minimum velocity dispersion :math:`\sigma_{v_{R,min}}` :cite:`Toomre_1964` (p. 1234)
 
 .. math::
-    Q \equiv  \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }
+    \sigma_{v_{R,min}} = \frac{\kappa}{3.36G\Sigma} \\
+    Q \equiv \frac{\sigma_{v_{R}}}{\sigma_{v_{R,min}}} = \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }
 
-In the solar neighborhood :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
+In the solar neighborhood :math:`Q_{\ast} = 2.7 \pm 0.4` and :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
+
+The constant :math:`k` can therefor be approximated via
+
+
 
 Under the approximation of isothermal sheets (introduced in :cite:`Kruit_1981`), the vertical velocity dispersion only depends on the surface density :cite:`Kruit_1988`
 
