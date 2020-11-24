@@ -282,15 +282,19 @@ void Test::velocityBulge(){
 }
 
 void Test::velocityDisk(){
-	double Q = 2.7; //Toomre
-	double R = 8300; // location of sun
-	double surfaceDensity = potential.surfaceDensityDisk(R);
-	double freq = potential.epicyclicFrequency(R, 27);
-	double k = Q * 3.36 * Constants::G * surfaceDensity / freq * exp(R / potential.aDisk);
+	static const double Q = 2.7; //Toomre
+	static const double R = 8300; // location of sun
+	static const double surfaceDensity = potential.surfaceDensityDisk(R);
+	static const double freq = potential.epicyclicFrequency(R, 27);
+	static const double k = Q * 3.36 * Constants::G * surfaceDensity / freq * exp(R / potential.aDisk);
 	std::cout << "surfaceDensity: " << surfaceDensity << std::endl;
 	std::cout << "frequency: " << freq << std::endl;
 	std::cout << "constant: " << k << std::endl;
 	printf_s("Dispersion in solar neighborhood: %f\n", k * exp(-R / potential.aDisk));
+	Vec3D position = Constants::positionSun;
+	Vec3D velocity;
+	initialConditions.sampleDiskVelocity(velocity, position);
+	std::cout << "Sampled velocity: " << velocity.print() << std::endl << std::endl;
 }
 
 void Test::bulgeMass(){

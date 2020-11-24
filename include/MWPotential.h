@@ -74,7 +74,8 @@ private:
 	@param r The radius [pc]
 	*/
 	static double sphericalAveragedDisc(double r);
-	double angularVelocity(double R); // return in s^-1, new Bulge/Halo
+	//returns [km/pc * 1/s]
+	double angularVelocity(double R); 
 	double surfaceDensity(double R); // return in SolarMassUnit*pc^-2, new Bulge
 public:
 	MWPotential();

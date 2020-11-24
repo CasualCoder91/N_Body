@@ -278,10 +278,13 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 
 	double rDispersion = potential->radialVelocityDispersionDisk(R,position.z);
 	double vR = 0;
-	if (rDispersion > 0){
+	if (rDispersion > 0) {
 		std::normal_distribution<> radialVelocityDistribution{ 0,rDispersion };
 		vR = radialVelocityDistribution(gen);
 	}
+	else if(debug)
+		std::cout << "critical error in InitialConditions::sampleDiskVelocity()\n";
+
 	double aDispersion = potential->azimuthalVelocityDispersion(R, position.z);
 	double va = 0;
 	if (aDispersion > 0) {
@@ -289,6 +292,8 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 		va = azimuthalVelocityDistribution(gen);
 	}
 	else {
+		if (debug)
+			std::cout << "critical error in InitialConditions::sampleDiskVelocity()\n";
 		va = potential->azimuthalStreamingVelocity(position);
 	}
 

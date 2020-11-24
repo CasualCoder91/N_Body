@@ -308,7 +308,7 @@ double MWPotential::massDisk(Matrix* transformation, double distance, double r) 
 
 double MWPotential::angularVelocity(double R){
 	double R2 = gsl_pow_2(R);
-	return Constants::kmInpc*sqrt(Constants::G /R*(bulgePotential.potentialdr(R)+mMassDisk*R/pow(gsl_pow_2(aDisk+bDisk)+R2,1.5)
+	return sqrt(Constants::G /R*(bulgePotential.potentialdr(R)+mMassDisk*R/pow(gsl_pow_2(aDisk+bDisk)+R2,1.5)
 		+mMassBlackHole/R2+ mMassHalo / (log(2) - 0.5) /(R2+R*rHalo)+ mMassHalo / (log(2) - 0.5) *log((R+rHalo)/rHalo)/R2));
 }
 
@@ -354,7 +354,13 @@ double MWPotential::epicyclicFrequency(double R, double z){
 double MWPotential::radialVelocityDispersionDisk(double R, double z){
 	//3.36 * G * surfaceDensity(R) / epicyclicFrequency(R)*kmInpc;
 	//assumed to be normalized ...
-	double temp = exp(-gsl_pow_2(R) + 2 * gsl_pow_2(velocityDispersionScaleLength) / aDisk) * 3.36 * Constants::G * surfaceDensity(R) / epicyclicFrequency(R,z) * Constants::kmInpc;
+
+	static const double Q = 2.7; //Toomre
+	static const double surfaceDensity = this->surfaceDensityDisk(Constants::positionSun.x);
+	static const double freq = this->epicyclicFrequency(Constants::positionSun.x, Constants::positionSun.z);
+	static const double k = Q * 3.36 * Constants::G * surfaceDensity / freq * exp(Constants::positionSun.x / this->aDisk);
+
+	double temp = k * exp(- sqrt(R*R + 2.0*this->velocityDispersionScaleLength * this->velocityDispersionScaleLength) / this->aDisk);
 	if (temp < 0) {
 		std::cout << "Warning: Negative radial velocity dispersion. Setting 1 to avoid crash" << std::endl;
 		return 1;
