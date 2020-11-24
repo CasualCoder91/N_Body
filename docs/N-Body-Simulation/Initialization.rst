@@ -240,6 +240,11 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
 Velocities
 ----------
 
+The Epicyclic Approximation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The epicyclic frequency is the frequency of small radial oscillations.
+
 Disk
 ^^^^
 
@@ -257,8 +262,10 @@ Relation (...) still requires a constant factor :math:`k`, which can be determin
 :math:`Q` is the ratio between the actual and minimum velocity dispersion :math:`\sigma_{v_{R,min}}` :cite:`Toomre_1964` (p. 1234)
 
 .. math::
-    \sigma_{v_{R,min}} = \frac{\kappa}{3.36G\Sigma} \\
+    \sigma_{v_{R,min}} = \frac{3.36G\Sigma}{\kappa} \\
     Q \equiv \frac{\sigma_{v_{R}}}{\sigma_{v_{R,min}}} = \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }
+
+where :math:`\kappa` denotes the epicyclic frequency.
 
 In the solar neighborhood :math:`Q_{\ast} = 2.7 \pm 0.4` and :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
 
@@ -272,7 +279,7 @@ Under the approximation of isothermal sheets (introduced in :cite:`Kruit_1981`),
 .. math::
     \sigma_{v_{z}} = \pi G \Sigma \left ( R \right )z_{0}
 
-The isothermal sheet approximation for the MW disk was proposed by :cite:`Kruit_1981`
+with :math:`z_{0}` being the vertical scale length :math:`b` when using the Miyamoto Nagai potential.
 
 The first moments of the collisionless Boltzmann equation (CBE) for cylindrically symmetric systems are given by
 
