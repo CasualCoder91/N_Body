@@ -265,7 +265,7 @@ using Hamilton's equations gives
     \dot{p}_{\varphi} = -\frac{\partial H}{\partial \varphi} = -\frac{\partial \Phi }{\partial \varphi} = 0 \\
     \dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}
 
-Since :math:`L_z = R^2\dot{\varphi}`, the second equation above indicates that, in the case of an axisymmetric potential,
+Since :math:`\vec{L} = \vec{p} \times  \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\varphi}`, the second equation above signifies that, in the case of an axisymmetric potential,
 the z component of the angular momentum is conserved.
 Equations .1 and .3
 
