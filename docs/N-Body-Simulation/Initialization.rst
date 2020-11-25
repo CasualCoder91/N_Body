@@ -243,6 +243,37 @@ Velocities
 The Epicyclic Approximation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Individual stars in the disk are on nearly circular orbits.
+Such orbits can be approximated by circular orbits with additional retrograde elliptical orbits around the guiding center.
+
+The derivation of this approximation starts with the equations of motion in cylindrical coordinates. The momenta are given by
+
+.. math::
+    p_{R} = m\dot{R} \\
+    p_{\varphi} = mR^2\dot{\varphi} \\
+    p_{z} = m\dot{z} \\
+
+therefor the Hamiltonian with an axisymmetric potential reads
+
+.. math::
+    H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\varphi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
+
+using Hamilton's equations gives
+
+.. math::
+    \dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\varphi^2}{R^3}-\frac{\partial \Phi }{\partial R} \\
+    \dot{p}_{\varphi} = -\frac{\partial H}{\partial \varphi} = -\frac{\partial \Phi }{\partial \varphi} = 0 \\
+    \dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}
+
+Since :math:`L_z = R^2\dot{\varphi}`, the second equation above indicates that, in the case of an axisymmetric potential,
+the z component of the angular momentum is conserved.
+Equations .1 and .3
+
+Staring with the equations of motion in cylindrical coordinates derived from the Hamiltonian given by
+
+
+
+
 The epicyclic frequency is the frequency of small radial oscillations.
 
 Disk
