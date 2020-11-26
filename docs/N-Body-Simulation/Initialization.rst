@@ -284,7 +284,8 @@ leads to
     H_{\textup{eff}} = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)
 
 Here :math:`\frac{1}{2m}\left( p_{R}^2+p_z^2 \right)` is the kinetic energy in the :math:`\left( R,z \right)` plane or meridional plane.
-The angular momentum term in the effective potential is not a real potential but can still be viewed as a centrifugal potential. The given definition of :math:`\Phi_{\textup{eff}}` is only valid because :math:`L_z` is conserved.
+The angular momentum term in the effective potential is not a real potential energy even though sometimes called centrifugal potential.
+It really is the angular kinetic energy. The given definition of :math:`\Phi_{\textup{eff}}` is only valid because :math:`L_z` is conserved.
 
 with this (?) and (?) can be written as
 
@@ -292,7 +293,20 @@ with this (?) and (?) can be written as
     \dot{p}_{R} = -\frac{\partial \Phi_{\textup{eff}} }{\partial R} \\
     \dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z}
 
-This equation describe harmonic oscillations in the effective potential.
+These equations describe harmonic oscillations in the effective potential.
+The minimum of effective potential is the minimum of the real potential energy, together with a contribution from the angular kinetic energy.
+
+.. math::
+    \frac{\partial \Phi_{\textup{eff}} }{\partial R} = \frac{\partial \Phi }{\partial R} - \frac{mL_z^2}{2R^3} =0 \\
+    \frac{\partial \Phi_{\textup{eff}} }{\partial z} = 0
+
+These conditions are true for circular orbits with angular momentum :math:`L_z` in the equatorial plane (:math:`z=0`) with :math:`\frac{\partial \Phi }{\partial R} = \frac{mL_z^2}{2R_g^3}`.
+:math:`R_g` is the radius of the guiding center.
+
+With definition
+
+.. math::
+    x \equiv R - R_g
 
 The epicyclic frequency is the frequency of small radial oscillations.
 
