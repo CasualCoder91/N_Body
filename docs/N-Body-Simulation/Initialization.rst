@@ -267,9 +267,21 @@ using Hamilton's equations gives
 
 Since :math:`\vec{L} = \vec{p} \times  \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\varphi}`, the second equation above signifies that, in the case of an axisymmetric potential,
 the z component of the angular momentum is conserved.
-Equations .1 and .3
 
-Staring with the equations of motion in cylindrical coordinates derived from the Hamiltonian given by
+Rearranging equation (?) and using the constant :math:`L_z` gives
+
+..math::
+    H = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\frac{mL_z^2}{2R^2}+\Phi\left(R,z\right)
+
+With the effective potential given by
+
+..math::
+    \Phi_{\textup{eff}}\left(R,z\right) = \frac{mL_z^2}{2R^2}+\Phi\left(R,z\right)
+
+leads to
+
+..math::
+    H_{\textup{eff}} = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)
 
 
 
