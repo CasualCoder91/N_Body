@@ -283,12 +283,16 @@ leads to
 .. math::
     H_{\textup{eff}} = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)
 
+Here :math:`\frac{1}{2m}\left( p_{R}^2+p_z^2 \right)` is the kinetic energy in the :math:`\left( R,z \right)` plane or meridional plane.
+The angular momentum term in the effective potential is not a real potential but can still be viewed as a centrifugal potential. The given definition of :math:`\Phi_{\textup{eff}}` is only valid because :math:`L_z` is conserved.
+
 with this (?) and (?) can be written as
 
 .. math::
     \dot{p}_{R} = -\frac{\partial \Phi_{\textup{eff}} }{\partial R} \\
     \dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z}
 
+This equation describe harmonic oscillations in the effective potential.
 
 The epicyclic frequency is the frequency of small radial oscillations.
 
