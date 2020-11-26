@@ -270,20 +270,24 @@ the z component of the angular momentum is conserved.
 
 Rearranging equation (?) and using the constant :math:`L_z` gives
 
-..math::
+.. math::
     H = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\frac{mL_z^2}{2R^2}+\Phi\left(R,z\right)
 
 With the effective potential given by
 
-..math::
+.. math::
     \Phi_{\textup{eff}}\left(R,z\right) = \frac{mL_z^2}{2R^2}+\Phi\left(R,z\right)
 
 leads to
 
-..math::
+.. math::
     H_{\textup{eff}} = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)
 
+with this (?) and (?) can be written as
 
+.. math::
+    \dot{p}_{R} = -\frac{\partial \Phi_{\textup{eff}} }{\partial R} \\
+    \dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z}
 
 
 The epicyclic frequency is the frequency of small radial oscillations.
