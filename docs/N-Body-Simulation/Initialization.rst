@@ -321,11 +321,20 @@ If :math:`R = R_g` then :math:`x=0` and therefor the guiding center is at :math:
     \frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial x\partial z}\bigg|_{(R_g,0)}xz +
     \mathcal{O}(xz^2)
 
-The epicyclic frequency is the frequency of small radial oscillations.
+The first order terms are zero (since :math`\Phi_{\textup{eff}}` is minimized at the guiding center) and so is the :math:`xz`, the later due to symmetric about :math:`z=0`.
 
+In the epicyclic approximation :math:`\mathcal{O}(xz^2)` and higher order terms are neglected.
 
+With this approximation (?) and (?) become
+.. math::
+    \dot{p}_{x} = -\frac{\partial \Phi_{\textup{eff}} }{\partial x} \approx
+    \frac{\partial^2 \Phi_{\textup{eff}} }{\partial R^2}\bigg|_{(R_g,0)}x \equiv
+    -\kappa^2x   \\
+    \dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z} \approx
+    \frac{\partial^2 \Phi_{\textup{eff}} }{\partial z^2}\bigg|_{(R_g,0)}z \equiv
+    -\nu^2z   \\
 
-
+where the epicyclic frequency :math:`\kappa` is the frequency of small radial and the vertical frequency :math:`\nu` the frequency of small vertical oscillations.
 
 
 
