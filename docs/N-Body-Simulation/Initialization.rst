@@ -303,14 +303,14 @@ The minimum of effective potential is the minimum of the real potential energy, 
 The first condition states that the attractive force (:math:`-\frac{\partial \Phi_{\textup{eff}} }{\partial R}`) has to balance the “centrifugal force”.
 This is the condition for circular orbits with angular momentum :math:`L_z`.
 The second condition is clearly satisfied in the equatorial plane (:math:`z=0`).
-
-with :math:`\frac{\partial \Phi }{\partial R} = \frac{mL_z^2}{2R_g^3}`.
 The coordinates of this guiding center are defined as :math:`(R_g,\varphi_g,z_g)`.
 
-With definition
+In preparation for a Taylor series expansion about the guiding center :math:`x` is defined as
 
 .. math::
     x \equiv R - R_g
+
+If :math:`R = R_g` then :math:`x=0` and therefor the guiding center is at :math:`(x,z) = (0,0)`
 
 The epicyclic frequency is the frequency of small radial oscillations.
 
