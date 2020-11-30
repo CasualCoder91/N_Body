@@ -300,8 +300,12 @@ The minimum of effective potential is the minimum of the real potential energy, 
     \frac{\partial \Phi_{\textup{eff}} }{\partial R} = \frac{\partial \Phi }{\partial R} - \frac{mL_z^2}{2R^3} =0 \\
     \frac{\partial \Phi_{\textup{eff}} }{\partial z} = 0
 
-These conditions are true for circular orbits with angular momentum :math:`L_z` in the equatorial plane (:math:`z=0`) with :math:`\frac{\partial \Phi }{\partial R} = \frac{mL_z^2}{2R_g^3}`.
-:math:`R_g` is the radius of the guiding center.
+The first condition states that the attractive force (:math:`-\frac{\partial \Phi_{\textup{eff}} }{\partial R}`) has to balance the “centrifugal force”.
+This is the condition for circular orbits with angular momentum :math:`L_z`.
+The second condition is clearly satisfied in the equatorial plane (:math:`z=0`).
+
+with :math:`\frac{\partial \Phi }{\partial R} = \frac{mL_z^2}{2R_g^3}`.
+The coordinates of this guiding center are defined as :math:`(R_g,\varphi_g,z_g)`.
 
 With definition
 
@@ -309,6 +313,12 @@ With definition
     x \equiv R - R_g
 
 The epicyclic frequency is the frequency of small radial oscillations.
+
+
+
+
+
+
 
 Disk
 ^^^^
