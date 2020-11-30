@@ -342,10 +342,21 @@ with potential :math:`\Phi\left(R,z\right)` (?) can be written as
 .. math::
     \kappa^2 = \frac{\partial^2\Phi}{\partial R^2}\bigg|_{(R_g,0)} + \frac{3L_z}{R_g^4}
 
-The circular angular frequency is given by
+The circular angular frequency (see eq. (?) with :math:`\Omega = \dot{\varphi}`) is given by
 
 .. math::
     \Omega^2 = \frac{1}{R} \frac{\partial \Phi }{\partial R}\bigg|_{(R_g,0)} = \frac{L_z^2}{R^4}
+
+The derivative of (?) leads to
+
+.. math::
+    \frac{\partial^2\Phi}{\partial R^2} = \Omega^2 + R \frac{d\Omega^2}{dR}
+
+Inserting equation (?) and (?) into (?) yields
+
+.. math::
+    \kappa^2(R_g) = \left ( R\frac{d\Omega^2}{dR} + 4\Omega^2 \right )\bigg|_{R=R_g}
+
 
 Disk
 ^^^^
