@@ -310,7 +310,16 @@ In preparation for a Taylor series expansion about the guiding center :math:`x` 
 .. math::
     x \equiv R - R_g
 
-If :math:`R = R_g` then :math:`x=0` and therefor the guiding center is at :math:`(x,z) = (0,0)`
+If :math:`R = R_g` then :math:`x=0` and therefor the guiding center is at :math:`(x,z) = (0,0)`.
+
+.. math::
+    \Phi_{\textup{eff}} = \Phi_{\textup{eff}}(R_g,0) +
+    \frac{\partial \Phi_{\textup{eff}} }{\partial R}\bigg|_{(R_g,0)}x +
+    \frac{\partial \Phi_{\textup{eff}} }{\partial z}\bigg|_{(R_g,0)}z +
+    \frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial R^2}\bigg|_{(R_g,0)}x^2 +
+    \frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial z^2}\bigg|_{(R_g,0)}z^2 +
+    \frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial x\partial z}\bigg|_{(R_g,0)}xz +
+    \mathcal{O}(xz^2)
 
 The epicyclic frequency is the frequency of small radial oscillations.
 
