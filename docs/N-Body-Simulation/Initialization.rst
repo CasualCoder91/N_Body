@@ -240,25 +240,10 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
 Velocities
 ----------
 
-Jeans equations
-^^^^^^^^^^^^^^^
+Hamiltonian with axisymmetric potential
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation is given by:
-
-.. math::
-    \frac{\partial f}{\partial t} + v_i\frac{\partial f}{\partial x_i} - \frac{\partial \Phi}{\partial x_i}\frac{\partial f}{\partial v_i} = 0
-
-Since the galactic potential (?) is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
-
-
-
-The Epicyclic Approximation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Individual stars in the disk are on nearly circular orbits.
-Such orbits can be approximated by circular orbits with additional retrograde elliptical orbits around the guiding center.
-
-The derivation of this approximation starts with the equations of motion in cylindrical coordinates. The momenta are given by
+The momenta in cylindrical coordinates are given by
 
 .. math::
     p_{R} = m\dot{R} \\
@@ -277,8 +262,28 @@ using Hamilton's equations gives
     \dot{p}_{\varphi} = -\frac{\partial H}{\partial \varphi} = -\frac{\partial \Phi }{\partial \varphi} = 0 \\
     \dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}
 
-Since :math:`\vec{L} = \vec{p} \times  \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\varphi}`, the second equation above signifies that, in the case of an axisymmetric potential,
+Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\varphi}`, the second equation above signifies that, in the case of an axisymmetric potential,
 the z component of the angular momentum is conserved.
+
+Jeans equations
+^^^^^^^^^^^^^^^
+
+Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation is given by:
+
+.. math::
+    \frac{\partial f}{\partial t} + v_i\frac{\partial f}{\partial x_i} - \frac{\partial \Phi}{\partial x_i}\frac{\partial f}{\partial v_i} = 0
+
+Since the galactic potential (?) is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
+Inserting the relevant euqations (?) leads to:
+
+
+The Epicyclic Approximation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Individual stars in the disk are on nearly circular orbits.
+Such orbits can be approximated by circular orbits with additional retrograde elliptical orbits around the guiding center.
+
+The derivation of this approximation starts with Hamilton's equations for an axisymmetric potential.
 
 Rearranging equation (?) and using the constant :math:`L_z` gives
 
