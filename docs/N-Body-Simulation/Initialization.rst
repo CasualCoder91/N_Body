@@ -231,14 +231,19 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
     0  & 0 & 0 & 1
     \end{bmatrix}
 
-.. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
+.. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
 
-.. doxygenfunction:: InitialConditions::sampleBulgePositions(std::vector<Star *>, Vec3D, Vec3D, double, double, Matrix *)
+.. doxygenfunction:: InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
 
 .. plot:: pyplots/potentialPositions.py
 
 Velocities
 ----------
+
+Jeans equations
+^^^^^^^^^^^^^^^
+
+
 
 The Epicyclic Approximation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -378,7 +383,7 @@ Relation (...) still requires a constant factor :math:`k`, which can be determin
     \sigma_{v_{R,min}} = \frac{3.36G\Sigma}{\kappa} \\
     Q \equiv \frac{\sigma_{v_{R}}}{\sigma_{v_{R,min}}} = \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }
 
-where :math:`\kappa` denotes the epicyclic frequency.
+where :math:`\kappa` denotes the epicyclic frequency (eq. (?)).
 
 In the solar neighborhood :math:`Q_{\ast} = 2.7 \pm 0.4` and :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
 
