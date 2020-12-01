@@ -268,13 +268,25 @@ the z component of the angular momentum is conserved.
 Jeans equations
 ^^^^^^^^^^^^^^^
 
-Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation is given by:
+Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation is given by (:cite:`Binney_2011` p. 277):
 
 .. math::
-    \frac{\partial f}{\partial t} + v_i\frac{\partial f}{\partial x_i} - \frac{\partial \Phi}{\partial x_i}\frac{\partial f}{\partial v_i} = 0
+    \frac{\partial f}{\partial t} + \frac{\partial f}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial f}{\partial p_i}\frac{\partial H}{\partial q_i} = 0
 
 Since the galactic potential (?) is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
+
+.. math::
+    \frac{\partial f}{\partial t}
+    + p_R\frac{\partial f}{\partial R}
+    + \frac{p_\varphi}{R^2}\frac{\partial f}{\partial \varphi}
+    + p_z\frac{\partial f}{\partial z}
+    - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\varphi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
+    - \frac{\partial \Phi}{\partial \varphi}\frac{\partial f}{\partial p_\varphi}
+    - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
+
 Inserting the relevant euqations (?) leads to:
+
+
 
 
 The Epicyclic Approximation

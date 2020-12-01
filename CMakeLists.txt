@@ -15,7 +15,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES src/Analysis.cpp src/Configuration.cpp src/Constants.cpp src/Database.cpp src/InitialConditions.cpp src/InOut.cpp
 src/Integrator.cpp src/LookupTable.cpp src/main.cpp src/Matrix.cpp src/MWPotential.cpp src/Node.cpp
 src/Plot.cpp src/Point src/Potential/Hernquist.cpp src/Potential/Potential.cpp src/ProgressBar.cpp src/Projection.cpp src/Simulation.cpp src/sqlite3.c src/Star.cpp src/Vec3D.cpp
-src/VDBSCAN.cpp src/Test.cpp)
+src/Test.cpp src/VDBSCAN.cpp src/Vec2D.cpp )
 
 include_directories(include)
 #include_directories(lib)
