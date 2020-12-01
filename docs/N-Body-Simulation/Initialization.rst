@@ -243,6 +243,13 @@ Velocities
 Jeans equations
 ^^^^^^^^^^^^^^^
 
+Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation is given by:
+
+.. math::
+    \frac{\partial f}{\partial t} + v_i\frac{\partial f}{\partial x_i} - \frac{\partial \Phi}{\partial x_i}\frac{\partial f}{\partial v_i} = 0
+
+Since the galactic potential (?) is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
+
 
 
 The Epicyclic Approximation
