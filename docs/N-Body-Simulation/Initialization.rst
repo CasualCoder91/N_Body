@@ -250,7 +250,7 @@ The momenta in cylindrical coordinates are given by
     p_{\varphi} = mR^2\dot{\varphi} \\
     p_{z} = m\dot{z} \\
 
-therefor the Hamiltonian with an axisymmetric potential reads
+therefor the Hamiltonian with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
 
 .. math::
     H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\varphi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
@@ -284,9 +284,21 @@ Since the galactic potential (?) is axisymmetric, it is convenient to express th
     - \frac{\partial \Phi}{\partial \varphi}\frac{\partial f}{\partial p_\varphi}
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
 
-Inserting the relevant euqations (?) leads to:
+It is assumed that the galaxy is statistically in a steady state (:cite:`Binney_2013`) ie :math:`\frac{\partial f}{\partial t}=0`.
+Due to this assumption and taking (?) into account (?) simplifies to
 
+.. math::
+    p_R\frac{\partial f}{\partial R}
+    + \frac{p_\varphi}{R^2}\frac{\partial f}{\partial \varphi}
+    + p_z\frac{\partial f}{\partial z}
+    - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\varphi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
+    - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
 
+Multiplying equation (?) by :math:`p_R` and integrating over all momenta leads to (todo: derive?)
+
+.. math::
+    \frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +
+    \nu \left ( \frac{\overline{v_R^2}-\overline{v_\varphi^2}}{R} + \frac{\partial\Phi}{\partial R}\right ) = 0
 
 
 The Epicyclic Approximation
