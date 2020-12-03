@@ -298,11 +298,15 @@ The phase space density
 
 Todo: explain in words
 
-The zeroth moment is the number density
+The zeroth moment is the number density:
 
 .. math::
     \nu(\vec{x}) \equiv \int f(\vec{x},\vec{v})d^3\vec{v}
 
+Mean velocities are given by the first moment:
+
+.. math::
+    \overline{v_i}(\vec{x}) \equiv \frac{1}{\nu(\vec{x})}\int v_i f(\vec{x},\vec{v})d^3\vec{v}
 
 Jeans equations
 ^^^^^^^^^^^^^^^
