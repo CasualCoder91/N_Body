@@ -240,6 +240,26 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
 Velocities
 ----------
 
+Particle Kinematics in Cylindrical Coordinates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In terms of cartesian unit vectors, cylindrical unit vectors are given by
+
+.. math::
+    \hat{e}_R = \hat{e}_x\cos(\phi) + \hat{e}_y\sin(\phi) \\
+    \hat{e}_\phi = -\hat{e}_x\sin(\phi) + \hat{e}_y\cos(\phi)\\
+    \hat{e}_z = \hat{e}_z
+
+since :math:`\hat{e}_R` depends on :math:`\phi` position vectors have the form
+
+.. math::
+    \vec{q} = R\hat{e}_R+z\hat{e}_z
+
+derivation by time gives the velocity
+
+.. math::
+    \vec{v} = \dot{R}\hat{e}_R+R\dot{\phi}\hat{e}_\phi+\dot{z}\hat{e}_z
+
 Hamiltonian with axisymmetric potential
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
