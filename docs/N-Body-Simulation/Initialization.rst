@@ -260,19 +260,19 @@ derivation by time gives the velocity
 .. math::
     \vec{v} = \dot{R}\hat{e}_R+R\dot{\phi}\hat{e}_\phi+\dot{z}\hat{e}_z
 
-Lagrangian
-**********
+Lagrangian with axisymmetric potential
+**************************************
 
 Using (?) the Lagrangian reads
 
 .. math::
-    L =\frac{m}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,\phi,z\right)
+    L =\frac{m}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,z\right)
 
 and using the Euler–Lagrange equation gives the conjugate momenta
 
 .. math::
     p_{R} = \frac{\partial L}{\partial \dot{R}} = m\dot{R} = mv_R\\
-    p_{\varphi} = \frac{\partial L}{\partial \dot{\phi}} = mR^2\dot{\phi} =mRv_R\\
+    p_{\varphi} = \frac{\partial L}{\partial \dot{\phi}} = mR^2\dot{\phi} =mRv_\phi\\
     p_{z} = \frac{\partial L}{\partial \dot{z}} = m\dot{z} =mv_z\\
 
 Hamiltonian with axisymmetric potential
@@ -292,6 +292,17 @@ using Hamilton's equations gives
 
 Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\varphi}`, the second equation above signifies that, in the case of an axisymmetric potential,
 the z component of the angular momentum is conserved.
+
+The phase space density
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Todo: explain in words
+
+The zeroth moment is the number density
+
+.. math::
+    \nu(\vec{x}) \equiv \int f(\vec{x},\vec{v})d^3\vec{v}
+
 
 Jeans equations
 ^^^^^^^^^^^^^^^
