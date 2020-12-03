@@ -260,17 +260,25 @@ derivation by time gives the velocity
 .. math::
     \vec{v} = \dot{R}\hat{e}_R+R\dot{\phi}\hat{e}_\phi+\dot{z}\hat{e}_z
 
-Hamiltonian with axisymmetric potential
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Lagrangian
+**********
 
-The momenta in cylindrical coordinates are given by
+Using (?) the Lagrangian reads
 
 .. math::
-    p_{R} = m\dot{R} \\
-    p_{\varphi} = mR^2\dot{\varphi} \\
-    p_{z} = m\dot{z} \\
+    L =\frac{m}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,\phi,z\right)
 
-therefor the Hamiltonian with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
+and using the Euler–Lagrange equation gives the conjugate momenta
+
+.. math::
+    p_{R} = \frac{\partial L}{\partial \dot{R}} = m\dot{R} = mv_R\\
+    p_{\varphi} = \frac{\partial L}{\partial \dot{\phi}} = mR^2\dot{\phi} =mRv_R\\
+    p_{z} = \frac{\partial L}{\partial \dot{z}} = m\dot{z} =mv_z\\
+
+Hamiltonian with axisymmetric potential
+***************************************
+
+Using the momenta in cylindrical coordinates (?) the Hamiltonian with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
 
 .. math::
     H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\varphi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
