@@ -297,17 +297,33 @@ The phase space distribution function (DF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A galaxy can be viewed as a number of stars in phase space.
-The phase space is a six dimensional space spanned by position :math:'\vec{q}' and momentum :math:'\vec{p}'.
-One point in phase space can therefor be described by a six dimensional vector :math:'\vec{w}=(\vec{q},\vec{p})',
+The phase space is a six dimensional space spanned by position :math:`\vec{q}` and momentum :math:`\vec{p}`.
+One point in phase space can therefor be described by a six dimensional vector :math:`\vec{w}=(\vec{q},\vec{p})`,
 the state of a whole galaxy as a DF :math:`f(\vec{q},\vec{p},t)`.
-:math:'f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}' is the probability that one star is inside the 6D cuboid defined by :math:`\vec{q}d^3d^3\vec{p}` at time :math:`t`.
+:math:`f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}` is the probability that one star is inside the 6D cuboid defined by :math:`\vec{q}d^3d^3\vec{p}` at time :math:`t`.
 
 The conservation of probability in phase space is given by
 
 .. math::
-    \frac{\partial f }{\partial t} + \sum_{i=1}^{6} \frac{\partial}{\partial t}(f\dot{w}_i) = 0
+    \frac{\partial f }{\partial t} + \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i) = 0
 
 with :math:`\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})`
+
+since
+
+.. math::
+    \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i)
+    = \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \dot{q}_i\right) + \frac{\partial}{\partial p_i}\left(f\dot{p}_i\right) \right ) \\
+    = \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \frac{\partial H}{\partial p_i}\right) - \frac{\partial}{\partial p_i}\left(f \frac{\partial H}{\partial q_i} \right) \right)
+    = \sum_{i=1}^{3} \left (
+    \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
+    + f  \frac{\partial^2 H}{\partial q_i \partial p_i}
+    - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i}
+    - f \frac{\partial ^2 H}{\partial p_i \partial q_i} \right)
+    = \sum_{i=1}^{3} \left ( 
+    \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
+    - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right)
+
 
 The zeroth moment is the number density:
 
