@@ -293,8 +293,14 @@ using Hamilton's equations gives
 Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\varphi}`, the second equation above signifies that, in the case of an axisymmetric potential,
 the z component of the angular momentum is conserved.
 
-The phase space density
-^^^^^^^^^^^^^^^^^^^^^^^
+The phase space distribution function (DF)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A galaxy can be viewed as a number of stars in phase space.
+The phase space is a six dimensional space spanned by position :math:'\vec{x}' and velocity :math:'\vec{v}'.
+One point in phase space can therefor be described by a six dimensional vector :math:'\vec{w}=(\vec{x},\vec{v})',
+the state of a whole galaxy as a DF :math:`f(\vec{x},\vec{v},t)`.
+:math:'f(\vec{x},\vec{v},t)d^3\vec{x}d^3d^3\vec{v}' is the probability that one star is inside the 6D cuboid defined by :math:`\vec{x}d^3d^3\vec{v}` at time :math:`t`.
 
 Todo: explain in words
 
