@@ -272,7 +272,7 @@ and using the Euler–Lagrange equation gives the conjugate momenta
 
 .. math::
     p_{R} = \frac{\partial L}{\partial \dot{R}} = m\dot{R} = mv_R\\
-    p_{\varphi} = \frac{\partial L}{\partial \dot{\phi}} = mR^2\dot{\phi} =mRv_\phi\\
+    p_{\phi} = \frac{\partial L}{\partial \dot{\phi}} = mR^2\dot{\phi} =mRv_\phi\\
     p_{z} = \frac{\partial L}{\partial \dot{z}} = m\dot{z} =mv_z\\
 
 Hamiltonian with axisymmetric potential
@@ -281,16 +281,16 @@ Hamiltonian with axisymmetric potential
 Using the momenta in cylindrical coordinates (?) the Hamiltonian with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
 
 .. math::
-    H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\varphi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
+    H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\phi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
 
 using Hamilton's equations gives
 
 .. math::
-    \dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\varphi^2}{R^3}-\frac{\partial \Phi }{\partial R} \\
-    \dot{p}_{\varphi} = -\frac{\partial H}{\partial \varphi} = -\frac{\partial \Phi }{\partial \varphi} = 0 \\
+    \dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\phi^2}{R^3}-\frac{\partial \Phi }{\partial R} \\
+    \dot{p}_{\phi} = -\frac{\partial H}{\partial \phi} = -\frac{\partial \Phi }{\partial \phi} = 0 \\
     \dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}
 
-Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\varphi}`, the second equation above signifies that, in the case of an axisymmetric potential,
+Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\phi}`, the second equation above signifies that, in the case of an axisymmetric potential,
 the z component of the angular momentum is conserved.
 
 The phase space distribution function (DF)
@@ -329,6 +329,8 @@ And therefor
     \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
     - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right) = 0
 
+which is the collisionless Boltzmann Equation (CBE).
+
 The zeroth moment is the number density:
 
 .. math::
@@ -339,10 +341,12 @@ Mean velocities are given by the first moment:
 .. math::
     \overline{v_i}(\vec{x}) \equiv \frac{1}{\nu(\vec{x})}\int v_i f(\vec{x},\vec{v})d^3\vec{v}
 
+Todo: Continue here (showing = 0 for 2/3 directions)
+
 Jeans equations
 ^^^^^^^^^^^^^^^
 
-Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation is given by (:cite:`Binney_2011` p. 277):
+Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation (?) is given by (:cite:`Binney_2011` p. 277):
 
 .. math::
     \frac{\partial f}{\partial t} + \frac{\partial f}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial f}{\partial p_i}\frac{\partial H}{\partial q_i} = 0
@@ -352,10 +356,10 @@ Since the galactic potential (?) is axisymmetric, it is convenient to express th
 .. math::
     \frac{\partial f}{\partial t}
     + p_R\frac{\partial f}{\partial R}
-    + \frac{p_\varphi}{R^2}\frac{\partial f}{\partial \varphi}
+    + \frac{p_\phi}{R^2}\frac{\partial f}{\partial \phi}
     + p_z\frac{\partial f}{\partial z}
-    - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\varphi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
-    - \frac{\partial \Phi}{\partial \varphi}\frac{\partial f}{\partial p_\varphi}
+    - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
+    - \frac{\partial \Phi}{\partial \phi}\frac{\partial f}{\partial p_\phi}
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
 
 It is assumed that the galaxy is statistically in a steady state (:cite:`Binney_2013`) ie :math:`\frac{\partial f}{\partial t}=0`.
@@ -363,16 +367,16 @@ Due to this assumption and taking (?) into account (?) simplifies to
 
 .. math::
     p_R\frac{\partial f}{\partial R}
-    + \frac{p_\varphi}{R^2}\frac{\partial f}{\partial \varphi}
+    + \frac{p_\phi}{R^2}\frac{\partial f}{\partial \phi}
     + p_z\frac{\partial f}{\partial z}
-    - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\varphi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
+    - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
 
 Multiplying equation (?) by :math:`p_R` and integrating over all momenta leads to (todo: derive?)
 
 .. math::
     \frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +
-    \nu \left ( \frac{\overline{v_R^2}-\overline{v_\varphi^2}}{R} + \frac{\partial\Phi}{\partial R}\right ) = 0
+    \nu \left ( \frac{\overline{v_R^2}-\overline{v_\phi^2}}{R} + \frac{\partial\Phi}{\partial R}\right ) = 0
 
 
 The Epicyclic Approximation
@@ -418,7 +422,7 @@ The minimum of effective potential is the minimum of the real potential energy, 
 The first condition states that the attractive force (:math:`-\frac{\partial \Phi_{\textup{eff}} }{\partial R}`) has to balance the “centrifugal force”.
 This is the condition for circular orbits with angular momentum :math:`L_z`.
 The second condition is clearly satisfied in the equatorial plane (:math:`z=0`).
-The coordinates of this guiding center are defined as :math:`(R_g,\varphi_g,z_g)`.
+The coordinates of this guiding center are defined as :math:`(R_g,\phi_g,z_g)`.
 
 In preparation for a Taylor series expansion about the guiding center :math:`x` is defined as
 
@@ -457,7 +461,7 @@ with potential :math:`\Phi\left(R,z\right)` (?) can be written as
 .. math::
     \kappa^2 = \frac{\partial^2\Phi}{\partial R^2}\bigg|_{(R_g,0)} + \frac{3L_z}{R_g^4}
 
-The circular angular frequency (see eq. (?) with :math:`\Omega = \dot{\varphi}`) is given by
+The circular angular frequency (see eq. (?) with :math:`\Omega = \dot{\phi}`) is given by
 
 .. math::
     \Omega^2 = \frac{1}{R} \frac{\partial \Phi }{\partial R}\bigg|_{(R_g,0)} = \frac{L_z^2}{R^4}
