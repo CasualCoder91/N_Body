@@ -297,12 +297,17 @@ The phase space distribution function (DF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A galaxy can be viewed as a number of stars in phase space.
-The phase space is a six dimensional space spanned by position :math:'\vec{x}' and velocity :math:'\vec{v}'.
-One point in phase space can therefor be described by a six dimensional vector :math:'\vec{w}=(\vec{x},\vec{v})',
-the state of a whole galaxy as a DF :math:`f(\vec{x},\vec{v},t)`.
-:math:'f(\vec{x},\vec{v},t)d^3\vec{x}d^3d^3\vec{v}' is the probability that one star is inside the 6D cuboid defined by :math:`\vec{x}d^3d^3\vec{v}` at time :math:`t`.
+The phase space is a six dimensional space spanned by position :math:'\vec{q}' and momentum :math:'\vec{p}'.
+One point in phase space can therefor be described by a six dimensional vector :math:'\vec{w}=(\vec{q},\vec{p})',
+the state of a whole galaxy as a DF :math:`f(\vec{q},\vec{p},t)`.
+:math:'f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}' is the probability that one star is inside the 6D cuboid defined by :math:`\vec{q}d^3d^3\vec{p}` at time :math:`t`.
 
-Todo: explain in words
+The conservation of probability in phase space is given by
+
+.. math::
+    \frac{\partial f }{\partial t} + \sum_{i=1}^{6} \frac{\partial}{\partial t}(f\dot{w}_i) = 0
+
+with :math:`\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})`
 
 The zeroth moment is the number density:
 
