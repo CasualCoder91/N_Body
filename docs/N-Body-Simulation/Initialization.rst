@@ -307,23 +307,27 @@ The conservation of probability in phase space is given by
 .. math::
     \frac{\partial f }{\partial t} + \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i) = 0
 
-with :math:`\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})`
-
-since
+with :math:`\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})`. The right summand can be changed as follows, using Hamilton equations (?)
 
 .. math::
     \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i)
     = \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \dot{q}_i\right) + \frac{\partial}{\partial p_i}\left(f\dot{p}_i\right) \right ) \\
-    = \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \frac{\partial H}{\partial p_i}\right) - \frac{\partial}{\partial p_i}\left(f \frac{\partial H}{\partial q_i} \right) \right)
+    = \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \frac{\partial H}{\partial p_i}\right) - \frac{\partial}{\partial p_i}\left(f \frac{\partial H}{\partial q_i} \right) \right) \\
     = \sum_{i=1}^{3} \left (
     \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
     + f  \frac{\partial^2 H}{\partial q_i \partial p_i}
     - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i}
-    - f \frac{\partial ^2 H}{\partial p_i \partial q_i} \right)
-    = \sum_{i=1}^{3} \left ( 
+    - f \frac{\partial ^2 H}{\partial p_i \partial q_i} \right)  \\
+    = \sum_{i=1}^{3} \left (
     \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
     - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right)
 
+And therefor
+
+.. math::
+    \frac{\partial f }{\partial t} + \sum_{i=1}^{3} \left (
+    \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
+    - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right) = 0
 
 The zeroth moment is the number density:
 
