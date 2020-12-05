@@ -300,7 +300,7 @@ A galaxy can be viewed as a number of stars in phase space.
 The phase space is a six dimensional space spanned by position :math:`\vec{q}` and momentum :math:`\vec{p}`.
 One point in phase space can therefor be described by a six dimensional vector :math:`\vec{w}=(\vec{q},\vec{p})`,
 the state of a whole galaxy as a DF :math:`f(\vec{q},\vec{p},t)`.
-:math:`f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}` is the probability that some specific star is inside the 6D cuboid defined by :math:`\vec{q}d^3d^3\vec{p}` at time :math:`t`.
+:math:`f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}` is the probability that some specific star is inside the 6D cuboid defined by :math:`d^3\vec{q}d^3\vec{p}` at time :math:`t`.
 
 The conservation of probability in phase space is, similarly to the continuity equation in fluid dynamics, given by
 
@@ -517,8 +517,12 @@ with :math:`z_{0}` being the vertical scale length :math:`b` when using the Miya
 
 The first moments of the collisionless Boltzmann equation (CBE) for cylindrically symmetric systems are given by
 
+Combining the equation for the circular velocity (?) and the first moment equation of the CBE for :math:`v_R` and multiplication by :math:`frac{R}{\nu}` results in
 
-
+.. math::
+    \frac{R}{\nu} \frac{\partial \nu \overline{v_R^2}}{\partial R}
+    + \frac{R}{\nu} \frac{\partial \nu \overline{v_Rv_z}}{\partial z}
+    + \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0
 
 
 
