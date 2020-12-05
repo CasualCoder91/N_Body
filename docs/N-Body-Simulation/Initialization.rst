@@ -532,6 +532,8 @@ which does not depend on :math:`z`. Therefor, (?) simplifies to
     + R \frac{\partial \overline{v_Rv_z}}{\partial z}
     + \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0
 
+
+
 Bulge
 ^^^^^
 
