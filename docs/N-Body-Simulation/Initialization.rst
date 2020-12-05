@@ -300,14 +300,16 @@ A galaxy can be viewed as a number of stars in phase space.
 The phase space is a six dimensional space spanned by position :math:`\vec{q}` and momentum :math:`\vec{p}`.
 One point in phase space can therefor be described by a six dimensional vector :math:`\vec{w}=(\vec{q},\vec{p})`,
 the state of a whole galaxy as a DF :math:`f(\vec{q},\vec{p},t)`.
-:math:`f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}` is the probability that one star is inside the 6D cuboid defined by :math:`\vec{q}d^3d^3\vec{p}` at time :math:`t`.
+:math:`f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}` is the probability that some specific star is inside the 6D cuboid defined by :math:`\vec{q}d^3d^3\vec{p}` at time :math:`t`.
 
-The conservation of probability in phase space is given by
+The conservation of probability in phase space is, similarly to the continuity equation in fluid dynamics, given by
 
 .. math::
     \frac{\partial f }{\partial t} + \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i) = 0
 
-with :math:`\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})`. The right summand can be changed as follows, using Hamilton equations (?)
+with :math:`\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})`.
+
+The right summand can be changed as follows, using Hamilton equations (?)
 
 .. math::
     \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i)
@@ -331,7 +333,7 @@ And therefor
 
 which is the collisionless Boltzmann Equation (CBE).
 
-The zeroth moment is the number density:
+The zeroth moment of the DF is the number density:
 
 .. math::
     \nu(\vec{x}) \equiv \int f(\vec{x},\vec{v})d^3\vec{v}
