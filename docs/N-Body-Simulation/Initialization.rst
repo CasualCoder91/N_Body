@@ -532,7 +532,10 @@ which does not depend on :math:`z`. Therefor, (?) simplifies to
     + R \frac{\partial \overline{v_Rv_z}}{\partial z}
     + \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0
 
+In the epicyclic approximation, azimuthal and radial dispersion have the following relation (:cite:`Binney_2011` p. 170)
 
+.. math::
+    \frac{\sigma_{v_{\phi}}^2}{\sigma_{v_{R}}^2} = \frac{\kappa^2}{4\Omega^2}
 
 Bulge
 ^^^^^
