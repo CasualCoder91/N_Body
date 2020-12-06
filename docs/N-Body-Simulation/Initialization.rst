@@ -549,7 +549,7 @@ With this relation (?) can be written as
 .. math::
     \frac{R}{\Sigma} \frac{\partial  \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
     + R \frac{\partial \overline{v_Rv_z}}{\partial z}
-    + \sigma_{v_{R}}^2 
+    + \sigma_{v_{R}}^2
     - \sigma_{v_{R}}^2 \frac{\kappa^2}{4\Omega^2}
     - \overline{v_\phi}^2 + v_c^2 = 0
 
@@ -564,7 +564,19 @@ rearrangements lead to
     \right )
 
 Due to the exponential dependency of the surface mass density (:cite:`Binney_2011` p. 325)
-and the radial dispersion :math:`\sigma_{v_{R}}` (?) on :math:`R`,
+and the radial dispersion :math:`\sigma_{v_{R}}` (?) on :math:`R`, the derivation after :math:`R` summand can be solved as follows
+
+.. math::
+    \frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R} =
+    \frac{1}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial R }{\partial \ln(R)}\frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R} =
+    \frac{1}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial \ln(R)} =
+    \frac{1}{\Sigma \sigma_{v_{R}}^2 }
+    \left ( - \frac{R\Sigma\sigma_{v_{R}}^2}{a}
+    - \frac{R\sigma_{v_{R}}^2\Sigma}{a}
+    \right ) = - 2 \frac{R}{a}
+
+
+
 
 Bulge
 ^^^^^
