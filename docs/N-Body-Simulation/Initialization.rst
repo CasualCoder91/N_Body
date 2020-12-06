@@ -528,14 +528,22 @@ For a razor thin disc the spatial density :math:`\nu` can be replaced with the s
 which does not depend on :math:`z`. Therefor, (?) simplifies to
 
 .. math::
-    \frac{R}{\Sigma} \frac{\partial \Sigma \overline{v_R^2}}{\partial R}
-    + R \frac{\partial \overline{v_Rv_z}}{\partial z}
-    + \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0
+    \frac{R}{\Sigma} \frac{\partial  \left ( \Sigma \sigma_{v_{R}} \right )}{\partial R}
+    + R \frac{\partial \left ( \overline{v_Rv_z} \right ) }{\partial z}
+    + \overline{v_\phi}^2  - \sigma_{v_{\phi}} + v_c^2 = 0
 
 In the epicyclic approximation, azimuthal and radial dispersion have the following relation (:cite:`Binney_2011` p. 170)
 
 .. math::
     \frac{\sigma_{v_{\phi}}^2}{\sigma_{v_{R}}^2} = \frac{\kappa^2}{4\Omega^2}
+
+With this relation (?) can be written as
+
+.. math::
+
+
+Due to the exponential dependency of the surface mass density (:cite:`Binney_2011` p. 325)
+and the radial dispersion :math:`\sigma_{v_{R}}` (?) on :math:`R`,
 
 Bulge
 ^^^^^
