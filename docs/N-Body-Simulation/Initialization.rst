@@ -478,6 +478,13 @@ Inserting equation (?) and (?) into (?) yields
 .. math::
     \kappa^2(R_g) = \left ( R\frac{d\Omega^2}{dR} + 4\Omega^2 \right )\bigg|_{R=R_g}
 
+The variance is generally given as the mean of squares minus the square of means.
+In the epicyclic approximation the mean velocity in :math:`R` and :math:`z` is zero and therefor
+
+.. math::
+    \sigma_{v_{\phi}}^2 = \overline{v_\phi^2} - \overline{v_\phi}^2 \\
+    \sigma_{v_{R}}^2 = \overline{v_R^2} \\
+    \sigma_{v_{z}}^2 = \overline{v_z^2}
 
 Disk
 ^^^^
@@ -525,12 +532,12 @@ Combining the equation for the circular velocity (?) and the first moment equati
     + \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0
 
 For a razor thin disc the spatial density :math:`\nu` can be replaced with the surface density :math:`\Sigma` (:cite:`Hernquist_1993`),
-which does not depend on :math:`z`. Therefor, (?) simplifies to
+which does not depend on :math:`z`. With this and by using relations (?), (?) simplifies to
 
 .. math::
-    \frac{R}{\Sigma} \frac{\partial  \left ( \Sigma \sigma_{v_{R}} \right )}{\partial R}
-    + R \frac{\partial \left ( \overline{v_Rv_z} \right ) }{\partial z}
-    + \overline{v_\phi}^2  - \sigma_{v_{\phi}} + v_c^2 = 0
+    \frac{R}{\Sigma} \frac{\partial \nu \sigma_{v_{R}}^2}{\partial R}
+    + R \frac{\partial \overline{v_Rv_z}}{\partial z}
+    + \sigma_{v_{R}}^2 -\sigma_{v_{\phi}}^2  - \overline{v_\phi}^2 + v_c^2 = 0
 
 In the epicyclic approximation, azimuthal and radial dispersion have the following relation (:cite:`Binney_2011` p. 170)
 
@@ -540,7 +547,21 @@ In the epicyclic approximation, azimuthal and radial dispersion have the followi
 With this relation (?) can be written as
 
 .. math::
+    \frac{R}{\Sigma} \frac{\partial  \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
+    + R \frac{\partial \overline{v_Rv_z}}{\partial z}
+    + \sigma_{v_{R}}^2 
+    - \sigma_{v_{R}}^2 \frac{\kappa^2}{4\Omega^2}
+    - \overline{v_\phi}^2 + v_c^2 = 0
 
+rearrangements lead to
+
+.. math::
+    \overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
+    \left (
+    1 - \frac{\kappa^2}{4\Omega^2} +
+    \frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
+    + \frac{R}{\sigma_{v_{R}}^2} \frac{\partial \overline{v_Rv_z}}{\partial z}
+    \right )
 
 Due to the exponential dependency of the surface mass density (:cite:`Binney_2011` p. 325)
 and the radial dispersion :math:`\sigma_{v_{R}}` (?) on :math:`R`,
