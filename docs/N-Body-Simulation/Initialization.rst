@@ -575,6 +575,11 @@ and the radial dispersion :math:`\sigma_{v_{R}}` (?) on :math:`R`, the derivatio
     - \frac{R\sigma_{v_{R}}^2\Sigma}{a}
     \right ) = - 2 \frac{R}{a}
 
+With this and under the assumption that the retrograde elliptical orbit is aligned with the coordinate axes (?) becomes
+
+.. math::
+    \overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
+    \left (1 - \frac{\kappa^2}{4\Omega^2} -\frac{R}{a } \right )
 
 
 
