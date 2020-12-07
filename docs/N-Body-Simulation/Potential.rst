@@ -147,5 +147,3 @@ Halo potential given by (https://iopscience.iop.org/article/10.1088/0004-637X/71
     \Phi_{halo}\left ( x,y,z \right ) = v_{halo}^{2}*\ln\left ( C_{1}*x^{2}+C_{2}*y^{2}+C_{3}*x*y +\left (\frac{z}{q_{z}}  \right )^{2}+r_{halo}^{2}\right )
 
     \Phi_{halo}\left ( r \right ) = \frac{1}{2}v_{halo}^{2}\ln\left ( r^{2}+r_{halo}^{2}\right )
-
-.. bibliography:: bibtex.bib

@@ -15,7 +15,7 @@ Salpeter (1955)
 Background
 
 When it comes to sampling an IMF, one possible approach is called inverse transform sampling. Here one must integrate the IMF over the mass, yielding a cumulative probability function (cpf), and normalize it (ncpf).
-Then one has to take the inverse of the ncpf. Since Salpeter is a power-law distribution function all this can be done analytically:
+Then one has to take the inverse of the ncpf. Since Salpeter is a power-law distribution function, all this can be done analytically:
 
  https://www.usna.edu/Users/cs/crabbe/SI475/current/particleFilter/particleFilter.pdf
  https://local.strw.leidenuniv.nl/events/phdtheses/haas/05.pdf
@@ -250,7 +250,7 @@ In terms of cartesian unit vectors, cylindrical unit vectors are given by
     \hat{e}_\phi = -\hat{e}_x\sin(\phi) + \hat{e}_y\cos(\phi)\\
     \hat{e}_z = \hat{e}_z
 
-since :math:`\hat{e}_R` depends on :math:`\phi` position vectors have the form
+Since :math:`\hat{e}_R` depends on :math:`\phi`, position vectors have the form
 
 .. math::
     \vec{q} = R\hat{e}_R+z\hat{e}_z
@@ -581,6 +581,9 @@ With this and under the assumption that the retrograde elliptical orbit is align
     \overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
     \left (1 - \frac{\kappa^2}{4\Omega^2} -\frac{R}{a } \right )
 
+The velocity components can be sampled from Gaussian distributions. Dispersions are obtained by first evaluating the epicyclic frequency (?) and the surface mass density (?),
+followed by the radial velocity dispersion (?) with constant factor (?), the vertical (?) and the azimuthal velocity dispersion (?).
+As noted before, the mean velocity in :math:`R` and :math:`z` is zero. For :math:`\phi` the mean velocity is calculated from (?).
 
 
 Bulge
