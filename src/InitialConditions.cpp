@@ -416,6 +416,12 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 
 	std::uniform_real_distribution<> disaccept(0, 1);
 	std::uniform_real_distribution<> vd(-maxSpeed, maxSpeed);
+	//std::normal_distribution<double> rDist{ 0,delta };
+	//velocity += Vec3D::randomVector(rDist(gen));
+	//velocity.x += patternSpeed * position.y;
+	//velocity.y -= patternSpeed * position.x;
+
+
 	//std::uniform_real_distribution<> vyd(-maxSpeed + patternSpeed * position.y, maxSpeed - patternSpeed * position.x);
 	//std::uniform_real_distribution<> vzd(-maxSpeed, maxSpeed);
 
@@ -434,9 +440,12 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 
 		if (accept < temp) {
 			velocity = Vec3D(vx, vy, vz);
-			Vec3D meanVelocity = Vec3D(patternSpeed * position.y, -patternSpeed * position.x,0);
-			velocity = (velocity.length() - meanVelocity.length()) * velocity.normalize();
-			velocity = velocity + meanVelocity;
+			double theta = position.theta();
+			velocity.x -= patternSpeed * position.y * sin(theta);
+			velocity.y += patternSpeed * position.x * cos(theta);
+			//Vec3D meanVelocity = Vec3D(patternSpeed * position.y, -patternSpeed * position.x,0);
+			//velocity = (velocity.length() - meanVelocity.length()) * velocity.normalize();
+			//velocity = velocity + meanVelocity;
 
 			double escapeVel = potential->escapeVelocity(&velocity);
 			if (velocity.length() < escapeVel)
@@ -446,6 +455,14 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 			}
 		}
 	}
+
+
+
+
+
+
+
+	//old junk
 	//double  phi = position.theta();
 	//double  theta = position.phi();
 

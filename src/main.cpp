@@ -209,7 +209,7 @@ int main() {
 
 
 			Test test = Test();
-			test.velocityDisk();
+			//test.velocityDisk();
 			//test.checkBrokenPowerLaw();
 			//test.potentialCircularVelocity();
 			//test.transformation();
@@ -217,7 +217,7 @@ int main() {
 			//Test::sampleFieldStarPositions(200);
 			//Test::velocityBulgeR();
 			//Test::bulgeMass();
-			//test.velocityBulge(); // very time intensive
+			test.velocityBulge(); // very time intensive
 			////Test::wangPositions();
 			////Test::checkBrokenPowerLaw();
 			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;

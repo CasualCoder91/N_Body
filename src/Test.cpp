@@ -238,7 +238,7 @@ void Test::velocityBulge(){
 	std::vector<double> averageVelocity;
 	std::vector<double> bValues{ -4,-6,-8 };
 	for (double b : bValues) {
-		for (double l = -10; l <= 10; l += 10) {
+		for (double l = -10; l <= 10; l += 1) {
 			Vec3D pHGP = Vec3D(dEarth, l * Constants::degInRad, b * Constants::degInRad); //position in Heliocentric Galactic Polar
 			Vec3D vHGP, pHCA, vHCA, pLSR, vLSR,pGCA,vGCA;
 			Projection::HGPtoHCA(pHGP, vHGP, pHCA, vHCA);
@@ -251,34 +251,34 @@ void Test::velocityBulge(){
 			Vec3D focus = pGCA;
 			double r = focus.length();
 			std::cout << "focus:" << focus.print() << " r:" << r << std::endl;
-			//std::vector<Star*> stars = this->initBulgeStars(starID,focus, Vec3D(-dEarth, 0, 27), dEarth+rBulge,0.002);
-			//std::vector<double> radialVelocities;
-			//for (Star* star : stars) {
-			//	Projection::GCAtoLSR(star->position, star->velocity, pLSR, vLSR);
-			//	Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
-			//	Projection::HCAtoHGP(pHCA, vHCA, pHGP,vHGP);
-			//	//star->position.x += dEarth; //transform to heleocentric
-			//	//Vec3D sphericalVelocity = star->velocity.cartesianToSphericalV(star->position);
-			//	radialVelocities.push_back(vHGP.x);
-			//}
-			//velocityDispersion.push_back(Analysis::dispersion(radialVelocities));
-			//averageVelocity.push_back(Analysis::average(radialVelocities));
-			//std::cout << "b:" << b << " l:" << l << " disp:" << velocityDispersion.back()<<" mean:" << averageVelocity.back() << std::endl;
-			//for (Star* star : stars) {
-			//	delete star;
-			//}
-			//longitude.push_back(l);
+			std::vector<Star*> stars = this->initBulgeStars(starID,focus, Vec3D(8300, 0, 27), dEarth,0.01);
+			std::vector<double> radialVelocities;
+			for (Star* star : stars) {
+				Projection::GCAtoLSR(star->position, star->velocity, pLSR, vLSR);
+				Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
+				Projection::HCAtoHGP(pHCA, vHCA, pHGP,vHGP);
+				//star->position.x += dEarth; //transform to heleocentric
+				//Vec3D sphericalVelocity = star->velocity.cartesianToSphericalV(star->position);
+				radialVelocities.push_back(vHGP.x);
+			}
+			velocityDispersion.push_back(Analysis::dispersion(radialVelocities));
+			averageVelocity.push_back(Analysis::average(radialVelocities));
+			std::cout << "b:" << b << " l:" << l << " disp:" << velocityDispersion.back()<<" mean:" << averageVelocity.back() << std::endl;
+			for (Star* star : stars) {
+				delete star;
+			}
+			longitude.push_back(l);
 		}
 
-		//InOut::write(longitude, velocityDispersion, path + "bulgeDispersion" + std::to_string((int)b) + ".dat");
-		//InOut::write(longitude, averageVelocity, path + "bulgeMeanVelocity" + std::to_string((int)b) + ".dat");
-		//longitude.clear();
-		//velocityDispersion.clear();
-		//averageVelocity.clear();
+		InOut::write(longitude, velocityDispersion, path + "bulgeDispersion" + std::to_string((int)b) + ".dat");
+		InOut::write(longitude, averageVelocity, path + "bulgeMeanVelocity" + std::to_string((int)b) + ".dat");
+		longitude.clear();
+		velocityDispersion.clear();
+		averageVelocity.clear();
 	}
-	//Plot plot = Plot(absolutePath, absolutePath, true);
-	//plot.plot("bulgeDispersion", { });
-	//plot.plot("bulgeMeanVelocity", { });
+	Plot plot = Plot(absolutePath, absolutePath, true);
+	plot.plot("bulgeDispersion", { });
+	plot.plot("bulgeMeanVelocity", { });
 }
 
 void Test::velocityDisk(){

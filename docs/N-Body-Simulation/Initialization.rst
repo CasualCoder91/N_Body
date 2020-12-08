@@ -583,11 +583,41 @@ With this and under the assumption that the retrograde elliptical orbit is align
 
 The velocity components can be sampled from Gaussian distributions. Dispersions are obtained by first evaluating the epicyclic frequency (?) and the surface mass density (?),
 followed by the radial velocity dispersion (?) with constant factor (?), the vertical (?) and the azimuthal velocity dispersion (?).
-As noted before, the mean velocity in :math:`R` and :math:`z` is zero. For :math:`\phi` the mean velocity is calculated from (?).
+As noted before, the mean velocity in :math:`R` and :math:`z` is zero. For :math:`\phi` the mean velocity is calculated from (?), where the circular velocity :math`v_c` is given by (?).
 
 
 Bulge
 ^^^^^
+
+For spherically symmetric distribution functions, such as, with the present approximation, the bulge, the spherically symmetric Jeans equation can be used :cite:`Yurin_2014`
+
+.. math::
+    \frac{\partial (\rho \sigma_r^2)}{\partial r} + 2\frac{\beta\sigma_r^2}{r} + \rho\frac{\partial \Phi}{\partial r} = 0
+
+were :math:`\beta` is an indicator for anisotropy in radial and tangential direction.
+
+.. math::
+    \beta = 1 - \frac{\sigma^2_\phi}{\sigma^2_r}
+
+If the distribution is isotropic, as assumed here, :math:`\beta=0` and (?) simplifies to
+
+.. math::
+    \frac{\partial (\rho \sigma_r^2)}{\partial r} +  \rho\frac{\partial \Phi}{\partial r} = 0
+
+and the radial dispersion can be calculated by integration
+
+.. math::
+    \sigma_r^2 = \frac{1}{\rho}\int_{r}^{\infty}\rho \frac{\partial \Phi}{\partial r}\textup{dr}
+
+However, :math:`\Phi` is the composite potential consisting of bulge, disc and halo and therefor not spherically symmetric. As suggested in :cite:`Hernquist_1993` contribution by the disc to the bulge dispersion may be accounted for by spherically averaging the disc potential.
+This is achieved by expressing cylinder in spherical coordinates and integrating over the relevant angle
+
+.. math::
+    \sigma_{r,disk}^2 = \frac{1}{\rho}\int_{r}^{\infty}
+    \frac{\rho }{2\pi}  \int_0^{2\pi} \frac{\partial \Phi\left ( r\sin(\theta ),r\cos(\theta ) \right )}{\partial r} \textup{d}\theta \textup{dr} \\
+
+As neither of these integrals have a analytical solution this calculation is computation intensive.
+Therefor a lookup table has been implemented in witch discrete :math:`r` and corresponding bulge dispersion are stored.
 
 
 .. bibliography:: bibtex.bib

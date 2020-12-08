@@ -120,8 +120,7 @@ double MWPotential::gslVelocityBulge(double r, void* p){
 	//double temp = 1/(r * gsl_pow_3(fp->aBulge + r)) * (
 	double temp = mMassBlackHole / r2 + bulgePotential.potentialdr(r);
 	temp = temp - mMassHalo / (log(2) - 0.5) / (r2 + r * rHalo) + mMassHalo / (log(2) - 0.5) * log((r + rHalo) / rHalo) / r2;
-	//if (r < aBulge)
-		temp += MWPotential::sphericalAveragedDisc(r);
+	temp += MWPotential::sphericalAveragedDisc(r);
 
 	temp = temp * MWPotential::bulgePotential.density(r);
 	//double temp = 1 / (r * gsl_pow_3(fp->aBulge + r)) * (fp->mMassBlackHole / r2 + fp->mMassBulge / gsl_pow_2(fp->aBulge + r) + fp->mMassDisk * r / pow(gsl_pow_2(fp->aDisk + fp->bDisk) + r2, 1.5) - haloTemp / (r2 + r * fp->rHalo) + haloTemp * log((r + fp->rHalo) / fp->rHalo) / r2);
