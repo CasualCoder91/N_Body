@@ -80,14 +80,14 @@ public: //methods
      @static
      @brief calculates the dispersion (= variability/scatter/spread) of the given \p vectors
      */
-    static double dispersion(std::vector<Vec3D>& vectors, double average = 0);
-    static double dispersion(std::vector<Vec2D>& vectors, double average = 0);
-    static double dispersion(std::vector<double>& values);
+    static double dispersion(std::vector<Vec3D>& vectors, double average = -1);
+    static double dispersion(std::vector<Vec2D>& vectors, double average = -1);
+    static double dispersion(std::vector<double>& values, double average = -1);
     /**
      @static
      @brief calculates the velocity dispersion of the given \p points
      */
-    static double dispersion(std::vector<Point>& points, double average = 0);
+    static double dispersion(std::vector<Point>& points, double average = -1);
 
     /** @brief saves the calculated energy values for each timestep to .dat Files (TotalEnergy.dat, KinetikEnergy.dat,PotentialEnergy.dat)*/
     void write();

@@ -131,10 +131,14 @@ double MWPotential::gslVelocityBulge(double r, void* p){
 
 double gslSphericalAveragedDisk(double theta, void* p) {
 	struct gslSphericalAveragedDiskParams* fp = (struct gslSphericalAveragedDiskParams*)p;
-	double temp = gsl_hypot(fp->bDisk, fp->r * cos(theta));
+	//double temp = gsl_hypot(fp->bDisk, fp->r * cos(theta));
 	//return 0.5 * fp->mMassDisk * (2. * fp->r * gsl_pow_2(cos(theta)) * (fp->aDisk + temp) / temp + 2 * fp->r * gsl_pow_2(sin(theta))) / pow(gsl_pow_2(fp->aDisk + temp) + gsl_pow_2(fp->r * sin(theta)), 1.5);
 	double r2 = gsl_pow_2(fp->r);
-	return fp->mMassDisk / pow(r2 * gsl_pow_2(sin(theta)) + gsl_pow_2(fp->aDisk + gsl_hypot(fp->r * cos(theta), fp->bDisk)), 1.5);
+	double cost = cos(theta); double sint = sin(theta);
+	double cost2 = cost * cost; double sint2 = sint * sint;
+	double temp = gsl_hypot(fp->bDisk, fp->r * cost);
+	return 0.5 * fp->mMassDisk * fp->r * (cost2 * (2 + 2 * fp->aDisk / temp) + 2 * sint2) / pow(pow(fp->aDisk + temp, 2) + r2 * sint2, 1.5);
+	//return fp->mMassDisk / pow(r2 * gsl_pow_2(sin(theta)) + gsl_pow_2(fp->aDisk + gsl_hypot(fp->r * cos(theta), fp->bDisk)), 1.5);
 }
 
 double MWPotential::closestToZero(double a, double b) {

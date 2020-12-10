@@ -231,27 +231,30 @@ void Test::velocityBulge(){
 	InitialConditions conditions = InitialConditions(&potential);
 	std::cout << "Test: velocityBulge() start" << std::endl;
 	double rBulge = 2e3; //pc
-	double dEarth = 8e3; //pc
+	double dEarth = 8.3e3; //pc
 	int starID = 0;
 	std::vector<double> longitude;
 	std::vector<double> velocityDispersion;
 	std::vector<double> averageVelocity;
 	std::vector<double> bValues{ -4,-6,-8 };
 	for (double b : bValues) {
-		for (double l = -10; l <= 10; l += 1) {
-			Vec3D pHGP = Vec3D(dEarth, l * Constants::degInRad, b * Constants::degInRad); //position in Heliocentric Galactic Polar
+		for (double l = -10; l <= 10; l += 0.1) {
+			Vec3D pHGP = Vec3D(1, l * Constants::degInRad, b * Constants::degInRad); //position in Heliocentric Galactic Polar
 			Vec3D vHGP, pHCA, vHCA, pLSR, vLSR,pGCA,vGCA;
+
 			Projection::HGPtoHCA(pHGP, vHGP, pHCA, vHCA);
 			Projection::HCAtoLSR(pHCA, vHCA, pLSR, vLSR);
 			Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
+			Vec3D focus = pGCA;
+
 			//double x = dEarth - dEarth * cos(b * Constants::degInRad) * cos(l * Constants::degInRad);
 			//double y = dEarth * cos(b * Constants::degInRad) * sin(l * Constants::degInRad);
 			//double z = dEarth * sin(b * Constants::degInRad);
 			//Vec3D focus = Vec3D(x, y, z);
-			Vec3D focus = pGCA;
 			double r = focus.length();
 			std::cout << "focus:" << focus.print() << " r:" << r << std::endl;
-			std::vector<Star*> stars = this->initBulgeStars(starID,focus, Vec3D(8300, 0, 27), dEarth,0.01);
+			std::vector<Star*> stars = this->initBulgeStars(starID,focus, Vec3D(8300, 0, 27), 7.5e3,0.05);
+			std::cout << "NStars: " << stars.size() << std::endl;
 			std::vector<double> radialVelocities;
 			for (Star* star : stars) {
 				Projection::GCAtoLSR(star->position, star->velocity, pLSR, vLSR);
@@ -497,5 +500,29 @@ std::vector<Star*> Test::initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoin
 		fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
 	}
 	std::cout << "Test::initBulgeStars() done" << std::endl;
+	return fieldStars;
+}
+
+std::vector<Star*> Test::initBulgeStarsCylinder(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView){
+	std::cout << "Test::initBulgeStarsCylinder() start" << std::endl;
+	Vec3D direction = (focus - viewPoint).normalize();
+	double angleOfViewRad = angleOfView * Constants::degInRad; //convert degrees in rad
+	double coneR = distance * tan(0.5 * angleOfViewRad);
+	Matrix transformationMatrix = Matrix::transformation(direction, viewPoint);
+	Vec3D coneBoundaryMin = transformationMatrix * Vec3D(-coneR, -coneR, 0);
+	Vec3D coneBoundaryMax = transformationMatrix * Vec3D(coneR, coneR, distance * 1.01); //1.01 to make sure boundary is not inside cone.
+	initialConditions.setBoundaries(coneBoundaryMin, coneBoundaryMax);
+
+	std::vector<Star*> fieldStars; //return vector
+
+	double bulgeMass = potential.bulgePotential.massCylinder(&transformationMatrix, distance, coneR);
+	std::vector<Star*> bulgeStars = initialConditions.bulgeIMF(bulgeMass, starID);
+	if (bulgeStars.size() > 0) {
+		//sampleWang(bulgeStars, corner, volumeElement);
+		initialConditions.sampleBulgePositionsCylinder(bulgeStars, coneBoundaryMin, coneBoundaryMax, coneR, distance, &transformationMatrix); //test
+		initialConditions.sampleBulgeVelocities(bulgeStars);
+		fieldStars.insert(std::end(fieldStars), std::begin(bulgeStars), std::end(bulgeStars));
+	}
+	std::cout << "Test::initBulgeStarsCylinder() done" << std::endl;
 	return fieldStars;
 }

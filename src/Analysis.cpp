@@ -114,7 +114,7 @@ double Analysis::average(std::vector<Point>& points) {
 
 double Analysis::dispersion(std::vector<Vec3D>& vectors, double average){
 	size_t n = vectors.size();
-	if (average == 0) { //average not passed as parameter
+	if (average == -1) { //average not passed as parameter
 		average = Analysis::average(vectors);
 	}
 
@@ -127,7 +127,7 @@ double Analysis::dispersion(std::vector<Vec3D>& vectors, double average){
 
 double Analysis::dispersion(std::vector<Vec2D>& vectors, double average) {
 	size_t n = vectors.size();
-	if (average == 0) { //average not passed as parameter
+	if (average == -1) { //average not passed as parameter
 		average = Analysis::average(vectors);
 	}
 
@@ -138,9 +138,11 @@ double Analysis::dispersion(std::vector<Vec2D>& vectors, double average) {
 	return sqrt(dispersion / (n - 1));
 }
 
-double Analysis::dispersion(std::vector<double>& values) {
+double Analysis::dispersion(std::vector<double>& values, double average) {
 	size_t n = values.size();
-	double average = Analysis::average(values);
+	if (average == -1) { //average not passed as parameter
+		average = Analysis::average(values);
+	}
 	double dispersion = 0;
 
 	for (double value : values) {
@@ -150,7 +152,7 @@ double Analysis::dispersion(std::vector<double>& values) {
 }
 
 double Analysis::dispersion(std::vector<Point>& points, double average){
-	if (average == 0){ //average not passed as parameter
+	if (average == -1){ //average not passed as parameter
 		average = Analysis::average(points);
 	}
 

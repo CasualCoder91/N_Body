@@ -109,6 +109,7 @@ public:
 	*/
 	void sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
 	void sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
+	void sampleBulgePositionsCylinder(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
 	/**
 	@brief Adds velocity (circular with dispersion) at given \p position to \p velocity
 	@param [in,out] velocity [km/s]

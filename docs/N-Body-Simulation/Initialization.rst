@@ -619,5 +619,14 @@ This is achieved by expressing cylinder in spherical coordinates and integrating
 As neither of these integrals have a analytical solution this calculation is computation intensive.
 Therefor a lookup table has been implemented in witch discrete :math:`r` and corresponding bulge dispersion are stored.
 
+.. figure:: Images/velocityDispersionBulge.svg
+    :align: center
+
+    Velocity dispersion of bulge stars
+
+In the figure above results are compared with observations (:cite:`Kunder_2012`). These results were generated using a view distance of 7.5kpc.
+The other parameters are given in table (?). The radial velocity dispersion heavily depends on the scale parameter of the bulge potential.
+With the current choice, the dispersion at small :math:`r` is lower than realistic. This issue could be solved by adding an additional potential with smaller scale radius.
+A multi component bulge model is for instance suggested by :cite:`Robin_2012`.
 
 .. bibliography:: bibtex.bib

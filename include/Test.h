@@ -55,6 +55,7 @@ public:
 
 	void initialConditionsInitFieldStars();
 	std::vector<Star*> initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView=0.005);
+	std::vector<Star*> initBulgeStarsCylinder(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView = 0.005);
 
 	static void bulgeMass();
 

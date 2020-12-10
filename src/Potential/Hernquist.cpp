@@ -83,6 +83,37 @@ double Hernquist::gslDensityZ(double z, void* p){
 	return density(location.x, location.y, location.z);
 }
 
+double Hernquist::gslDensityXC(double x, void* p)
+{
+	gsl_function F;
+	F.function = &gslDensityYC;
+	struct gslDensityConeParams* fp = (struct gslDensityConeParams*)p;
+	fp->x = x;
+	F.params = fp;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+	double boundary = sqrt(fp->r * fp->r - x * x);
+	gsl_integration_qag(&F, -boundary, boundary, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return result;
+}
+
+double Hernquist::gslDensityYC(double y, void* p)
+{
+	gsl_function F;
+	F.function = &gslDensityZ;
+	struct gslDensityConeParams* fp = (struct gslDensityConeParams*)p;
+	fp->y = y;
+	F.params = fp;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+	if (fp->x == 0 && fp->y == 0)
+		fp->x = 0.01;
+	gsl_integration_qag(&F, 0, fp->distance, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return result;
+}
+
 double Hernquist::mass(Vec3D position, Vec3D volumeElement){
 	gsl_monte_function F;
 
@@ -116,6 +147,18 @@ double Hernquist::mass(Vec3D position, Vec3D volumeElement){
 double Hernquist::mass(Matrix* transformationMatrix, double distance, double coneR){
 	gsl_function F;
 	F.function = &gslDensityX;
+	gslDensityConeParams densityDiskConeParam{ transformationMatrix, distance, coneR,0,0 };
+	F.params = &densityDiskConeParam;
+	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
+	double result, error;
+	gsl_integration_qag(&F, -coneR, coneR, 1e-3, 1e-3, 1000, 1, iw, &result, &error);
+	gsl_integration_workspace_free(iw);
+	return result;
+}
+
+double Hernquist::massCylinder(Matrix* transformationMatrix, double distance, double coneR){
+	gsl_function F;
+	F.function = &gslDensityXC;
 	gslDensityConeParams densityDiskConeParam{ transformationMatrix, distance, coneR,0,0 };
 	F.params = &densityDiskConeParam;
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);

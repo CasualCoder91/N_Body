@@ -6,17 +6,15 @@ def bulgeDispersion(dataPath='',showPlot=True,arguments=[]):
     data4 = np.loadtxt(dataPath + '/bulgeDispersion-4.dat',delimiter=',')
     data6 = np.loadtxt(dataPath + '/bulgeDispersion-6.dat',delimiter=',')
     data8 = np.loadtxt(dataPath + '/bulgeDispersion-8.dat',delimiter=',')
-    fig = plt.figure()
+    plt.ylabel("velocity dispersion [km/s]")
+    plt.xlabel("longitute l [°]")
+    plt.title("velocity dispersion bulge")
     plt.plot(data4[:,0], data4[:,1], 'r-',label='b = -4[°],d=8.5kpc')
     plt.draw()
     plt.plot(data6[:,0], data6[:,1], 'g-',label='b = -6[°],d=8.5kpc')
     plt.draw()
     plt.plot(data8[:,0], data8[:,1], 'b-',label='b = -8[°],d=8.5kpc')
     plt.draw()
-
-    fig.ylabel = "radial dispersion km/s"
-    fig.xlabel = "longitute l [°]"
-    plt.title("Radial velocity dispersion bulge")
 
     for data in dataMeasured:
         if data[1] ==-4:

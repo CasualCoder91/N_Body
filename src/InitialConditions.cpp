@@ -406,6 +406,48 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D con
 	return; //todo: return average velocity maybe?
 }
 
+void InitialConditions::sampleBulgePositionsCylinder(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix)
+{
+	double acceptUpperLimit = potential->bulgePotential.density(coneBoundaryMin.x, coneBoundaryMin.y, coneBoundaryMin.z);
+	double acceptLowerLimit = potential->bulgePotential.density(coneBoundaryMax.x, coneBoundaryMax.y, coneBoundaryMax.z);
+	//create distribution with calculated limits
+	std::uniform_real_distribution<> disaccept(acceptLowerLimit, acceptUpperLimit);
+
+	std::uniform_real_distribution<> disx(-coneR, coneR);
+	std::uniform_real_distribution<> disy(-coneR, coneR);
+	std::uniform_real_distribution<> disz(0, distance);
+
+#pragma omp parallel for
+	for (int i = 0; i < stars.size(); ++i) {
+		while (true) {
+			double x = disx(gen);
+			double y = disy(gen);
+			double z = disz(gen);
+			double RTest = sqrt(x * x + y * y);
+			if (RTest< coneR) {
+				Vec3D trialPosition = Vec3D(x, y, z);
+				trialPosition = *transformationMatrix * trialPosition;
+
+				double accept = disaccept(gen);
+				double temp = potential->bulgePotential.density(trialPosition.x, trialPosition.y, trialPosition.z);
+				if (temp > acceptUpperLimit || temp < acceptLowerLimit) {
+					std::cout << "Uhoh issue in sampleBulgePositions" << std::endl;
+					std::cout << "coneBoundaryMin: " << coneBoundaryMin.print() << std::endl;
+					std::cout << "coneBoundaryMax: " << coneBoundaryMax.print() << std::endl;
+					std::cout << "trialPosition: " << trialPosition.print() << std::endl;
+					//	std::cin.clear();
+					//	std::cin.get();
+				}
+				if (accept < temp) {
+					stars[i]->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
+					break;
+				}
+			}
+		}
+	}
+	return; //todo: return average velocity maybe?
+}
+
 void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 	double delta = potential->velocityDistributionBulgeTableValue(position.length());
 	/*double vCirc = potential->circularVelocity(&position);*/
@@ -414,17 +456,21 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 	//std::normal_distribution<> velocityDistribution{ 0,delta };
 	//double vRand = velocityDistribution(gen);
 
-	std::uniform_real_distribution<> disaccept(0, 1);
-	std::uniform_real_distribution<> vd(-maxSpeed, maxSpeed);
-	//std::normal_distribution<double> rDist{ 0,delta };
-	//velocity += Vec3D::randomVector(rDist(gen));
-	//velocity.x += patternSpeed * position.y;
-	//velocity.y -= patternSpeed * position.x;
+	std::normal_distribution<double> rDist{ 0,delta };
+	double r = rDist(gen);
+	double theta = atan2(position.y, position.x);
+	double phi = asin(position.z / position.length());
+	velocity = Vec3D(cos(phi) * cos(theta) * r, cos(phi) * sin(theta) * r, sin(phi) * r);
+	//velocity.x -= patternSpeed * position.y;
+	//velocity.y += patternSpeed * position.x;
 
 
 	//std::uniform_real_distribution<> vyd(-maxSpeed + patternSpeed * position.y, maxSpeed - patternSpeed * position.x);
 	//std::uniform_real_distribution<> vzd(-maxSpeed, maxSpeed);
 
+
+	/*std::uniform_real_distribution<> disaccept(0, 1);
+	std::uniform_real_distribution<> vd(-maxSpeed, maxSpeed);
 	while (true) {
 		double vx = vd(gen);
 		double vy = vd(gen);
@@ -454,7 +500,7 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 				std::cout << "sampleBulgeVelocity(): star too fast" << std::endl;
 			}
 		}
-	}
+	}*/
 
 
 

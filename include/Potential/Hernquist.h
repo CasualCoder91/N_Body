@@ -34,6 +34,7 @@ public:
 	/**@brief: Mass inside the \p volumeElement relative to the given \p position*/
 	double mass(Vec3D position, Vec3D volumeElement);
 	double mass(Matrix* transformationMatrix, double distance, double coneR);
+	double massCylinder(Matrix* transformationMatrix, double distance, double coneR);
 	/**
 	@brief Caluclate the surface mass density at a given radial distance R.
 	The GSL function gsl_integration_qagiu is used.
@@ -58,10 +59,13 @@ public:
 	double potentialdr2(double r);
 
 private:
-	//Density in cylinder volume along z Axis
+	//Density in cone volume
 	static double gslDensityX(double x, void* p);
 	static double gslDensityY(double y, void* p);
 	static double gslDensityZ(double z, void* p);
+	//Density in cylinder volume
+	static double gslDensityXC(double x, void* p);
+	static double gslDensityYC(double y, void* p);
 };
 
 
