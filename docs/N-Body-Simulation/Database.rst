@@ -1,16 +1,17 @@
-==============
+========
 Database
-==============
+========
 
-SQLite Database is used to store simulations including all relevant parameters, stars with their respective positions and velocities as well as data resulting from analysis.
+A SQLite Database is used to store simulations including all relevant parameters, stars with their respective positions and velocities as well as data resulting from analysis.
+SQLite supports both C++ and python. And is therefor used in most data related parts of the project. Generated data can be loaded and plotted directly from the database.
 Simulations, which have been performed, can be loaded from the database to perform analysis like energy vs time or average star velocity vs time.
-The separation of simulation and analysis is the main reason this database exists, since performing analysis during simulation would lead to ugly code or low performance.
-Another reason being that loading data from files is inefficient depending on the queried information.
+The separation of simulation and analysis in the database is justified by the code base where they are represented by separate classes.
+Performing analysis during simulation would lead to ugly code or low performance.
 
 Entity Relationship Diagram
 ---------------------------
 
-.. image:: Images/ERD.png
+.. image:: Images/ERD.svg
 
 Database Interface
 ------------------
