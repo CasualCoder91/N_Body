@@ -81,20 +81,13 @@ void Database::setup(){
 		"x REAL NOT NULL,"
 		"y REAL NOT NULL,"
 		"z REAL NOT NULL,"
+		"rHEQ REAL,"
+		"aHEQ REAL,"
+		"dHEQ REAL,"
 		"timestep INTEGER NOT NULL,"
 		"id_star INTEGER NOT NULL,"
 		"FOREIGN KEY (id_star) "
 			"REFERENCES star(id) "
-			"ON DELETE CASCADE "
-			"ON UPDATE NO ACTION);";
-	this->exec(sql);
-	sql = "CREATE TABLE IF NOT EXISTS velocityHEQ("
-		"fk_velocity INTEGER PRIMARY KEY,"
-		"r REAL NOT NULL,"
-		"a REAL NOT NULL,"
-		"d REAL NOT NULL,"
-		"FOREIGN KEY (fk_velocity) "
-			"REFERENCES velocity(id) "
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
@@ -103,22 +96,15 @@ void Database::setup(){
 		"x REAL NOT NULL,"
 		"y REAL NOT NULL,"
 		"z REAL NOT NULL,"
+		"rHEQ REAL,"
+		"aHEQ REAL,"
+		"dHEQ REAL,"
 		"timestep INTEGER NOT NULL,"
 		"id_star INTEGER NOT NULL,"
 		"FOREIGN KEY (id_star) "
 			"REFERENCES star(id) "
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
-	this->exec(sql);
-	sql = "CREATE TABLE IF NOT EXISTS positionHEQ("
-		"fk_position INTEGER PRIMARY KEY,"
-		"r REAL NOT NULL,"
-		"a REAL NOT NULL,"
-		"d REAL NOT NULL,"
-		"FOREIGN KEY (fk_position) "
-		"REFERENCES position(id) "
-		"ON DELETE CASCADE "
-		"ON UPDATE NO ACTION);";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS analysis("
 		"id_simulation INTEGER PRIMARY KEY,"
@@ -445,7 +431,7 @@ void Database::generateHEQ(int simulationID){
 	char* errorMessage;
 	//insert velocities
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	std::string buffer = "INSERT INTO velocityHEQ (fk_velocity,r,a,d) VALUES (?1,?2,?3,?4)";
+	std::string buffer = "UPDATE velocity SET rHEQ=?2, aHEQ=?3, dHEQ=?4 WHERE id=?1";
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, nullptr);
 	for (rowInsert row : velocitiesInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
@@ -465,7 +451,7 @@ void Database::generateHEQ(int simulationID){
 
 	//insert positions
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	buffer = "INSERT INTO positionHEQ (fk_position,r,a,d) VALUES (?1,?2,?3,?4)";
+	buffer = "UPDATE position SET rHEQ=?2, aHEQ=?3, dHEQ=?4 WHERE id=?1";
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
 	for (rowInsert row : positionsInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
@@ -655,10 +641,9 @@ std::vector<Vec2D> Database::selectVelocitiesHEQ(int simulationID, int timestep,
 	if (!this->isOpen)
 		this->open();
 
-	std::string query = "SELECT velocityHEQ.a,velocityHEQ.d "
+	std::string query = "SELECT velocity.aHEQ ,velocity.dHEQ "
 		"FROM star "
 		"INNER JOIN velocity on velocity.id_star = star.id "
-		"INNER JOIN velocityHEQ on velocity.id = velocityHEQ.fk_velocity "
 		"WHERE star.id_simulation =  " +std::to_string(simulationID);
 	if (timestep != -1) {
 		query += " AND velocity.timestep = " + std::to_string(timestep);
@@ -812,10 +797,9 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 		std::cout << "Amount of timesteps must be at least 1" << std::endl;
 		return points;
 	}
-	std::string query = "SELECT star.id,position.timestep,positionHEQ.x,positionHEQ.y,star.isCluster "
+	std::string query = "SELECT star.id, position.timestep, position.aHEQ, position.dHEQ, star.isCluster "
 		"FROM star "
 		"INNER JOIN position on position.id_star = star.id "
-		"INNER JOIN positionHEQ on position.id = positionHEQ.fk_position "
 		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) order by position.timestep";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
