@@ -38,6 +38,7 @@ extensions = [
     'sphinxcontrib.tikz'
 ]
 needs_sphinx = '1.4.3'
+bibtex_bibfiles = ['/N-Body_Simulation/bibtex.bib']
 
 # tikz Configuration
 tikz_proc_suite = 'GhostScript'
