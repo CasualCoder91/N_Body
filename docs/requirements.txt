@@ -1,5 +1,5 @@
 breathe
-Sphinx>=2.0.1
+Sphinx=3.3.0
 matplotlib
-sphinxcontrib-bibtex
+sphinxcontrib-bibtex=1.0.0
 sphinxcontrib.tikz
