@@ -9,9 +9,13 @@ The GNU Scientific Library (:cite:`galassi_2018`, GSL) is used for integrations 
 Quadrature, Adaptive, General-purpose (QAG)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Adaptive Gauss-Kronrod Quadrature
+Ported to C in GLS from the Fortran library QUADPACK :cite:`1983Q:as`, this algorithm makes use of adaptive Gauss-Kronrod Quadrature to
+estimate the definite integral of a given function.
 
+Quadrature sums are defined as
 
+.. math::
+   Q_n[a,b] \equiv \sum_i^nw_if(x_i) \cong \int_a^bw(x)f(x)\textup{d}x
 
 
 
