@@ -71,7 +71,14 @@ Since the velocity, :math:`v(t)` changes over time, it's value at the midpoint b
    x_{n+1} = x_{n} + hv_{n+0.5}\\
    v_{n+1.5} = v_{n+0.5} + \frac{h}{m}F(x_{n+1})
 
-which is the Leapfrog algorithm. Since both :math:`x` and :math:`v`
+which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the same time, (?) can be split into two halve steps.
+
+.. math::
+   v_{n+0.5} = v_{n} + \frac{h}{2m}F(x_{n})
+   x_{n+1} = x_{n} + hv_{n+0.5}\\
+   v_{n+1} = v_{n+0.5} + \frac{h}{2m}F(x_{n+1})
+
+:math:`F(x)` does not have to be calculated twice, because :math:`F(x_{n+1})` can be used as :math:`F(x_{n})` in the next timestep.
 
 symplectic
 
