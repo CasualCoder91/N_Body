@@ -65,7 +65,7 @@ and from the milky way potential. The acceleration of field stars solely comes f
 In each time step both velocity and acceleration of each star is evaluated.
 
 Since the velocity, :math:`v(t)` changes over time, it's value at the midpoint between the current (:math:`t_n`) and the next timestep :math:`t_{n+1}` is intuitively a better approximation than
-:math:`v(t_n)` or :math:`v(t_{n+1})`. The same holds true for the acceleration. This leads to
+:math:`v(t_n)` or :math:`v(t_{n+1})`. The same holds true for the acceleration. This leads to :cite:`feynman_1965`
 
 .. math::
    x_{n+1} = x_{n} + hv_{n+0.5}\\
