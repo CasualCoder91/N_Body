@@ -57,12 +57,23 @@ For a infinite interval
 After the transformation QAGS with the 15-point Kronrod rule is used.
 QAGS, in addition to the adaptive bisection (see QAG), makes use of the Wynn :math:`\epsilon`-algorithm to accelerate the convergence.
 
-Leapfrog
-^^^^^^^^
+Velocity Verlet Algorithm
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For cluster members the acceleration is a combination of the force resulting from the presence of all other cluster stars (see Barens Huts Algorithm)
 and from the milky way potential. The acceleration of field stars solely comes from the milky way potential.
 In each time step both velocity and acceleration of each star is evaluated.
+
+Since the velocity, :math:`v(t)` changes over time, it's value at the midpoint between the current (:math:`t_n`) and the next timestep :math:`t_{n+1}` is intuitively a better approximation than
+:math:`v(t_n)` or :math:`v(t_{n+1})`. The same holds true for the acceleration. This leads to
+
+.. math::
+   x_{n+1} = x_{n} + hv_{n+0.5}\\
+   v_{n+1.5} = v_{n+0.5} + \frac{h}{m}F(x_{n+1})
+
+which is the Leapfrog algorithm. Since both :math:`x` and :math:`v`
+
+symplectic
 
 
 
