@@ -17,12 +17,19 @@ The projection of :math:'\hat{e}_x' onto the galactic equator (or midplane) poin
 
 Units: positions [pc], velocities [km/s]
 
-Galactocentric Cylindrical (GCY)
+Galactocentric Polar (GCP)
 --------------------------------
 
-GCY is similar to GCA. Positions and velocities between the two systems goes as follows.
+GCP is a spherical coordinate system and similar to GCA.
+Position and velocity transformation between the two systems goes as follows.
 
-
+.. math::
+    \rho  = \sqrt{x^2+y^2+z^2} \\
+    \theta = \textup{atan2}{\left ( y,x \right )}\\
+    \varphi  = \arcsin\left ( \frac{z}{\sqrt{x^2+y^2+z^2}} \right ) \\
+    \dot{\rho} =  \frac{x\dot{x}+y\dot{y}+z\dot{z}}{\sqrt{x^2+y^2+z^2}}\\
+    \dot{\theta} = \frac{\dot{x}y-x\dot{y}}{x^2+y^2} \\
+    \dot{\varphi} = \frac{z(x\dot{x}+y\dot{y})-\dot{z}(x^2+y^2)}{(x^2+y^2+z^2)\sqrt{x^2+y^2}}
 
 
 Local Standard of Rest (LSR)
