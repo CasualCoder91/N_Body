@@ -39,9 +39,34 @@ Like GCA, LSR is a right-handed coordinate system.
 The origin of positions is the location of the sun
 and the origin of velocity is the velocity of a star on a circular orbit with mean velocity of stars in the solar neighborhood.
 :math:`\hat{e}_x` points towards the galactic center, :math:`\hat{e}_y` towards the direction of galactic rotation
-and :math:`\hat{e}_z` towards the galactic north pole.
+and :math:`\hat{e}_z` roughly towards the galactic north pole.
 
-With the location of the sun (:cite:`McMillan_2016`, :cite:`Binney_1997`)
+The location of the sun is approximately given by (:cite:`McMillan_2016`, :cite:`Binney_1997`)
+
+.. math::
+    \vec{x}_{sun,GCA} \cong  (8.20,0,0.014)[kpc]
+
+and the mean velocity (:cite:`McMillan_2016`)
+
+.. math::
+    \vec{v}_{mean,GCA} \cong  (0,-232.8,0)[km/s]
+
+Since the sun is generally not in the galactic midplane, there is an angle between the planes spanned by :math:`(x,y)_{GCA}` and :math:`(x,y)_{LSR}`.
+This angle can be expressed as
+
+.. math::
+    \sin(\alpha) = \frac{z_{sun,GCA}}{\sqrt{x^2+z^2}} \\
+    \cos(\alpha) = \frac{x_{sun,GCA}}{\sqrt{x^2+z^2}}
+
+The transformation of position and velocity vectors from GCA to LSR has to contain a rotation by :math:`-\alpha` about the y axis.
+
+.. math::
+    x_{LSR} = \cos(\alpha)( x_{sun,GCA} - x_{GCA} ) - \sin(\alpha)(z_{GCA}-z_{sun,GCA}) \\
+    y_{LSR} = -y_{GCA} \\
+    z_{LSR} = \sin(\alpha)(x_{sun,GCA} - x_{GCA}) + \cos(\alpha)( z_{GCA} - z_{sun,GCA}) \\ \\
+    u_{LSR} = -\cos(\alpha)u_{GCA} - \sin(\alpha)w_{GCA} \\
+    v_{LSR} = v_{sun,GCA}-v_{GCA} \\
+    w_{LSR} = -\sin(\alpha)u_{GCA} + \cos(\alpha)w_{GCA} \\
 
 Heliocentric Cartesian (HCA)
 ----------------------------
