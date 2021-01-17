@@ -71,6 +71,19 @@ The transformation of position and velocity vectors from GCA to LSR has to conta
 Heliocentric Cartesian (HCA)
 ----------------------------
 
+The only difference between HCA and LSR is the origin of the velocity. In HCA the origin is the velocity of the sun.
+The difference between the average velocity in the solar neighborhood and the sun itself, also called the peculiar motion of the sun,
+is given by (:cite:`2010MNRAS.403.1829S`)
+
+.. math::
+    \vec{v}_{sun,LSR} \cong  (11.1, 12.24, 7.25)[km/s]
+
+Transformation from LSR to HCA can be written as
+
+.. math::
+    \vec{x}_{HCA} = \vec{x}_{LSR} \\
+    \vec{v}_{HCA} = \vec{v}_{LSR} - \vec{v}_{sun,LSR}
+
 Heliocentric Galactic Polar (HGP)
 ---------------------------------
 
