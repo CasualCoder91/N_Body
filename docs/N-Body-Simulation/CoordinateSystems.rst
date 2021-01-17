@@ -35,7 +35,13 @@ Position and velocity transformation between the two systems goes as follows.
 Local Standard of Rest (LSR)
 ----------------------------
 
+Like GCA, LSR is a right-handed coordinate system.
+The origin of positions is the location of the sun
+and the origin of velocity is the velocity of a star on a circular orbit with mean velocity of stars in the solar neighborhood.
+:math:`\hat{e}_x` points towards the galactic center, :math:`\hat{e}_y` towards the direction of galactic rotation
+and :math:`\hat{e}_z` towards the galactic north pole.
 
+With the location of the sun (:cite:`McMillan_2016`, :cite:`Binney_1997`)
 
 Heliocentric Cartesian (HCA)
 ----------------------------
