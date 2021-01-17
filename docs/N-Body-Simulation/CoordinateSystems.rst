@@ -71,7 +71,7 @@ The transformation of position and velocity vectors from GCA to LSR has to conta
 Heliocentric Cartesian (HCA)
 ----------------------------
 
-The only difference between HCA and LSR is the origin of the velocity. In HCA the origin is the velocity of the sun.
+The only distinction between HCA and LSR is the origin of the velocity. In HCA the origin is the velocity of the sun.
 The difference between the average velocity in the solar neighborhood and the sun itself, also called the peculiar motion of the sun,
 is given by (:cite:`2010MNRAS.403.1829S`)
 
@@ -86,6 +86,13 @@ Transformation from LSR to HCA can be written as
 
 Heliocentric Galactic Polar (HGP)
 ---------------------------------
+
+HGP is a spherical coordinate system with origins for position and velocity identical to those defined in HCA.
+Coordinates given in this system are often called galactic coordinates.
+The galactic longitude :math:`l` is the angle in the galactic midplane starting from the vector pointing towards the galactic center :math:`l=0`.
+The galactic latitude :math:`b` denotes the angle below and above the galactic midplane
+
+
 
 Heliocentric Equatorial Polar (HEQ)
 -----------------------------------
