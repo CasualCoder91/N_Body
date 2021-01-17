@@ -41,12 +41,12 @@ and the origin of velocity is the velocity of a star on a circular orbit with me
 :math:`\hat{e}_x` points towards the galactic center, :math:`\hat{e}_y` towards the direction of galactic rotation
 and :math:`\hat{e}_z` roughly towards the galactic north pole.
 
-The location of the sun is approximately given by (:cite:`McMillan_2016`, :cite:`Binney_1997`)
+The location of the sun is approximately given by (:cite:`McMillan_2016_2`, :cite:`Binney_1997`)
 
 .. math::
     \vec{x}_{sun,GCA} \cong  (8.20,0,0.014)[kpc]
 
-and the mean velocity (:cite:`McMillan_2016`)
+and the mean velocity (:cite:`McMillan_2016_2`)
 
 .. math::
     \vec{v}_{mean,GCA} \cong  (0,-232.8,0)[km/s]
