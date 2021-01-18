@@ -89,8 +89,11 @@ Heliocentric Galactic Polar (HGP)
 
 HGP is a spherical coordinate system with origins for position and velocity identical to those defined in HCA.
 Coordinates given in this system are often called galactic coordinates.
-The galactic longitude :math:`l` is the angle in the galactic midplane starting from the vector pointing towards the galactic center :math:`l=0`.
-The galactic latitude :math:`b` denotes the angle below and above the galactic midplane
+The galactic longitude :math:`l` is the angle in the galactic midplane with :math:`l=0^{\circ}` towards the galactic center.
+The galactic latitude :math:`b` denotes the angle below and above the galactic midplane ranging from :math:`-90^{\circ}` to :math:`90^{\circ}`.
+and :math:`r` the radial distance.
+The transformation from HCA to HGP is identical to the transformation from GCA to GCP (?) with :math:`l \equiv \varphi`, :math:`b \equiv \theta` and :math:`\rho \equiv \theta`
+.. math::
 
 
 
