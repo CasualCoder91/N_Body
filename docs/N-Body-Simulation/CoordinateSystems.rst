@@ -89,7 +89,7 @@ Heliocentric Galactic Polar (HGP)
 
 HGP is a spherical coordinate system with origins for position and velocity identical to those defined in HCA.
 Coordinates given in this system are often called galactic coordinates.
-The galactic longitude :math:`l` is the angle in the galactic midplane with :math:`l=0^{\circ}` towards the galactic center.
+The galactic longitude :math:`l` is the angular distance in the galactic midplane with :math:`l=0^{\circ}` towards the galactic center.
 The galactic latitude :math:`b` denotes the angle below and above the galactic midplane ranging from :math:`-90^{\circ}` to :math:`90^{\circ}`.
 and :math:`r` the radial distance.
 
@@ -97,3 +97,17 @@ The transformation from HCA to HGP is identical to the transformation from GCA t
 
 Heliocentric Equatorial Polar (HEQ)
 -----------------------------------
+
+HEQ, like HGP, is a spherical coordinate system having the same origins for position and velocity.
+However, angles are given in and normal to the celestial equator.
+The right ascension (:math:`a`) is the angular distance in the equator with :math:`a=0^{\circ}` towards the northward equinox.
+The equinox is the intersection of the ecliptic - the plane in which the earth orbits the sun - and the celestial equator.
+The declination (:math:`d`) is the angular distance above or below in the equator.
+In this implementation both of these distances are given in arcseconds.
+
+The ecliptic and the equator are in motion, hence a reference frame is needed.
+Three angles describe the precision of both planes between a epoch :math:`\epsilon_0` and the date of observation :math:`\epsilon_D`.
+With these three rotations a precession matrix :math:`P` as well as its inverse can be formalized.
+
+
+These three rotations can be combined into a rotation matrix :math:`P`.
