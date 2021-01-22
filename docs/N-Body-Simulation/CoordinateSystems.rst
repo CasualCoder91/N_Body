@@ -111,13 +111,28 @@ calculate those quantities for any other date. A common reference frame is defin
 In order to transform from HGP to HEQ at :math:`\epsilon_0`,
 the directions of the north Galactic pole (NGP) in HEQ and the north celestial pole (NCP) in HGP are needed.
 
-Since the NGP is normal to the fundamental plane in HGP :math:`b=90^{\circ}`. In HEQ at :math:`\epsilon_0` the direction is given by
+Since the NGP is normal to the fundamental plane in HGP :math:`b=90^{\circ}`.
+In HEQ at :math:`\epsilon_0` the direction is given by
 
 .. math::
     a_{NGP} = 12^h51^m26.28^s \\
     d_{NGP} = 27^{\circ}7^\prime41.7^{\prime\prime}
 
-NCP, by contrast, is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`
+NCP, by contrast, is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`.
+In HGP at :math:`\epsilon_0`, NCP is
+
+.. math::
+    l_{NCP} = 123^{\circ}55^\prime55.2^{\prime\prime}\\
+    b_{NGP} = 27^{\circ}7^\prime41.7^{\prime\prime}
+
+Using NGP and NCP, the transformation from HGP to HEQ at :math:`\epsilon_0` is
+
+.. math::
+    \sin(d) = \sin(d_{NGP})\sin(b) + \cos(d_{NGP})\cos(b)\cos(l_{NCP}-l) \\
+    \cos(d)\sin(a-a_{NGP}) = \cos(b)\sin(l_{NCP}-l) \\
+    \cos(d)\cos(a-a_{NGP}) = \cos(d_{NGP})\sin(b)-sin(d_{NGP})\cos(b)\cos(l_{NGP}-l)
+
+
 
 Three angles describe the precision of both planes between a epoch :math:`\epsilon_0` and the date of observation :math:`\epsilon_D`.
 With these three rotations a precession matrix :math:`P` as well as its inverse can be formalized.
