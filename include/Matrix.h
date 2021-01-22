@@ -1,5 +1,6 @@
 #pragma once
 #include "Vec3D.h"
+#include <iostream>
 
 class Matrix {
 private:
@@ -12,4 +13,13 @@ public:
 	static Matrix transformation(Vec3D rotation, Vec3D translation);
 
 	Vec3D operator * (const Vec3D& rhs);
+
+	friend std::ostream& operator<<(std::ostream& output, const Matrix& m) {
+		output << m.m11 << " " << m.m12 << " " << m.m13 << std::endl;
+		output << m.m21 << " " << m.m22 << " " << m.m23 << std::endl;
+		output << m.m31 << " " << m.m32 << " " << m.m33 << std::endl;
+
+		return output;
+	}
+
 };

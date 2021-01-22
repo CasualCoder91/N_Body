@@ -172,27 +172,31 @@ int main() {
 			//Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
 			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
 
-			//Vec3D pGCA = Vec3D(9594, -640, -52);
-			//Vec3D vGCA = Vec3D(58.62, -12.39, -14.55);
+			Vec3D pGCA = Vec3D(9594, -640, -52);
+			Vec3D vGCA = Vec3D(58.62, -12.39, -14.55);
 
-			//////Projection::GCPtoGCA(pGCP, vGCP, pGCA, vGCA);
-			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
+			////Projection::GCPtoGCA(pGCP, vGCP, pGCA, vGCA);
+			std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
 
-			//Vec3D pLSR, vLSR;
-			//Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
-			//std::cout << "LSR: " << pLSR.print() << " | " << vLSR.print() << std::endl;
+			Vec3D pLSR, vLSR;
+			Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
+			std::cout << "LSR: " << pLSR.print() << " | " << vLSR.print() << std::endl;
 
-			//Vec3D pHCA, vHCA;
-			//Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
-			//std::cout << "HCA: " << pHCA.print() << " | " << vHCA.print() << std::endl;
+			Vec3D pHCA, vHCA;
+			Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
+			std::cout << "HCA: " << pHCA.print() << " | " << vHCA.print() << std::endl;
 
-			//Vec3D pHEQ, vHEQ;
-			//Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
+			Vec3D pHEQ, vHEQ;
+			Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
+			std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
+
+			Vec3D pHGP, vHGP;
+			Projection::HCAtoHGP(pHCA, vHCA, pHGP, vHGP);
+			std::cout << "HGP: " << pHGP.print() << " | " << vHGP.print() << std::endl;
+
+			//Projection::HGPtoHEQ(pHGP, vHGP, pHEQ, vHEQ);
 			//std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
 
-			//Vec3D pHGP, vHGP;
-			//Projection::HCAtoHGP(pHCA, vHCA, pHGP, vHGP);
-			//std::cout << "HGP: " << pHGP.print() << " | " << vHGP.print() << std::endl;
 
 			//Vec3D pHGP = Vec3D(1719, 16.94 * Constants::degInRad, 0.8 * Constants::degInRad);
 			//Vec3D vHGP = Vec3D();
@@ -217,7 +221,31 @@ int main() {
 			//Test::sampleFieldStarPositions(200);
 			//Test::velocityBulgeR();
 			//Test::bulgeMass();
-			test.velocityBulge(); // very time intensive
+			//test.velocityBulge(); // very time intensive
+
+			////double r11 = cos(a) * cos(d);
+			////double r12 = -sin(a);
+			////double r13 = cos(a) * sin(d);
+			////double r21 = sin(a) * cos(d);
+			////double r22 = cos(a);
+			////double r23 = sin(a) * sin(d);
+			////std::cout << r11 << " " << r12 << " " << r13 << std::endl;
+			////std::cout << r21 << " " << r22 << " " << r23 << std::endl;
+
+			//double d = 2.1630214485816124 - 3.366033268750004;
+			//double a = 0.47347728280415174;
+
+			//double x = cos(a) * cos(d);
+			//double y = sin(a) * cos(d);
+			//double z = sin(d);
+
+			//Vec3D position = Vec3D(x, y, z);
+
+			//Matrix m = Matrix::transformation(position, Vec3D(0, 0, 0));
+
+			//std::cout << m << std::endl << std::endl;
+			//std::cout << m << std::endl;
+
 			////Test::wangPositions();
 			////Test::checkBrokenPowerLaw();
 			//std::cout << WangPotential::ANLM(1, 0, 0) << std::endl;

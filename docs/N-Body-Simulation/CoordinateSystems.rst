@@ -99,13 +99,26 @@ Heliocentric Equatorial Polar (HEQ)
 -----------------------------------
 
 HEQ, like HGP, is a spherical coordinate system having the same origins for position and velocity.
-However, angles are given in and normal to the celestial equator.
+However, angles are given in and normal to the celestial equator which is not parallel to the galactic midplane.
 The right ascension (:math:`a`) is the angular distance in the equator with :math:`a=0^{\circ}` towards the northward equinox.
 The equinox is the intersection of the ecliptic - the plane in which the earth orbits the sun - and the celestial equator.
 The declination (:math:`d`) is the angular distance above or below in the equator.
-In this implementation both of these distances are given in arcseconds.
 
-The ecliptic and the equator are in motion, hence a reference frame is needed.
+Since the ecliptic and the equator are in motion, a reference frame is needed.
+A reference frame consists of quantities defining the coordinate system at a specific time as well as methods to
+calculate those quantities for any other date. A common reference frame is defined for the J2000.0 epoch (:math:`\epsilon_0`).
+
+In order to transform from HGP to HEQ at :math:`\epsilon_0`,
+the directions of the north Galactic pole (NGP) in HEQ and the north celestial pole (NCP) in HGP are needed.
+
+Since the NGP is normal to the fundamental plane in HGP :math:`b=90^{\circ}`. In HEQ at :math:`\epsilon_0` the direction is given by
+
+.. math::
+    a_{NGP} = 12^h51^m26.28^s \\
+    d_{NGP} = 27^{\circ}7^\prime41.7^{\prime\prime}
+
+NCP, by contrast, is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`
+
 Three angles describe the precision of both planes between a epoch :math:`\epsilon_0` and the date of observation :math:`\epsilon_D`.
 With these three rotations a precession matrix :math:`P` as well as its inverse can be formalized.
 

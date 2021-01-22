@@ -1,4 +1,4 @@
-#include "Projection.h"
+﻿#include "Projection.h"
 
 const double  Projection::EtoPJ2000_0[3] = { -0.0548761806632, 0.4941094158461, -0.867666116641649 };
 const double  Projection::EtoPJ2000_1[3] = { -0.8734369590164, -0.4448300538949, -0.198076 };
@@ -252,3 +252,18 @@ void Projection::HGPtoHCA(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3
 	velocityOut.y = sl * temp + cl * vl;
 	velocityOut.z = sb * velocityIn.x + cb * vb;
 }
+
+//void Projection::HGPtoHEQ(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut){
+//	double dNGP = 0.47347728280415174; //27°7'41.z''  | equatorial coordinates of the north Galactic pole
+//	double aNGP = 3.366033268750004;   //12h51m26.28s | equatorial coordinates of the north Galactic pole
+//	double lNCP = 2.1630214485816124;  //123°55'55.2''| north celestial pole in Galactic coordinates
+//
+//	double sd = sin(dNGP)*sin(positionIn.z) + cos(dNGP)*cos(positionIn.z)*cos(lNCP - positionIn.y); //sinus of declination
+//	double d = asin(sd);
+//	double a = asin(cos(positionIn.z) * sin(lNCP - positionIn.y) / cos(d)) + aNGP;
+//
+//	positionOut.x = positionIn.x;
+//	positionOut.y = a * Constants::radInArcsec;
+//	positionOut.z = d * Constants::radInArcsec;
+//	return;
+//}

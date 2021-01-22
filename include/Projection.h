@@ -40,4 +40,7 @@ public:
     static void HEQtoHCA(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut); //consistent with HCAtoHEQ
     static void HCAtoHGP(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut); //consistent with HGPtoHCA
     static void HGPtoHCA(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut); //consistent with HCAtoHGP
+
+    //static void HGPtoHEQ(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut);
+
 };
