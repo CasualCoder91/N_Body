@@ -108,10 +108,10 @@ Since the ecliptic and the equator are in motion, a reference frame is needed.
 A reference frame consists of quantities defining the coordinate system at a specific time as well as methods to
 calculate those quantities for any other date. A commonly used reference frame is defined for the J2000.0 epoch (:math:`\epsilon_0`).
 
-In order to transform between HCA and HEQ at :math:`\epsilon_0`, both
-the directions of the north Galactic pole (NGP) and the galactic center (GC) are needed in both basis.
+In order to transform between HCA and HEQ at :math:`\epsilon_0`,
+the direction of the north Galactic pole (NGP) and the galactic center (GC) are needed in both basis.
 
-In HCA the NGP is simply :math:`\vec(x)_{NGP,HCA}=(0, 0, 1)`.
+In HCA the NGP is simply :math:`\vec{x}_{NGP,HCA}=(0, 0, 1)`.
 In HGP, since the direction is normal to the fundamental plane, :math:`b=90^{\circ}_{GC,HGP}`.
 In HEQ at :math:`\epsilon_0` the direction is
 
@@ -119,31 +119,47 @@ In HEQ at :math:`\epsilon_0` the direction is
     a_{NGP} = 12^h51^m26.28^s \\
     d_{NGP} = 27^{\circ}7^\prime41.7^{\prime\prime}
 
-GC defines the x axis of HCA: :math:`\vec(x)_{GC,HCA}=(1, 0, 0)`. In GC the same direction is
+The GC defines the x axis of HCA: :math:`\vec{x}_{GC,HCA}=(1, 0, 0)`. In GC the same direction is
 
 .. math::
     a_{GC,HEQ} = 17^h45^m40.0409^s \\
     d_{GC,HEQ} = -29^{\circ}0^\prime28.118^{\prime\prime}
 
+To express these basis vectors in HCA basis, they can to be transformed as follows
 
+.. math::
+    x_{HCA} = \cos(d)\cos(a) \\
+    y_{HCA} = \cos(d)\sin(a) \\
+    z_{HCA} = \sin(d) \\
+
+The third basis vector is the cross product of :math:`\vec{x}_{NGP}` and :math:`\vec{x}_{GC}`.
+With these basis vectors the change of basis matrix is
+
+.. math::
+    M = \left [\hat{e}_x,\hat{e}_y,\hat{e}_z\right ]
+
+The full transformation from HCA to HEQ consists of the two steps: the multiplication with :math:`M` followed by
+the transformation from cartesian to spherical as given in section (?) GCP.
+
+For the transformation between HGP and HEQ the direction of the north celestial pole (NCP) is required .
 NCP is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`.
 In HGP at :math:`\epsilon_0`, NCP is
 
 .. math::
     l_{NCP} = 123^{\circ}55^\prime55.2^{\prime\prime}\\
-    b_{NGP} = 27^{\circ}7^\prime41.7^{\prime\prime}
+    b_{NCP} = 27^{\circ}7^\prime41.7^{\prime\prime}
 
-Using NGP and NCP, the transformation from HGP to HEQ at :math:`\epsilon_0` is
+Using NGP and NCP the transformation from HGP to HEQ at :math:`\epsilon_0` is
 
 .. math::
     \sin(d) = \sin(d_{NGP})\sin(b) + \cos(d_{NGP})\cos(b)\cos(l_{NCP}-l) \\
     \cos(d)\sin(a-a_{NGP}) = \cos(b)\sin(l_{NCP}-l) \\
     \cos(d)\cos(a-a_{NGP}) = \cos(d_{NGP})\sin(b)-sin(d_{NGP})\cos(b)\cos(l_{NGP}-l)
 
-
-
 Three angles describe the precision of both planes between a epoch :math:`\epsilon_0` and the date of observation :math:`\epsilon_D`.
+
+(...)
+
 With these three rotations a precession matrix :math:`P` as well as its inverse can be formalized.
 
-
-These three rotations can be combined into a rotation matrix :math:`P`.
+(...)

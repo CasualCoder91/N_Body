@@ -239,7 +239,7 @@ int main() {
 			double y = cos(b) * sin(l);
 			double z = sin(b);
 
-			Vec3D positionNCP = Vec3D(x, y, z);
+			Vec3D positionNCP = Vec3D(x, y, z).normalize();
 			std::cout << "positionNCP: " << positionNCP.print() << std::endl;
 
 			//std::cout << "mNCP: " << std::endl << mNCP << std::endl;
@@ -251,7 +251,7 @@ int main() {
 			y = cos(b) * sin(l);
 			z = sin(b);
 
-			Vec3D positionEqui = Vec3D(x, y, z);
+			Vec3D positionEqui = Vec3D(x, y, z).normalize();
 
 			Vec3D cross = Vec3D::crossProduct(&positionNCP, &positionEqui);
 
