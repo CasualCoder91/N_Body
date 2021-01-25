@@ -232,16 +232,38 @@ int main() {
 			////std::cout << r11 << " " << r12 << " " << r13 << std::endl;
 			////std::cout << r21 << " " << r22 << " " << r23 << std::endl;
 
-			//double d = 2.1630214485816124 - 3.366033268750004;
-			//double a = 0.47347728280415174;
+			double l = 3.366033268750004;
+			double b = 0.47347728280415174;
 
-			//double x = cos(a) * cos(d);
-			//double y = sin(a) * cos(d);
-			//double z = sin(d);
+			double x = cos(b) * cos(l);
+			double y = cos(b) * sin(l);
+			double z = sin(b);
 
-			//Vec3D position = Vec3D(x, y, z);
+			Vec3D positionNCP = Vec3D(x, y, z);
+			std::cout << "positionNCP: " << positionNCP.print() << std::endl;
 
-			//Matrix m = Matrix::transformation(position, Vec3D(0, 0, 0));
+			//std::cout << "mNCP: " << std::endl << mNCP << std::endl;
+
+			l = 4.6496443937754925;
+			b = -0.5050284723570792;
+
+			x = cos(b) * cos(l);
+			y = cos(b) * sin(l);
+			z = sin(b);
+
+			Vec3D positionEqui = Vec3D(x, y, z);
+
+			Vec3D cross = Vec3D::crossProduct(&positionNCP, &positionEqui);
+
+			std::cout << "cross: " << cross.print() << std::endl;
+
+			std::cout << "positionEqui: " << positionEqui.print() << std::endl;
+
+
+			//std::cout << "mEqui: " << std::endl << mEqui << std::endl;
+
+
+
 
 			//std::cout << m << std::endl << std::endl;
 			//std::cout << m << std::endl;

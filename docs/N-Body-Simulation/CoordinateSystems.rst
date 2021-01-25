@@ -106,19 +106,27 @@ The declination (:math:`d`) is the angular distance above or below in the equato
 
 Since the ecliptic and the equator are in motion, a reference frame is needed.
 A reference frame consists of quantities defining the coordinate system at a specific time as well as methods to
-calculate those quantities for any other date. A common reference frame is defined for the J2000.0 epoch (:math:`\epsilon_0`).
+calculate those quantities for any other date. A commonly used reference frame is defined for the J2000.0 epoch (:math:`\epsilon_0`).
 
-In order to transform from HGP to HEQ at :math:`\epsilon_0`,
-the directions of the north Galactic pole (NGP) in HEQ and the north celestial pole (NCP) in HGP are needed.
+In order to transform between HCA and HEQ at :math:`\epsilon_0`, both
+the directions of the north Galactic pole (NGP) and the galactic center (GC) are needed in both basis.
 
-Since the NGP is normal to the fundamental plane in HGP :math:`b=90^{\circ}`.
-In HEQ at :math:`\epsilon_0` the direction is given by
+In HCA the NGP is simply :math:`\vec(x)_{NGP,HCA}=(0, 0, 1)`.
+In HGP, since the direction is normal to the fundamental plane, :math:`b=90^{\circ}_{GC,HGP}`.
+In HEQ at :math:`\epsilon_0` the direction is
 
 .. math::
     a_{NGP} = 12^h51^m26.28^s \\
     d_{NGP} = 27^{\circ}7^\prime41.7^{\prime\prime}
 
-NCP, by contrast, is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`.
+GC defines the x axis of HCA: :math:`\vec(x)_{GC,HCA}=(1, 0, 0)`. In GC the same direction is
+
+.. math::
+    a_{GC,HEQ} = 17^h45^m40.0409^s \\
+    d_{GC,HEQ} = -29^{\circ}0^\prime28.118^{\prime\prime}
+
+
+NCP is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`.
 In HGP at :math:`\epsilon_0`, NCP is
 
 .. math::
