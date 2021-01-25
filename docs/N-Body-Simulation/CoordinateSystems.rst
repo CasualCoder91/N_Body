@@ -158,8 +158,21 @@ Using NGP and NCP the transformation from HGP to HEQ at :math:`\epsilon_0` is
 
 Three angles describe the precision of both planes between a epoch :math:`\epsilon_0` and the date of observation :math:`\epsilon_D`.
 
-(...)
+.. math::
+    z = (2306.2181+1.39656T - 0.000139T^2 )t + (1.09468 + 0.000066T)t^2 + 0.018203t^3 \\
+    \theta =(2004.3109 - 0.85330T-0.000217T^2)t + (-0.42665-0.000217T)t^2 - 0.041833t^3 \\
+    \xi = (2306.2181+1.39656T-0.000139T^2)t+(0.30188-0.000344T)t^2+0.017998t^3
 
 With these three rotations a precession matrix :math:`P` as well as its inverse can be formalized.
 
-(...)
+.. math::
+    P = \begin{bmatrix}
+    cz*c\theta*c\xi-sz*s\xi & -cz*c\theta*s\xi-sz*c\xi & -cz*s\theta\\
+    sz*c\theta*c\xi+cz*s\xi & -sz*c\theta*s\xi+cz*c\xi & -sz*s\theta\\
+    s\theta*c\xi & -s\theta*s\xi & c\theta
+    \end{bmatrix}
+
+where :math:`cz = \cos(z)`, :math:`sz = \sin(z)`, :math:`c\theta = \cos(\theta)`, :math:`s\theta = \sin(\theta)`,
+:math:`c\xi = \cos(\xi)` and :math:`s\xi = \sin(\xi)`.
+
+Before multiplication with :math:`P`, the target vector has to be expressed in cartesian coordinates.
