@@ -39,9 +39,9 @@ Like GCA, LSR is a right-handed coordinate system.
 The origin of positions is the location of the sun
 and the origin of velocity is the velocity of a star on a circular orbit with mean velocity of stars in the solar neighborhood.
 :math:`\hat{e}_x` points towards the galactic center, :math:`\hat{e}_y` towards the direction of galactic rotation
-and :math:`\hat{e}_z` roughly towards the galactic north pole.
+and :math:`\hat{e}_z` approximately towards the galactic north pole.
 
-The location of the sun is approximately given by (:cite:`McMillan_2016_2`, :cite:`Binney_1997`)
+The location of the sun is given by (:cite:`McMillan_2016_2`, :cite:`Binney_1997`)
 
 .. math::
     \vec{x}_{sun,GCA} \cong  (8.20,0,0.014)[kpc]
@@ -97,6 +97,10 @@ The transformation from HCA to HGP is identical to the transformation from GCA t
 
 Heliocentric Equatorial Polar (HEQ)
 -----------------------------------
+
+The following positions and the transformation between HGP and HEQ are described in :cite:`Carroll2007` (p 1044-1047) ,
+the transformation between different epochs in :cite:`nla.cat-vn3719611`(p 95-105) . The latter is dated.
+The international celestial reference system (ICRS) should be preferred if highest possible accuracy is of concern.
 
 HEQ, like HGP, is a spherical coordinate system having the same origins for position and velocity.
 However, angles are given in and normal to the celestial equator which is not parallel to the galactic midplane.
@@ -156,17 +160,24 @@ Using NGP and NCP the transformation from HGP to HEQ at :math:`\epsilon_0` is
     \cos(d)\sin(a-a_{NGP}) = \cos(b)\sin(l_{NCP}-l) \\
     \cos(d)\cos(a-a_{NGP}) = \cos(d_{NGP})\sin(b)-sin(d_{NGP})\cos(b)\cos(l_{NGP}-l)
 
-Three angles describe the precision of both planes between a epoch :math:`\epsilon_0` and the date of observation :math:`\epsilon_D`.
+Three angles describing the precision of both planes are needed in order to transform between epochs :math:`\epsilon_F` and :math:`\epsilon_D`.
+
 
 .. math::
     z = (2306.2181+1.39656T - 0.000139T^2 )t + (1.09468 + 0.000066T)t^2 + 0.018203t^3 \\
     \theta =(2004.3109 - 0.85330T-0.000217T^2)t + (-0.42665-0.000217T)t^2 - 0.041833t^3 \\
     \xi = (2306.2181+1.39656T-0.000139T^2)t+(0.30188-0.000344T)t^2+0.017998t^3
 
-With these three rotations a precession matrix :math:`P` as well as its inverse can be formalized.
+where :math:`t` and :math:`T` are time differences given in units of Julian century.
 
 .. math::
-    P = \begin{bmatrix}
+    T = \frac{JD(\epsilon_F)-JD(\epsilon_0)}{36525} \\
+    t = \frac{JD(\epsilon_D)-JD(\epsilon_F)}{36525}
+
+With these three rotations, a precession matrix :math:`P` as well as its inverse can be formalized.
+
+.. math::
+    P(\epsilon_F,\epsilon_D) = \begin{bmatrix}
     cz*c\theta*c\xi-sz*s\xi & -cz*c\theta*s\xi-sz*c\xi & -cz*s\theta\\
     sz*c\theta*c\xi+cz*s\xi & -sz*c\theta*s\xi+cz*c\xi & -sz*s\theta\\
     s\theta*c\xi & -s\theta*s\xi & c\theta
