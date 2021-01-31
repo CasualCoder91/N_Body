@@ -82,6 +82,32 @@ which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the sam
 
 symplectic
 
+Barnes-Hut Algorithm (BH)
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When determining the gravitational force acting on a star which belonging to a cluster, the positions of all other stars in that cluster
+have to be taken into account.
+
+.. math::
+   m_i\vec{x}_i = G\sum_{j=1,j\not\equiv i}^{N}\frac{m_im_j\left ( \vec{x}_j-\vec{x}_i \right )}{\left | \vec{x}_j-\vec{x}_i \right |^3}
+
+Calculating this force for all stars requires :math:`O(n^2)` operations.
+The simulated clusters consist of :math:`\sim 10^4 - 10^5` stars.
+While the resulting amount of calculations is possible, it is not feasible for a typical desktop computer.
+Therefor, the Barnes-Hut algorithm (BH) has been implemented which is of order :math:`O(n\log(n))`.
+
+The gist of the BH is to approximate a set of stars by their total mass and center of mass (com) if the distance between them
+and the star, for which the force is to be calculated, is large enough.
+
+The total mass and com of a set of :math:`m` stars is
+
+.. math::
+   m_{com} = \sum_{i=1}^mm_i \\
+   \vec{x}_{com} = \frac{1}{m_{com}}\sum_{i=1}^mm_i\vec{x}_i
+
+All cluster stars are stored in an octree. An octree is a datastructure where each node in the tree has up to eight child nodes.
+These nodes split the space represented by their parent node into eight cubes.
+The root node represents the whole space occupied by the cluster.
 
 
 
