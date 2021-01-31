@@ -105,9 +105,17 @@ The total mass and com of a set of :math:`m` stars is
    m_{com} = \sum_{i=1}^mm_i \\
    \vec{x}_{com} = \frac{1}{m_{com}}\sum_{i=1}^mm_i\vec{x}_i
 
-All cluster stars are stored in an octree. An octree is a datastructure where each node in the tree has up to eight child nodes.
+All cluster stars are stored in an octree.
+An octree is a data structure where each node in the tree has up to eight child nodes.
+External nodes are nodes without any children. Each external node contains at most one star.
+Internal nodes are have at least one child. They represent stars stored in their child nodes by storing their total mass and com.
 These nodes split the space represented by their parent node into eight cubes.
-The root node represents the whole space occupied by the cluster.
+The root node contains the whole space occupied by the cluster. Each node stores the following information: total mass, amount and center of mass of stars
+contained within the cube, two points defining the volume of the cube as well as links (pointers) to each child node and to the parent node.
+If a child pointer is null, it does not exist jet.
+
+
+
 
 
 
