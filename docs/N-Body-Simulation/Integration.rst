@@ -107,16 +107,35 @@ The total mass and com of a set of :math:`m` stars is
 
 All cluster stars are stored in an octree.
 An octree is a data structure where each node in the tree has up to eight child nodes.
-External nodes are nodes without any children. Each external node contains at most one star.
-Internal nodes are have at least one child. They represent stars stored in their child nodes by storing their total mass and com.
 These nodes split the space represented by their parent node into eight cubes.
+External nodes are nodes without any children. Each external node contains at most one star.
+Internal nodes have at least one child. They represent stars stored in their child nodes by storing their total mass and com.
 The root node contains the whole space occupied by the cluster. Each node stores the following information: total mass, amount and center of mass of stars
-contained within the cube, two points defining the volume of the cube as well as links (pointers) to each child node and to the parent node.
+contained within the cube, two points defining the volume of the cube, one point at the center of the cube, since cpu time is more valuable than ram,
+as well as links (pointers) to each child node and to the parent node.
 If a child pointer is null, it does not exist jet.
 
+Stars are added recursively starting at the root node. If the current node is already a internal node, the star is passed
+to the appropriate child. Mass and com of the internal node are updated.
+The appropriate child is determined by comparing the position of the star with the center of the node.
+If the considered node is a external node but already contains a star,
+both the newly added and already present star are passed down to the appropriate child or children.
+Consequently the current node becomes a internal node.
+Since both stars can lie in the same octant, this can lead to additional recursions until the stars are assigned to different child nodes.
+If the current node is external and does not yet contain a star, the star is added to the node and the recursion ends.
 
+When calculating the gravitational force on a star the octree is travel through recursively beginning with the root node.
+If the distance :math:`d` between the star and a node is sufficiently large, the stars within that node are approximated by the mass and com of that node,
+otherwise all child nodes within the current node are considered.
 
+Whether or not :math:`d` is big enough, is determined by the quotient :math:`\theta`.
 
+.. math::
+   \theta = \frac{s}{d} < \theta_{max}
 
+with :math:`s` the side length of the cube and :math:`\theta_{max}` a set threshold value.
+In the special case :math:`\theta_{max}=0`, BH is a direct-sum algorithm. :math:`\theta_{max}=0.5` is a commonly chosen value.
+
+doto: explain smoothing
 
 .. bibliography:: bibtex.bib
