@@ -92,7 +92,7 @@ have to be taken into account.
    m_i\vec{x}_i = G\sum_{j=1,j\not\equiv i}^{N}\frac{m_im_j\left ( \vec{x}_j-\vec{x}_i \right )}{\left | \vec{x}_j-\vec{x}_i \right |^3}
 
 Calculating this force for all stars requires :math:`O(n^2)` operations.
-The simulated clusters consist of :math:`\sim 10^4 - 10^5` stars.
+However, the simulated clusters consist of :math:`\sim 10^4 - 10^5` stars.
 While the resulting amount of calculations is possible, it is not feasible for a typical desktop computer.
 Therefor, the Barnes-Hut algorithm (BH) has been implemented which is of order :math:`O(n\log(n))`.
 
@@ -124,9 +124,10 @@ Consequently the current node becomes a internal node.
 Since both stars can lie in the same octant, this can lead to additional recursions until the stars are assigned to different child nodes.
 If the current node is external and does not yet contain a star, the star is added to the node and the recursion ends.
 
-When calculating the gravitational force on a star the octree is travel through recursively beginning with the root node.
-If the distance :math:`d` between the star and a node is sufficiently large, the stars within that node are approximated by the mass and com of that node,
-otherwise all child nodes within the current node are considered.
+When calculating the gravitational force on a star, the octree is travelled through recursively beginning with the root node.
+In case the distance :math:`d` between the star and a node is sufficiently large, the stars within that node are approximated by the mass and com of that node,
+otherwise all child nodes within the current node are considered. Whenever the distance criterion is met,
+the acceleration vector stemming from the force is calculated, added to the overall acceleration of the star and the recursion for the considered branch stops.
 
 Whether or not :math:`d` is big enough, is determined by the quotient :math:`\theta`.
 
@@ -134,7 +135,7 @@ Whether or not :math:`d` is big enough, is determined by the quotient :math:`\th
    \theta = \frac{s}{d} < \theta_{max}
 
 with :math:`s` the side length of the cube and :math:`\theta_{max}` a set threshold value.
-In the special case :math:`\theta_{max}=0`, BH is a direct-sum algorithm. :math:`\theta_{max}=0.5` is a commonly chosen value.
+In the special case :math:`\theta_{max}=0`, BH becomes a direct-sum algorithm. :math:`\theta_{max}=0.5` is a commonly chosen value.
 
 doto: explain smoothing
 
