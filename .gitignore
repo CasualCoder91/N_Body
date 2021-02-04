@@ -361,3 +361,4 @@ build/*
 /gsl.dll
 /gslcblas.dll
 /N_Body.exe
+*.fits

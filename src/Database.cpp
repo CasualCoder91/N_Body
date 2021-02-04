@@ -99,6 +99,8 @@ void Database::setup(){
 		"rHEQ REAL,"
 		"aHEQ REAL,"
 		"dHEQ REAL,"
+		"aScope REAL,"
+		"dScope REAL,"
 		"timestep INTEGER NOT NULL,"
 		"id_star INTEGER NOT NULL,"
 		"FOREIGN KEY (id_star) "
@@ -394,36 +396,39 @@ void Database::generateHEQ(int simulationID){
 
 	//local variables
 	double angle = 0;
-	Vec3D focus, viewPoint, lookAt, pGCA, vGCA;
+	Vec3D focus, viewPoint, lookAt, focusHEQ, pGCA, vGCA;
 
 	//store rows for velocity2D table for better performance
 	struct rowInsert {
 		int fk;
-		double x, y,z;
+		double x, y, z, aScope, dScope;
 	};
 	std::vector<rowInsert> velocitiesInsert;
 	std::vector<rowInsert> positionsInsert;
 
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		//if (angle == 0) { // Only need to init/read these variables once
-		//	angle = sqlite3_column_double(stmt, 8);
-		//	focus = Vec3D(sqlite3_column_double(stmt, 9), sqlite3_column_double(stmt, 10), sqlite3_column_double(stmt, 11));
-		//	viewPoint = Vec3D(sqlite3_column_double(stmt, 12), sqlite3_column_double(stmt, 13), sqlite3_column_double(stmt, 14));
-		//	lookAt = (focus - viewPoint).normalize();
-		//}
+		Vec3D pLSR, vLSR, pHCA, vHCA, pHEQ, vHEQ;
+		if (angle == 0) { // Only need to init/read these variables once
+			angle = sqlite3_column_double(stmt, 8);
+			focus = Vec3D(sqlite3_column_double(stmt, 9), sqlite3_column_double(stmt, 10), sqlite3_column_double(stmt, 11));
+			viewPoint = Vec3D(sqlite3_column_double(stmt, 12), sqlite3_column_double(stmt, 13), sqlite3_column_double(stmt, 14));
+			lookAt = (focus - viewPoint).normalize();
+			Projection::GCAtoLSR(focus, vGCA, pLSR, vLSR);
+			Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
+			Projection::HCAtoHEQ(pHCA, vHCA, focusHEQ, vHEQ);
+		}
 		pGCA = Vec3D(sqlite3_column_double(stmt, 1), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3));
 		vGCA = Vec3D(sqlite3_column_double(stmt, 5), sqlite3_column_double(stmt, 6), sqlite3_column_double(stmt, 7));
-		Vec3D pLSR, vLSR, pHCA, vHCA, pHEQ, vHEQ;
 		Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
 		Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
 		Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
 		//Projection::project(pGCA, vGCA, lookAt, viewPoint);
 
 		//position = Projection::projectPosition(position, lookAt, viewPoint,angle);
-		rowInsert positionInsert = { sqlite3_column_int(stmt, 0), pHEQ.x, pHEQ.y, pHEQ.z};
+		rowInsert positionInsert = { sqlite3_column_int(stmt, 0), pHEQ.x, pHEQ.y, pHEQ.z, pHEQ.y- focusHEQ.y, pHEQ.z-focusHEQ.z };
 		positionsInsert.emplace_back(positionInsert);
 		//velocity = Projection::projectVelocity(velocity, lookAt, angle);
-		rowInsert velocityInsert = { sqlite3_column_int(stmt, 4), vHEQ.x, vHEQ.y, vHEQ.z};
+		rowInsert velocityInsert = { sqlite3_column_int(stmt, 4), vHEQ.x, vHEQ.y, vHEQ.z,0,0};
 		velocitiesInsert.emplace_back(velocityInsert);
 	}
 	sqlite3_finalize(stmt);
@@ -451,13 +456,15 @@ void Database::generateHEQ(int simulationID){
 
 	//insert positions
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	buffer = "UPDATE position SET rHEQ=?2, aHEQ=?3, dHEQ=?4 WHERE id=?1";
+	buffer = "UPDATE position SET rHEQ=?2, aHEQ=?3, dHEQ=?4, aScope=?5, dScope=?6 WHERE id=?1";
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
 	for (rowInsert row : positionsInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
 		sqlite3_bind_double(stmt, 2, row.x);
 		sqlite3_bind_double(stmt, 3, row.y);
 		sqlite3_bind_double(stmt, 4, row.z);
+		sqlite3_bind_double(stmt, 5, row.aScope);
+		sqlite3_bind_double(stmt, 6, row.dScope);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
 			printf("Commit Failed!\n");
