@@ -5,9 +5,6 @@ const double  Projection::EtoPJ2000_1[3] = { -0.8734369590164, -0.4448300538949,
 const double  Projection::EtoPJ2000_2[3] = { -0.4838351820817, 0.746982, 0.455984 };
 const double* const Projection::EtoP[3] = { EtoPJ2000_0,EtoPJ2000_1,EtoPJ2000_2 };
 
-const double Projection::Pi = 3.14159265358979323846264338328;
-const double Projection::TPi = 2. * Pi;
-
 Vec3D Projection::projectPosition(const Vec3D& target, const Vec3D& lookAt, const Vec3D& origin, const double fovAngle) {
 	Vec3D returnValue = target - origin;
 	double length = returnValue.length();
@@ -180,7 +177,7 @@ void Projection::HCAtoHEQ(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3
 		cd = (positionOut.x == 0.) ? 1. : R / positionOut.x,
 		sd = (positionOut.x == 0.) ? 0. : h1.z / positionOut.x,
 		temp = ca * h2.x + sa * h2.y;
-	positionOut.y = (sa < 0.) ? TPi - acos(ca) : acos(ca);
+	positionOut.y = (sa < 0.) ? Constants::pi2 - acos(ca) : acos(ca);
 	positionOut.z = asin(sd);
 	velocityOut.x = cd * temp + sd * h2.z;
 	velocityOut.y = (positionOut.x == 0.) ? 0. : (ca * h2.y - sa * h2.x) / positionOut.x;
@@ -228,7 +225,7 @@ void Projection::HCAtoHGP(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3
 		cb = (positionOut.x == 0.) ? 1. : R / positionOut.x,
 		sb = (positionOut.x == 0.) ? 0. : positionIn.z / positionOut.x,
 		temp = cl * velocityIn.x + sl * velocityIn.y;
-	positionOut.y = (sl < 0.) ? TPi - acos(cl) : acos(cl);
+	positionOut.y = (sl < 0.) ? Constants::pi2 - acos(cl) : acos(cl);
 	positionOut.z = asin(sb);
 	velocityOut.x = cb * temp + sb * velocityIn.z;
 	velocityOut.y = (positionOut.x == 0.) ? 0. : (cl * velocityIn.y - sl * velocityIn.x) / positionOut.x;

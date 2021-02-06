@@ -17,6 +17,7 @@
 #include "Projection.h"
 #include "Point.h"
 #include "Vec2D.h"
+#include "Misc.h"
 //#include "Constants.h"
 
 using Record = std::vector<std::string>;
@@ -61,7 +62,11 @@ public:
 
 	/** @brief inserts positions and velocities of given \p stars and \p timestep */
 	void timestep(int timestep, std::vector<Star*>& stars);
+
 	void generateHEQ(int simulationID);
+
+	void generateBrightness(int simulationID);
+
 	void insertPowerLaw(int simulationID, std::vector<double> massLimits, std::vector<double> exponents);
 	/** 
 	@brief inserts one star (including positions and velocities)

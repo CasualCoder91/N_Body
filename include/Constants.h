@@ -51,4 +51,9 @@ namespace Constants {
 	extern Vec3D positionSun; //in cylinder coordinates [pc,rad,pc]
 	extern Vec3D velocitySun; //kms
 	extern double circularVelocitySun; //kms
+
+	//Math
+	extern double pi;
+	extern double pi2;
+	extern double pi4;
 }

@@ -11,9 +11,6 @@ class Projection {
     static const double  EtoPJ2000_2[3];
     static const double* const EtoP[3];
 
-    static const double Pi;
-    static const double TPi;
-
 
 public:
 

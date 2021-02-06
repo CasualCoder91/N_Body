@@ -14,7 +14,7 @@ const double MWPotential::aBulge = 0.788e3;//0.35e3; // pc
 const double MWPotential::characteristicVelocityBulge = 444.4;  // km/s
 const double MWPotential::rHalo = 17e3; // pc
 const double MWPotential::mDensityHalo = 0.008; // SolarMassUnit * pc^-3
-const double MWPotential::mMassHalo = 4 * M_PI * mDensityHalo * pow(rHalo, 3) * (log(2) - 0.5);//5E11; // SolarMassUnit
+const double MWPotential::mMassHalo = Constants::pi4 * mDensityHalo * pow(rHalo, 3) * (log(2) - 0.5);//5E11; // SolarMassUnit
 //const double MWPotential::kmInpc = 3.086e-13;
 const double MWPotential::velocityDispersionScaleLength = aDisk / 4.0;
 
@@ -57,7 +57,7 @@ double MWPotential::gslDensityDisk(double x[], size_t dim, void* p) {
 	double z2b2 = pow(x[2], 2) + pow(bDisk, 2);
 	double sz2b2 = sqrt(z2b2);
 	double R = gsl_hypot(x[0], x[1]);
-	double temp = gsl_pow_2(bDisk) * mMassDisk / (4 * M_PI) * (aDisk * pow(R, 2) + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(pow(R, 2) + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	double temp = gsl_pow_2(bDisk) * mMassDisk / (Constants::pi4) * (aDisk * pow(R, 2) + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(pow(R, 2) + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
 
 	return temp;
 };
@@ -69,7 +69,7 @@ double MWPotential::gslDensityDisk(double z, void* p) {
 	double z2b2 = pow(z, 2) + pow(bDisk, 2);
 	double sz2b2 = sqrt(z2b2);
 	double R2 = pow(fp->R, 2);
-	double temp = gsl_pow_2(bDisk) * mMassDisk / (4 * M_PI) * (aDisk * R2 + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(R2 + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	double temp = gsl_pow_2(bDisk) * mMassDisk / (Constants::pi4) * (aDisk * R2 + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(R2 + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
 
 	return temp;
 }
@@ -109,7 +109,7 @@ double MWPotential::gslDensityDiskz(double z, void* p){
 	double z2b2 = location.z*location.z + bDisk*bDisk;
 	double sz2b2 = sqrt(z2b2);
 	double R = gsl_hypot(location.x, location.y);
-	double temp = gsl_pow_2(bDisk) * mMassDisk / (4 * M_PI) * (aDisk * pow(R, 2) + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(pow(R, 2) + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	double temp = gsl_pow_2(bDisk) * mMassDisk / (Constants::pi4) * (aDisk * pow(R, 2) + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(pow(R, 2) + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
 
 	return temp;
 }
@@ -178,9 +178,9 @@ double MWPotential::sphericalAveragedDisc(double r){
 	gsl_integration_workspace* iw = gsl_integration_workspace_alloc(1000);
 	double result, error;
 
-	gsl_integration_qag(&F, 0, 2*M_PI, 1e-3, 1e-3, 1000,1, iw, &result, &error);
+	gsl_integration_qag(&F, 0, Constants::pi2, 1e-3, 1e-3, 1000,1, iw, &result, &error);
 	gsl_integration_workspace_free(iw);
-	return 1/(2*M_PI) * result;
+	return 1/(Constants::pi2) * result;
 }
 
 double MWPotential::circularVelocity(const Vec3D* position){
@@ -235,7 +235,7 @@ double MWPotential::densityDisk(double R, double z){
 	double R2 = gsl_pow_2(R);
 	double z2b2 = pow(z, 2) + pow(bDisk, 2);
 	double sz2b2 = sqrt(z2b2);
-	return pow(bDisk, 2)* mMassDisk / (4 * M_PI) * (aDisk * R2 + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(R2 + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
+	return pow(bDisk, 2)* mMassDisk / (Constants::pi4) * (aDisk * R2 + (aDisk + 3 * sz2b2) * pow(aDisk + sz2b2, 2)) / (pow(R2 + pow(aDisk + sz2b2, 2), 2.5) * pow(z2b2, 1.5));
 }
 
 double MWPotential::densityDisk(double x, double y, double z){
@@ -372,7 +372,7 @@ double MWPotential::radialVelocityDispersionDisk(double R, double z){
 }
 
 double MWPotential::verticalVelocityDispersion(double R){
-	return sqrt(M_PI* Constants::G * surfaceDensity(R)* bDisk);
+	return sqrt(Constants::pi* Constants::G * surfaceDensity(R)* bDisk);
 }
 
 double MWPotential::azimuthalVelocityDispersion(double R, double z){
@@ -467,7 +467,7 @@ double MWPotential::potentialEnergy(const Vec3D& position) {
 
 double MWPotential::potentialEnergy(double R, double z) {
 	double r = gsl_hypot(R, z);
-	double Ms = 4 * M_PI * 0.008 * pow(rHalo, 3) * (log(2) - 0.5);
+	double Ms = Constants::pi4 * 0.008 * pow(rHalo, 3) * (log(2) - 0.5);
 	//std::cout << "rs: " << rHalo << std::endl;
 	//std::cout << "Ms: " << Ms << std::endl;
 	//std::cout << "Msaved: " << mMassHalo << std::endl;

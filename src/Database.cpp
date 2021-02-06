@@ -68,8 +68,11 @@ void Database::setup(){
 	sql = "CREATE TABLE IF NOT EXISTS star("
 		"id INTEGER NOT NULL,"
 		"id_simulation INTEGER NOT NULL,"
-		"mass REAL NOT NULL,"
+		"mass REAL,"
+		"brightness REAL,"
 		"isCluster INTEGER NOT NULL,"
+		"isObserved INTEGER NOT NULL,"
+		"fkStar INTEGER,"
 		"PRIMARY KEY (id),"
 		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
@@ -227,9 +230,9 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 		this->open();
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	char buffer[] = "INSERT INTO star (id,mass,id_simulation,isCluster) VALUES (?1,?2,?3,?4)";
+	std::string buffer = "INSERT INTO star (id,mass,id_simulation,isCluster,isObserved) VALUES (?1,?2,?3,?4,0)";
 	sqlite3_stmt* stmt;
-	sqlite3_prepare_v2(db, buffer, 71, &stmt, NULL);
+	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
 	//#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
 		sqlite3_bind_int(stmt, 1, stars[i]->id);
@@ -468,6 +471,60 @@ void Database::generateHEQ(int simulationID){
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
 			printf("Commit Failed!\n");
+		}
+
+		sqlite3_reset(stmt);
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+
+}
+
+void Database::generateBrightness(int simulationID){
+	if (!this->isOpen)
+		this->open();
+
+	std::string query = "SELECT star.id, star.mass, position.rHEQ "
+		"FROM star INNER JOIN position on position.id_star = star.id "
+		"INNER JOIN simulation on simulation.id = star.id_simulation "
+		"WHERE position.timestep = 0 AND star.id_simulation = ?1";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	sqlite3_bind_int(stmt, 1, simulationID);
+
+	//store rows for velocity2D table for better performance
+	struct rowInsert {
+		int idStar;
+		double brightness;
+	};
+	std::vector<rowInsert> stars;
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		int id = sqlite3_column_int(stmt, 0);
+		double mass = sqlite3_column_double(stmt, 1);
+		double distance = sqlite3_column_double(stmt, 2);
+
+		double lum = luminosity(mass);
+		double brightness = aBrightness(lum, distance);
+
+		rowInsert starsInsert = { id, brightness };
+		stars.emplace_back(starsInsert);
+
+	}
+	sqlite3_finalize(stmt);
+
+	char* errorMessage;
+	//insert brightness
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	std::string buffer = "UPDATE star SET brightness=?2 WHERE id=?1";
+	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, nullptr);
+	for (rowInsert row : stars) {
+		sqlite3_bind_int(stmt, 1, row.idStar);
+		sqlite3_bind_double(stmt, 2, row.brightness);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("generateBrightness: Commit Failed!\n");
+			printf(errorMessage);
 		}
 
 		sqlite3_reset(stmt);

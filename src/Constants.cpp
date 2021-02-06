@@ -44,3 +44,7 @@ int Constants::nStars = config.GetInt("nStars");
 Vec3D Constants::positionSun = Vec3D(8300, 0, 27).cartesianToCylindrical();
 Vec3D Constants::velocitySun = Vec3D(11.1, 12.24, 7.25); //kms
 double Constants::circularVelocitySun = -233.1;
+
+double Constants::pi = 3.14159265358979323846;
+double Constants::pi2 = 2.*3.14159265358979323846;
+double Constants::pi4 = 4.*3.14159265358979323846;

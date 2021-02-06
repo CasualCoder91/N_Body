@@ -167,6 +167,7 @@
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Database.h" />
     <ClInclude Include="include\Matrix.h" />
+    <ClInclude Include="include\Misc.h" />
     <ClInclude Include="include\Point.h" />
     <ClInclude Include="include\Potential\Hernquist.h" />
     <ClInclude Include="include\Potential\Potential.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="src\Constants.cpp" />
     <ClCompile Include="src\Database.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
+    <ClCompile Include="src\Misc.cpp" />
     <ClCompile Include="src\Point.cpp" />
     <ClCompile Include="src\Potential\Hernquist.cpp" />
     <ClCompile Include="src\Potential\Potential.cpp" />
