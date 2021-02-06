@@ -96,20 +96,16 @@ void Database::setup(){
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS position("
 		"id INTEGER PRIMARY KEY,"
-		"x REAL NOT NULL,"
-		"y REAL NOT NULL,"
-		"z REAL NOT NULL,"
+		"id_star INTEGER," //can be null because id_star of observed position initially unknown
+		"x REAL,"
+		"y REAL,"
+		"z REAL,"
 		"rHEQ REAL,"
 		"aHEQ REAL,"
 		"dHEQ REAL,"
 		"aScope REAL,"
 		"dScope REAL,"
-		"timestep INTEGER NOT NULL,"
-		"id_star INTEGER NOT NULL,"
-		"FOREIGN KEY (id_star) "
-			"REFERENCES star(id) "
-			"ON DELETE CASCADE "
-			"ON UPDATE NO ACTION);";
+		"timestep INTEGER NOT NULL);";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS analysis("
 		"id_simulation INTEGER PRIMARY KEY,"
