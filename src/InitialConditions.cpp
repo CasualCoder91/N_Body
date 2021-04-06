@@ -641,8 +641,9 @@ std::vector<Star*> InitialConditions::bulgeIMF(double totalMass, int& starID){
 void InitialConditions::plummerSphere(std::vector<Star*>& stars, double totalMass, double scaleParameter, double G){
 	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
 	for (Star* star : stars) {
-		double distance = scaleParameter /sqrt(pow(dis(gen), -2. / 3.) - 1);
-		star->position = Vec3D::randomVector(distance);
+		double distance = dis(gen);//
+		scaleParameter / sqrt(pow(dis(gen), -2. / 3.) - 1);
+		star->position = Vec3D::randomAngles(distance);// randomVector(distance);
 		plummerVelocity(star, scaleParameter, distance, totalMass, G);
 	}
 }

@@ -149,7 +149,8 @@ int main() {
 			}
 			else {
 				std::cout << "generating HEQ positions and velocities ..." << std::endl;
-				db.generateHEQ(simulation.getID());
+				//db.generateHEQ(simulation.getID());
+				db.generateHTP(simulation.getID());
 				std::cout << "generating brightness ..." << std::endl;
 				db.generateBrightness(simulation.getID());
 				std::cout << "done\n" << std::endl;
@@ -174,47 +175,49 @@ int main() {
 			//Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
 			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
 
-			Vec3D pGCA = Vec3D(9594, -640, -52);
-			Vec3D vGCA = Vec3D(58.62, -12.39, -14.55);
+			//Vec3D pGCA = Vec3D(9594, -640, -52);
+			//Vec3D vGCA = Vec3D(58.62, -12.39, -14.55);
 
 			////Projection::GCPtoGCA(pGCP, vGCP, pGCA, vGCA);
-			std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
+			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
 
-			Vec3D pLSR, vLSR;
-			Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
-			std::cout << "LSR: " << pLSR.print() << " | " << vLSR.print() << std::endl;
+			//Vec3D pLSR, vLSR;
+			//Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
+			//std::cout << "LSR: " << pLSR.print() << " | " << vLSR.print() << std::endl;
 
-			Vec3D pHCA, vHCA;
-			Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
-			std::cout << "HCA: " << pHCA.print() << " | " << vHCA.print() << std::endl;
+			//Vec3D pHCA, vHCA;
+			//Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
+			//std::cout << "HCA: " << pHCA.print() << " | " << vHCA.print() << std::endl;
 
-			Vec3D pHEQ, vHEQ;
-			Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
-			std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
+			//Vec3D pHEQ, vHEQ;
+			//Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
+			//std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
 
-			Vec3D pHGP, vHGP;
-			Projection::HCAtoHGP(pHCA, vHCA, pHGP, vHGP);
-			std::cout << "HGP: " << pHGP.print() << " | " << vHGP.print() << std::endl;
+			//Vec3D pHGP, vHGP;
+			//Projection::HCAtoHGP(pHCA, vHCA, pHGP, vHGP);
+			//std::cout << "HGP: " << pHGP.print() << " | " << vHGP.print() << std::endl;
 
 			//Projection::HGPtoHEQ(pHGP, vHGP, pHEQ, vHEQ);
 			//std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
 
 
-			//Vec3D pHGP = Vec3D(1719, 16.94 * Constants::degInRad, 0.8 * Constants::degInRad);
-			//Vec3D vHGP = Vec3D();
+			Vec3D pHGP = Vec3D(1719, 16.94 * Constants::degInRad, 0.8 * Constants::degInRad);
+			Vec3D vHGP = Vec3D();
 
-			//Vec3D pHCA, vHCA, pLSR, vLSR, pGCA, vGCA, pHEQ, vHEQ;
-			//Projection::HGPtoHCA(pHGP, vHGP, pHCA, vHCA);
-			//Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
+			Vec3D pHCA, vHCA, pLSR, vLSR, pGCA, vGCA, pHEQ, vHEQ, pGCP, vGCP;
+			Projection::HGPtoHCA(pHGP, vHGP, pHCA, vHCA);
+			Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
 			//pHEQ.y = pHEQ.y / Constants::degInRad;
 			//pHEQ.z = pHEQ.z / Constants::degInRad;
-			//std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
-			//Projection::HCAtoLSR(pHCA, vHCA, pLSR, vLSR);
-			//Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
-			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
+			std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
+			Projection::HCAtoLSR(pHCA, vHCA, pLSR, vLSR);
+			Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
+			std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
+			Projection::GCAtoGCP(pGCA, vGCA, pGCP, vGCP);
+			std::cout << "GCP: " << pGCP.print() << " | " << vGCP.print() << std::endl;
 
 
-			Test test = Test();
+			//Test test = Test();
 			//test.velocityDisk();
 			//test.checkBrokenPowerLaw();
 			//test.potentialCircularVelocity();
@@ -234,32 +237,32 @@ int main() {
 			////std::cout << r11 << " " << r12 << " " << r13 << std::endl;
 			////std::cout << r21 << " " << r22 << " " << r23 << std::endl;
 
-			double l = 3.366033268750004;
-			double b = 0.47347728280415174;
+			//double l = 3.366033268750004;
+			//double b = 0.47347728280415174;
 
-			double x = cos(b) * cos(l);
-			double y = cos(b) * sin(l);
-			double z = sin(b);
+			//double x = cos(b) * cos(l);
+			//double y = cos(b) * sin(l);
+			//double z = sin(b);
 
-			Vec3D positionNCP = Vec3D(x, y, z).normalize();
-			std::cout << "positionNCP: " << positionNCP.print() << std::endl;
+			//Vec3D positionNCP = Vec3D(x, y, z).normalize();
+			//std::cout << "positionNCP: " << positionNCP.print() << std::endl;
 
-			//std::cout << "mNCP: " << std::endl << mNCP << std::endl;
+			////std::cout << "mNCP: " << std::endl << mNCP << std::endl;
 
-			l = 4.6496443937754925;
-			b = -0.5050284723570792;
+			//l = 4.6496443937754925;
+			//b = -0.5050284723570792;
 
-			x = cos(b) * cos(l);
-			y = cos(b) * sin(l);
-			z = sin(b);
+			//x = cos(b) * cos(l);
+			//y = cos(b) * sin(l);
+			//z = sin(b);
 
-			Vec3D positionEqui = Vec3D(x, y, z).normalize();
+			//Vec3D positionEqui = Vec3D(x, y, z).normalize();
 
-			Vec3D cross = Vec3D::crossProduct(&positionNCP, &positionEqui);
+			//Vec3D cross = Vec3D::crossProduct(&positionNCP, &positionEqui);
 
-			std::cout << "cross: " << cross.print() << std::endl;
+			//std::cout << "cross: " << cross.print() << std::endl;
 
-			std::cout << "positionEqui: " << positionEqui.print() << std::endl;
+			//std::cout << "positionEqui: " << positionEqui.print() << std::endl;
 
 
 			//std::cout << "mEqui: " << std::endl << mEqui << std::endl;

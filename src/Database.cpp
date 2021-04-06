@@ -384,7 +384,7 @@ void Database::generateHEQ(int simulationID){
 	if (!this->isOpen)
 		this->open();
 	std::string query = "SELECT position.id,position.x,position.y,position.z,velocity.id,velocity.x,velocity.y,velocity.z,"
-		"simulation.angle,simulation.focusX,simulation.focusY,simulation.focusZ,simulation.viewPointX,simulation.viewPointY,simulation.viewPointZ "
+		"simulation.angle,simulation.focusX,simulation.focusY,simulation.focusZ "
 		"FROM star INNER JOIN velocity on velocity.id_star = star.id "
 		"INNER JOIN position on position.id_star = star.id "
 		"INNER JOIN simulation on simulation.id = star.id_simulation "
@@ -395,7 +395,7 @@ void Database::generateHEQ(int simulationID){
 
 	//local variables
 	double angle = 0;
-	Vec3D focus, viewPoint, lookAt, focusHEQ, pGCA, vGCA;
+	Vec3D focus, focusHEQ, pGCA, vGCA;
 
 	//store rows for velocity2D table for better performance
 	struct rowInsert {
@@ -410,8 +410,6 @@ void Database::generateHEQ(int simulationID){
 		if (angle == 0) { // Only need to init/read these variables once
 			angle = sqlite3_column_double(stmt, 8);
 			focus = Vec3D(sqlite3_column_double(stmt, 9), sqlite3_column_double(stmt, 10), sqlite3_column_double(stmt, 11));
-			viewPoint = Vec3D(sqlite3_column_double(stmt, 12), sqlite3_column_double(stmt, 13), sqlite3_column_double(stmt, 14));
-			lookAt = (focus - viewPoint).normalize();
 			Projection::GCAtoLSR(focus, vGCA, pLSR, vLSR);
 			Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
 			Projection::HCAtoHEQ(pHCA, vHCA, focusHEQ, vHEQ);
@@ -474,6 +472,79 @@ void Database::generateHEQ(int simulationID){
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
 	sqlite3_finalize(stmt);
 
+}
+
+void Database::generateHTP(int simulationID)
+{
+	if (!this->isOpen)
+		this->open();
+
+	std::string query = "SELECT position.id,position.x,position.y,position.z,velocity.id,velocity.x,velocity.y,velocity.z,"
+		"simulation.focusX,simulation.focusY,simulation.focusZ "
+		"FROM star INNER JOIN velocity on velocity.id_star = star.id "
+		"INNER JOIN position on position.id_star = star.id "
+		"INNER JOIN simulation on simulation.id = star.id_simulation "
+		"WHERE position.timestep = velocity.timestep AND star.id_simulation = ?1";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	sqlite3_bind_int(stmt, 1, simulationID);
+
+	//local variables
+	bool initialized = false;
+	Vec3D focus, focusHCA, pGCA, vGCA;
+	Matrix rotationM;
+
+	struct rowInsert {
+		int fk;
+		double x, y, z;
+	};
+	std::vector<rowInsert> positionsInsert;
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		Vec3D pLSR, vLSR, pHCA, vHCA, pHTP, vHTP;
+		if (!initialized) { // Only need to init/read these variables once
+			focus = Vec3D(sqlite3_column_double(stmt, 8), sqlite3_column_double(stmt, 9), sqlite3_column_double(stmt, 10));
+			Projection::GCAtoLSR(focus, vGCA, pLSR, vLSR);
+			Projection::LSRtoHCA(pLSR, vLSR, focusHCA, vHCA);
+			focusHCA = focusHCA.normalize();
+			rotationM = Matrix::transformation(focusHCA,Vec3D(0,0,0),Vec3D(1,0,0));
+			initialized = true;
+
+		}
+		pGCA = Vec3D(sqlite3_column_double(stmt, 1), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3));
+		vGCA = Vec3D(sqlite3_column_double(stmt, 5), sqlite3_column_double(stmt, 6), sqlite3_column_double(stmt, 7));
+		Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
+		Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
+
+		pHCA = rotationM * pHCA; //rotate Position such that x points towards LookAt
+		Projection::HCAtoHGP(pHCA, vHCA, pHTP, vHTP);
+
+		rowInsert positionInsert = { sqlite3_column_int(stmt, 0), pHTP.x, pHTP.y, pHTP.z};
+		positionsInsert.emplace_back(positionInsert);
+
+	}
+	sqlite3_finalize(stmt);
+
+	char* errorMessage;
+
+	//insert positions
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	std::string buffer = "UPDATE position SET rHEQ=?2, aHEQ=?3, dHEQ=?4 WHERE id=?1";
+	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
+	for (rowInsert row : positionsInsert) {
+		sqlite3_bind_int(stmt, 1, row.fk);
+		sqlite3_bind_double(stmt, 2, row.x);
+		sqlite3_bind_double(stmt, 3, row.y);
+		sqlite3_bind_double(stmt, 4, row.z);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("Commit Failed!\n");
+		}
+
+		sqlite3_reset(stmt);
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
 }
 
 void Database::generateBrightness(int simulationID){

@@ -69,9 +69,8 @@ def selectAllPositions(conn, simulationID):
 
 def select2DPositions(conn, simulationID):
     cur = conn.cursor()
-    cur.execute("""SELECT star.id,mass,position.timestep,positionHEQ.a,positionHEQ.d,star.isCluster FROM star
+    cur.execute("""SELECT star.id,mass,position.timestep,position.aHEQ,position.dHEQ,star.isCluster FROM star
        INNER JOIN position on position.id_star = star.id
-       INNER JOIN positionHEQ on position.id=positionHEQ.fk_position
        where star.id_simulation = ?1 And position.timestep<3 order by position.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
     rows = np.array(cur.fetchall())
     return rows
@@ -283,8 +282,8 @@ def main():
     # create a database connection
     conn = createConnection(database)
     with conn:
-        data = select2DPositions(conn, simulationID)
-        plot2Dxy(output,data)
+        data = selectAllPositions(conn, simulationID)
+        plot_star_series(output,data,True)
         #data = selectAllPositions(conn, simulationID)
         #plotDensity(output, data,True)
         #plotProjection(output, data)

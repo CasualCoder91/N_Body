@@ -65,6 +65,9 @@ public:
 
 	void generateHEQ(int simulationID);
 
+	//HTP = Heliocentric Telescope Polar (LookAt Vector is primary axis)
+	void generateHTP(int simulationID);
+
 	void generateBrightness(int simulationID);
 
 	void insertPowerLaw(int simulationID, std::vector<double> massLimits, std::vector<double> exponents);

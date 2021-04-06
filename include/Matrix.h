@@ -10,7 +10,13 @@ public:
 	Matrix();
 	Matrix(double m11, double m12, double m13, double m14, double m21, double m22, double m23, double m24, double m31, double m32, double m33, double m34, double m41, double m42, double m43, double m44);
 
-	static Matrix transformation(Vec3D rotation, Vec3D translation);
+	/**
+	@brief Calculates transformation matrix.
+	@param rotation The target vector (given \p axis gets rotated to match this vector).
+	@param translation Offset of the origin.
+	@param axis the axis to be rotated (z axis in case of the sample cylinder, x axis for calucation of ra dec).
+	*/
+	static Matrix transformation(Vec3D rotation, Vec3D translation, Vec3D axis = Vec3D(0, 0, 1));
 
 
 	Vec3D operator * (const Vec3D& rhs);
