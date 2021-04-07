@@ -492,7 +492,7 @@ void Database::generateHTP(int simulationID)
 	//local variables
 	bool initialized = false;
 	Vec3D focus, focusHCA, pGCA, vGCA;
-	Matrix rotationM;
+	//Matrix rotationM;
 
 	struct rowInsert {
 		int fk;
@@ -507,7 +507,7 @@ void Database::generateHTP(int simulationID)
 			Projection::GCAtoLSR(focus, vGCA, pLSR, vLSR);
 			Projection::LSRtoHCA(pLSR, vLSR, focusHCA, vHCA);
 			focusHCA = focusHCA.normalize();
-			rotationM = Matrix::transformation(focusHCA,Vec3D(0,0,0),Vec3D(1,0,0));
+			//rotationM = Matrix::transformation(Vec3D(1, 0, 0), Vec3D(0,0,0), focusHCA);
 			initialized = true;
 
 		}
@@ -516,8 +516,8 @@ void Database::generateHTP(int simulationID)
 		Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
 		Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
 
-		pHCA = rotationM * pHCA; //rotate Position such that x points towards LookAt
-		Projection::HCAtoHGP(pHCA, vHCA, pHTP, vHTP);
+		//pHCA = rotationM * pHCA; //rotate Position such that x points towards focus
+		Projection::HCAtoHTP(pHCA, pHTP, focusHCA);
 
 		rowInsert positionInsert = { sqlite3_column_int(stmt, 0), pHTP.x, pHTP.y, pHTP.z};
 		positionsInsert.emplace_back(positionInsert);

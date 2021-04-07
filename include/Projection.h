@@ -40,4 +40,8 @@ public:
 
     //static void HGPtoHEQ(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3D& positionOut, Vec3D& velocityOut);
 
+    //HTP = Heliocentric Telescope Polar
+    //dimensions: [in] position: [pc] | [out] position: [pc,arcsec] 
+    static void HCAtoHTP(const Vec3D& positionIn, Vec3D& positionOut, const Vec3D& focus);
+
 };

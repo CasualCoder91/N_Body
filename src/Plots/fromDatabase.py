@@ -152,6 +152,8 @@ def plot2Dxy(output,data):
     timestepData = data[data[:,2] == 0]
     #com,maxDist = plotDimensions(timestepData)
     fig = plt.figure()
+
+    fig.set_size_inches(9,9)
     #print(maxDist[0],maxDist[1])
     #plotDist = np.minimum(maxDist[0],maxDist[1])
     #plt.xlim(com[0]-plotDist, com[0]+plotDist)
@@ -282,8 +284,8 @@ def main():
     # create a database connection
     conn = createConnection(database)
     with conn:
-        data = selectAllPositions(conn, simulationID)
-        plot_star_series(output,data,True)
+        data = select2DPositions(conn, simulationID)
+        plot2Dxy(output,data)
         #data = selectAllPositions(conn, simulationID)
         #plotDensity(output, data,True)
         #plotProjection(output, data)
