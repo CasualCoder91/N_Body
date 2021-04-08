@@ -507,7 +507,7 @@ void Database::generateHTP(int simulationID)
 			Projection::GCAtoLSR(focus, vGCA, pLSR, vLSR);
 			Projection::LSRtoHCA(pLSR, vLSR, focusHCA, vHCA);
 			focusHCA = focusHCA.normalize();
-			//rotationM = Matrix::transformation(Vec3D(1, 0, 0), Vec3D(0,0,0), focusHCA);
+			/*rotationM = Matrix::rotation(focusHCA, Vec3D(1, 0, 0));*/
 			initialized = true;
 
 		}

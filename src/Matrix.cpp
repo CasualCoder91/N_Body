@@ -52,6 +52,26 @@ Matrix Matrix::transformation(Vec3D rotation, Vec3D translation, Vec3D axis){
 	return Matrix(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44);
 }
 
+Matrix Matrix::rotation(Vec3D start, Vec3D target)
+{
+	Vec3D v = Vec3D::crossProduct(&start, &target);
+	double s = v.length();
+	double c = start * target;
+	double factor = 1 / (1 + c);
+
+	double m11 = 1 - (v.y*v.y + v.z*v.z) * factor;
+	double m12 = 0 - v.z + v.x*v.y * factor;
+	double m13 = 0 + v.y + v.x*v.z * factor;
+	double m21 = 0 + v.z + v.x*v.y * factor;
+	double m22 = 1 - (v.x * v.x + v.z * v.z) * factor;
+	double m23 = 0 - v.x + v.y*v.z * factor;
+	double m31 = 0 - v.y + v.x * v.z * factor;
+	double m32 = 0 + v.x + v.y * v.z * factor;
+	double m33 = 1 - (v.x * v.x + v.y * v.y) * factor;
+
+	return Matrix(m11, m12, m13, 0, m21, m22, m23, 0, m31, m32, m33, 0, 0, 0, 0, 1);
+}
+
 Vec3D Matrix::operator*(const Vec3D& rhs){
 	return Vec3D(m11*rhs.x+m12*rhs.y+m13*rhs.z+m14, 
 		m21 * rhs.x + m22 * rhs.y + m23 * rhs.z + m24,

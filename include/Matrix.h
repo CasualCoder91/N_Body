@@ -18,6 +18,7 @@ public:
 	*/
 	static Matrix transformation(Vec3D rotation, Vec3D translation, Vec3D axis = Vec3D(0, 0, 1));
 
+	static Matrix rotation(Vec3D start, Vec3D target);
 
 	Vec3D operator * (const Vec3D& rhs);
 

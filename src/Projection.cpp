@@ -252,14 +252,17 @@ void Projection::HGPtoHCA(const Vec3D& positionIn, const Vec3D& velocityIn, Vec3
 
 void Projection::HCAtoHTP(const Vec3D& positionIn, Vec3D& positionOut, const Vec3D& focus)
 {
-	Vec3D focusHTP = focus;
-	focusHTP.x = focus.length();
-	focusHTP.y = atan2(focus.y, focus.x);
-	focusHTP.z = asin(focus.z / focusHTP.x);
+	//Vec3D focusHTP = focus;
+	//focusHTP.x = focus.length();
+	//focusHTP.y = atan2(focus.y, focus.x);
+	//focusHTP.z = asin(focus.z / focusHTP.x);
+
+	Matrix rotationM = Matrix::rotation(focus, Vec3D(1, 0, 0));
+	Vec3D pHCArotated = rotationM * positionIn; //rotate Position such that x points towards focus
 
 	positionOut.x = positionIn.length(); //radius in pc
 
-	positionOut.y = focusHTP.y - atan2(positionIn.y, positionIn.x); //declination in rad (atan2 = angle between vector and z axis)
+	positionOut.y = atan2(pHCArotated.y, pHCArotated.x); //declination in rad (atan2 = angle between vector and z axis)
 	if (positionOut.y > Constants::pi)
 		positionOut.y -= Constants::pi2;
 	else if (positionOut.y < -Constants::pi)
@@ -267,16 +270,13 @@ void Projection::HCAtoHTP(const Vec3D& positionIn, Vec3D& positionOut, const Vec
 		positionOut.y += Constants::pi2;
 	}
 
-	positionOut.z = focusHTP.z - asin(positionIn.z / positionOut.x); //ascension in rad
+	positionOut.z = asin(pHCArotated.z / positionOut.x); //ascension in rad
 	if(positionOut.z > Constants::pi)
 		positionOut.z -= Constants::pi2;
 	else if (positionOut.z < -Constants::pi)
 	{
 		positionOut.z += Constants::pi2;
 	}
-
-
-
 
 	positionOut.y = positionOut.y * Constants::radInArcsec; //rad -> arcsec
 	positionOut.z = positionOut.z * Constants::radInArcsec; //rad -> arcsec
