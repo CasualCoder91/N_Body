@@ -221,7 +221,7 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 	//Plot plot = Plot(path, path, true);
 	//plot.plot("clusteringVelocity", {});
 
-	VDBSCAN scanner = VDBSCAN(maxDistPos*0.05, maxDistVel*0.05, 60);
+	VDBSCAN scanner = VDBSCAN(maxDistPos*0.10, maxDistVel*0.003, 60);
 	scanner.run(points[0]);
 
 	int nFalsePositive = 0;
