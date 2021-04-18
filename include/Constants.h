@@ -27,7 +27,6 @@ namespace Constants {
 
 	//View cone
 	extern double angleOfView; //rad
-	extern double dx; //pc
 	extern double distance; //pc
 	extern Vec3D viewPoint;
 	extern Vec3D focus;

@@ -21,7 +21,6 @@ std::string Constants::mcLusterFilePath = config.GetString("mcLusterFilePath");
 
 //View cone
 double Constants::angleOfView = config.GetDouble("angle"); //degree
-double Constants::dx = config.GetDouble("dx"); //pc
 double Constants::distance = config.GetDouble("distance"); //pc
 Vec3D Constants::viewPoint = config.GetVec3D("viewPoint");
 Vec3D Constants::focus = config.GetVec3D("focus");
