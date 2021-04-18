@@ -93,7 +93,7 @@ int main() {
 				}
 				else{
 					std::cout << "What would you like to analyze?" << std::endl;
-					std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHEQ" << std::endl;
+					std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHEQ\n[4] Cluster" << std::endl;
 					std::cin >> selection;
 					std::cin.clear();
 					std::vector<int> timeSteps = db.selectTimesteps(simulationID);
@@ -137,15 +137,17 @@ int main() {
 						db.insertAnalysis(simulationID, analysis);
 						std::cout << "HEQ velocity analysis done" << std::endl;
 					}
-
+					else if (selection == 4) {//Cluster
+						std::cout << "Running cluster analysis ..." << std::endl;
+						analysis.cluster(db.selectPoints(simulationID,0,2));
+						std::cout << "Cluster analysis done" << std::endl;
+					}
 
 					else {
 						std::cout << "Feature not yet implemented" << std::endl;
 					}
 				}
-				//std::cout << "Running cluster analysis ..." << std::endl;
-				//analysis.cluster(db.selectPoints(simulationID,0,2));
-				//std::cout << "Cluster analysis done" << std::endl;
+
 			}
 			else {
 				std::cout << "generating HEQ positions and velocities ..." << std::endl;

@@ -45,7 +45,7 @@ void VDBSCAN::checkNearPoints(std::vector<Point>& points) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             if (i == j) continue;
-            if (points.at(i).getDistance(points.at(j)) <= epsSpace && points.at(i).getDelta(points.at(j)) <= epsTime) {
+            if (points.at(i).getDistance(points.at(j)) <= epsSpace && points.at(i).getVelDelta(points.at(j)) <= epsTime) {
                 points.at(i).nNeighbors++;
                 adjPoints.at(i).push_back(j);
             }

@@ -84,7 +84,7 @@ void Database::setup(){
 		"x REAL NOT NULL,"
 		"y REAL NOT NULL,"
 		"z REAL NOT NULL,"
-		"rHEQ REAL,"
+		"rH REAL,"
 		"aHEQ REAL,"
 		"dHEQ REAL,"
 		"timestep INTEGER NOT NULL,"
@@ -100,11 +100,11 @@ void Database::setup(){
 		"x REAL,"
 		"y REAL,"
 		"z REAL,"
-		"rHEQ REAL,"
+		"rH REAL,"
 		"aHEQ REAL,"
 		"dHEQ REAL,"
-		"aScope REAL,"
-		"dScope REAL,"
+		"aHTP REAL,"
+		"dHTP REAL,"
 		"timestep INTEGER NOT NULL);";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS analysis("
@@ -400,7 +400,7 @@ void Database::generateHEQ(int simulationID){
 	//store rows for velocity2D table for better performance
 	struct rowInsert {
 		int fk;
-		double x, y, z, aScope, dScope;
+		double x, y, z, aHTP, dHTP;
 	};
 	std::vector<rowInsert> velocitiesInsert;
 	std::vector<rowInsert> positionsInsert;
@@ -433,7 +433,7 @@ void Database::generateHEQ(int simulationID){
 	char* errorMessage;
 	//insert velocities
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	std::string buffer = "UPDATE velocity SET rHEQ=?2, aHEQ=?3, dHEQ=?4 WHERE id=?1";
+	std::string buffer = "UPDATE velocity SET rH=?2, aHEQ=?3, dHEQ=?4 WHERE id=?1";
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, nullptr);
 	for (rowInsert row : velocitiesInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
@@ -453,15 +453,15 @@ void Database::generateHEQ(int simulationID){
 
 	//insert positions
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	buffer = "UPDATE position SET rHEQ=?2, aHEQ=?3, dHEQ=?4, aScope=?5, dScope=?6 WHERE id=?1";
+	buffer = "UPDATE position SET rH=?2, aHEQ=?3, dHEQ=?4, aHTP=?5, dHTP=?6 WHERE id=?1";
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
 	for (rowInsert row : positionsInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
 		sqlite3_bind_double(stmt, 2, row.x);
 		sqlite3_bind_double(stmt, 3, row.y);
 		sqlite3_bind_double(stmt, 4, row.z);
-		sqlite3_bind_double(stmt, 5, row.aScope);
-		sqlite3_bind_double(stmt, 6, row.dScope);
+		sqlite3_bind_double(stmt, 5, row.aHTP);
+		sqlite3_bind_double(stmt, 6, row.dHTP);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
 			printf("Commit Failed!\n");
@@ -529,7 +529,7 @@ void Database::generateHTP(int simulationID)
 
 	//insert positions
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	std::string buffer = "UPDATE position SET rHEQ=?2, aHEQ=?3, dHEQ=?4 WHERE id=?1";
+	std::string buffer = "UPDATE position SET rH=?2, aHTP=?3, dHTP=?4 WHERE id=?1";
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
 	for (rowInsert row : positionsInsert) {
 		sqlite3_bind_int(stmt, 1, row.fk);
@@ -551,7 +551,7 @@ void Database::generateBrightness(int simulationID){
 	if (!this->isOpen)
 		this->open();
 
-	std::string query = "SELECT star.id, star.mass, position.rHEQ "
+	std::string query = "SELECT star.id, star.mass, position.rH "
 		"FROM star INNER JOIN position on position.id_star = star.id "
 		"INNER JOIN simulation on simulation.id = star.id_simulation "
 		"WHERE position.timestep = 0 AND star.id_simulation = ?1";
@@ -928,7 +928,7 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 		std::cout << "Amount of timesteps must be at least 1" << std::endl;
 		return points;
 	}
-	std::string query = "SELECT star.id, position.timestep, position.aHEQ, position.dHEQ, star.isCluster "
+	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, star.isCluster "
 		"FROM star "
 		"INNER JOIN position on position.id_star = star.id "
 		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) order by position.timestep";

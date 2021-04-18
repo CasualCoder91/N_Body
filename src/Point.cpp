@@ -5,7 +5,7 @@ const std::string Point::header = "id,cluster,clusterStar,x,y,vx,vy";
 double Point::getDistance(const Point& pt2) {
     return sqrt((x - pt2.x) * (x - pt2.x) + (y - pt2.y) * (y - pt2.y));
 }
-double Point::getDelta(const Point& pt2) {
+double Point::getVelDelta(const Point& pt2) {
     return sqrt((vx - pt2.vx) * (vx - pt2.vx) + (vy - pt2.vy) * (vy - pt2.vy));
 }
 

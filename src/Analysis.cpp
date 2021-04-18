@@ -178,6 +178,8 @@ void Analysis::write(){
 void Analysis::cluster(std::vector<std::vector<Point>>& points){
 
 	//for (int i = 0; i < points.size() - 1; ++i) { //loop through timesteps excluding last one
+	int errorCounter = 0;
+	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
 	for (Point& point0 : points[0]) { // loop through all points at timestep i
 		double minDist = -1;
 		Point futurePoint;
@@ -187,18 +189,39 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 				minDist = currentDist;
 				futurePoint = point1;
 			}
+			if (maxDistPos < currentDist) {
+				maxDistPos = currentDist;
+			}
 		}
-		//std::cout << point0.id << " " << futurePoint.id << std::endl;
-		point0.vx = futurePoint.x-point0.x; //tecnically division by dt needed but dt is equal for all points
+		if (point0.id != futurePoint.id) {
+			errorCounter++;
+		}
+		point0.vx = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
 		point0.vy = futurePoint.y - point0.y;
 	}
+	std::cout << "#Wrong stars picked for velocity calculation: " << errorCounter << std::endl;
+
+	double maxDistVel = 0; //maximum velocity between any two stars used for setting epsSpace
+	for (Point& point : points[0]) // get maximum velocity difference (euclidean norm)
+	{
+		for (Point& pointComared : points[0])
+		{
+			if (point.id != pointComared.id) {
+				double velocityDiff = point.getVelDelta(pointComared);
+				if (velocityDiff > maxDistVel) {
+					maxDistVel = velocityDiff;
+				}
+			}
+		}
+	}
+
 	//}
 
 	//InOut::write(points[0], "src/Test/clusteringVelocity.dat");
 	//Plot plot = Plot(path, path, true);
 	//plot.plot("clusteringVelocity", {});
 
-	VDBSCAN scanner = VDBSCAN(0.05, 0.0000001, 60);
+	VDBSCAN scanner = VDBSCAN(maxDistPos*0.05, maxDistVel*0.05, 60);
 	scanner.run(points[0]);
 
 	int nFalsePositive = 0;

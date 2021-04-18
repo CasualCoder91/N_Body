@@ -11,7 +11,7 @@ public:
     static const std::string header;
 
     double getDistance(const Point& pt2);
-    double getDelta(const Point& pt2);
+    double getVelDelta(const Point& pt2);
 
     Point();
     Point(int id, double x, double y, bool clusterStar);
