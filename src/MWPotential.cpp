@@ -381,7 +381,14 @@ double MWPotential::azimuthalVelocityDispersion(double R, double z){
 
 double MWPotential::azimuthalStreamingVelocity(Vec3D position){
 	double R = gsl_hypot(position.x,position.y);
-	return sqrt(gsl_pow_2(radialVelocityDispersionDisk(R,position.z)) * (1.0 - gsl_pow_2(epicyclicFrequency(R, position.z)) / (4.0 * gsl_pow_2(angularVelocity(R))) - 2.0 * R / aDisk) + gsl_pow_2(circularVelocity(&position)));
+	double temp = gsl_pow_2(radialVelocityDispersionDisk(R, position.z)) * (1.0 - gsl_pow_2(epicyclicFrequency(R, position.z)) / (4.0 * gsl_pow_2(angularVelocity(R))) - 2.0 * R / aDisk) + gsl_pow_2(circularVelocity(&position));
+	if (temp > 0) {
+		return sqrt(temp);
+	}
+	if (debug) {
+		std::cout << "Negative value in MWPotential::azimuthalStreamingVelocity!" << std::endl;
+	}
+	return 0;
 }
 
 double MWPotential::velocityDispersionBulge(double r){

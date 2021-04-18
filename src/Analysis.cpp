@@ -229,7 +229,7 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 	int nTruePositive = 0;
 	int nTrueNegative = 0;
 
-	for (Point point : points[0]) {
+	for (Point const &point : points[0]) {
 		if (point.cluster > -1 && point.clusterStar)
 			nTruePositive++;
 		if (point.cluster > -1 && !point.clusterStar)
