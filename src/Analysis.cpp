@@ -181,8 +181,6 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 	int errorCounter = 0;
 	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
 
-	double minMagnitude = 28; // stars with "smaller" magnitude then this are detectable | todo: Add this to parameters
-
 	for (Point& point0 : points[0]) { // loop through all points at timestep i
 		double minDist = -1;
 		Point futurePoint;
