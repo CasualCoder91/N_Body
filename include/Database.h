@@ -68,7 +68,7 @@ public:
 	//HTP = Heliocentric Telescope Polar (LookAt Vector is primary axis)
 	void generateHTP(int simulationID);
 
-	void generateBrightness(int simulationID);
+	void generateMagnitude(int simulationID);
 
 	void insertPowerLaw(int simulationID, std::vector<double> massLimits, std::vector<double> exponents);
 	/** 
@@ -105,7 +105,7 @@ public:
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
 
-	std::vector<std::vector<Point>>selectPoints(int simulationID=1, int timeStep=0, int nTimeSteps = 2);
+	std::vector<std::vector<Point>>selectPoints(int simulationID=1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = 28);
 };
 
 #endif

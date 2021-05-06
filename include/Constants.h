@@ -55,4 +55,8 @@ namespace Constants {
 	extern double pi;
 	extern double pi2;
 	extern double pi4;
+
+	//Clustering
+	extern double minMagnitude; // stars with "smaller" magnitude then this are detectable
+	extern double minDist; //"resolution of the telescope" in arcsec
 }

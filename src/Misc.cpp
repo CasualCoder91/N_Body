@@ -18,3 +18,11 @@ double luminosity(double mass){
 		return 32000. * mass;
 	}
 }
+
+double apparentMagnitude(double luminosity, double distance) {
+	return absoluteMagnitude(luminosity) + 2.5 * log10(pow(distance / 10, 2));
+}
+
+double absoluteMagnitude(double luminosity){
+	return 4.77 - 2.5*log10(luminosity); //no division by solar luminosity because parameter is already relative to that!
+}

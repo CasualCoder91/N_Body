@@ -75,7 +75,7 @@ int main() {
 			std::cin.clear();
 			db.selectSimulation(simulationID);
 			Simulation simulation = Simulation(simulationID,&db);
-			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate observables (HEQ/brightness)" << std::endl;
+			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate observables (HEQ/magnitude)" << std::endl;
 			std::cin >> selection;
 			std::cin.clear();
 			if (selection == 1) {
@@ -139,7 +139,7 @@ int main() {
 					}
 					else if (selection == 4) {//Cluster
 						std::cout << "Running cluster analysis ..." << std::endl;
-						analysis.cluster(db.selectPoints(simulationID,0,2));
+						analysis.cluster(db.selectPoints(simulationID,0,2,Constants::minMagnitude));
 						std::cout << "Cluster analysis done" << std::endl;
 					}
 
@@ -153,8 +153,8 @@ int main() {
 				std::cout << "generating HEQ positions and velocities ..." << std::endl;
 				//db.generateHEQ(simulation.getID());
 				db.generateHTP(simulation.getID());
-				std::cout << "generating brightness ..." << std::endl;
-				db.generateBrightness(simulation.getID());
+				std::cout << "generating magnitude ..." << std::endl;
+				db.generateMagnitude(simulation.getID());
 				std::cout << "done\n" << std::endl;
 			}
 		}

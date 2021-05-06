@@ -180,6 +180,9 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 	//for (int i = 0; i < points.size() - 1; ++i) { //loop through timesteps excluding last one
 	int errorCounter = 0;
 	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
+
+	double minMagnitude = 28; // stars with "smaller" magnitude then this are detectable | todo: Add this to parameters
+
 	for (Point& point0 : points[0]) { // loop through all points at timestep i
 		double minDist = -1;
 		Point futurePoint;
@@ -197,7 +200,13 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 			errorCounter++;
 		}
 		point0.vx = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
+		if (abs(point0.vx) < Constants::minDist) {
+			point0.vx = 0;
+		}
 		point0.vy = futurePoint.y - point0.y;
+		if (abs(point0.vy) < Constants::minDist) {
+			point0.vy = 0;
+		}
 	}
 	std::cout << "#Wrong stars picked for velocity calculation: " << errorCounter << std::endl;
 

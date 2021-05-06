@@ -69,7 +69,7 @@ void Database::setup(){
 		"id INTEGER NOT NULL,"
 		"id_simulation INTEGER NOT NULL,"
 		"mass REAL,"
-		"brightness REAL,"
+		"magnitude REAL,"
 		"isCluster INTEGER NOT NULL,"
 		"isObserved INTEGER NOT NULL,"
 		"fkStar INTEGER,"
@@ -547,7 +547,7 @@ void Database::generateHTP(int simulationID)
 	sqlite3_finalize(stmt);
 }
 
-void Database::generateBrightness(int simulationID){
+void Database::generateMagnitude(int simulationID){
 	if (!this->isOpen)
 		this->open();
 
@@ -562,7 +562,7 @@ void Database::generateBrightness(int simulationID){
 	//store rows for velocity2D table for better performance
 	struct rowInsert {
 		int idStar;
-		double brightness;
+		double magnitude;
 	};
 	std::vector<rowInsert> stars;
 
@@ -572,25 +572,25 @@ void Database::generateBrightness(int simulationID){
 		double distance = sqlite3_column_double(stmt, 2);
 
 		double lum = luminosity(mass);
-		double brightness = aBrightness(lum, distance);
+		double magnitude = apparentMagnitude(lum, distance);
 
-		rowInsert starsInsert = { id, brightness };
+		rowInsert starsInsert = { id, magnitude };
 		stars.emplace_back(starsInsert);
 
 	}
 	sqlite3_finalize(stmt);
 
 	char* errorMessage;
-	//insert brightness
+	//insert magnitude
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	std::string buffer = "UPDATE star SET brightness=?2 WHERE id=?1";
+	std::string buffer = "UPDATE star SET magnitude=?2 WHERE id=?1";
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, nullptr);
 	for (rowInsert row : stars) {
 		sqlite3_bind_int(stmt, 1, row.idStar);
-		sqlite3_bind_double(stmt, 2, row.brightness);
+		sqlite3_bind_double(stmt, 2, row.magnitude);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
-			printf("generateBrightness: Commit Failed!\n");
+			printf("generateMagnitude: Commit Failed!\n");
 			printf(errorMessage);
 		}
 
@@ -921,7 +921,7 @@ void Database::outputStars(int simulationID, std::string filePath, bool allStars
 	}
 }
 
-std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int timeStep, int nTimeSteps){
+std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int timeStep, int nTimeSteps, double minMagnitude){
 	std::vector<std::vector<Point>> points;
 	std::vector<Point> timeStepPoints;
 	if (nTimeSteps < 1) {
@@ -931,12 +931,13 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, star.isCluster "
 		"FROM star "
 		"INNER JOIN position on position.id_star = star.id "
-		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) order by position.timestep";
+		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) AND star.magnitude < ?4 order by position.timestep";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 	sqlite3_bind_int(stmt, 1, simulationID);
 	sqlite3_bind_int(stmt, 2, timeStep);
 	sqlite3_bind_int(stmt, 3, timeStep + nTimeSteps -1);
+	sqlite3_bind_double(stmt, 4, minMagnitude);
 
 	int currentTimeStep = timeStep;
 
