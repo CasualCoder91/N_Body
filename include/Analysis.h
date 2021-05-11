@@ -20,6 +20,9 @@
 #include "Plot.h"
 #include "Vec2D.h"
 
+#include "../src/DBSCAN/RTree.h"
+#include "../src/DBSCAN/DBSCAN.cpp"
+
 class Analysis
 {
 private:

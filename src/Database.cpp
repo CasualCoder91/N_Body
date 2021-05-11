@@ -928,7 +928,7 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 		std::cout << "Amount of timesteps must be at least 1" << std::endl;
 		return points;
 	}
-	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, star.isCluster "
+	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, star.isCluster, star.magnitude "
 		"FROM star "
 		"INNER JOIN position on position.id_star = star.id "
 		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) AND star.magnitude < ?4 order by position.timestep";
@@ -947,7 +947,7 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 			timeStepPoints.clear();
 			currentTimeStep = sqlite3_column_int(stmt, 1);
 		}
-		timeStepPoints.emplace_back(sqlite3_column_int(stmt, 0), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3),sqlite3_column_int(stmt,4));
+		timeStepPoints.emplace_back(sqlite3_column_int(stmt, 0), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3),sqlite3_column_int(stmt,4), sqlite3_column_double(stmt, 5));
 
 	}
 	points.emplace_back(timeStepPoints);//gotta insert Points at last timestep

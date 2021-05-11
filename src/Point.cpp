@@ -11,11 +11,12 @@ double Point::getVelDelta(const Point& pt2) {
 
 Point::Point(){}
 
-Point::Point(int id, double x, double y, bool clusterStar){
+Point::Point(int id, double x, double y, bool clusterStar, double magnitude){
     this->id = id;
     this->x = x;
     this->y = y;
     this->clusterStar = clusterStar;
+    this->magnitude = magnitude;
     this->cluster = -1; //NOT_CLASSIFIED
     this->nNeighbors = 0;
     this->vx = 0;

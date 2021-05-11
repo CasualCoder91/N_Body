@@ -174,19 +174,21 @@ void Analysis::write(){
 		InOut::write(time, potE, "PotentialEnergy.dat");
 	}
 }
-
+/*
 void Analysis::cluster(std::vector<std::vector<Point>>& points){
 
 	//for (int i = 0; i < points.size() - 1; ++i) { //loop through timesteps excluding last one
 	int errorCounter = 0;
 	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
 
+	double epsMagnitude = 0.01; // [%] maximum change in magnitude to be considered the same star
+
 	for (Point& point0 : points[0]) { // loop through all points at timestep i
 		double minDist = -1;
 		Point futurePoint;
 		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
 			double currentDist = point0.getDistance(point1);
-			if (currentDist < minDist || minDist == -1) {
+			if ((currentDist < minDist || minDist == -1) && abs(1-point1.magnitude/point0.magnitude) < epsMagnitude) {
 				minDist = currentDist;
 				futurePoint = point1;
 			}
@@ -198,13 +200,13 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 			errorCounter++;
 		}
 		point0.vx = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
-		if (abs(point0.vx) < Constants::minDist) {
-			point0.vx = 0;
-		}
+		//if (abs(point0.vx) < Constants::minDist) {
+		//	point0.vx = 0;
+		//}
 		point0.vy = futurePoint.y - point0.y;
-		if (abs(point0.vy) < Constants::minDist) {
-			point0.vy = 0;
-		}
+		//if (abs(point0.vy) < Constants::minDist) {
+		//	point0.vy = 0;
+		//}
 	}
 	std::cout << "#Wrong stars picked for velocity calculation: " << errorCounter << std::endl;
 
@@ -228,7 +230,7 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 	//Plot plot = Plot(path, path, true);
 	//plot.plot("clusteringVelocity", {});
 
-	VDBSCAN scanner = VDBSCAN(maxDistPos*0.10, maxDistVel*0.003, 60);
+	VDBSCAN scanner = VDBSCAN(maxDistPos*0.10, maxDistVel*0.0003, 60);
 	scanner.run(points[0]);
 
 	int nFalsePositive = 0;
@@ -250,4 +252,16 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
 	std::cout << "nTruePositive: " << nTruePositive << std::endl;
 	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
+}
+*/
+
+
+//https://github.com/HoneyJung/DBSCAN_C-_RTree
+
+
+
+void Analysis::cluster(std::vector<std::vector<Point>>& points) {
+	typedef RTree<ValueType, double, 2, double> MyTree;
+	MyTree tree;
+	tree.Search_neighbors
 }
