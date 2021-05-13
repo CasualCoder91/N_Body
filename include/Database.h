@@ -105,6 +105,9 @@ public:
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
 
+	//pass timestep = -1 to output all timestep (one file per step)
+	void outputStars2D(int simulationID, std::string filePath, int timestep = -1);
+
 	std::vector<std::vector<Point>>selectPoints(int simulationID=1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = 28);
 };
 

@@ -138,7 +138,7 @@ public:
   /// \param a_min Min of bounding rect
   /// \param a_max Max of bounding rect
   /// \param a_dataId Positive Id of data.  Maybe zero, but negative numbers not allowed.
-  void Insert(const ELEMTYPE a_min[NUMDIMS], const ELEMTYPE a_max[NUMDIMS], const DATATYPE& a_dataId);
+  void Insert(const ELEMTYPE a_min[NUMDIMS], const ELEMTYPE a_max[NUMDIMS], const DATATYPE& a_dataId, const bool clusterStar);
 
   /// Remove entry
   /// \param a_min Min of bounding rect
@@ -510,7 +510,7 @@ vector<Point*> RTREE_QUAL::Search_neighbors(ELEMTYPE* XandY, ELEMTYPE eps, int d
 }
 
 RTREE_TEMPLATE
-void RTREE_QUAL::Insert(const ELEMTYPE a_min[NUMDIMS], const ELEMTYPE a_max[NUMDIMS], const DATATYPE& a_dataId)
+void RTREE_QUAL::Insert(const ELEMTYPE a_min[NUMDIMS], const ELEMTYPE a_max[NUMDIMS], const DATATYPE& a_dataId, const bool clusterStar)
 {
 #ifdef _DEBUG
   for(int index=0; index<NUMDIMS; ++index)
@@ -521,9 +521,10 @@ void RTREE_QUAL::Insert(const ELEMTYPE a_min[NUMDIMS], const ELEMTYPE a_max[NUMD
 
   Branch branch;
   branch.m_data = a_dataId;
-  branch.point.DataId = a_dataId;
-  branch.point.xy[0] = a_min[0];/////////////////to do////////// about dim
-  branch.point.xy[1] = a_min[1];
+  branch.point.id = a_dataId;
+  branch.point.velocity[0] = a_min[0];/////////////////to do////////// about dim
+  branch.point.velocity[1] = a_min[1];
+  branch.point.clusterStar = clusterStar;
   branch.m_child = NULL;
   
 

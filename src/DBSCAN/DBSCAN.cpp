@@ -42,7 +42,7 @@ class DBSCAN{
             cout << "Data size : " << size << endl;
             for((*tree).GetFirst(it); !(*tree).IsNull(it);(*tree).GetNext(it))
             {
-                if((*it).point.label != 0){
+                if((*it).point.cluster != 0){
                     continue;
                 }
                 it.GetBounds(boundsMin,boundsMax);
@@ -52,11 +52,11 @@ class DBSCAN{
                 //cout << eps << ' ' << dim << endl;
                 //cout << "neighbor size " << seed.size() << endl;
                 if (seed.size() < minPts){
-                     (*it).point.label = -1; // noise
+                     (*it).point.cluster = -1; // noise
                      continue; 
                 }
                 cluster_count++;
-                (*it).point.label = cluster_count; // noise
+                (*it).point.cluster = cluster_count; // noise
 
                 //TODO set
                 (*tree).GetNext(it);
@@ -64,17 +64,17 @@ class DBSCAN{
                 vector<Point*>::iterator iter;;
                 //for(iter =seed.begin(); iter != seed.end();++iter){
                 for(int i=0; i < seed.size(); i++){ 
-                    if( seed[i]->DataId == (*it).point.DataId){
+                    if( seed[i]->id == (*it).point.id){
                         continue;
                     }
-                    if(seed[i]->label == -1){
-                        seed[i]->label = cluster_count;
+                    if(seed[i]->cluster == -1){
+                        seed[i]->cluster = cluster_count;
                     }
-                    if(seed[i]->label != 0){
+                    if(seed[i]->cluster != 0){
                         continue;
                     }
-                    seed[i]->label = cluster_count;
-                    seed2 = (*tree).Search_neighbors(seed[i]->xy, eps, dim);
+                    seed[i]->cluster = cluster_count;
+                    seed2 = (*tree).Search_neighbors(seed[i]->velocity, eps, dim);
                     if(seed2.size() >= minPts){
                         seed = Set_Union(seed,seed2);
                     }

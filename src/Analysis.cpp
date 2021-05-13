@@ -107,7 +107,7 @@ double Analysis::average(std::vector<double>& values) {
 double Analysis::average(std::vector<Point>& points) {
 	double average = 0;
 	for (Point point : points) {
-		average += sqrt(point.vx* point.vx + point.vy* point.vy);
+		average += sqrt(point.velocity[0]* point.velocity[0] + point.velocity[1]* point.velocity[1]);
 	}
 	return average / points.size();
 }
@@ -158,7 +158,7 @@ double Analysis::dispersion(std::vector<Point>& points, double average){
 
 	double dispersion = 0;
 	for (Point point : points) {
-		dispersion += pow(sqrt(point.vx * point.vx + point.vy * point.vy) - average, 2);
+		dispersion += pow(sqrt(point.velocity[0] * point.velocity[0] + point.velocity[1] * point.velocity[1]) - average, 2);
 	}
 	return sqrt(dispersion / (points.size() - 1));
 }
@@ -199,9 +199,9 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 		if (point0.id != futurePoint.id) {
 			errorCounter++;
 		}
-		point0.vx = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
-		//if (abs(point0.vx) < Constants::minDist) {
-		//	point0.vx = 0;
+		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
+		//if (abs(point0.velocity[0]) < Constants::minDist) {
+		//	point0.velocity[0] = 0;
 		//}
 		point0.vy = futurePoint.y - point0.y;
 		//if (abs(point0.vy) < Constants::minDist) {
@@ -259,9 +259,82 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 //https://github.com/HoneyJung/DBSCAN_C-_RTree
 
 
-
 void Analysis::cluster(std::vector<std::vector<Point>>& points) {
+	int errorCounter = 0;
+	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
+
+	double epsMagnitude = 0.01; // [%] maximum change in magnitude to be considered the same star
+
+	for (Point& point0 : points[0]) { // loop through all points at timestep i
+		double minDist = -1;
+		Point futurePoint;
+		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
+			double currentDist = point0.getDistance(point1);
+			if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < epsMagnitude) {
+				minDist = currentDist;
+				futurePoint = point1;
+			}
+			if (maxDistPos < currentDist) {
+				maxDistPos = currentDist;
+			}
+		}
+		if (point0.id != futurePoint.id) {
+			errorCounter++;
+		}
+		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
+		point0.velocity[1] = futurePoint.y - point0.y;
+	}
+	std::cout << "#Wrong stars picked for velocity calculation: " << errorCounter << std::endl;
+
+	double maxDistVel = 0; //maximum velocity between any two stars used for setting epsSpace
+	for (Point& point : points[0]) // get maximum velocity difference (euclidean norm)
+	{
+		for (Point& pointComared : points[0])
+		{
+			if (point.id != pointComared.id) {
+				double velocityDiff = point.getVelDelta(pointComared);
+				if (velocityDiff > maxDistVel) {
+					maxDistVel = velocityDiff;
+				}
+			}
+		}
+	}
+	std::cout << "velocity done" << std::endl;
+
 	typedef RTree<ValueType, double, 2, double> MyTree;
 	MyTree tree;
-	tree.Search_neighbors
+	for (Point& point : points[0]) {
+		tree.Insert(point.velocity, point.velocity, point.id, point.clusterStar);
+	}
+	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), maxDistVel * 0.003, 2, 60);
+	dbscan.Cluster();
+	std::cout << "Clustering done" << std::endl;
+	//MyTree::Iterator it;
+	//for ((tree).GetFirst(it); !(tree).IsNull(it); (tree).GetNext(it)) {
+	//	if ((*it).point.cluster == 1) {
+	//		cout << (*it).point.velocity[0] << ' ' << (*it).point.velocity[0] << ' ' << (*it).point.cluster << endl;
+	//	}
+	//}
+
+	int nFalsePositive = 0;
+	int nFalseNegative = 0;
+	int nTruePositive = 0;
+	int nTrueNegative = 0;
+
+	MyTree::Iterator it;
+	for ((tree).GetFirst(it); !(tree).IsNull(it); (tree).GetNext(it)) {
+		if ((*it).point.cluster == 1 && (*it).point.clusterStar)
+			nTruePositive++;
+		if ((*it).point.cluster == 1 && !(*it).point.clusterStar)
+			nFalsePositive++;
+		if ((*it).point.cluster == -1 && (*it).point.clusterStar)
+			nFalseNegative++;
+		if ((*it).point.cluster == -1 && !(*it).point.clusterStar)
+			nTrueNegative++;
+	}
+	std::cout << "nFalsePositive: " << nFalsePositive << std::endl;
+	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
+	std::cout << "nTruePositive: " << nTruePositive << std::endl;
+	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
+
 }

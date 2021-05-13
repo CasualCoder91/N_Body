@@ -921,6 +921,46 @@ void Database::outputStars(int simulationID, std::string filePath, bool allStars
 	}
 }
 
+void Database::outputStars2D(int simulationID, std::string filePath, int timestep)
+{
+	if (!this->isOpen)
+		this->open();
+
+	std::vector<int> timesteps = { timestep };
+	if (timestep == -1) {
+		timesteps = selectTimesteps(simulationID);
+	}
+
+	for (int timestep : timesteps) {
+
+		std::string query = "SELECT mass, position.rH, position.aHTP, position.dHTP "
+			"FROM star INNER JOIN position on position.id_star = star.id "
+			"WHERE star.id_simulation = ?1 "
+			"AND position.timestep = ?2";
+		sqlite3_stmt* stmt;
+		sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+		sqlite3_bind_int(stmt, 1, simulationID);
+		sqlite3_bind_int(stmt, 2, timestep);
+		std::ofstream file(filePath+std::to_string(timestep)+".dat");
+		/* dump columns names into the file */
+		for (int i = 0; i < 4; i++) {
+			file << sqlite3_column_name(stmt, i) << ',';
+		}
+		file << "\n";
+
+		while (sqlite3_step(stmt) == SQLITE_ROW) {
+			for (int i = 0; i < 4; i++) {
+				file << sqlite3_column_text(stmt, i) << ',';
+			}
+			file << "\n";
+		}
+		sqlite3_finalize(stmt);
+		file.close();
+	}
+}
+
+
+
 std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int timeStep, int nTimeSteps, double minMagnitude){
 	std::vector<std::vector<Point>> points;
 	std::vector<Point> timeStepPoints;

@@ -79,10 +79,18 @@ int main() {
 			std::cin >> selection;
 			std::cin.clear();
 			if (selection == 1) {
+				std::cout << "[1] 3D\n[2] 2D" << std::endl;
+				std::cin >> selection;
+				std::cin.clear();
 				std::string directory = "Simulation" + std::to_string(simulation.getID());
 				directory = InOut::makeDirectory(directory);
 				std::cout << "Files will be written to: " << directory << std::endl;
-				db.outputStars(simulation.getID(), directory + "/stars",false,true,true);
+				if (selection == 1) {
+					db.outputStars(simulation.getID(), directory + "/stars", false, true, true);
+				}
+				else if (selection == 2) {
+					db.outputStars2D(simulation.getID(), directory + "/stars");
+				}
 				std::cout << "done" << std::endl;
 			}
 			else if(selection==2) {

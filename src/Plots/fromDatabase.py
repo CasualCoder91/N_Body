@@ -69,9 +69,9 @@ def selectAllPositions(conn, simulationID):
 
 def select2DPositions(conn, simulationID):
     cur = conn.cursor()
-    cur.execute("""SELECT star.id,mass,position.timestep,position.aHEQ,position.dHEQ,star.isCluster FROM star
+    cur.execute("""SELECT star.id,mass,position.timestep,position.aHTP,position.dHTP,star.isCluster FROM star
        INNER JOIN position on position.id_star = star.id
-       where star.id_simulation = ?1 And position.timestep<3 order by position.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
+       where star.id_simulation = ?1 And position.timestep<25 order by position.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
     rows = np.array(cur.fetchall())
     return rows
 
@@ -148,23 +148,23 @@ def toCylinder(x,y,z):
 
 def plot2Dxy(output,data):
     #loop timesteps
-    #for i in np.unique(data[:,2]):
-    timestepData = data[data[:,2] == 0]
-    #com,maxDist = plotDimensions(timestepData)
-    fig = plt.figure()
+    for i in np.unique(data[:,2]):
+        timestepData = data[data[:,2] == i]
+        com,maxDist = plotDimensions(timestepData)
+        fig = plt.figure()
 
-    fig.set_size_inches(9,9)
-    #print(maxDist[0],maxDist[1])
-    #plotDist = np.minimum(maxDist[0],maxDist[1])
-    #plt.xlim(com[0]-plotDist, com[0]+plotDist)
-    #plt.ylim(com[1]-plotDist, com[1]+plotDist)
-    colors = np.where(timestepData[:,5]==1,'y','k')
-    plt.scatter(timestepData[:,3], timestepData[:,4], c=colors)
-    #print(plotDist)
-    #name = output+'\starPositions'+str(int(i))
-    plt.show()
-    #plt.savefig(name+'.jpg')
-    #plt.close(fig)
+        fig.set_size_inches(9,9)
+        #print(maxDist[0],maxDist[1])
+        plotDist = 15 #np.minimum(maxDist[0],maxDist[1])
+        plt.xlim(com[0]-plotDist, com[0]+plotDist)
+        plt.ylim(com[1]-plotDist, com[1]+plotDist)
+        colors = np.where(timestepData[:,5]==1,'y','k')
+        plt.scatter(timestepData[:,3], timestepData[:,4], c=colors)
+        #print(plotDist)
+        #name = output+'\starPositions'+str(int(i))
+        plt.show()
+        #plt.savefig(name+'.jpg')
+        #plt.close(fig)
 
 def plotProjection(output,data):
     #loop timesteps
