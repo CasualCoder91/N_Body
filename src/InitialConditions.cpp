@@ -76,13 +76,13 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, const Vec3D& f
 
 	std::vector<Star*> fieldStars; //return vector
 
-	double diskMass = potential->massDisk(&transformationMatrix, distance, coneR);
-	std::vector<Star*> diskStars = diskIMF(diskMass, starID);
-	if (diskStars.size() > 0) {
-		sampleDiskPositions(diskStars, coneBoundaryMin, coneBoundaryMax, coneR, distance, &transformationMatrix); //test
-		sampleDiskVelocities(diskStars);
-		fieldStars.insert(std::end(fieldStars), std::begin(diskStars), std::end(diskStars));
-	}
+	//double diskMass = potential->massDisk(&transformationMatrix, distance, coneR);
+	//std::vector<Star*> diskStars = diskIMF(diskMass, starID);
+	//if (diskStars.size() > 0) {
+	//	sampleDiskPositions(diskStars, coneBoundaryMin, coneBoundaryMax, coneR, distance, &transformationMatrix); //test
+	//	sampleDiskVelocities(diskStars);
+	//	fieldStars.insert(std::end(fieldStars), std::begin(diskStars), std::end(diskStars));
+	//}
 	double bulgeMass = potential->bulgePotential.mass(&transformationMatrix, distance, coneR);
 	std::vector<Star*> bulgeStars = bulgeIMF(bulgeMass, starID);
 	if (bulgeStars.size() > 0) {
@@ -375,8 +375,8 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D con
 	std::uniform_real_distribution<> disy(-coneR, coneR);
 	std::uniform_real_distribution<> disz(0, distance);
 
-	#pragma omp parallel for
-	for(int i = 0; i < stars.size(); ++i) {
+
+	for(Star* star : stars){
 		while (true) {
 			double x = disx(gen);
 			double y = disy(gen);
@@ -397,7 +397,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D con
 					//	std::cin.get();
 				}
 				if (accept < temp) {
-					stars[i]->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
+					star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
 					break;
 				}
 			}

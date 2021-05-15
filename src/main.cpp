@@ -75,7 +75,7 @@ int main() {
 			std::cin.clear();
 			db.selectSimulation(simulationID);
 			Simulation simulation = Simulation(simulationID,&db);
-			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate observables (HEQ/magnitude)" << std::endl;
+			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate observables (HTP/magnitude)" << std::endl;
 			std::cin >> selection;
 			std::cin.clear();
 			if (selection == 1) {
@@ -158,7 +158,7 @@ int main() {
 
 			}
 			else {
-				std::cout << "generating HEQ positions and velocities ..." << std::endl;
+				std::cout << "generating HTP positions ..." << std::endl;
 				//db.generateHEQ(simulation.getID());
 				db.generateHTP(simulation.getID());
 				std::cout << "generating magnitude ..." << std::endl;

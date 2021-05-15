@@ -89,6 +89,19 @@ def plot_star_series(output,data,show=False):
         plt.savefig(name+'.jpg')
         plt.close(fig)
 
+def select3DPositions(conn, simulationID):
+    cur = conn.cursor()
+    #cur.execute("SELECT star.id,mass,position.timestep,position.x,position.y,position.z FROM star INNER JOIN velocity on velocity.id_star = star.id INNER JOIN position on position.id_star = star.id where star.id_simulation = ?1 AND position.timestep = velocity.timestep order by position.timestep", (simulationID,))
+    cur.execute("""SELECT star.id,mass,position.timestep,position.x,position.y,position.z
+        FROM star
+        INNER JOIN position on position.id_star = star.id
+        WHERE star.id_simulation = ?1
+        AND isCluster=0
+        order by position.timestep
+        LIMIT 1000""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
+    rows = np.array(cur.fetchall())
+    return rows
+
 def plotDensity(output,data,show=False):
     plotData = data[data[:,2] == 0]
     x = plotData[:,3]
@@ -155,7 +168,7 @@ def plot2Dxy(output,data):
 
         fig.set_size_inches(9,9)
         #print(maxDist[0],maxDist[1])
-        plotDist = 15 #np.minimum(maxDist[0],maxDist[1])
+        plotDist = 5 #np.minimum(maxDist[0],maxDist[1])
         plt.xlim(com[0]-plotDist, com[0]+plotDist)
         plt.ylim(com[1]-plotDist, com[1]+plotDist)
         colors = np.where(timestepData[:,5]==1,'y','k')
@@ -278,7 +291,7 @@ def plot2DCylinder(output,data):
         plt.close(fig)
 
 def main():
-    simulationID = 1
+    simulationID = 6
     database = r"E:\Master_Thesis\VS_Project\N_Body\Output\Database\default.db"
     output = r"E:\Master_Thesis\VS_Project\N_Body\Output\NGC2244"# + str(simulationID)
     # create a database connection
@@ -286,7 +299,8 @@ def main():
     with conn:
         data = select2DPositions(conn, simulationID)
         plot2Dxy(output,data)
-        #data = selectAllPositions(conn, simulationID)
+        #data = select3DPositions(conn, simulationID)
+        #plot_star_series(output,data,True)
         #plotDensity(output, data,True)
         #plotProjection(output, data)
 

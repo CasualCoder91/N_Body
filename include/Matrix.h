@@ -12,11 +12,11 @@ public:
 
 	/**
 	@brief Calculates transformation matrix.
-	@param rotation The target vector (given \p axis gets rotated to match this vector).
+	@param target The target vector (given \p start gets rotated to match this vector).
 	@param translation Offset of the origin.
-	@param axis the axis to be rotated (z axis in case of the sample cylinder, x axis for calucation of ra dec).
+	@param start the start to be rotated (z start in case of the sample cylinder, x start for calucation of ra dec).
 	*/
-	static Matrix transformation(Vec3D rotation, Vec3D translation, Vec3D axis = Vec3D(0, 0, 1));
+	static Matrix transformation(Vec3D target, Vec3D translation, Vec3D start = Vec3D(0, 0, 1));
 
 	static Matrix rotation(Vec3D start, Vec3D target);
 

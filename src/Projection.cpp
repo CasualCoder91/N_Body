@@ -257,7 +257,8 @@ void Projection::HCAtoHTP(const Vec3D& positionIn, Vec3D& positionOut, const Vec
 	//focusHTP.y = atan2(focus.y, focus.x);
 	//focusHTP.z = asin(focus.z / focusHTP.x);
 
-	Matrix rotationM = Matrix::rotation(focus, Vec3D(1, 0, 0));
+	//Matrix rotationM = Matrix::rotation(focus, Vec3D(1, 0, 0));
+	Matrix rotationM = Matrix::transformation(Vec3D(1, 0, 0), Vec3D(0, 0, 0), focus);
 	Vec3D pHCArotated = rotationM * positionIn; //rotate Position such that x points towards focus
 
 	positionOut.x = positionIn.length(); //radius in pc

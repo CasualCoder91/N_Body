@@ -26,10 +26,10 @@ Matrix::Matrix(double m11, double m12, double m13, double m14, double m21, doubl
 	this->m41 = m41; this->m42 = m42; this->m43 = m43; this->m44 = m44;
 }
 
-Matrix Matrix::transformation(Vec3D rotation, Vec3D translation, Vec3D axis){
-	rotation = rotation.normalize();
-	double angle = acos(axis * rotation)*0.5;
-	Vec3D b = Vec3D::crossProduct(&axis, &rotation);
+Matrix Matrix::transformation(Vec3D target, Vec3D translation, Vec3D start){
+	target = target.normalize();
+	double angle = acos(start * target)*0.5;
+	Vec3D b = Vec3D::crossProduct(&start, &target);
 	b = b.normalize();
 	double q0 = cos(angle), q1 = sin(angle) * b.x, q2 = sin(angle)*b.y, q3 = sin(angle)*b.z;
 
