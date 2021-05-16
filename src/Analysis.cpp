@@ -323,7 +323,7 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points) {
 	for (Point& point : points[0]) {
 		tree.Insert(point.velocity, point.velocity, point.id, point.clusterStar);
 	}
-	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), maxDistVel * 0.03, 2, 50);
+	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), 0.00001, 2, 50); //maxDistVel * 0.03
 	dbscan.Cluster();
 	std::cout << "Clustering done" << std::endl;
 	//MyTree::Iterator it;
@@ -339,7 +339,10 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points) {
 	int nTrueNegative = 0;
 
 	MyTree::Iterator it;
+	points.clear();
+	std::vector<Point> resultAt0;
 	for ((tree).GetFirst(it); !(tree).IsNull(it); (tree).GetNext(it)) {
+		resultAt0.push_back((*it).point);
 		if ((*it).point.cluster == 1 && (*it).point.clusterStar)
 			nTruePositive++;
 		if ((*it).point.cluster == 1 && !(*it).point.clusterStar)
@@ -353,5 +356,6 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points) {
 	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
 	std::cout << "nTruePositive: " << nTruePositive << std::endl;
 	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
-
+	points.push_back(resultAt0);
+	database->updatePoints(points);
 }

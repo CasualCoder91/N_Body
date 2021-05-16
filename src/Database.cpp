@@ -73,6 +73,7 @@ void Database::setup(){
 		"isCluster INTEGER NOT NULL,"
 		"isObserved INTEGER NOT NULL,"
 		"fkStar INTEGER,"
+		"idCluster INTEGER, "
 		"PRIMARY KEY (id),"
 		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
@@ -986,30 +987,41 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 	return points;
 }
 
-//ToDo: Optimize for speed!
 void Database::updatePoints(std::vector<std::vector<Point>>& points)
 {
 	int timeStep = 0;
 
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	std::string query = "update velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4";
-	sqlite3_stmt* stmt;
-	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	std::string queryVelocity = "update velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4";
+	std::string queryStar = "update star set idCluster=?1 where id=?2";
+	sqlite3_stmt* stmtVelocity;
+	sqlite3_stmt* stmtStar;
+	sqlite3_prepare_v2(db, queryVelocity.c_str(), static_cast<int>(queryVelocity.size()), &stmtVelocity, nullptr);
+	sqlite3_prepare_v2(db, queryStar.c_str(), static_cast<int>(queryStar.size()), &stmtStar, nullptr);
 	for (Point& point : points[timeStep]) {
-		sqlite3_bind_double(stmt, 1, point.velocity[0]);
-		sqlite3_bind_double(stmt, 2, point.velocity[1]);
-		sqlite3_bind_int(stmt, 3, timeStep);
-		sqlite3_bind_int(stmt, 4, point.id);
-		if (sqlite3_step(stmt) != SQLITE_DONE)
+		sqlite3_bind_double(stmtVelocity, 1, point.velocity[0]);
+		sqlite3_bind_double(stmtVelocity, 2, point.velocity[1]);
+		sqlite3_bind_int(stmtVelocity, 3, timeStep);
+		sqlite3_bind_int(stmtVelocity, 4, point.id);
+		if (sqlite3_step(stmtVelocity) != SQLITE_DONE)
 		{
 			printf("updatePoints: Commit Failed!\n");
 			printf(errorMessage);
 		}
-		sqlite3_reset(stmt);
+		sqlite3_reset(stmtVelocity);
+
+		sqlite3_bind_int(stmtStar, 1, point.cluster);
+		sqlite3_bind_int(stmtStar, 2, point.id);
+		if (sqlite3_step(stmtStar) != SQLITE_DONE)
+		{
+			printf("updatePoints: Commit Failed!\n");
+			printf(errorMessage);
+		}
+		sqlite3_reset(stmtStar);
 	}
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
-	sqlite3_finalize(stmt);
+	sqlite3_finalize(stmtVelocity);
 	std::cout << "Database: velocity.aHTP and velocity.dHTP updated" << std::endl;
 }
 

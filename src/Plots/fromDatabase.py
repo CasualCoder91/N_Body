@@ -75,6 +75,15 @@ def select2DPositions(conn, simulationID):
     rows = np.array(cur.fetchall())
     return rows
 
+def select2DVelocities(conn, simulationID):
+    cur = conn.cursor()
+    cur.execute("""SELECT star.id,mass,velocity.timestep,velocity.aHTP,velocity.dHTP,star.idCluster FROM star
+       INNER JOIN velocity on velocity.id_star = star.id
+       where star.id_simulation = ?1 And velocity.timestep<25 order by velocity.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
+    rows = np.array(cur.fetchall())
+    return rows
+
+
 def plot_star_series(output,data,show=False):
     #loop timesteps
     for i in np.unique(data[:,2]):
@@ -168,11 +177,11 @@ def plot2Dxy(output,data):
 
         fig.set_size_inches(9,9)
         #print(maxDist[0],maxDist[1])
-        plotDist = 5 #np.minimum(maxDist[0],maxDist[1])
-        plt.xlim(com[0]-plotDist, com[0]+plotDist)
-        plt.ylim(com[1]-plotDist, com[1]+plotDist)
+        #plotDist = 5 #np.minimum(maxDist[0],maxDist[1])
+        #plt.xlim(com[0]-plotDist, com[0]+plotDist)
+        #plt.ylim(com[1]-plotDist, com[1]+plotDist)
         colors = np.where(timestepData[:,5]==1,'y','k')
-        plt.scatter(timestepData[:,3], timestepData[:,4], c=colors)
+        plt.scatter(timestepData[:,3], timestepData[:,4], c=timestepData[:,5])
         #print(plotDist)
         #name = output+'\starPositions'+str(int(i))
         plt.show()
@@ -297,12 +306,14 @@ def main():
     # create a database connection
     conn = createConnection(database)
     with conn:
-        data = select2DPositions(conn, simulationID)
-        plot2Dxy(output,data)
+        #data = select2DPositions(conn, simulationID)
+        #plot2Dxy(output,data)
         #data = select3DPositions(conn, simulationID)
         #plot_star_series(output,data,True)
         #plotDensity(output, data,True)
         #plotProjection(output, data)
+        data = select2DVelocities(conn, simulationID)
+        plot2Dxy(output,data)
 
 if __name__ == '__main__':
     main()
