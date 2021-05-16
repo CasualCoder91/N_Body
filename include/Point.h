@@ -17,6 +17,7 @@ public:
 
     Point();
     Point(int id, double x, double y, bool clusterStar, double magnitude);
+    Point(int id, double x, double y, double vx, double vy,  bool clusterStar, double magnitude);
 
     friend std::ostream& operator<<(std::ostream& o, Point const& point) {
         o << point.id << ',' << point.cluster << ',' << point.clusterStar << ',' << point.x << ',' << point.y << ',' << point.velocity[0] << ',' << point.velocity[1];

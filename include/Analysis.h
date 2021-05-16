@@ -30,19 +30,13 @@ private:
 
     static std::string path;
     int id;
+    Database* database;
 
 public: //variables
-    bool bEnergyDone;
-    bool bVelocityDone;
-    bool bVelocity2DDone;
-    Database* database;
 
 public: //methods
 
     Analysis(int id, Database* database);
-    Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone, Database* database);
-
-    void load();
 
     std::vector<double> totE;
     std::vector<double> potE;
@@ -71,8 +65,6 @@ public: //methods
 	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator);
 
     void energy();
-
-    bool allDone();
 
     /**
      @static
@@ -106,9 +98,6 @@ public: //methods
     void generateHTPVelocity();
 
     void cluster(std::vector<std::vector<Point>>& points);
-
-    void setEnergyDone(bool value);
-
 
 };
 

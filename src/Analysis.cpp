@@ -5,24 +5,9 @@ std::string Analysis::path = "src/Test/";
 Analysis::Analysis(int id, Database* database)
 {
 	this->id = id;
-	this->bEnergyDone = false;
-	this->bVelocityDone = false;
-	this->bVelocity2DDone = false;
-	this->database = database;
-	load();
-}
-
-Analysis::Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone, Database* database){
-	this->bEnergyDone = bEnergyDone;
-	this->bVelocityDone = bVelocityDone;
-	this->bVelocity2DDone = bVelocity2DDone;
 	this->database = database;
 }
 
-void Analysis::load()
-{
-	database->selectAnalysis(id, bEnergyDone, bVelocityDone, bVelocity2DDone);
-}
 
 double Analysis::potentialEnergy(const std::vector<Star>& stars){
 	double potentialEnergy = 0;
@@ -59,7 +44,6 @@ void Analysis::energy()
 		double potE = potentialEnergy(stars);
 		database->insertAnalysisdtEnergy(id, timeStep, kinE, potE);
 	}
-	setEnergyDone(true);
 }
 
 void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
@@ -105,10 +89,6 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 	InOut::write(x,y,"NlogNtest.dat");
 }
 
-bool Analysis::allDone(){
-	return this->bEnergyDone && this->bVelocityDone && this->bVelocity2DDone;
-}
-
 double Analysis::average(std::vector<Vec3D>& vectors){
 	double average = 0;
 	for (Vec3D vector : vectors) {
@@ -116,6 +96,7 @@ double Analysis::average(std::vector<Vec3D>& vectors){
 	}
 	return average/vectors.size();
 }
+
 double Analysis::average(std::vector<Vec2D>& vectors) {
 	double average = 0;
 	for (Vec2D vector : vectors) {
@@ -373,17 +354,4 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points) {
 	std::cout << "nTruePositive: " << nTruePositive << std::endl;
 	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
 
-}
-
-void Analysis::setEnergyDone(bool value)
-{
-	this->bEnergyDone = true;
-	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,energyDone) VALUES (?1,?2)";
-	sqlite3_stmt* st;
-	sqlite3_prepare(database->db, sql.c_str(), -1, &st, NULL);
-	sqlite3_bind_int(st, 1, id);
-	sqlite3_bind_int(st, 2, value);
-	int returnCode = sqlite3_step(st);
-	sqlite3_finalize(st);
-	return;
 }

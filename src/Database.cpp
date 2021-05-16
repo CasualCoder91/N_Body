@@ -105,16 +105,6 @@ void Database::setup(){
 		"dHTP REAL,"
 		"timestep INTEGER NOT NULL);";
 	this->exec(sql);
-	sql = "CREATE TABLE IF NOT EXISTS analysis("
-		"id_simulation INTEGER PRIMARY KEY,"
-		"energyDone INTEGER NOT NULL,"
-		"velocityDone INTEGER NOT NULL,"
-		"velocityDoneHEQ INTEGER NOT NULL,"
-		"FOREIGN KEY (id_simulation) "
-			"REFERENCES simulation(id) "
-			"ON DELETE CASCADE "
-			"ON UPDATE NO ACTION);";
-	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS timeStepAnalysis("
 		"dt INTEGER NOT NULL,"
 		"avgVel3DCluster REAL,"
@@ -128,10 +118,10 @@ void Database::setup(){
 		"kinE REAL,"
 		"potE REAL,"
 		"totE REAL,"
-		"id_analysis INTEGER NOT NULL,"
-		"PRIMARY KEY(dt,id_analysis),"
-		"FOREIGN KEY (id_analysis) "
-			"REFERENCES analysis(id_simulation) "
+		"id_simulation INTEGER NOT NULL,"
+		"PRIMARY KEY(dt,id_simulation),"
+		"FOREIGN KEY (id_simulation) "
+			"REFERENCES simulation(id) "
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
@@ -248,31 +238,28 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 }
 
 int Database::insertAnalysis(int simulationID){
-	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,energyDone,velocityDone,velocityDoneHEQ) VALUES " 
-		"((select id_simulation from analysis where id_simulation = ?1),?2,?3,?4)";
+	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation) VALUES " 
+		"((select id_simulation from analysis where id_simulation = ?1))";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, simulationID);
-	sqlite3_bind_int(st, 2, 0);
-	sqlite3_bind_int(st, 3, 0);
-	sqlite3_bind_int(st, 4, 0);
 	int returnCode = sqlite3_step(st);
 	sqlite3_finalize(st);
 	return getLastID();
 }
 
 void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, double potE){
-	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,kinE,potE,totE,id_analysis,"
+	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,kinE,potE,totE,id_simulation,"
 		"avgVel3DCluster, avgVel2DCluster, avgVel3DFS, avgVel2DFS, disp3DCluster, disp2DCluster, disp3DFS, disp2DFS) VALUES "
 		"(?1,?2,?3,?4,?5,"
-		"(SELECT avgVel3DCluster FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1),"
-		"(SELECT avgVel2DCluster FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1),"
-		"(SELECT avgVel3DFS FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1),"
-		"(SELECT avgVel2DFS FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1),"
-		"(SELECT disp3DCluster FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1),"
-		"(SELECT disp2DCluster FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1),"
-		"(SELECT disp3DFS FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1),"
-		"(SELECT disp2DFS FROM timeStepAnalysis WHERE id_analysis = ?5 AND dt = ?1))";
+		"(SELECT avgVel3DCluster FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1),"
+		"(SELECT avgVel2DCluster FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1),"
+		"(SELECT avgVel3DFS FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1),"
+		"(SELECT avgVel2DFS FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1),"
+		"(SELECT disp3DCluster FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1),"
+		"(SELECT disp2DCluster FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1),"
+		"(SELECT disp3DFS FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1),"
+		"(SELECT disp2DFS FROM timeStepAnalysis WHERE id_simulation = ?5 AND dt = ?1))";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, dt);
@@ -286,16 +273,16 @@ void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, doubl
 
 void Database::insertAnalysisdtVelocity3D(int analysisID, int dt, double avgVel3DCluster, double disp3DCluster, double avgVel3DFS, double disp3DFS){
 	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis "
-		              "(dt,avgVel3DCluster,disp3DCluster,avgVel3DFS,disp3DFS,id_analysis,"
+		              "(dt,avgVel3DCluster,disp3DCluster,avgVel3DFS,disp3DFS,id_simulation,"
 		              "kinE,potE,totE,avgVel2DCluster,avgVel2DFS,disp2DCluster,disp2DFS) VALUES "
 		              "(?1,?2,?3,?4,?5,?6,"
-		              "(SELECT kinE FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-					  "(SELECT potE FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-					  "(SELECT totE FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-					  "(SELECT avgVel2DCluster FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-					  "(SELECT avgVel2DFS FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-					  "(SELECT disp2DCluster FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-					  "(SELECT disp2DFS FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1))";
+		              "(SELECT kinE FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+					  "(SELECT potE FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+					  "(SELECT totE FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+					  "(SELECT avgVel2DCluster FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+					  "(SELECT avgVel2DFS FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+					  "(SELECT disp2DCluster FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+					  "(SELECT disp2DFS FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1))";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, dt);
@@ -310,16 +297,16 @@ void Database::insertAnalysisdtVelocity3D(int analysisID, int dt, double avgVel3
 
 void Database::insertAnalysisdtVelocity2D(int analysisID, int dt, double avgVel2DCluster, double disp2DCluster, double avgVel2DFS, double disp2DFS){
 	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis "
-		"(dt,avgVel2DCluster,disp2DCluster,avgVel2DFS,disp2DFS,id_analysis,"
+		"(dt,avgVel2DCluster,disp2DCluster,avgVel2DFS,disp2DFS,id_simulation,"
 		"kinE,potE,totE,avgVel3DCluster,avgVel3DFS,disp3DCluster,disp3DFS) VALUES "
 		"(?1,?2,?3,?4,?5,?6,"
-		"(SELECT kinE FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-		"(SELECT potE FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-		"(SELECT totE FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-		"(SELECT avgVel3DCluster FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-		"(SELECT avgVel3DFS FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-		"(SELECT disp3DCluster FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1),"
-		"(SELECT disp3DFS FROM timeStepAnalysis WHERE id_analysis = ?6 AND dt = ?1))";
+		"(SELECT kinE FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+		"(SELECT potE FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+		"(SELECT totE FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+		"(SELECT avgVel3DCluster FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+		"(SELECT avgVel3DFS FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+		"(SELECT disp3DCluster FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1),"
+		"(SELECT disp3DFS FROM timeStepAnalysis WHERE id_simulation = ?6 AND dt = ?1))";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, dt);
@@ -692,23 +679,6 @@ void Database::selectConstants(int ID){
 	}
 	sqlite3_finalize(stmt);
 	return;
-}
-
-void Database::selectAnalysis(const int simulationID, bool& bEnergyDone, bool& bVelocityDone, bool& bVelocity2DDone){
-	if (!this->isOpen)
-		this->open();
-
-	std::string sql = "SELECT energyDone, velocityDone, velocityDoneHEQ FROM analysis "
-					  " Where id_simulation = " + std::to_string(simulationID);
-	sqlite3_stmt* stmt;
-	sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &stmt, nullptr);
-
-	if (sqlite3_step(stmt) == SQLITE_ROW) {
-		bEnergyDone = sqlite3_column_int(stmt, 0);
-		bVelocityDone = sqlite3_column_int(stmt, 1);
-		bVelocity2DDone = sqlite3_column_int(stmt, 2);
-	}
-	sqlite3_finalize(stmt);
 }
 
 bool Database::printSimulations(){

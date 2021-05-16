@@ -90,8 +90,6 @@ public:
 
 	void selectConstants(int ID);
 
-	void selectAnalysis(const int ID, bool& bEnergyDone, bool& bVelocityDone, bool& bVelocity2DDone);
-
 	bool printSimulations();
 
 	/** @brief returns all velocities at the given \p timestep */
