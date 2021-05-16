@@ -663,19 +663,34 @@ void Database::insertVelocity(int& idStar, Vec3D& velocity, int& timestep){
 void Database::selectConstants(int ID){
 	if (!this->isOpen)
 		this->open();
-	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
-					    " Where ID = " + std::to_string(ID);
+	std::string query = "SELECT title, n_stars, boxlength, dt, n_timesteps, outputTimestep, softening, precission," 
+		"offsetX, offsetY, offsetZ, angle, distance, focusX, focusY, focusZ, viewPointX, viewPointY, viewPointZ, bMcLuster "
+		"FROM simulation "
+        "Where ID = " + std::to_string(ID);
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), 79, &stmt, nullptr);
 
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
-		Constants::simulationID = sqlite3_column_int(stmt, 0);
-		Constants::title = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-		Constants::nStars = sqlite3_column_int(stmt, 2);
-		Constants::boxLength = sqlite3_column_double(stmt, 3);
-		Constants::dt = sqlite3_column_double(stmt, 4);
-		Constants::nTimesteps = sqlite3_column_int(stmt, 5);
-		Constants::outputTimestep = sqlite3_column_int(stmt, 6);
+		Constants::title = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+		Constants::nStars = sqlite3_column_int(stmt, 1);
+		Constants::boxLength = sqlite3_column_double(stmt, 2);
+		Constants::dt = sqlite3_column_double(stmt, 3);
+		Constants::nTimesteps = sqlite3_column_int(stmt, 4);
+		Constants::outputTimestep = sqlite3_column_int(stmt, 5);
+		Constants::softening = sqlite3_column_double(stmt, 6);
+		Constants::precission =	sqlite3_column_double(stmt, 7);
+		Constants::clusterLocation.x = sqlite3_column_double(stmt, 8);
+		Constants::clusterLocation.y = sqlite3_column_double(stmt, 9);
+		Constants::clusterLocation.z = sqlite3_column_double(stmt, 10);
+		Constants::angleOfView = sqlite3_column_double(stmt, 11);
+		Constants::distance = sqlite3_column_double(stmt, 12);
+		Constants::focus.x = sqlite3_column_double(stmt, 13);
+		Constants::focus.y = sqlite3_column_double(stmt, 14);
+		Constants::focus.z = sqlite3_column_double(stmt, 15);
+		Constants::viewPoint.x = sqlite3_column_double(stmt, 16);
+		Constants::viewPoint.y = sqlite3_column_double(stmt, 17);
+		Constants::viewPoint.z = sqlite3_column_double(stmt, 18);
+		Constants::bMcLuster = sqlite3_column_int(stmt, 19);
 	}
 	sqlite3_finalize(stmt);
 	return;

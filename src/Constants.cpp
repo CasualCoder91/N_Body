@@ -10,7 +10,6 @@ double Constants::boxLength = config.GetDouble("boxLength");
 double Constants::dt = config.GetDouble("dt"); //[day]
 int Constants::nTimesteps = config.GetInt("nTimesteps");
 int Constants::outputTimestep = config.GetInt("outputTimestep");
-int Constants::simulationID = 1;
 
 //cluster
 std::vector<double> Constants::massLimits = config.GetDoubleVector("massLimits"); //broken powerlaw

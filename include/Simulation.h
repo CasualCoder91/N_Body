@@ -21,6 +21,9 @@
 
 class Simulation{
 
+private:
+    int id;
+
 public:
     Database* database;
     MWPotential* potential;

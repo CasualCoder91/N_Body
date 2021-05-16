@@ -16,7 +16,6 @@ namespace Constants {
 	extern double dt; //[day]
 	extern int nTimesteps;
 	extern int outputTimestep;
-	extern int simulationID;
 
 	//cluster
 	extern std::vector<double> massLimits; //broken powerlaw

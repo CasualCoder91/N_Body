@@ -1,23 +1,23 @@
 #include "Simulation.h"
 
 Simulation::Simulation(int id){
-	Constants::simulationID = id;
+	this->id = id;
 	this->database = new Database();
 	this->potential = new MWPotential();
 }
 
 Simulation::Simulation(int id, Database* database){
-	Constants::simulationID = id;
+	this->id = id;
 	this->potential = new MWPotential();
 	this->database = database;
 }
 
 void Simulation::setID(int id){
-	Constants::simulationID = id;
+	this->id = id;
 }
 
 int Simulation::getID(){
-	return Constants::simulationID;
+	return id;
 }
 
 void Simulation::run(){
