@@ -19,6 +19,7 @@
 #include "VDBSCAN.h"
 #include "Plot.h"
 #include "Vec2D.h"
+#include "Database.h"
 
 #include "../src/DBSCAN/RTree.h"
 #include "../src/DBSCAN/DBSCAN.cpp"
@@ -28,15 +29,20 @@ class Analysis
 private:
 
     static std::string path;
+    int id;
 
 public: //variables
     bool bEnergyDone;
     bool bVelocityDone;
     bool bVelocity2DDone;
+    Database* database;
 
 public: //methods
 
-    Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone);
+    Analysis(int id, Database* database);
+    Analysis(bool bEnergyDone, bool bVelocityDone, bool bVelocity2DDone, Database* database);
+
+    void load();
 
     std::vector<double> totE;
     std::vector<double> potE;
@@ -63,6 +69,8 @@ public: //methods
      @param integrator the integrator used for integration over time.
      */
 	void static scaling(int maxNStars, int nTimesteps, Integrator& integrator);
+
+    void energy();
 
     bool allDone();
 
@@ -95,6 +103,12 @@ public: //methods
     /** @brief saves the calculated energy values for each timestep to .dat Files (TotalEnergy.dat, KinetikEnergy.dat,PotentialEnergy.dat)*/
     void write();
 
+    void generateHTPVelocity();
+
     void cluster(std::vector<std::vector<Point>>& points);
+
+    void setEnergyDone(bool value);
+
+
 };
 

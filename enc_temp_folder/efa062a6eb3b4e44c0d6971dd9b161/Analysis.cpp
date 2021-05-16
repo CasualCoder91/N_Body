@@ -321,6 +321,31 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points){
 
 
 void Analysis::cluster(std::vector<std::vector<Point>>& points) {
+	int errorCounter = 0;
+	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
+
+	double epsMagnitude = 0.01; // [%] maximum change in magnitude to be considered the same star
+
+	for (Point& point0 : points[0]) { // loop through all points at timestep i
+		double minDist = -1;
+		Point futurePoint;
+		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
+			double currentDist = point0.getDistance(point1);
+			if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < epsMagnitude) {
+				minDist = currentDist;
+				futurePoint = point1;
+			}
+			if (maxDistPos < currentDist) {
+				maxDistPos = currentDist;
+			}
+		}
+		if (point0.id != futurePoint.id) {
+			errorCounter++;
+		}
+		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
+		point0.velocity[1] = futurePoint.y - point0.y;
+	}
+	std::cout << "#Wrong stars picked for velocity calculation: " << errorCounter << std::endl;
 
 	double maxDistVel = 0; //maximum velocity between any two stars used for setting epsSpace
 	for (Point& point : points[0]) // get maximum velocity difference (euclidean norm)

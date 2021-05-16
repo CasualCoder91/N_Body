@@ -73,7 +73,7 @@ int main() {
 			int simulationID = 0;
 			std::cin >> simulationID;
 			std::cin.clear();
-			db.selectSimulation(simulationID);
+			db.selectConstants(simulationID); //Load config used for specified simulation
 			Simulation simulation = Simulation(simulationID,&db);
 			std::cout << "[1] Ouput\n[2] Analysis\n[3] Generate observables (HTP/magnitude)" << std::endl;
 			std::cin >> selection;
@@ -94,26 +94,18 @@ int main() {
 				std::cout << "done" << std::endl;
 			}
 			else if(selection==2) {
-				Analysis analysis = db.selectAnalysis(simulationID);
-				int analysisID = db.insertAnalysis(simulationID, analysis);
+				Analysis analysis = Analysis(simulationID,&db);
 				if (analysis.allDone()){
 					std::cout << "All available analysis already completed for this simulation" << std::endl;
 				}
 				else{
 					std::cout << "What would you like to analyze?" << std::endl;
-					std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHEQ\n[4] Cluster" << std::endl;
+					std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster" << std::endl;
 					std::cin >> selection;
 					std::cin.clear();
 					std::vector<int> timeSteps = db.selectTimesteps(simulationID);
 					if (selection == 1) {//Energy
-						for (int timeStep : timeSteps) {
-							std::vector<Star> stars = db.selectStars(simulationID, timeStep);
-							double kinE = analysis.kineticEnergy(stars);
-							double potE = analysis.potentialEnergy(stars);
-							db.insertAnalysisdtEnergy(analysisID, timeStep, kinE, potE);
-						}
-						analysis.bEnergyDone = true;
-						db.insertAnalysis(simulationID, analysis);
+						analysis.energy();
 						std::cout << "Energy analysis done" << std::endl;
 					}
 					else if (selection == 2) { //Velocity3D
@@ -125,25 +117,25 @@ int main() {
 							double disp3DCluster = analysis.dispersion(clusterVelocities, avgVel3DCluster);
 							double avgVel3DFS = analysis.average(fsVelocities);
 							double disp3DFS = analysis.dispersion(fsVelocities, avgVel3DFS);
-							db.insertAnalysisdtVelocity3D(analysisID, timeStep, avgVel3DCluster,disp3DCluster,avgVel3DFS,disp3DFS);
+							db.insertAnalysisdtVelocity3D(simulationID, timeStep, avgVel3DCluster,disp3DCluster,avgVel3DFS,disp3DFS);
 						}
 						analysis.bVelocityDone = true;
-						db.insertAnalysis(simulationID, analysis);
+						//db.insertAnalysis(simulationID, analysis); todo: Move to Analysis
 						std::cout << "3D velocity analysis done" << std::endl;
 					}
 					else if (selection == 3) { //velocityHEQ
 						for (int timeStep : timeSteps) {
-							std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHEQ(simulationID, timeStep, false, true);
-							std::vector<Vec2D> fsVelocities = db.selectVelocitiesHEQ(simulationID, timeStep, true, false);
+							std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulationID, timeStep, false, true);
+							std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulationID, timeStep, true, false);
 							double avgVelHEQCluster = analysis.average(clusterVelocities);
 							double dispHEQCluster = analysis.dispersion(clusterVelocities, avgVelHEQCluster);
 							double avgVelHEQFS = analysis.average(fsVelocities);
 							double dispHEQFS = analysis.dispersion(fsVelocities, avgVelHEQFS);
-							db.insertAnalysisdtVelocity2D(analysisID, timeStep, avgVelHEQCluster, dispHEQCluster, avgVelHEQFS, dispHEQFS);
+							db.insertAnalysisdtVelocity2D(simulationID, timeStep, avgVelHEQCluster, dispHEQCluster, avgVelHEQFS, dispHEQFS);
 						}
 						analysis.bVelocity2DDone = true;
-						db.insertAnalysis(simulationID, analysis);
-						std::cout << "HEQ velocity analysis done" << std::endl;
+						//db.insertAnalysis(simulationID, analysis); todo: Move to Analysis
+						std::cout << "HTP velocity analysis done" << std::endl;
 					}
 					else if (selection == 4) {//Cluster
 						std::cout << "Running cluster analysis ..." << std::endl;
@@ -160,7 +152,16 @@ int main() {
 			else {
 				std::cout << "generating HTP positions ..." << std::endl;
 				//db.generateHEQ(simulation.getID());
-				db.generateHTP(simulation.getID());
+				db.generateHTP(simulation.getID()); //todo: move this to Analysis
+
+
+				//HTP velocity
+				std::cout << "generating HTP velocities ..." << std::endl;
+				Analysis analysis = Analysis(simulationID, &db);
+				analysis.generateHTPVelocity();
+
+
+
 				std::cout << "generating magnitude ..." << std::endl;
 				db.generateMagnitude(simulation.getID());
 				std::cout << "done\n" << std::endl;
@@ -168,7 +169,7 @@ int main() {
 		}
 		else if (selection == 2) {
 			simulationID = db.insertSimulation();
-			db.insertAnalysis(simulationID, Analysis(false, false, false));
+			db.insertAnalysis(simulationID);
 			Simulation simulation = Simulation(simulationID, &db);
 			std::cout << "New simulation created. ID = " << simulationID << std::endl;
 			std::cout << "Starting simulation" << std::endl;

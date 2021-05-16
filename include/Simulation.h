@@ -12,7 +12,10 @@
 #include <chrono>
 
 #include "Database.h"
+#include "MWPotential.h"
 #include "ProgressBar.h"
+#include "InitialConditions.h"
+#include "Integrator.h"
 
 #include "Constants.h"
 

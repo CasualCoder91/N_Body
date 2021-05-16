@@ -107,7 +107,6 @@ public:
 	//pass timestep = -1 to output all timestep (one file per step)
 	void outputStars2D(int simulationID, std::string filePath, int timestep = -1);
 
-	//todo: select HTP velocity aswell!
 	std::vector<std::vector<Point>>selectPoints(int simulationID=1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = 28);
 
 	//updates velocity.aHTP and velocity.dHTP

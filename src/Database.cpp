@@ -85,8 +85,8 @@ void Database::setup(){
 		"y REAL NOT NULL,"
 		"z REAL NOT NULL,"
 		"rH REAL,"
-		"aHEQ REAL,"
-		"dHEQ REAL,"
+		"aHTP REAL,"
+		"dHTP REAL,"
 		"timestep INTEGER NOT NULL,"
 		"id_star INTEGER NOT NULL,"
 		"FOREIGN KEY (id_star) "
@@ -101,8 +101,6 @@ void Database::setup(){
 		"y REAL,"
 		"z REAL,"
 		"rH REAL,"
-		"aHEQ REAL,"
-		"dHEQ REAL,"
 		"aHTP REAL,"
 		"dHTP REAL,"
 		"timestep INTEGER NOT NULL);";
@@ -249,15 +247,15 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 
 }
 
-int Database::insertAnalysis(int simulationID, Analysis analysis){
+int Database::insertAnalysis(int simulationID){
 	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation,energyDone,velocityDone,velocityDoneHEQ) VALUES " 
 		"((select id_simulation from analysis where id_simulation = ?1),?2,?3,?4)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, simulationID);
-	sqlite3_bind_int(st, 2, analysis.bEnergyDone);
-	sqlite3_bind_int(st, 3, analysis.bVelocityDone);
-	sqlite3_bind_int(st, 4, analysis.bVelocity2DDone);
+	sqlite3_bind_int(st, 2, 0);
+	sqlite3_bind_int(st, 3, 0);
+	sqlite3_bind_int(st, 4, 0);
 	int returnCode = sqlite3_step(st);
 	sqlite3_finalize(st);
 	return getLastID();
@@ -675,7 +673,7 @@ void Database::insertVelocity(int& idStar, Vec3D& velocity, int& timestep){
 	sqlite3_finalize(st);
 }
 
-void Database::selectSimulation(int ID){
+void Database::selectConstants(int ID){
 	if (!this->isOpen)
 		this->open();
 	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
@@ -696,26 +694,21 @@ void Database::selectSimulation(int ID){
 	return;
 }
 
-Analysis Database::selectAnalysis(int ID){
+void Database::selectAnalysis(const int simulationID, bool& bEnergyDone, bool& bVelocityDone, bool& bVelocity2DDone){
 	if (!this->isOpen)
 		this->open();
 
 	std::string sql = "SELECT energyDone, velocityDone, velocityDoneHEQ FROM analysis "
-					  " Where id_simulation = " + std::to_string(ID);
+					  " Where id_simulation = " + std::to_string(simulationID);
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &stmt, nullptr);
 
-	bool bEnergyDone = false;
-	bool bVelocityDone = false;
-	bool bVelocity2DDone = false;
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		bEnergyDone = sqlite3_column_int(stmt, 0);
 		bVelocityDone = sqlite3_column_int(stmt, 1);
 		bVelocity2DDone = sqlite3_column_int(stmt, 2);
 	}
 	sqlite3_finalize(stmt);
-
-	return Analysis(bEnergyDone, bVelocityDone, bVelocity2DDone);
 }
 
 bool Database::printSimulations(){
@@ -767,12 +760,12 @@ std::vector<Vec3D> Database::selectVelocities3D(int simulationID, int timestep, 
 	return velocities;
 }
 
-std::vector<Vec2D> Database::selectVelocitiesHEQ(int simulationID, int timestep, bool fieldStars, bool clusterStars){
+std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep, bool fieldStars, bool clusterStars){
 	std::vector<Vec2D> velocities = {};
 	if (!this->isOpen)
 		this->open();
 
-	std::string query = "SELECT velocity.aHEQ ,velocity.dHEQ "
+	std::string query = "SELECT velocity.aHTP ,velocity.dHTP "
 		"FROM star "
 		"INNER JOIN velocity on velocity.id_star = star.id "
 		"WHERE star.id_simulation =  " +std::to_string(simulationID);
@@ -786,7 +779,7 @@ std::vector<Vec2D> Database::selectVelocitiesHEQ(int simulationID, int timestep,
 		else if (clusterStars)
 			query += " AND star.isCluster = 1 ";
 		else
-			std::cout << "selectVelocitiesHEQ parameters make no sense. Selecting cluster and field stars" << std::endl;
+			std::cout << "selectVelocitiesHTP parameters make no sense. Selecting cluster and field stars" << std::endl;
 	}
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
@@ -994,5 +987,32 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 	sqlite3_finalize(stmt);
 
 	return points;
+}
+
+//ToDo: Optimize for speed!
+void Database::updatePoints(std::vector<std::vector<Point>>& points)
+{
+	int timeStep = 0;
+
+	char* errorMessage;
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	std::string query = "update velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	for (Point& point : points[timeStep]) {
+		sqlite3_bind_double(stmt, 1, point.velocity[0]);
+		sqlite3_bind_double(stmt, 2, point.velocity[1]);
+		sqlite3_bind_int(stmt, 3, timeStep);
+		sqlite3_bind_int(stmt, 4, point.id);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("updatePoints: Commit Failed!\n");
+			printf(errorMessage);
+		}
+		sqlite3_reset(stmt);
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+	std::cout << "Database: velocity.aHTP and velocity.dHTP updated" << std::endl;
 }
 

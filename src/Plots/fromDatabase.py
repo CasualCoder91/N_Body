@@ -291,7 +291,7 @@ def plot2DCylinder(output,data):
         plt.close(fig)
 
 def main():
-    simulationID = 6
+    simulationID = 1
     database = r"E:\Master_Thesis\VS_Project\N_Body\Output\Database\default.db"
     output = r"E:\Master_Thesis\VS_Project\N_Body\Output\NGC2244"# + str(simulationID)
     # create a database connection

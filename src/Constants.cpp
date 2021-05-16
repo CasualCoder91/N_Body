@@ -50,3 +50,4 @@ double Constants::pi4 = 4.*3.14159265358979323846;
 
 double Constants::minMagnitude = config.GetDouble("minMagnitude");
 double Constants::minDist = config.GetDouble("minDist");
+double Constants::epsMagnitude = config.GetDouble("epsMagnitude");
