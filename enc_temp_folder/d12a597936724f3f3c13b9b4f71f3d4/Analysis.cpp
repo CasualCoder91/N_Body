@@ -323,7 +323,7 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points) {
 	for (Point& point : points[0]) {
 		tree.Insert(point.velocity, point.velocity, point.id, point.clusterStar);
 	}
-	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), maxDistVel * 0.03, 2, 50);
+	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), maxDistVel * 0.01, 2, 50);
 	dbscan.Cluster();
 	std::cout << "Clustering done" << std::endl;
 	//MyTree::Iterator it;

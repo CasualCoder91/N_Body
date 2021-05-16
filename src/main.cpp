@@ -139,14 +139,14 @@ int main() {
 				}
 			}
 			else {
+				std::cout << "generating magnitude ..." << std::endl;
+				db.generateMagnitude(simulation.getID());
 				std::cout << "generating HTP positions ..." << std::endl;
 				db.generateHTP(simulation.getID()); //todo: move this to Analysis
 				//HTP velocity
 				std::cout << "generating HTP velocities ..." << std::endl;
 				Analysis analysis = Analysis(simulationID, &db);
 				analysis.generateHTPVelocity();
-				std::cout << "generating magnitude ..." << std::endl;
-				db.generateMagnitude(simulation.getID());
 				std::cout << "done\n" << std::endl;
 			}
 		}

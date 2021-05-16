@@ -946,16 +946,23 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 		std::cout << "Amount of timesteps must be at least 1" << std::endl;
 		return points;
 	}
-	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, star.isCluster, star.magnitude "
+	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude "
 		"FROM star "
 		"INNER JOIN position on position.id_star = star.id "
-		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) AND star.magnitude < ?4 order by position.timestep";
+		"INNER JOIN velocity on velocity.id_star = star.id "
+		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) AND position.timestep = velocity.timestep";
+		if (minMagnitude != -1) {
+			query += " AND star.magnitude < ?4";
+		}
+	query += " order by position.timestep";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 	sqlite3_bind_int(stmt, 1, simulationID);
 	sqlite3_bind_int(stmt, 2, timeStep);
 	sqlite3_bind_int(stmt, 3, timeStep + nTimeSteps -1);
-	sqlite3_bind_double(stmt, 4, minMagnitude);
+	if (minMagnitude != -1) {
+		sqlite3_bind_double(stmt, 4, minMagnitude);
+	}
 
 	int currentTimeStep = timeStep;
 
@@ -965,8 +972,13 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 			timeStepPoints.clear();
 			currentTimeStep = sqlite3_column_int(stmt, 1);
 		}
-		timeStepPoints.emplace_back(sqlite3_column_int(stmt, 0), sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3),sqlite3_column_int(stmt,4), sqlite3_column_double(stmt, 5));
-
+		timeStepPoints.emplace_back(sqlite3_column_int(stmt, 0), //id
+			sqlite3_column_double(stmt, 2),  //x
+			sqlite3_column_double(stmt, 3),  //y
+			sqlite3_column_double(stmt, 4),  //vx
+			sqlite3_column_double(stmt, 5),  //vy
+			sqlite3_column_int(stmt,6),      //clusterStar
+			sqlite3_column_double(stmt, 7)); //magnitude
 	}
 	points.emplace_back(timeStepPoints);//gotta insert Points at last timestep
 	sqlite3_finalize(stmt);
