@@ -77,7 +77,7 @@ def select2DPositions(conn, simulationID):
 
 def select2DVelocities(conn, simulationID):
     cur = conn.cursor()
-    cur.execute("""SELECT star.id,mass,velocity.timestep,velocity.aHTP,velocity.dHTP,star.idCluster FROM star
+    cur.execute("""SELECT star.id,mass,velocity.timestep,velocity.aHTP,velocity.dHTP,star.isCluster FROM star
        INNER JOIN velocity on velocity.id_star = star.id
        where star.id_simulation = ?1 And velocity.timestep<25 order by velocity.timestep""", (simulationID,)) #and star.isCluster=0 LIMIT 10000000 OFFSET 10000000 and star.isCluster=1
     rows = np.array(cur.fetchall())

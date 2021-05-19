@@ -451,16 +451,16 @@ void InitialConditions::sampleBulgePositionsCylinder(std::vector<Star*> stars, V
 void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 	double delta = potential->velocityDistributionBulgeTableValue(position.length());
 	/*double vCirc = potential->circularVelocity(&position);*/
-	double patternSpeed = 0.06; //km*s-1*pc-1
+	//double patternSpeed = 0.06; //km*s-1*pc-1
 	double maxSpeed = 400;
 	//std::normal_distribution<> velocityDistribution{ 0,delta };
 	//double vRand = velocityDistribution(gen);
 
-	std::normal_distribution<double> rDist{ 0,delta };
-	double r = rDist(gen);
-	double theta = atan2(position.y, position.x);
-	double phi = asin(position.z / position.length());
-	velocity = Vec3D(cos(phi) * cos(theta) * r, cos(phi) * sin(theta) * r, sin(phi) * r);
+	//std::normal_distribution<double> rDist{ 0,delta };
+	//double r = rDist(gen);
+	//double theta = atan2(position.y, position.x);
+	//double phi = asin(position.z / position.length());
+	//velocity = Vec3D(cos(phi) * cos(theta) * r, cos(phi) * sin(theta) * r, sin(phi) * r);
 	//velocity.x -= patternSpeed * position.y;
 	//velocity.y += patternSpeed * position.x;
 
@@ -469,7 +469,7 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 	//std::uniform_real_distribution<> vzd(-maxSpeed, maxSpeed);
 
 
-	/*std::uniform_real_distribution<> disaccept(0, 1);
+	std::uniform_real_distribution<> disaccept(0, 1);
 	std::uniform_real_distribution<> vd(-maxSpeed, maxSpeed);
 	while (true) {
 		double vx = vd(gen);
@@ -487,8 +487,8 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 		if (accept < temp) {
 			velocity = Vec3D(vx, vy, vz);
 			double theta = position.theta();
-			velocity.x -= patternSpeed * position.y * sin(theta);
-			velocity.y += patternSpeed * position.x * cos(theta);
+			//velocity.x -= patternSpeed * position.y * sin(theta);
+			//velocity.y += patternSpeed * position.x * cos(theta);
 			//Vec3D meanVelocity = Vec3D(patternSpeed * position.y, -patternSpeed * position.x,0);
 			//velocity = (velocity.length() - meanVelocity.length()) * velocity.normalize();
 			//velocity = velocity + meanVelocity;
@@ -500,13 +500,7 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 				std::cout << "sampleBulgeVelocity(): star too fast" << std::endl;
 			}
 		}
-	}*/
-
-
-
-
-
-
+	}
 
 	//old junk
 	//double  phi = position.theta();

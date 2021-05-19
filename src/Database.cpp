@@ -95,6 +95,9 @@ void Database::setup(){
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
+	sql = "CREATE UNIQUE INDEX idx_velocity_timestep_id_star "
+		"ON velocity(timestep,id_star); ";
+	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS position("
 		"id INTEGER PRIMARY KEY,"
 		"id_star INTEGER," //can be null because id_star of observed position initially unknown
@@ -746,7 +749,7 @@ std::vector<Vec3D> Database::selectVelocities3D(int simulationID, int timestep, 
 	return velocities;
 }
 
-std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep, bool fieldStars, bool clusterStars){
+std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep, bool fieldStars, bool clusterStars, double minMagnitude){
 	std::vector<Vec2D> velocities = {};
 	if (!this->isOpen)
 		this->open();
@@ -755,6 +758,9 @@ std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep,
 		"FROM star "
 		"INNER JOIN velocity on velocity.id_star = star.id "
 		"WHERE star.id_simulation =  " +std::to_string(simulationID);
+	if (minMagnitude != -1) {
+		query += " AND star.magnitude < " + std::to_string(minMagnitude);
+	}
 	if (timestep != -1) {
 		query += " AND velocity.timestep = " + std::to_string(timestep);
 	}
@@ -994,11 +1000,8 @@ void Database::updatePoints(std::vector<std::vector<Point>>& points)
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	std::string queryVelocity = "update velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4";
-	std::string queryStar = "update star set idCluster=?1 where id=?2";
 	sqlite3_stmt* stmtVelocity;
-	sqlite3_stmt* stmtStar;
 	sqlite3_prepare_v2(db, queryVelocity.c_str(), static_cast<int>(queryVelocity.size()), &stmtVelocity, nullptr);
-	sqlite3_prepare_v2(db, queryStar.c_str(), static_cast<int>(queryStar.size()), &stmtStar, nullptr);
 	for (Point& point : points[timeStep]) {
 		sqlite3_bind_double(stmtVelocity, 1, point.velocity[0]);
 		sqlite3_bind_double(stmtVelocity, 2, point.velocity[1]);
@@ -1011,6 +1014,17 @@ void Database::updatePoints(std::vector<std::vector<Point>>& points)
 		}
 		sqlite3_reset(stmtVelocity);
 
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmtVelocity);
+	std::cout << "Database: velocity.aHTP and velocity.dHTP updated" << std::endl;
+
+
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	std::string queryStar = "update star set idCluster=?1 where id=?2";
+	sqlite3_stmt* stmtStar;
+	sqlite3_prepare_v2(db, queryStar.c_str(), static_cast<int>(queryStar.size()), &stmtStar, nullptr);
+	for (Point& point : points[timeStep]) {
 		sqlite3_bind_int(stmtStar, 1, point.cluster);
 		sqlite3_bind_int(stmtStar, 2, point.id);
 		if (sqlite3_step(stmtStar) != SQLITE_DONE)
@@ -1021,7 +1035,7 @@ void Database::updatePoints(std::vector<std::vector<Point>>& points)
 		sqlite3_reset(stmtStar);
 	}
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
-	sqlite3_finalize(stmtVelocity);
-	std::cout << "Database: velocity.aHTP and velocity.dHTP updated" << std::endl;
+	sqlite3_finalize(stmtStar);
+	std::cout << "Database: idCluster updated" << std::endl;
 }
 

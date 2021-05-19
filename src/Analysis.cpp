@@ -183,6 +183,7 @@ void Analysis::write(){
 		InOut::write(time, potE, "PotentialEnergy.dat");
 	}
 }
+
 void Analysis::generateHTPVelocity()
 {
 	std::vector<std::vector<Point>>& points = database->selectPoints(id, 0, 2);
@@ -212,8 +213,6 @@ void Analysis::generateHTPVelocity()
 	std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
 	database->updatePoints(points);
 }
-
-
 
 
 /*
@@ -323,7 +322,7 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points) {
 	for (Point& point : points[0]) {
 		tree.Insert(point.velocity, point.velocity, point.id, point.clusterStar);
 	}
-	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), 0.00001, 2, 50); //maxDistVel * 0.03
+	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), 1.05731709492274e-05, 2, 60); //maxDistVel * 0.03
 	dbscan.Cluster();
 	std::cout << "Clustering done" << std::endl;
 	//MyTree::Iterator it;
@@ -345,12 +344,14 @@ void Analysis::cluster(std::vector<std::vector<Point>>& points) {
 		resultAt0.push_back((*it).point);
 		if ((*it).point.cluster == 1 && (*it).point.clusterStar)
 			nTruePositive++;
-		if ((*it).point.cluster == 1 && !(*it).point.clusterStar)
-			nFalsePositive++;
-		if ((*it).point.cluster == -1 && (*it).point.clusterStar)
+		else if((*it).point.cluster != 1 && (*it).point.clusterStar){
 			nFalseNegative++;
-		if ((*it).point.cluster == -1 && !(*it).point.clusterStar)
+		}		
+		else if ((*it).point.cluster == -1 && !(*it).point.clusterStar)
 			nTrueNegative++;
+		else if ((*it).point.cluster != -1 && !(*it).point.clusterStar) {
+			nFalsePositive++;
+		}
 	}
 	std::cout << "nFalsePositive: " << nFalsePositive << std::endl;
 	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;

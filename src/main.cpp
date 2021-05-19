@@ -119,8 +119,8 @@ int main() {
 				}
 				else if (selection == 3) { //velocityHTP
 					for (int timeStep : timeSteps) {
-						std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulationID, timeStep, false, true);
-						std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulationID, timeStep, true, false);
+						std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulationID, timeStep, false, true, Constants::minMagnitude);
+						std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulationID, timeStep, true, false, Constants::minMagnitude);
 						double avgVelHTPCluster = analysis.average(clusterVelocities);
 						double dispHTPCluster = analysis.dispersion(clusterVelocities, avgVelHTPCluster);
 						double avgVelHTPFS = analysis.average(fsVelocities);

@@ -94,7 +94,7 @@ public:
 
 	/** @brief returns all velocities at the given \p timestep */
 	std::vector<Vec3D> selectVelocities3D(int simulationID, int timestep = -1, bool fieldStars= false, bool clusterStars=true);
-	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true);
+	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true, double minMagnitude = -1);
 	/** @brief returns all timesteps for simulation with ID \p simulationID*/
 	std::vector<int> selectTimesteps(int simulationID);
 	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) */
