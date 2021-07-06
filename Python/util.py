@@ -19,5 +19,5 @@ def calcFocus(angle):
     print("focus: ",x,y,z)
     return
 
-#degNeeded(6000,1.1)
-calcFocus(0)
+degNeeded(6000,1.1)
+calcFocus(15)

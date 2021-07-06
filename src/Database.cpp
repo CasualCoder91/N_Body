@@ -95,7 +95,7 @@ void Database::setup(){
 			"ON DELETE CASCADE "
 			"ON UPDATE NO ACTION);";
 	this->exec(sql);
-	sql = "CREATE UNIQUE INDEX idx_velocity_timestep_id_star "
+	sql = "CREATE UNIQUE INDEX IF NOT EXISTS idx_velocity_timestep_id_star "
 		"ON velocity(timestep,id_star); ";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS position("

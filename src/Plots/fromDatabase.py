@@ -127,7 +127,7 @@ def plotDensity(output,data,show=False):
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     ax.set_box_aspect([1,1,1])
-    cax = ax.scatter(x, y, z, c=density, s=0.1, cmap=cm.hot)
+    cax = ax.scatter(x, y, z, c=density, s=0.5, cmap=cm.hot)
     fig.colorbar(cax)
     # ax.set_proj_type('ortho') # OPTIONAL - default is perspective (shown in image above)
     set_axes_equal(ax) # IMPORTANT - this is also required
@@ -177,11 +177,13 @@ def plot2Dxy(output,data):
 
         fig.set_size_inches(9,9)
         #print(maxDist[0],maxDist[1])
-        #plotDist = 5 #np.minimum(maxDist[0],maxDist[1])
-        #plt.xlim(com[0]-plotDist, com[0]+plotDist)
-        #plt.ylim(com[1]-plotDist, com[1]+plotDist)
-        colors = np.where(timestepData[:,5]==1,'y','k')
-        plt.scatter(timestepData[:,3], timestepData[:,4], c=timestepData[:,5])
+        plotDist = 0.00002345 #np.minimum(maxDist[0],maxDist[1])
+        plt.xlim(0.00072035-plotDist, 0.00072035+plotDist)
+        plt.ylim(0.00004719-plotDist, 0.00004719+plotDist)
+        colors = np.where(timestepData[:,5]==1,'r','k')
+        plt.scatter(timestepData[:,3], timestepData[:,4], c=colors,s=0.3)#c=timestepData[:,5]
+        plt.xlabel('Vascension [arcsec/dt]', fontsize=16)
+        plt.ylabel('Vdeclination [arcsec/dt]', fontsize=16)
         #print(plotDist)
         #name = output+'\starPositions'+str(int(i))
         plt.show()
@@ -306,14 +308,16 @@ def main():
     # create a database connection
     conn = createConnection(database)
     with conn:
-        #data = select2DPositions(conn, simulationID)
-        #plot2Dxy(output,data)
-        #data = select3DPositions(conn, simulationID)
-        #plot_star_series(output,data,True)
-        #plotDensity(output, data,True)
-        #plotProjection(output, data)
+
+        data = select2DPositions(conn, simulationID)
         data = select2DVelocities(conn, simulationID)
         plot2Dxy(output,data)
+
+        #data = select3DPositions(conn, simulationID)
+        #plot_star_series(output,data,True)
+        #plotDensity(output, data, True)
+        #plotProjection(output, data)
+        #plot2Dxy(output,data)
 
 if __name__ == '__main__':
     main()
