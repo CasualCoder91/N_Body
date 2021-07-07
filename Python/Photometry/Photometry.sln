@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ScopeSim", "ScopeSim\ScopeSim.pyproj", "{7E2EB747-03F1-42D3-83AC-3B0D94CB237C}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Photometry", "Photometry\Photometry.pyproj", "{7E2EB747-03F1-42D3-83AC-3B0D94CB237C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

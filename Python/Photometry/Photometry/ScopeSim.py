@@ -82,7 +82,8 @@ def makeSource(data):
 def main():
 
     simulationID = 1
-    bPlot = False #If True then Plot result
+    bPlot = True #If True then Plot result
+    bFile = False #If True Output fits file
 
     #paths
     outputBasePath = os.path.join(os.path.abspath(__file__ + r"\..\..\..\.."), r"Output")
@@ -106,7 +107,9 @@ def main():
         data = select2dPositions(conn, simulationID, 0)
         source = makeSource(data)
         opt.observe(source)
-        opt.readout(filename=outputPath+r"\scopesim.fits")
+
+        if bFile:
+            opt.readout(filename=outputPath+r"\scopesim.fits")
 
         if bPlot:
             plt.figure(figsize=(12,12))

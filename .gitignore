@@ -362,8 +362,8 @@ build/*
 /gslcblas.dll
 /N_Body.exe
 *.fits
-/Python/ScopeSim/ScopeSim/Armazones
-/Python/ScopeSim/ScopeSim/ELT
-/Python/ScopeSim/ScopeSim/MICADO
-/Python/ScopeSim/ScopeSim/MICADO_Sci
 /Python/get-pip.py
+/Python/Photometry/Photometry/Armazones
+/Python/Photometry/Photometry/ELT
+/Python/Photometry/Photometry/MICADO
+/Python/Photometry/Photometry/MICADO_Sci
