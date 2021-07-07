@@ -1,14 +1,13 @@
 import sqlite3
-import numpy as np
+import numpy as np #used in makeSource
 import matplotlib.pyplot as plt
 import scopesim as sim
-import pyckles
+import pyckles #used for spectra in makeSource
 import scopesim_templates as sim_tp
-#import astropy.table as table
 from astropy.table import Table
 from astropy import units
 from matplotlib.colors import LogNorm
-import os # for relative paths
+from config import simulationID, databasePath, fitsPath #my "global variables"
 
 def createConnection(db_file):
     """ create a database connection to the SQLite database
@@ -30,7 +29,7 @@ def select2dPositions(conn, simulationID, timestep):
        FROM star
        INNER JOIN position on position.id_star = star.id
        where star.id_simulation = ?1
-       and position.timestep = ?2""", (simulationID,timestep)) #and star.isCluster=1 LIMIT 10000000 OFFSET 10000000
+       and position.timestep = ?2""", (simulationID,timestep)) # and star.isCluster=1LIMIT 10000000 OFFSET 10000000
     rows = np.array(cur.fetchall())
     return rows
 
@@ -81,14 +80,8 @@ def makeSource(data):
 
 def main():
 
-    simulationID = 1
     bPlot = True #If True then Plot result
     bFile = False #If True Output fits file
-
-    #paths
-    outputBasePath = os.path.join(os.path.abspath(__file__ + r"\..\..\..\.."), r"Output")
-    databasePath = os.path.join(outputBasePath,r"Database\Default.db")
-    outputPath = os.path.join(outputBasePath, "Simulation" + str(simulationID))
 
     conn = createConnection(databasePath) # create a database connection
     #sim.download_package(["instruments/MICADO_Sci",
@@ -109,7 +102,7 @@ def main():
         opt.observe(source)
 
         if bFile:
-            opt.readout(filename=outputPath+r"\scopesim.fits")
+            opt.readout(filename=fitsPath)
 
         if bPlot:
             plt.figure(figsize=(12,12))
