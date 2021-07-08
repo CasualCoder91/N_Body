@@ -7,7 +7,7 @@ import scopesim_templates as sim_tp
 from astropy.table import Table
 from astropy import units
 from matplotlib.colors import LogNorm
-from config import simulationID, databasePath, fitsPath #my "global variables"
+from config import simulationID, databasePath, fitsPath, outputPath #my "global variables"
 
 def createConnection(db_file):
     """ create a database connection to the SQLite database
@@ -105,9 +105,9 @@ def main():
             opt.readout(filename=fitsPath)
 
         if bPlot:
-            plt.figure(figsize=(12,12))
+            fig = plt.figure(figsize=(48,48))
             plt.imshow(opt.image_planes[0].image, norm=LogNorm())
-            plt.show()
+            fig.savefig(outputPath + "/scopesim.png")
 
 
 if __name__ == '__main__':
