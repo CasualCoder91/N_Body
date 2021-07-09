@@ -354,6 +354,7 @@ Output/*
 !Output/empty.txt
 Data/eintest.txt
 !Output/NGC2244
+!Output/Simulation1
 
 !build/
 build/*
@@ -367,3 +368,5 @@ build/*
 /Python/Photometry/Photometry/ELT
 /Python/Photometry/Photometry/MICADO
 /Python/Photometry/Photometry/MICADO_Sci
+/Output/Simulation1/OutputXY.avi
+/Output/Simulation1/OutputFancy.avi
