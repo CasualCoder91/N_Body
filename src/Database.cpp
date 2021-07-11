@@ -70,7 +70,7 @@ void Database::setup(){
 		"id_simulation INTEGER NOT NULL,"
 		"mass REAL,"
 		"magnitude REAL,"
-		"isCluster INTEGER NOT NULL,"
+		"isCluster INTEGER,"
 		"isObserved INTEGER NOT NULL,"
 		"fkStar INTEGER,"
 		"idCluster INTEGER, "

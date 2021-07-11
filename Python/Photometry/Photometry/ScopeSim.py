@@ -7,35 +7,11 @@ import scopesim_templates as sim_tp
 from astropy.table import Table
 from astropy import units
 from matplotlib.colors import LogNorm
-from config import simulationID, databasePath, fitsPath, outputPath #my "global variables"
 
-def createConnection(db_file):
-    """ create a database connection to the SQLite database
-        specified by the db_file
-    :param db_file: database file
-    :return: Connection object or None
-    """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-    except:
-        print("Connection failed!")
+from config import simulation_id, database_path, fits_path, output_path, timestep, n_pixel, save_img #my "global variables"
+from database import Database
 
-    return conn
-
-def select2dPositions(conn, simulationID, timestep):
-    cur = conn.cursor()
-    cur.execute("""SELECT position.rH, position.aHTP, position.dHTP, star.mass 
-       FROM star
-       INNER JOIN position on position.id_star = star.id
-       where star.id_simulation = ?1
-       and position.timestep = ?2""", (simulationID,timestep)) # and star.isCluster=1LIMIT 10000000 OFFSET 10000000
-    rows = np.array(cur.fetchall())
-    return rows
-
-#and star.isCluster = 1
-
-def makeSource(data):
+def make_source(data):
     """
     Generate a source object from np.array (radius,ascension,declination,mass)
 
@@ -80,34 +56,32 @@ def makeSource(data):
 
 def main():
 
-    bPlot = True #If True then Plot result
-    bFile = False #If True Output fits file
+    save_file = False #If True Output fits file
 
-    conn = createConnection(databasePath) # create a database connection
+    db = Database() # create a database connection
     #sim.download_package(["instruments/MICADO_Sci",
     #                      "telescopes/ELT", 
     #                      "locations/Armazones", 
     #                      "instruments/MICADO"]) #"MAORY"
 
-    with conn:
+    cmd = sim.UserCommands(use_instrument="MICADO_Sci")
+    cmd["!DET.width"] = n_pixel
+    cmd["!DET.height"] = n_pixel
 
-        cmd = sim.UserCommands(use_instrument="MICADO_Sci")
-        cmd["!DET.width"] = 4096
-        cmd["!DET.height"] = 4096
+    opt = sim.OpticalTrain(cmd)
 
-        opt = sim.OpticalTrain(cmd)
+    data = db.select_2d_stars(timestep)
 
-        data = select2dPositions(conn, simulationID, 0)
-        source = makeSource(data)
-        opt.observe(source)
+    source = make_source(data)
+    opt.observe(source)
 
-        if bFile:
-            opt.readout(filename=fitsPath)
+    if save_file:
+        opt.readout(filename=fits_path)
 
-        if bPlot:
-            fig = plt.figure(figsize=(48,48))
-            plt.imshow(opt.image_planes[0].image, norm=LogNorm())
-            fig.savefig(outputPath + "/scopesim.png")
+    if save_img:
+        fig = plt.figure(figsize=(48,48))
+        plt.imshow(opt.image_planes[0].image, norm=LogNorm())
+        fig.savefig(output_path + "/scopesim.png")
 
 
 if __name__ == '__main__':

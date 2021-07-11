@@ -1,9 +1,15 @@
 import os # for relative paths
 
-simulationID = 1
+simulation_id = 1
+timestep = 0
+pixelfactor = 0.004 #depends on instrument used with scopesim -> print(cmd["!INST.pixel_scale"])
 
 #paths
-outputBasePath = os.path.join(os.path.abspath(__file__ + r"\..\..\..\.."), r"Output")
-outputPath = os.path.join(outputBasePath, "Simulation" + str(simulationID))
-databasePath = os.path.join(outputBasePath,r"Database\Default.db")
-fitsPath = os.path.join(outputBasePath, "Simulation" + str(simulationID)+r"\scopesim.fits")
+output_base_path = os.path.join(os.path.abspath(__file__ + r"\..\..\..\.."), r"Output")
+output_path = os.path.join(output_base_path, "Simulation" + str(simulation_id))
+database_path = os.path.join(output_base_path,r"Database\Default.db")
+fits_path = os.path.join(output_base_path, "Simulation" + str(simulation_id)+r"\scopesim.fits")
+
+#images
+save_img = False
+n_pixel = 4096
