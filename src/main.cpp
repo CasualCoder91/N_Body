@@ -139,15 +139,26 @@ int main() {
 				}
 			}
 			else {
-				std::cout << "generating HTP positions ..." << std::endl;
-				db.generateHTP(simulation.getID()); //todo: move this to Analysis
-				std::cout << "generating magnitude ..." << std::endl;
-				db.generateMagnitude(simulation.getID());
-				//HTP velocity
-				std::cout << "generating HTP velocities ..." << std::endl;
-				Analysis analysis = Analysis(simulationID, &db);
-				analysis.generateHTPVelocity();
-				std::cout << "done\n" << std::endl;
+				std::cout << "[1] Simulated stars\n[2] Observed stars" << std::endl;
+				std::cin >> selection;
+				std::cin.clear();
+				if (selection == 1) {
+					std::cout << "generating HTP positions ..." << std::endl;
+					db.generateHTP(simulation.getID()); //todo: move this to Analysis
+					std::cout << "generating magnitude ..." << std::endl;
+					db.generateMagnitude(simulation.getID());
+					//HTP velocity
+					std::cout << "generating HTP velocities ..." << std::endl;
+					Analysis analysis = Analysis(simulationID, &db);
+					analysis.generateHTPVelocity();
+					std::cout << "done\n" << std::endl;
+				}
+				else if (selection == 2) {
+					std::cout << "generating HTP velocities ..." << std::endl;
+					Analysis analysis = Analysis(simulationID, &db);
+					analysis.generateHTPVelocity(true);
+					std::cout << "done\n" << std::endl;
+				}
 			}
 		}
 		else if (selection == 2) {

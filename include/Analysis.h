@@ -95,7 +95,14 @@ public: //methods
     /** @brief saves the calculated energy values for each timestep to .dat Files (TotalEnergy.dat, KinetikEnergy.dat,PotentialEnergy.dat)*/
     void write();
 
-    void generateHTPVelocity();
+
+    /**
+     @brief Generates HTP (2D) velocities for stars stored in the database. 
+     @param observed set true to use stars observed with photutils, false to use simulated stars
+     @param nTimesteps the amount of timesteps used for each number of stars.
+     @param integrator the integrator used for integration over time.
+     */
+    void generateHTPVelocity(bool observed = false);
 
     void cluster(std::vector<std::vector<Point>>& points);
 

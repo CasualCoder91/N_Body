@@ -97,15 +97,19 @@ public:
 	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true, double minMagnitude = -1);
 	/** @brief returns all timesteps for simulation with ID \p simulationID*/
 	std::vector<int> selectTimesteps(int simulationID);
-	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) */
-	std::vector<Star> selectStars(int simulationID, int timeStep);
+	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) 
+		@param simulationID ID of the Simulation for which to retrieve the stars
+		@param timeStep position and velocity of the star depend on the timestep
+		@param observed set true to retrieve stars observed with photutils, false to get simulated stars
+	*/
+	std::vector<Star> selectStars(int simulationID, int timeStep, bool observed = false);
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
 
 	//pass timestep = -1 to output all timestep (one file per step)
 	void outputStars2D(int simulationID, std::string filePath, int timestep = -1);
 
-	std::vector<std::vector<Point>>selectPoints(int simulationID=1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = -1);
+	std::vector<std::vector<Point>>selectPoints(int simulationID = 1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = -1, bool observed = false);
 
 	//updates velocity.aHTP and velocity.dHTP
 	void updatePoints(std::vector<std::vector<Point>>& points);

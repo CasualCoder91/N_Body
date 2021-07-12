@@ -56,7 +56,7 @@ def make_source(data):
 
 def main():
 
-    save_file = False #If True Output fits file
+    save_file = True #If True Output fits file
 
     db = Database() # create a database connection
     #sim.download_package(["instruments/MICADO_Sci",
@@ -67,8 +67,10 @@ def main():
     cmd = sim.UserCommands(use_instrument="MICADO_Sci")
     cmd["!DET.width"] = n_pixel
     cmd["!DET.height"] = n_pixel
+    #cmd["!DET.dit"] = 3600 #seconds | 3600s=1h
 
     opt = sim.OpticalTrain(cmd)
+    #opt["scao_const_psf"].meta["psf_side_length"] = 1024 #size of diameter in sechseck hinter hellen sternen
 
     data = db.select_2d_stars(timestep)
 
@@ -79,9 +81,10 @@ def main():
         opt.readout(filename=fits_path)
 
     if save_img:
-        fig = plt.figure(figsize=(48,48))
+        fig = plt.figure(figsize=(n_pixel/960, n_pixel/960), dpi=96)
         plt.imshow(opt.image_planes[0].image, norm=LogNorm())
-        fig.savefig(output_path + "/scopesim.png")
+        #plt.colorbar()
+        fig.savefig(output_path + "/scopesim_t"+str(timestep)+".png",dpi=960)
 
 
 if __name__ == '__main__':

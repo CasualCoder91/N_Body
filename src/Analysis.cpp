@@ -184,7 +184,7 @@ void Analysis::write(){
 	}
 }
 
-void Analysis::generateHTPVelocity()
+void Analysis::generateHTPVelocity(bool observed)
 {
 	std::vector<std::vector<Point>>& points = database->selectPoints(id, 0, 2);
 

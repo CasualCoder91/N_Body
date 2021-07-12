@@ -20,9 +20,12 @@ double luminosity(double mass){
 }
 
 double apparentMagnitude(double luminosity, double distance) {
-	return absoluteMagnitude(luminosity) + 2.5 * log10(pow(distance / 10, 2));
+	return absoluteMagnitude(luminosity) - 5.0 + 5.0 * log10(distance);
 }
 
 double absoluteMagnitude(double luminosity){
-	return 4.77 - 2.5*log10(luminosity); //no division by solar luminosity because parameter is already relative to that!
+	//parameter luminosity is relativ to luminosity of the sun (=3.828e26W)
+	//division by fixed luminosity (=3.0128e28W) leads to factor in log10
+	//https://en.wikipedia.org/wiki/Luminosity#Relationship_to_magnitude
+	return - 2.5*log10(luminosity* 0.01270578863515666);
 }

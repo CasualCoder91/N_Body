@@ -11,5 +11,5 @@ database_path = os.path.join(output_base_path,r"Database\Default.db")
 fits_path = os.path.join(output_base_path, "Simulation" + str(simulation_id)+r"\scopesim.fits")
 
 #images
-save_img = False
-n_pixel = 4096
+save_img = True
+n_pixel = 14976

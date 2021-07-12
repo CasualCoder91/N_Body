@@ -55,6 +55,7 @@ class Database:
            FROM star
            INNER JOIN position on position.id_star = star.id
            where star.id_simulation = ?1
-           and position.timestep = ?2""", (simulation_id,timestep))
+           and position.timestep = ?2
+           and position.rH NOT NULL""", (simulation_id,timestep))
         rows = np.array(cur.fetchall())
         return rows
