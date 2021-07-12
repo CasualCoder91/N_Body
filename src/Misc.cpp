@@ -20,6 +20,7 @@ double luminosity(double mass){
 }
 
 double apparentMagnitude(double luminosity, double distance) {
+	//https://en.wikipedia.org/wiki/Absolute_magnitude
 	return absoluteMagnitude(luminosity) - 5.0 + 5.0 * log10(distance);
 }
 
