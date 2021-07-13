@@ -13,14 +13,17 @@ from astropy.io import fits
 from astropy.convolution import Gaussian2DKernel
 from astropy.stats import gaussian_fwhm_to_sigma
 from astropy.visualization import SqrtStretch, simple_norm
+from astropy.table import QTable
 
 from config import fits_path, output_path, save_img, timestep, pixelfactor,n_pixel
 from database import Database
+from util import generate_velocity_and_index
 
 def flux_to_mag(flux):
     #http://ircamera.as.arizona.edu/astr_250/Lectures/Lecture_13.htm
-    #3880 = 0-magnitude flux in V filter
-    return -2.5 * np.log10(flux/3880)
+    #3880 = 0-magnitude flux in V filter | 640 for K filter
+    #Data from http://www.astronomy.ohio-state.edu/~martini/usefuldata.html
+    return -2.5 * np.log10(flux/640)
 
 def image_segmentation(image, save_color=False,deblend=True):
     #threshold = detect_threshold(image, nsigma=2.)
@@ -50,7 +53,7 @@ def image_segmentation(image, save_color=False,deblend=True):
     tbl = cat.to_table(columns=columns)
     #print(tbl)
     #plot
-    if(save_img):
+    if(save_img or save_color):
         if(save_color):
             fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
             cmap = segm.make_cmap(seed=123)
@@ -91,16 +94,42 @@ def use_DAOStarFinder(image):
         plt.imshow(image, origin='upper', norm=LogNorm())
         apertures.plot(color='white', lw=0.5, alpha=0.5)
         fig.savefig(output_path + "/DAOPhotutils_"+datetime.now().strftime("%Y_%m_%d_%H%M%S")+".png",dpi=960)
+    return sources
 
 def main():
+    db = Database()
+    db.select_points(0,True)
+
+    return
+
     hdu = fits.open(fits_path)[1]
     image = hdu.data[:, :].astype(float)
-    stars = image_segmentation(image,save_color=True,deblend=False)
-    #use_DAOStarFinder(image)
-    #db = Database()
-    #origin = n_pixel/2.
-    #for star in stars:
-    #    db.insert_star(timestep, flux_to_mag(star['kron_flux']), pixelfactor*(star['xcentroid']-origin), pixelfactor*(star['ycentroid']-origin))
+    print("[1]DAOStarFinder\n[2]Image Segmentation")
+    selection = int(input())
+    stars = QTable()
+    if selection == 1:
+        stars = use_DAOStarFinder(image)
+    elif selection == 2:
+        stars = image_segmentation(image,save_color=False,deblend=True)
+    print("[1] Write found stars to DB!\n[2] no ty")
+    selection = int(input())
+    if selection == 1:
+        db = Database()
+        origin = n_pixel/2.
+        points = np.ndarray((len(stars),),dtype=np.object)
+        for i, star in enumerate(stars):
+            points[i] = Point(position=[pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)],
+                                id=-1,
+                                magnitude=flux_to_mag(star['kron_flux']))
+        if(timestep>0):
+            points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
+            points_t0, points = generate_velocity_and_index(points_t0,points)
+            db.insert_points(points_t0,timestep-1)
+            db.insert_points(points,timestep)
+        else:
+            db.insert_points(points,timestep)
+
+
 
 if __name__ == '__main__':
     main()

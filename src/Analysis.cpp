@@ -186,7 +186,7 @@ void Analysis::write(){
 
 void Analysis::generateHTPVelocity(bool observed)
 {
-	std::vector<std::vector<Point>>& points = database->selectPoints(id, 0, 2);
+	std::vector<std::vector<Point>>& points = database->selectPoints(id, 0, 2,-1,observed);
 
 	int errorCounter = 0;
 	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace

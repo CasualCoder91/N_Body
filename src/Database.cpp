@@ -955,7 +955,7 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 		"FROM star "
 		"LEFT JOIN position on position.id_star = star.id "
 		"LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep "
-		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) AND position.timestep = velocity.timestep "
+		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) "
 		"AND star.isObserved = ?4";
 		if (minMagnitude != -1) {
 			query += " AND star.magnitude < ?5";
