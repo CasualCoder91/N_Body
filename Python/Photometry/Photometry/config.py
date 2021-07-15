@@ -1,8 +1,10 @@
 import os # for relative paths
 
 simulation_id = 1
-timestep = 1
+timestep = 0
 pixelfactor = 0.004 #depends on instrument used with scopesim -> print(cmd["!INST.pixel_scale"])
+
+exposure_time = 60 #[s]
 
 #paths
 output_base_path = os.path.join(os.path.abspath(__file__ + r"\..\..\..\.."), r"Output")

@@ -8,7 +8,7 @@ from astropy.table import Table
 from astropy import units
 from matplotlib.colors import LogNorm
 
-from config import simulation_id, database_path, fits_path, output_path, timestep, n_pixel, save_img #my "global variables"
+from config import simulation_id, database_path, fits_path, output_path, timestep, n_pixel, save_img, exposure_time #my "global variables"
 from database import Database
 
 def make_source(data):
@@ -67,7 +67,7 @@ def main():
     cmd = sim.UserCommands(use_instrument="MICADO_Sci")
     cmd["!DET.width"] = n_pixel
     cmd["!DET.height"] = n_pixel
-    #cmd["!DET.dit"] = 3600 #seconds | 3600s=1h
+    cmd["!DET.dit"] = exposure_time #seconds | 3600s=1h
 
     opt = sim.OpticalTrain(cmd)
     #opt["scao_const_psf"].meta["psf_side_length"] = 1024 #size of diameter in sechseck hinter hellen sternen

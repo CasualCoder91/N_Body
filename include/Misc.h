@@ -1,15 +1,18 @@
 #pragma once
 
 #include "Constants.h"
+#include <gsl/gsl_interp.h>
 
 double aBrightness(double luminosity, double distance);
 
 //implementation of Mass-Luminosity relation
 double luminosity(double mass); //mass in [mSun]
 
-// luminosity == absolute magnitude
-//returns apparent magnitude (relative to the luminosity of the sun!)
-double apparentMagnitude(double absoluteMagnitude, double distance);
+
+//returns apparent magnitude 
+double apparentMagnitude(double mass, double distance);
 
 //http://hosting.astro.cornell.edu/academics/courses/astro201/mag_absolute.htm
-double absoluteMagnitude(double luminosity);
+double absoluteMagnitudeV(double luminosity);
+
+double absoluteMagnitude(double mass);

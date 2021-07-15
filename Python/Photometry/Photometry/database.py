@@ -56,8 +56,8 @@ class Database:
             (simulation_id,magnitude,observed))
         id_star = cur.lastrowid
         self.insert_position_HTP(timestep,id_star,ascension,declination)
-        if v_ascension != np.nan and v_declination != nan:
-            insert_velocity_HTP(self,timestep,id_star,v_ascension,v_declination)
+        if np.isfinite(v_ascension) and np.isfinite(v_declination):
+            self.insert_velocity_HTP(timestep,id_star,v_ascension,v_declination)
 
         return id_star
 
@@ -81,7 +81,7 @@ class Database:
 		    WHERE star.id_simulation = ?1 AND position.timestep = ?2 
 		    AND star.isObserved = ?3""", (simulation_id,timestep,observed))
         result = cur.fetchall()
-        array = np.ndarray((len(result),),dtype=np.object)
+        array = np.ndarray((len(result),),dtype=object)
         for i, line in enumerate(result):
             array[i] = Point(position=line[2:4],velocity=line[4:6],id=line[0],magnitude=line[7])
         return array

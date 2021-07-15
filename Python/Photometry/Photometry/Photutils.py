@@ -15,15 +15,16 @@ from astropy.stats import gaussian_fwhm_to_sigma
 from astropy.visualization import SqrtStretch, simple_norm
 from astropy.table import QTable
 
-from config import fits_path, output_path, save_img, timestep, pixelfactor,n_pixel
+from config import fits_path, output_path, save_img, timestep, pixelfactor,n_pixel, exposure_time
 from database import Database
 from util import generate_velocity_and_index
+from point import Point
 
 def flux_to_mag(flux):
     #http://ircamera.as.arizona.edu/astr_250/Lectures/Lecture_13.htm
     #3880 = 0-magnitude flux in V filter | 640 for K filter
     #Data from http://www.astronomy.ohio-state.edu/~martini/usefuldata.html
-    return -2.5 * np.log10(flux/640)
+    return -2.5 * np.log10(flux/(exposure_time*43.6*4000*978e4 ))
 
 def image_segmentation(image, save_color=False,deblend=True):
     #threshold = detect_threshold(image, nsigma=2.)
@@ -48,7 +49,7 @@ def image_segmentation(image, save_color=False,deblend=True):
         segm = deblend_sources(image, segm, npixels=npixel,
                                    filter_kernel=kernel, nlevels=32,
                                    contrast=contrast)
-    cat = SourceCatalog(image, segm)
+    cat = SourceCatalog(data, segm) #from documentation: "data should be background-subtracted for accurate source photometry and properties"
     columns = ['xcentroid', 'ycentroid', 'kron_flux']
     tbl = cat.to_table(columns=columns)
     #print(tbl)
@@ -97,10 +98,9 @@ def use_DAOStarFinder(image):
     return sources
 
 def main():
-    db = Database()
-    db.select_points(0,True)
 
-    return
+    #print(-2.5* np.log10(17005/(43.6*4000*978e4 )))
+    #return
 
     hdu = fits.open(fits_path)[1]
     image = hdu.data[:, :].astype(float)
@@ -111,16 +111,18 @@ def main():
         stars = use_DAOStarFinder(image)
     elif selection == 2:
         stars = image_segmentation(image,save_color=False,deblend=True)
+    print(stars.info)
     print("[1] Write found stars to DB!\n[2] no ty")
     selection = int(input())
     if selection == 1:
         db = Database()
         origin = n_pixel/2.
-        points = np.ndarray((len(stars),),dtype=np.object)
+        points = np.ndarray((len(stars),),dtype=object)
         for i, star in enumerate(stars):
-            points[i] = Point(position=[pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)],
-                                id=-1,
-                                magnitude=flux_to_mag(star['kron_flux']))
+            points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
+                              velocity = np.array([np.nan,np.nan]),
+                              id=-1,
+                              magnitude=flux_to_mag(star['kron_flux']))
         if(timestep>0):
             points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
             points_t0, points = generate_velocity_and_index(points_t0,points)

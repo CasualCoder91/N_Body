@@ -539,7 +539,8 @@ void Database::generateMagnitude(int simulationID){
 	std::string query = "SELECT star.id, star.mass, position.rH "
 		"FROM star INNER JOIN position on position.id_star = star.id "
 		"INNER JOIN simulation on simulation.id = star.id_simulation "
-		"WHERE position.timestep = 0 AND star.id_simulation = ?1";
+		"WHERE position.timestep = 0 AND star.id_simulation = ?1 "
+		"AND star.isObserved = 0";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 	sqlite3_bind_int(stmt, 1, simulationID);
@@ -556,8 +557,7 @@ void Database::generateMagnitude(int simulationID){
 		double mass = sqlite3_column_double(stmt, 1);
 		double distance = sqlite3_column_double(stmt, 2);
 
-		double lum = luminosity(mass);
-		double magnitude = apparentMagnitude(lum, distance);
+		double magnitude = apparentMagnitude(mass, distance);
 
 		rowInsert starsInsert = { id, magnitude };
 		stars.emplace_back(starsInsert);
