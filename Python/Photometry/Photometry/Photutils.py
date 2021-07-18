@@ -17,7 +17,7 @@ from astropy.table import QTable
 
 from config import fits_path, output_path, save_img, timestep, pixelfactor,n_pixel, exposure_time
 from database import Database
-from util import generate_velocity_and_index
+from util import generate_velocity_and_index, magnitude_histogram
 from point import Point
 
 def flux_to_mag(flux):
@@ -56,7 +56,7 @@ def image_segmentation(image, save_color=False,deblend=True):
     #plot
     if(save_img or save_color):
         if(save_color):
-            fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
+            fig = plt.figure(figsize=(n_pixel/960, n_pixel/960), dpi=96)
             cmap = segm.make_cmap(seed=123)
             plt.imshow(segm, origin='upper', cmap=cmap, interpolation='nearest')
             plt.title('Image Segmentation')
@@ -65,7 +65,7 @@ def image_segmentation(image, save_color=False,deblend=True):
         else:
             positions = np.transpose((tbl['xcentroid'], tbl['ycentroid']))
             apertures = CircularAperture(positions, r=3.)
-            fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
+            fig = plt.figure(figsize=(n_pixel/960, n_pixel/960), dpi=96)
             plt.imshow(image, origin='upper', norm=LogNorm())
             apertures.plot(color='white', lw=0.5, alpha=0.5)
             fig.savefig(output_path + "/ISPhotutils_{0}BK_{1}THRE_{2}Kernel{3}{3}_{4}deblended.png"
@@ -99,8 +99,22 @@ def use_DAOStarFinder(image):
 
 def main():
 
+    #t0 = np.ndarray((2,),dtype=object)
+    #t0[0] = Point(position=np.array([1,2]),velocity = np.array([np.nan,np.nan]),id=1,magnitude=0.5)
+    #t0[1] = Point(position=np.array([-4,-5]),velocity = np.array([np.nan,np.nan]),id=2,magnitude=0.1)
+    #t1 = np.ndarray((2,),dtype=object)
+    #t1[0] = Point(position=np.array([-1.1,-2.2]),velocity = np.array([np.nan,np.nan]),id=-1,magnitude=0.1)
+    #t1[1] = Point(position=np.array([1.1,2.2]),velocity = np.array([np.nan,np.nan]),id=-1,magnitude=0.1)
+    #generate_velocity_and_index(t0, t1)
+    #return
+
     #print(-2.5* np.log10(17005/(43.6*4000*978e4 )))
     #return
+    db = Database()
+    points_observed = db.select_points(0,True) 
+    points_simulated = db.select_points(0,False) 
+    magnitude_histogram(points_simulated,points_observed)
+    return
 
     hdu = fits.open(fits_path)[1]
     image = hdu.data[:, :].astype(float)
@@ -111,6 +125,7 @@ def main():
         stars = use_DAOStarFinder(image)
     elif selection == 2:
         stars = image_segmentation(image,save_color=False,deblend=True)
+    stars = stars[[np.isfinite(star['kron_flux']) for star in stars]]
     print(stars.info)
     print("[1] Write found stars to DB!\n[2] no ty")
     selection = int(input())
@@ -120,14 +135,14 @@ def main():
         points = np.ndarray((len(stars),),dtype=object)
         for i, star in enumerate(stars):
             points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
-                              velocity = np.array([np.nan,np.nan]),
-                              id=-1,
-                              magnitude=flux_to_mag(star['kron_flux']))
+                                velocity = np.array([np.nan,np.nan]),
+                                id=-1,
+                                magnitude=flux_to_mag(star['kron_flux']))
         if(timestep>0):
             points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
             points_t0, points = generate_velocity_and_index(points_t0,points)
-            db.insert_points(points_t0,timestep-1)
-            db.insert_points(points,timestep)
+            db.insert_velocities_HTP(timestep-1,points_t0)
+            db.update_points(points,timestep)#inserts position and velocity at timestep
         else:
             db.insert_points(points,timestep)
 

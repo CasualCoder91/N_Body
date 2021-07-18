@@ -1,7 +1,10 @@
 from point import Point
 import numpy as np
 from config import eps_magnitude
+import matplotlib.pyplot as plt
+from sklearn.neighbors import BallTree
 
+#todo: optimize for speed
 def generate_velocity_and_index(points_t0, points_t1):
 	""" 
     Extracting the stars(=points) at t1 from the image online gives information about position and magnitude but not velocity or id of the star.
@@ -10,21 +13,48 @@ def generate_velocity_and_index(points_t0, points_t1):
 
     :returns: updated point arrays
     """
-	max_dist_pos = 0
-	for i in range(len(points_t0)-1): # loop through all points at timestep 0
-		minDist = -1
-		future_point_index = -1
+	vectorized_positions = np.vectorize(lambda obj: obj.position, otypes=[np.ndarray])
 
-		for j in range(len(points_t1)-1): #compare to all points at timestep 1
-			current_dist = points_t0[i].get_distance(points_t1[j])
-			if (currentDist < minDist or minDist == -1) and abs(1 - points_t1[j].magnitude / points_t0[i].magnitude) < eps_magnitude:
-				minDist = currentDist
-				future_point_index = j
-			if maxDistPos < currentDist: 
-				maxDistPos = currentDist
-		points_t0[i].velocity[0] = points_t1[future_point_index].position[0] - points_t0[i].position[0]; #tecnically division by dt needed but dt is equal for all points
-		points_t0[i].velocity[1] = points_t1[future_point_index].position[1] - points_t0[i].position[1];
-		points_t1[future_point_index].id = points_t0[i].id
+	positions_t1 = vectorized_positions(points_t1)
+	positions_t1 = np.stack(positions_t1)
+
+	positions_t0 = vectorized_positions(points_t0)
+	positions_t0 = np.stack(positions_t0)
+
+	tree = BallTree(positions_t1)
+
+	n_nearest_neighbors = 10
+
+	distances, indices = tree.query(positions_t0, k=n_nearest_neighbors) #k = number of nearest neighbors
+
+	indices = indices.transpose()# closest indices are at indices[0]
+
+	
+
+	for t0_i,t1_is in enumerate(indices.T):
+		for dist_index, t1_i in enumerate(t1_is):#go through future points starting at closest one
+			if abs(1 - points_t1[t1_i].magnitude / points_t0[t0_i].magnitude) < eps_magnitude:
+				points_t0[t0_i].velocity = points_t1[t1_i].position - points_t0[t0_i].position
+				points_t1[t1_i].id = points_t0[t0_i].id
+				break
+			elif dist_index == n_nearest_neighbors-1:
+				print("""Warning: eps_magnitude to strict or not enough nearest neighbors!\nignoring eps""")
+				points_t0[t0_i].velocity = points_t1[t1_is[0]].position - points_t0[t0_i].position
+				points_t1[t1_is[0]].id = points_t0[t0_i].id
+
+
+	#for i in range(len(points_t0)): # loop through all points at timestep 0
+	#	min_dist = -1
+	#	future_point_index = -1
+	#
+	#	for j in range(len(points_t1)): #compare to all points at timestep 1
+	#		current_dist = points_t0[i].get_distance(points_t1[j])
+	#		if (current_dist < min_dist or min_dist == -1) and abs(1 - points_t1[j].magnitude / points_t0[i].magnitude) < eps_magnitude:
+	#			min_dist = current_dist
+	#			future_point_index = j
+	#	points_t0[i].velocity = points_t1[future_point_index].position - points_t0[i].position #tecnically division by dt needed but dt is equal for all points
+	#	#points_t0[i].velocity[1] = points_t1[future_point_index].position[1] - points_t0[i].position[1];
+	#	points_t1[future_point_index].id = points_t0[i].id
 	return points_t0, points_t1
 
 def estimate_MKs():
@@ -41,3 +71,31 @@ def estimate_MKs():
 
 	plt.show()
 	return
+
+#todo: Test
+def magnitude_histogram(simulated_points,observed_points):
+
+	observed_magnitude = np.ndarray((len(observed_points),),dtype=np.double)
+	max_dist = 0
+	for i, point in enumerate(observed_points):
+		observed_magnitude[i] = point.magnitude
+		dist = np.linalg.norm(point.position)
+		if dist > max_dist:
+			max_dist = dist
+
+	simulated_magnitude = np.ndarray((0,),dtype=np.double)
+	for i, point in enumerate(simulated_points):
+		if np.linalg.norm(point.position) < max_dist:
+			simulated_magnitude = np.append(simulated_magnitude, point.magnitude) 
+
+	x, bins, p=plt.hist(simulated_magnitude, density=True, bins=100, label='simulated', alpha=0.5)
+	#for item in p:
+	#	item.set_height(item.get_height()/sum(x))
+
+	x, bins, p=plt.hist(observed_magnitude, density=True, bins=100, label='observed', alpha=0.5)
+	#for item in p:
+	#	item.set_height(item.get_height()/sum(x))
+
+	plt.title('Magnitude distribution')
+	plt.legend()
+	plt.show()

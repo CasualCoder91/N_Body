@@ -32,6 +32,7 @@ double absoluteMagnitudeV(double luminosity){
 
 double absoluteMagnitude(double mass){
 	//Eric Mamajek Version 2021.03.02
+	//https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt
 	if (mass > 19.8) {
 		double lum = luminosity(mass);
 		return absoluteMagnitudeV(lum);

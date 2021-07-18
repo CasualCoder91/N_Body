@@ -532,7 +532,7 @@ void Database::generateHTP(int simulationID)
 	sqlite3_finalize(stmt);
 }
 
-void Database::generateMagnitude(int simulationID){
+void Database::generateMagnitude(int simulationID, bool observed){
 	if (!this->isOpen)
 		this->open();
 
@@ -540,10 +540,11 @@ void Database::generateMagnitude(int simulationID){
 		"FROM star INNER JOIN position on position.id_star = star.id "
 		"INNER JOIN simulation on simulation.id = star.id_simulation "
 		"WHERE position.timestep = 0 AND star.id_simulation = ?1 "
-		"AND star.isObserved = 0";
+		"AND star.isObserved = ?2";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 	sqlite3_bind_int(stmt, 1, simulationID);
+	sqlite3_bind_int(stmt, 2, observed);
 
 	//store rows for velocity2D table for better performance
 	struct rowInsert {

@@ -1,7 +1,7 @@
 import os # for relative paths
 
 simulation_id = 1
-timestep = 0
+timestep = 1
 pixelfactor = 0.004 #depends on instrument used with scopesim -> print(cmd["!INST.pixel_scale"])
 
 exposure_time = 60 #[s]
@@ -17,4 +17,4 @@ save_img = False
 n_pixel = 4096 #Whole picutre: 14976 | 1 fov: 4096
 
 #analysis
-eps_magnitude = 0.01
+eps_magnitude = 0.05

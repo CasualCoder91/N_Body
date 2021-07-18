@@ -189,7 +189,6 @@ void Analysis::generateHTPVelocity(bool observed)
 	std::vector<std::vector<Point>>& points = database->selectPoints(id, 0, 2,-1,observed);
 
 	int errorCounter = 0;
-	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
 
 	for (Point& point0 : points[0]) { // loop through all points at timestep i
 		double minDist = -1;
@@ -199,9 +198,6 @@ void Analysis::generateHTPVelocity(bool observed)
 			if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < Constants::epsMagnitude) {
 				minDist = currentDist;
 				futurePoint = point1;
-			}
-			if (maxDistPos < currentDist) {
-				maxDistPos = currentDist;
 			}
 		}
 		if (point0.id != futurePoint.id) {
