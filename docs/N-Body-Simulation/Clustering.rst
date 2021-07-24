@@ -4,14 +4,15 @@ Cluster analysis
 
 The objective is to detect all cluster stars present in the observed data with a certain accuracy.
 One image contains a set of stars :math:`s_{i}` with positions :math:`\vec{x}_{i}\left ( t \right )` in pixel coordinates and apparent magnitudes :math:`m_{i}`.
-This information is not enough to detect cluster memberships. The number density of cluster stars in position space  is not high enough relative to the field stars.
+This information is not enough to detect cluster memberships. The number density of cluster stars in position space is similar to that of the field stars.
+Furthermore, cluster and field star positions overlap significantly.
 Moreover, depending on the distance of the cluster to the observer and the cluster size, cluster stars often cover a significant area of if not the whole image.
-The proper motion :math:`\vec{v_{i}}(t) density of cluster stars on the other hand is very high relative to that of field stars.
+The proper motion :math:`\vec{v_{i}}(t)` density of cluster stars on the other hand is very high relative to that of field stars and hardly any field stars have :math:`\vec{v_{i}}(t)` close to cluster stars.
 
 Velocity approximation
 ----------------------
 
-The proper motion of a star can be approximated from its position at two different timestamps via
+The proper motion of a star can be approximated from its position at two different timestamps via first order taylor expansion
 
 .. math::
     v_{i} = \frac{x_{i}\left ( t+dt \right )-x_{i}\left ( t \right )}{dt}
@@ -54,11 +55,11 @@ Once a core point has been found, the neighboring points of that point are teste
 In a naive implementation, the distance of each point to every other point is checked. The time complexity of such an implementation is :math:`O(n^2)`.
 Moreover, for large datasets the recursion can lead to stack overflow.
 
-R*-tree and other data structures can be used to improve the performance to an average of :math:`O(n\log{n})` (:cite:`Ester1996`)
-The library mlpack (:cite:`Curtin2018`) includes an implementation of DBSCAN supporting R*-tree and many other trees.
+R*-tree or similar data structures can be used to improve the performance to an average of :math:`O(n\log{n})` (:cite:`Ester1996`)
+The library mlpack (:cite:`Curtin2018`) was used, which includes an implementation of DBSCAN supporting R*-tree and many other trees.
 
-Initially and in addition to the standard condition :math:`\epsilon_{x}` regarding the spatial distance between points an supplementary condition :math:`\epsilon_{v}` was introduced.
-The difference in velocity between two stars has to be smaller than :math:`\epsilon_{v}` to be deemed neighbors:
+Initially and in addition to the standard condition :math:`\epsilon_{x}` for the spatial distance between points an supplementary condition :math:`\epsilon_{v}` was introduced.
+The difference in velocity between two stars has to be smaller than :math:`\epsilon_{v}` to be classified as neighbors:
 
 .. math::
     \left \|\vec{v}_{1}-\vec{v}_{2}  \right \|_{2}< \epsilon_{v}
