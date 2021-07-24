@@ -207,152 +207,50 @@ void Analysis::generateHTPVelocity(bool observed)
 		point0.velocity[1] = futurePoint.y - point0.y;
 	}
 	std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
-	database->updatePoints(points);
+	database->updatePoints(points[0]);
 }
 
 
-/*
-void Analysis::cluster(std::vector<std::vector<Point>>& points){
+void Analysis::cluster(std::vector<Point>& points) {
 
-	//for (int i = 0; i < points.size() - 1; ++i) { //loop through timesteps excluding last one
-	int errorCounter = 0;
-	double maxDistPos = 0; //maximum spatial distance between any two stars used for setting epsSpace
+	mlpack::dbscan::DBSCAN<> dbscan(7.46105964516358e-06*0.3, 200);
 
-	double epsMagnitude = 0.01; // [%] maximum change in magnitude to be considered the same star
-
-	for (Point& point0 : points[0]) { // loop through all points at timestep i
-		double minDist = -1;
-		Point futurePoint;
-		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
-			double currentDist = point0.getDistance(point1);
-			if ((currentDist < minDist || minDist == -1) && abs(1-point1.magnitude/point0.magnitude) < epsMagnitude) {
-				minDist = currentDist;
-				futurePoint = point1;
-			}
-			if (maxDistPos < currentDist) {
-				maxDistPos = currentDist;
-			}
-		}
-		if (point0.id != futurePoint.id) {
-			errorCounter++;
-		}
-		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
-		//if (abs(point0.velocity[0]) < Constants::minDist) {
-		//	point0.velocity[0] = 0;
-		//}
-		point0.vy = futurePoint.y - point0.y;
-		//if (abs(point0.vy) < Constants::minDist) {
-		//	point0.vy = 0;
-		//}
+	arma::mat matPoints = arma::mat(2, points.size());
+	for (size_t i = 0; i < points.size();i++) {
+		arma::vec column = arma::vec(2);
+		column.at(0) = points[i].velocity[0];
+		column.at(1) = points[i].velocity[1];
+		matPoints.col(i) = column;
 	}
-	std::cout << "#Wrong stars picked for velocity calculation: " << errorCounter << std::endl;
+	arma::Row<size_t> assignments;
+	const size_t nClusters = dbscan.Cluster(matPoints, assignments);
 
-	double maxDistVel = 0; //maximum velocity between any two stars used for setting epsSpace
-	for (Point& point : points[0]) // get maximum velocity difference (euclidean norm)
-	{
-		for (Point& pointComared : points[0])
-		{
-			if (point.id != pointComared.id) {
-				double velocityDiff = point.getVelDelta(pointComared);
-				if (velocityDiff > maxDistVel) {
-					maxDistVel = velocityDiff;
-				}
-			}
-		}
-	}
-
-	//}
-
-	//InOut::write(points[0], "src/Test/clusteringVelocity.dat");
-	//Plot plot = Plot(path, path, true);
-	//plot.plot("clusteringVelocity", {});
-
-	VDBSCAN scanner = VDBSCAN(maxDistPos*0.10, maxDistVel*0.0003, 60);
-	scanner.run(points[0]);
+	printf("%zu cluster(s) detected\n", nClusters);
 
 	int nFalsePositive = 0;
 	int nFalseNegative = 0;
 	int nTruePositive = 0;
 	int nTrueNegative = 0;
 
-	for (Point const &point : points[0]) {
-		if (point.cluster > -1 && point.clusterStar)
+	for (size_t i = 0; i < points.size(); i++) {
+		if (assignments[i] == SIZE_MAX)
+			points[i].cluster = -1;
+		else
+			points[i].cluster = assignments[i];
+		if(points[i].cluster == 0 && points[i].clusterStar)
 			nTruePositive++;
-		if (point.cluster > -1 && !point.clusterStar)
-			nFalsePositive++;
-		if (point.cluster == VDBSCAN::NOISE && point.clusterStar)
+		else if(points[i].cluster != 0 && points[i].clusterStar)
 			nFalseNegative++;
-		if (point.cluster == VDBSCAN::NOISE && !point.clusterStar)
+		else if (points[i].cluster == -1 && !points[i].clusterStar)
 			nTrueNegative++;
+		else if (points[i].cluster != -1 && !points[i].clusterStar)
+			nFalsePositive++;
 	}
+
 	std::cout << "nFalsePositive: " << nFalsePositive << std::endl;
 	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
 	std::cout << "nTruePositive: " << nTruePositive << std::endl;
 	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
-}
-*/
-
-
-//https://github.com/HoneyJung/DBSCAN_C-_RTree
-
-
-void Analysis::cluster(std::vector<std::vector<Point>>& points) {
-
-	double maxDistVel = 0; //maximum velocity between any two stars used for setting epsSpace
-	for (Point& point : points[0]) // get maximum velocity difference (euclidean norm)
-	{
-		for (Point& pointComared : points[0])
-		{
-			if (point.id != pointComared.id) {
-				double velocityDiff = point.getVelDelta(pointComared);
-				if (velocityDiff > maxDistVel) {
-					maxDistVel = velocityDiff;
-				}
-			}
-		}
-	}
-	std::cout << "velocity done" << std::endl;
-
-	typedef RTree<ValueType, double, 2, double> MyTree;
-	MyTree tree;
-	for (Point& point : points[0]) {
-		tree.Insert(point.velocity, point.velocity, point.id, point.clusterStar);
-	}
-	DBSCAN dbscan = DBSCAN(&tree, points[0].size(), 7.46105964516358e-06, 2, 60); //maxDistVel * 0.03
-	dbscan.Cluster();
-	std::cout << "Clustering done" << std::endl;
-	//MyTree::Iterator it;
-	//for ((tree).GetFirst(it); !(tree).IsNull(it); (tree).GetNext(it)) {
-	//	if ((*it).point.cluster == 1) {
-	//		cout << (*it).point.velocity[0] << ' ' << (*it).point.velocity[0] << ' ' << (*it).point.cluster << endl;
-	//	}
-	//}
-
-	int nFalsePositive = 0;
-	int nFalseNegative = 0;
-	int nTruePositive = 0;
-	int nTrueNegative = 0;
-
-	MyTree::Iterator it;
-	points.clear();
-	std::vector<Point> resultAt0;
-	for ((tree).GetFirst(it); !(tree).IsNull(it); (tree).GetNext(it)) {
-		resultAt0.push_back((*it).point);
-		if ((*it).point.cluster == 1 && (*it).point.clusterStar)
-			nTruePositive++;
-		else if((*it).point.cluster != 1 && (*it).point.clusterStar){
-			nFalseNegative++;
-		}		
-		else if ((*it).point.cluster == -1 && !(*it).point.clusterStar)
-			nTrueNegative++;
-		else if ((*it).point.cluster != -1 && !(*it).point.clusterStar) {
-			nFalsePositive++;
-		}
-	}
-	std::cout << "nFalsePositive: " << nFalsePositive << std::endl;
-	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
-	std::cout << "nTruePositive: " << nTruePositive << std::endl;
-	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
-	points.push_back(resultAt0);
+	//points.push_back(resultAt0);
 	database->updatePoints(points);
 }

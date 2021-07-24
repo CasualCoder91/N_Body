@@ -994,7 +994,7 @@ std::vector<std::vector<Point>> Database::selectPoints(int simulationID, int tim
 	return points;
 }
 
-void Database::updatePoints(std::vector<std::vector<Point>>& points)
+void Database::updatePoints(std::vector<Point>& points, int timestep)
 {
 	int timeStep = 0;
 
@@ -1003,7 +1003,7 @@ void Database::updatePoints(std::vector<std::vector<Point>>& points)
 	std::string queryVelocity = "update velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4";
 	sqlite3_stmt* stmtVelocity;
 	sqlite3_prepare_v2(db, queryVelocity.c_str(), static_cast<int>(queryVelocity.size()), &stmtVelocity, nullptr);
-	for (Point& point : points[timeStep]) {
+	for (Point& point : points) {
 		sqlite3_bind_double(stmtVelocity, 1, point.velocity[0]);
 		sqlite3_bind_double(stmtVelocity, 2, point.velocity[1]);
 		sqlite3_bind_int(stmtVelocity, 3, timeStep);
@@ -1025,7 +1025,7 @@ void Database::updatePoints(std::vector<std::vector<Point>>& points)
 	std::string queryStar = "update star set idCluster=?1 where id=?2";
 	sqlite3_stmt* stmtStar;
 	sqlite3_prepare_v2(db, queryStar.c_str(), static_cast<int>(queryStar.size()), &stmtStar, nullptr);
-	for (Point& point : points[timeStep]) {
+	for (Point& point : points) {
 		sqlite3_bind_int(stmtStar, 1, point.cluster);
 		sqlite3_bind_int(stmtStar, 2, point.id);
 		if (sqlite3_step(stmtStar) != SQLITE_DONE)

@@ -112,7 +112,7 @@ public:
 	std::vector<std::vector<Point>>selectPoints(int simulationID = 1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = -1, bool observed = false);
 
 	//updates velocity.aHTP and velocity.dHTP
-	void updatePoints(std::vector<std::vector<Point>>& points);
+	void updatePoints(std::vector<Point>& points, int timestep = 0);
 };
 
 #endif

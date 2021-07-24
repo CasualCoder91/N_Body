@@ -10,19 +10,20 @@
 #include <vector>
 #include <chrono> //for timer
 
+#include <mlpack/core.hpp>
+#include <mlpack/methods/dbscan/dbscan.hpp>
+
 #include "Star.h"
 #include "Integrator.h"
 #include "Node.h"
 #include "InOut.h"
 #include "InitialConditions.h"
-#include "Point.h"
-#include "VDBSCAN.h"
-#include "Plot.h"
 #include "Vec2D.h"
-#include "Database.h"
+#include <Point.h>
+#include <Database.h>
+#include <Vec3D.h>
 
-#include "../src/DBSCAN/RTree.h"
-#include "../src/DBSCAN/DBSCAN.cpp"
+
 
 class Analysis
 {
@@ -104,7 +105,7 @@ public: //methods
      */
     void generateHTPVelocity(bool observed = false);
 
-    void cluster(std::vector<std::vector<Point>>& points);
+    void cluster(std::vector<Point>& points);
 
 };
 
