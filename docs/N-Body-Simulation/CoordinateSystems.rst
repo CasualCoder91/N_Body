@@ -187,3 +187,20 @@ where :math:`cz = \cos(z)`, :math:`sz = \sin(z)`, :math:`c\theta = \cos(\theta)`
 :math:`c\xi = \cos(\xi)` and :math:`s\xi = \sin(\xi)`.
 
 Before multiplication with :math:`P`, the target vector has to be expressed in cartesian coordinates.
+
+Heliocentric Telescope Polar (HTP)
+-----------------------------------
+
+Positions are given close to how they would be observed with a telescope.
+As with HEQ the right ascension :math:`a` describes the angular distance in and the declination :math:`d` the angular distance below and above the midplane.
+The origin, however is defined by the line of sight vector, that is :math:`\hat{v}_{los} = [r,a,d] = [1,0,0]_{HTP}`
+
+It may seem as if the transformation from HGP to HTP and vice versa simply consists of a shift by :math:`\hat{v}_{los}` in HGP basis.
+Clearly the cone of vision in any polar coordinate system is casually speaking a circle on the unit sphere.
+However for any line of sight vector with :math:`b\neq0`, the image would display an ellipse.
+While the circle always covers the same range in :math:`b`, the range in :math:`l` depends on the distance (:math:`b`) of the circle to the midplane.
+With increasing :math:`b` the circles around the unit sphere descibed by :math:`l` decrease in size.
+
+Positions can be transformed from HCA to HTP by aligning :math:`\hat{v}_{los}` with the x axis `\hat{x}`
+using a rotation matrix generated as descibed in (?) with the rotation axis defined by :math:`[1,0,0]_{HCA}` and :math:`\hat{v}_{los,HCA}` 
+Subsequent transformation from cartesian to polar coordinates as described in the section GCP above completes the transformation.
