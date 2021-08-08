@@ -9,6 +9,7 @@
 
 #include<vector>
 #include <random>
+//#include <chrono>
 
 #include "Star.h"
 #include "MWPotential.h"
@@ -19,6 +20,7 @@ extern bool debug;
 
 class InitialConditions{
 private:
+	//std::chrono::system_clock::rep seed = std::chrono::system_clock::now().time_since_epoch().count();
 	/**@brief pseudo-random generator used for sampling various distributions*/
 	std::mt19937 gen;
 	/**@brief The Potential used during simulation. Initial conditions heavily depend on it.*/

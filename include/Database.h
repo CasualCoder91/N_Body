@@ -109,7 +109,9 @@ public:
 	//pass timestep = -1 to output all timestep (one file per step)
 	void outputStars2D(int simulationID, std::string filePath, int timestep = -1);
 
-	std::vector<std::vector<Point>>selectPoints(int simulationID = 1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = -1, bool observed = false);
+	std::vector<Point>select_points(int simulationID = 1, int timeStep = 0, double minMagnitude = -1, bool observed = false);
+
+	std::vector<std::vector<Point>>select_time_series_points(int simulationID = 1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = -1, bool observed = false);
 
 	//updates velocity.aHTP and velocity.dHTP
 	void updatePoints(std::vector<Point>& points, int timestep = 0);

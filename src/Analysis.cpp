@@ -186,7 +186,7 @@ void Analysis::write(){
 
 void Analysis::generateHTPVelocity(bool observed)
 {
-	std::vector<std::vector<Point>>& points = database->selectPoints(id, 0, 2,-1,observed);
+	std::vector<std::vector<Point>>& points = database->select_time_series_points(id, 0, 2,-1,observed);
 
 	int errorCounter = 0;
 
@@ -254,3 +254,37 @@ void Analysis::cluster(std::vector<Point>& points) {
 	//points.push_back(resultAt0);
 	database->updatePoints(points);
 }
+
+void Analysis::map_observed()
+{
+	std::vector<Point> simulated_points = database->select_points(id, 0, -1, false);
+	arma::mat mat_simulated_points = arma::mat(2, simulated_points.size());
+	for (size_t i = 0; i < simulated_points.size(); i++) {
+		arma::vec column = arma::vec(2);
+		column.at(0) = simulated_points[i].x;
+		column.at(1) = simulated_points[i].y;
+		mat_simulated_points.col(i) = column;
+	}
+
+	std::vector<Point> observed_points = database->select_points(id, 0, -1, true);
+	arma::mat mat_observed_points = arma::mat(2, observed_points.size());
+	for (size_t i = 0; i < observed_points.size(); i++) {
+		arma::vec column = arma::vec(2);
+		column.at(0) = observed_points[i].x;
+		column.at(1) = observed_points[i].y;
+		mat_observed_points.col(i) = column;
+	}
+
+	mlpack::range::RangeSearch<> a(mat_simulated_points);
+	// The vector-of-vector objects we will store output in.
+	std::vector<std::vector<size_t> > resultingNeighbors;
+	std::vector<std::vector<double> > resultingDistances;
+	// The range we will use.
+	mlpack::math::Range r(0, 4.0);
+	a.Search(mat_observed_points, r, resultingNeighbors, resultingDistances);
+
+	for (size_t observed_point_id = 0; observed_point_id < observed_points.size(); observed_point_id++) {
+
+	}
+}
+

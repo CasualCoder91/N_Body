@@ -41,7 +41,7 @@ The clustering algorithm of choice is DBSCAN since it is density based and able 
 Additionaly and contrary to other algorithms the amount of clusters to find is not a parameter. DBSCAN detects any clusters present in the data based on two parameters:
 
 1. :math:`\epsilon`: the maximum distance between points to be considered neighbors
-1. nPoints: the minimum amount of neighbors for a point to be classified as core point.
+2. nPoints: the minimum amount of neighbors for a point to be classified as core point.
 
 During excecution all datapoints are classified as one of the following:
 

@@ -56,7 +56,7 @@ def make_source(data):
 
 def main():
 
-    save_file = True #If True Output fits file
+    save_file = False #If True Output fits file
 
     db = Database() # create a database connection
     #sim.download_package(["instruments/MICADO_Sci",
@@ -70,6 +70,8 @@ def main():
     cmd["!DET.dit"] = exposure_time #seconds | 3600s=1h
 
     opt = sim.OpticalTrain(cmd)
+    opt["scao_const_psf"].meta["convolve_mode"] = "same"
+    opt["scao_const_psf"].meta["rotational_blur_angle"] = 15*exposure_time/3600 # depends on time  ~15°/h (complex function)
     #opt["scao_const_psf"].meta["psf_side_length"] = 1024 #size of diameter in sechseck hinter hellen sternen
 
     data = db.select_2d_stars(timestep)

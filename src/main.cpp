@@ -131,7 +131,7 @@ int main() {
 				}
 				else if (selection == 4) {//Cluster
 					std::cout << "Running cluster analysis ..." << std::endl;
-					analysis.cluster(db.selectPoints(simulationID,0,2,Constants::minMagnitude)[0]);
+					analysis.cluster(db.select_time_series_points(simulationID,0,2,Constants::minMagnitude)[0]);
 					std::cout << "Cluster analysis done" << std::endl;
 				}
 				else {

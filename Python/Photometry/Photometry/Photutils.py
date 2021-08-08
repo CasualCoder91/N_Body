@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from datetime import datetime #for naming output
+import os
 
 import photutils
 from photutils import DAOStarFinder, CircularAperture, aperture_photometry
@@ -30,7 +31,7 @@ def image_segmentation(image, save_color=False,deblend=True):
     #threshold = detect_threshold(image, nsigma=2.)
 
     box_size = 32 # 8 is too little
-    threshold_factor = 2
+    threshold_factor = 1.1
     sigma_factor = 5 # FWHM = 3.
     gaussian_size = 8
     contrast = 0.0005
@@ -52,6 +53,7 @@ def image_segmentation(image, save_color=False,deblend=True):
     cat = SourceCatalog(data, segm) #from documentation: "data should be background-subtracted for accurate source photometry and properties"
     columns = ['xcentroid', 'ycentroid', 'kron_flux']
     tbl = cat.to_table(columns=columns)
+    tbl.rename_column('kron_flux', 'flux')
     #print(tbl)
     #plot
     if(save_img or save_color):
@@ -60,8 +62,8 @@ def image_segmentation(image, save_color=False,deblend=True):
             cmap = segm.make_cmap(seed=123)
             plt.imshow(segm, origin='upper', cmap=cmap, interpolation='nearest')
             plt.title('Image Segmentation')
-            fig.savefig(output_path + "/ISPhotutils_{0}BK_{1}THRE_{2}Kernel{3}{3}_{4}deblended_c.png"
-                        .format(box_size,threshold_factor,sigma_factor,gaussian_size,contrast),dpi=960)
+            fig.savefig(output_path + "/ISPhotutils_{0}BK_{1}THRE_{2}Kernel{3}{3}_{4}deblended_c{5}.png"
+                        .format(box_size,threshold_factor,sigma_factor,gaussian_size,contrast,datetime.now().strftime("%Y_%m_%d_%H%M%S")),dpi=960)
         else:
             positions = np.transpose((tbl['xcentroid'], tbl['ycentroid']))
             apertures = CircularAperture(positions, r=3.)
@@ -75,11 +77,14 @@ def image_segmentation(image, save_color=False,deblend=True):
 #todo: return stars
 def use_DAOStarFinder(image):
 
+    round_bound = 0.5
+    sharplo = 0.2
+
     mean, median, std = sigma_clipped_stats(image, sigma=3.0)
 
     bkg_sigma = mad_std(image)
-    daofind = DAOStarFinder(fwhm=3., threshold=5.*bkg_sigma)
-    sources = daofind(image - median)
+    daofind = DAOStarFinder(fwhm=3., threshold=5.*bkg_sigma, roundlo=-round_bound,roundhi=round_bound,sharplo=sharplo)
+    sources = daofind(image)#daofind(image - median)
     #for col in sources.colnames:
     #    sources[col].info.format = '%.8g'  # for consistent table output
     #print(sources)
@@ -94,7 +99,7 @@ def use_DAOStarFinder(image):
         fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
         plt.imshow(image, origin='upper', norm=LogNorm())
         apertures.plot(color='white', lw=0.5, alpha=0.5)
-        fig.savefig(output_path + "/DAOPhotutils_"+datetime.now().strftime("%Y_%m_%d_%H%M%S")+".png",dpi=960)
+        fig.savefig(output_path + "/DAOPhotutils_{0}round_{1}sharp_{2}.png".format(round_bound,sharplo,datetime.now().strftime("%Y_%m_%d_%H%M%S")),dpi=960)
     return sources
 
 def main():
@@ -110,22 +115,26 @@ def main():
 
     #print(-2.5* np.log10(17005/(43.6*4000*978e4 )))
     #return
-    db = Database()
-    points_observed = db.select_points(0,True) 
-    points_simulated = db.select_points(0,False) 
-    magnitude_histogram(points_simulated,points_observed)
-    return
+    #db = Database()
+    #points_observed = db.select_points(0,True) 
+    #points_simulated = db.select_points(0,False) 
+    #magnitude_histogram(points_simulated,points_observed)
+    #return
 
     hdu = fits.open(fits_path)[1]
     image = hdu.data[:, :].astype(float)
     print("[1]DAOStarFinder\n[2]Image Segmentation")
-    selection = int(input())
+    user_input = input()
+    selection = int(user_input)
     stars = QTable()
     if selection == 1:
+        cls = lambda: print('\n'*200)
+        cls()
+        print("[1]DAOStarFinder <- \n[2]Image Segmentation")
         stars = use_DAOStarFinder(image)
     elif selection == 2:
-        stars = image_segmentation(image,save_color=False,deblend=True)
-    stars = stars[[np.isfinite(star['kron_flux']) for star in stars]]
+        stars = image_segmentation(image,save_color=True,deblend=False)
+    stars = stars[[np.isfinite(star['flux']) for star in stars]]
     print(stars.info)
     print("[1] Write found stars to DB!\n[2] no ty")
     selection = int(input())
@@ -137,7 +146,7 @@ def main():
             points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
                                 velocity = np.array([np.nan,np.nan]),
                                 id=-1,
-                                magnitude=flux_to_mag(star['kron_flux']))
+                                magnitude=flux_to_mag(star['flux']))
         if(timestep>0):
             points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
             points_t0, points = generate_velocity_and_index(points_t0,points)

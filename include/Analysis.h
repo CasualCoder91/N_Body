@@ -12,6 +12,7 @@
 
 #include <mlpack/core.hpp>
 #include <mlpack/methods/dbscan/dbscan.hpp>
+#include <mlpack/methods/range_search/range_search.hpp>
 
 #include "Star.h"
 #include "Integrator.h"
@@ -107,5 +108,9 @@ public: //methods
 
     void cluster(std::vector<Point>& points);
 
+    /**
+     @brief maps observed stars to simulated stars by setting star.fkStar of the observed to star.id to the simulated star.
+     */
+    void map_observed();
 };
 
