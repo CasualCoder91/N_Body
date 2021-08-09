@@ -11,6 +11,7 @@ double Point::getVelDelta(const Point& pt2) {
 
 Point::Point(){
     this->cluster = 0;
+    this->fk_star = 0;
 }
 
 Point::Point(int id, double x, double y, bool clusterStar, double magnitude){
@@ -23,6 +24,7 @@ Point::Point(int id, double x, double y, bool clusterStar, double magnitude){
     this->nNeighbors = 0;
     this->velocity[0] = 0;
     this->velocity[1] = 0;
+    this->fk_star = 0;
 }
 
 Point::Point(int id, double x, double y, double vx, double vy, bool clusterStar, double magnitude)
@@ -36,4 +38,5 @@ Point::Point(int id, double x, double y, double vx, double vy, bool clusterStar,
     this->nNeighbors = 0;
     this->velocity[0] = vx;
     this->velocity[1] = vy;
+    this->fk_star = 0;
 }

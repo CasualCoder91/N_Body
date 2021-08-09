@@ -96,7 +96,7 @@ int main() {
 			else if(selection==2) {
 				Analysis analysis = Analysis(simulationID,&db);
 				std::cout << "What would you like to analyze?" << std::endl;
-				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster" << std::endl;
+				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster\n[5] Map observed stars" << std::endl;
 				std::cin >> selection;
 				std::cin.clear();
 				std::vector<int> timeSteps = db.selectTimesteps(simulationID);
@@ -133,6 +133,10 @@ int main() {
 					std::cout << "Running cluster analysis ..." << std::endl;
 					analysis.cluster(db.select_time_series_points(simulationID,0,2,Constants::minMagnitude)[0]);
 					std::cout << "Cluster analysis done" << std::endl;
+				}
+				else if (selection == 5) {
+					analysis.map_observed();
+					std::cout << "Mapping done!" << std::endl;
 				}
 				else {
 					std::cout << "Feature not yet implemented" << std::endl;

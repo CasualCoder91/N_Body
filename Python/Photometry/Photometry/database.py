@@ -142,7 +142,7 @@ class Database:
     def insert_points(self,points,timestep):
         for point in points:
             self.insert_star(timestep,point.magnitude,point.position[0],point.position[1],
-                             point.velocity[0],point.velocity[1],False)
+                             point.velocity[0],point.velocity[1],True,False)
         self.conn.commit()
 
     def update_points(self,points,timestep):

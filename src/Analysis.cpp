@@ -257,34 +257,63 @@ void Analysis::cluster(std::vector<Point>& points) {
 
 void Analysis::map_observed()
 {
+
+	//double factor = 1000;
+
 	std::vector<Point> simulated_points = database->select_points(id, 0, -1, false);
-	arma::mat mat_simulated_points = arma::mat(2, simulated_points.size());
-	for (size_t i = 0; i < simulated_points.size(); i++) {
-		arma::vec column = arma::vec(2);
-		column.at(0) = simulated_points[i].x;
-		column.at(1) = simulated_points[i].y;
-		mat_simulated_points.col(i) = column;
-	}
+	//arma::mat mat_simulated_points = arma::mat(2, simulated_points.size());
+	//for (size_t i = 0; i < simulated_points.size(); i++) {
+	//	arma::vec column = arma::vec(2);
+	//	column.at(0) = simulated_points[i].x* factor;
+	//	column.at(1) = simulated_points[i].y* factor;
+	//	mat_simulated_points.col(i) = column;
+	//}
 
 	std::vector<Point> observed_points = database->select_points(id, 0, -1, true);
-	arma::mat mat_observed_points = arma::mat(2, observed_points.size());
-	for (size_t i = 0; i < observed_points.size(); i++) {
-		arma::vec column = arma::vec(2);
-		column.at(0) = observed_points[i].x;
-		column.at(1) = observed_points[i].y;
-		mat_observed_points.col(i) = column;
+	//arma::mat mat_observed_points = arma::mat(2, observed_points.size());
+	//for (size_t i = 0; i < observed_points.size(); i++) {
+	//	arma::vec column = arma::vec(2);
+	//	column.at(0) = observed_points[i].x* factor;
+	//	column.at(1) = observed_points[i].y* factor;
+	//	mat_observed_points.col(i) = column;
+	//}
+
+	//mlpack::range::RangeSearch<mlpack::metric::EuclideanDistance,arma::mat,mlpack::tree::BallTree> a(mat_simulated_points);
+	//// The vector-of-vector objects we will store output in.
+	//std::vector<std::vector<size_t> > resultingNeighbors;
+	//std::vector<std::vector<double> > resultingDistances;
+	//// The range we will use.
+	//mlpack::math::Range r(0.00, 0.0075* factor);
+	//a.Search(mat_observed_points, r, resultingNeighbors, resultingDistances);
+
+	//for (size_t observed_point_index = 0; observed_point_index < resultingNeighbors.size(); observed_point_index++) {
+	//	size_t observed_point_id = observed_point_index;
+	//	if (resultingNeighbors[observed_point_index].size() > 0) {
+	//		observed_points[observed_point_index].fk_star = simulated_points[resultingNeighbors[observed_point_index][0]].id; //+1 because index in db starts at 1
+	//		//std::cout << "observed_point_id: " << observed_points[observed_point_index].id << std::endl;
+	//		//std::cout << "simulated_point_id: " << simulated_points[resultingNeighbors[observed_point_index][0]].id << std::endl;
+	//		//std::cout << "Distance: " << resultingDistances[observed_point_index][0] << std::endl;
+	//	}
+	//}
+	double min_dist_found = -1;
+	const double min_dist = 0.0075;
+	double current_dist = 1;
+
+	for (Point& observed_point : observed_points) {
+		min_dist_found = -1;
+		for (const Point& simulated_point : simulated_points) {
+			current_dist = observed_point.getDistance(simulated_point);
+			if (current_dist < min_dist_found || min_dist_found == -1) {
+				min_dist_found = current_dist;
+				if (min_dist_found < min_dist) {
+					observed_point.fk_star = simulated_point.id;
+					//std::cout << "Test" << std::endl;
+				}
+			}
+		}
 	}
 
-	mlpack::range::RangeSearch<> a(mat_simulated_points);
-	// The vector-of-vector objects we will store output in.
-	std::vector<std::vector<size_t> > resultingNeighbors;
-	std::vector<std::vector<double> > resultingDistances;
-	// The range we will use.
-	mlpack::math::Range r(0, 4.0);
-	a.Search(mat_observed_points, r, resultingNeighbors, resultingDistances);
 
-	for (size_t observed_point_id = 0; observed_point_id < observed_points.size(); observed_point_id++) {
-
-	}
+	database->set_fk_star(observed_points);
 }
 

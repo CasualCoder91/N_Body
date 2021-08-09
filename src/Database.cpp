@@ -1081,3 +1081,30 @@ void Database::updatePoints(std::vector<Point>& points, int timestep)
 	std::cout << "Database: idCluster updated" << std::endl;
 }
 
+void Database::set_fk_star(std::vector<Point>& points)
+{
+	int timeStep = 0;
+
+	char* errorMessage;
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	std::string query = "update star set fkStar=?1 where id=?2";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	for (Point& point : points) {
+		if (point.fk_star != 0) {
+			sqlite3_bind_int(stmt, 1, point.fk_star);
+			sqlite3_bind_int(stmt, 2, point.id);
+			if (sqlite3_step(stmt) != SQLITE_DONE)
+			{
+				printf("set_fk_star: Commit Failed!\n");
+				printf(errorMessage);
+			}
+			sqlite3_reset(stmt);
+		}
+
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+	std::cout << "Database: star.fkStar updated" << std::endl;
+}
+

@@ -115,6 +115,8 @@ public:
 
 	//updates velocity.aHTP and velocity.dHTP
 	void updatePoints(std::vector<Point>& points, int timestep = 0);
+
+	void set_fk_star(std::vector<Point>& points);
 };
 
 #endif

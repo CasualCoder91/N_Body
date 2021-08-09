@@ -24,8 +24,7 @@ void Simulation::run(){
 
 	//Init stars
 	InitialConditions initialConditions = InitialConditions(Simulation::potential);
-	initialConditions.test();
-	return;
+
 	//Init clusterStars
 	int nextStarIndex = database->selectLastID("star") + 1;
 	std::vector<Star*> clusterStars;

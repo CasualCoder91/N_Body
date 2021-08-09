@@ -7,7 +7,7 @@ class Point {
 public:
     double x, y;
     double velocity[2] = { 0,0 };
-    int id, nNeighbors, cluster;
+    int id, nNeighbors, cluster, fk_star;
     bool clusterStar;
     double magnitude;
     static const std::string header;
