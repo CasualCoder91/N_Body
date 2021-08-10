@@ -140,7 +140,7 @@ def main():
     selection = int(input())
     if selection == 1:
         db = Database()
-        origin = n_pixel/2.
+        origin = n_pixel/2.+0.5 #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
         points = np.ndarray((len(stars),),dtype=object)
         for i, star in enumerate(stars):
             points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
