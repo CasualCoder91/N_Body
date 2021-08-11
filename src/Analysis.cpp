@@ -200,18 +200,31 @@ void Analysis::generateHTPVelocity(bool observed)
 				futurePoint = point1;
 			}
 		}
-		if (point0.id != futurePoint.id) {
+		if (point0.id != futurePoint.id && !observed) {
 			errorCounter++;
+		}
+		else
+		{
+			database->delede_star(futurePoint.id);
+			futurePoint.id = point0.id;
 		}
 		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
 		point0.velocity[1] = futurePoint.y - point0.y;
 	}
-	std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
+	if(!observed)
+		std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
 	database->updatePoints(points[0]);
 }
 
 
 void Analysis::cluster(std::vector<Point>& points) {
+
+	//remove points with 0 velocity because they could be identified as a cluster.
+	//points.erase(std::remove_if(
+	//	points.begin(), points.end(),
+	//	[](const Point& x) {
+	//		return x.velocity[0] == 0 && x.velocity[1] == 0;
+	//	}), points.end());
 
 	mlpack::dbscan::DBSCAN<> dbscan(7.46105964516358e-06*0.3, 200);
 
@@ -283,7 +296,7 @@ void Analysis::map_observed()
 	std::vector<std::vector<size_t> > resultingNeighbors;
 	std::vector<std::vector<double> > resultingDistances;
 	// The range we will use.
-	mlpack::math::Range r(0.00, 0.0075);
+	mlpack::math::Range r(0.00, 0.015);
 	a.Search(mat_observed_points, r, resultingNeighbors, resultingDistances);
 
 	for (size_t observed_point_index = 0; observed_point_index < resultingNeighbors.size(); observed_point_index++) {

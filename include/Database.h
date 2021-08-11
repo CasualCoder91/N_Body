@@ -65,7 +65,7 @@ public:
 	void generateHEQ(int simulationID);
 
 	//HTP = Heliocentric Telescope Polar (LookAt Vector is primary axis)
-	void generateHTP(int simulationID);
+	void generateHTP(int simulationID, bool observed = false);
 
 	void generateMagnitude(int simulationID, bool observed = false);
 

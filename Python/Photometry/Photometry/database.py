@@ -68,6 +68,16 @@ class Database:
                         (point.id, timestep, point.velocity[0], point.velocity[1]))
         self.conn.commit()
 
+    def insert_positions_HTP(self,timestep,points):
+        if self.conn is None:
+            connect(database_path)
+        cur = self.conn.cursor()
+        for point in points:
+            cur.execute("INSERT INTO position (id_star,timestep,aHTP,dHTP) VALUES (?1,?2,?3,?4)",
+                        (point.id, timestep, point.position[0], point.position[1]))
+        self.conn.commit()
+
+
     def update_velocity_HTP(self,timestep,id_star,ascension,declination):
         if self.conn is None:
             connect(database_path)

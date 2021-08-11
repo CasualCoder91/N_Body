@@ -130,8 +130,17 @@ int main() {
 					std::cout << "HTP velocity analysis done" << std::endl;
 				}
 				else if (selection == 4) {//Cluster
+					std::cout << "[1] Simulated stars\n[2] Observed stars" << std::endl;
+					std::cin >> selection;
+					std::cin.clear();
+
 					std::cout << "Running cluster analysis ..." << std::endl;
-					analysis.cluster(db.select_time_series_points(simulationID,0,2,Constants::minMagnitude)[0]);
+					if (selection == 1) {
+						analysis.cluster(db.select_points(simulationID, 0, -1));
+					}
+					else {
+						analysis.cluster(db.select_points(simulationID, 0, -1,true));
+					}
 					std::cout << "Cluster analysis done" << std::endl;
 				}
 				else if (selection == 5) {
@@ -148,13 +157,13 @@ int main() {
 				std::cin.clear();
 				if (selection == 1) {
 					std::cout << "generating HTP positions ..." << std::endl;
-					db.generateHTP(simulation.getID()); //todo: move this to Analysis
+					db.generateHTP(simulationID,false); //todo: move this to Analysis
 					std::cout << "generating magnitude ..." << std::endl;
-					db.generateMagnitude(simulation.getID());
+					db.generateMagnitude(simulationID);
 					//HTP velocity
 					std::cout << "generating HTP velocities ..." << std::endl;
 					Analysis analysis = Analysis(simulationID, &db);
-					analysis.generateHTPVelocity();
+					analysis.generateHTPVelocity(false);
 					std::cout << "done\n" << std::endl;
 				}
 				else if (selection == 2) {

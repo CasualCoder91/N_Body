@@ -56,7 +56,7 @@ def make_source(data):
 
 def main():
 
-    save_file = False #If True Output fits file
+    save_file = True #If True Output fits file
 
     db = Database() # create a database connection
     #sim.download_package(["instruments/MICADO_Sci",

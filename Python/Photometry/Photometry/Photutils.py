@@ -148,10 +148,12 @@ def main():
                                 id=-1,
                                 magnitude=flux_to_mag(star['flux']))
         if(timestep>0):
-            points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
-            points_t0, points = generate_velocity_and_index(points_t0,points)
-            db.insert_velocities_HTP(timestep-1,points_t0)
-            db.update_points(points,timestep)#inserts position and velocity at timestep
+            #points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
+            #points_t0, points = generate_velocity_and_index(points_t0,points)
+            #db.insert_velocities_HTP(timestep-1,points_t0)
+            #db.insert_positions_HTP(timestep,points) #positions with star id = -1 -> asign velocity and id via c++
+            db.insert_points(points,timestep)
+            #db.update_points(points,timestep)#inserts position and velocity at timestep
         else:
             db.insert_points(points,timestep)
 

@@ -459,7 +459,7 @@ void Database::generateHEQ(int simulationID){
 
 }
 
-void Database::generateHTP(int simulationID)
+void Database::generateHTP(int simulationID, bool observed)
 {
 	if (!this->isOpen)
 		this->open();
@@ -469,10 +469,12 @@ void Database::generateHTP(int simulationID)
 		"FROM star INNER JOIN velocity on velocity.id_star = star.id "
 		"INNER JOIN position on position.id_star = star.id "
 		"INNER JOIN simulation on simulation.id = star.id_simulation "
-		"WHERE position.timestep = velocity.timestep AND star.id_simulation = ?1";
+		"WHERE position.timestep = velocity.timestep AND star.id_simulation = ?1 "
+		"AND star.isObserved = ?2";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 	sqlite3_bind_int(stmt, 1, simulationID);
+	sqlite3_bind_int(stmt, 2, observed);
 
 	//local variables
 	bool initialized = false;
@@ -1037,7 +1039,6 @@ std::vector<std::vector<Point>> Database::select_time_series_points(int simulati
 
 void Database::updatePoints(std::vector<Point>& points, int timestep)
 {
-	int timeStep = 0;
 
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
@@ -1047,7 +1048,7 @@ void Database::updatePoints(std::vector<Point>& points, int timestep)
 	for (Point& point : points) {
 		sqlite3_bind_double(stmtVelocity, 1, point.velocity[0]);
 		sqlite3_bind_double(stmtVelocity, 2, point.velocity[1]);
-		sqlite3_bind_int(stmtVelocity, 3, timeStep);
+		sqlite3_bind_int(stmtVelocity, 3, timestep);
 		sqlite3_bind_int(stmtVelocity, 4, point.id);
 		if (sqlite3_step(stmtVelocity) != SQLITE_DONE)
 		{
