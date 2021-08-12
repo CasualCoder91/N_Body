@@ -237,6 +237,42 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 
 }
 
+void Database::delede_star(int simulation_id, int star_id)
+{
+	std::string sql = "DELETE from star where id = ?1 and id_simulation = ?2";
+	sqlite3_stmt* st;
+	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
+	sqlite3_bind_int(st, 1, star_id);
+	sqlite3_bind_int(st, 2, simulation_id);
+	int returnCode = sqlite3_step(st);
+	sqlite3_finalize(st);
+	return;
+}
+
+void Database::delete_stars(const int simulation_id, const std::vector<int> stars_to_delete)
+{
+	if (!this->isOpen)
+		this->open();
+	char* errorMessage;
+
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	char buffer[] = "DELETE from star where id = ?1 and id_simulation = ?2";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, buffer, 69, &stmt, NULL);
+	for (int star_id : stars_to_delete) {
+		sqlite3_bind_int(stmt, 1, star_id);
+		sqlite3_bind_int(stmt, 2, simulation_id);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("Commit Failed!\n");
+		}
+
+		sqlite3_reset(stmt);
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+}
+
 int Database::insertAnalysis(int simulationID){
 	std::string sql = "INSERT OR REPLACE INTO analysis (id_simulation) VALUES " 
 		"((select id_simulation from analysis where id_simulation = ?1))";
@@ -1042,7 +1078,13 @@ void Database::updatePoints(std::vector<Point>& points, int timestep)
 
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
-	std::string queryVelocity = "update velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4";
+	std::string queryVelocity = "INSERT OR REPLACE INTO velocity "
+								"(x,y,z,rH,aHTP,dHTP,timestep,id_star) VALUES "
+								"((SELECT x FROM velocity WHERE timestep = ?3 and id_star = ?4),"
+								"(SELECT y FROM velocity WHERE timestep = ?3 and id_star = ?4),"
+								"(SELECT z FROM velocity WHERE timestep = ?3 and id_star = ?4),"
+								"(SELECT rH FROM velocity WHERE timestep = ?3 and id_star = ?4),"
+								"?1,?2,?3,?4)";
 	sqlite3_stmt* stmtVelocity;
 	sqlite3_prepare_v2(db, queryVelocity.c_str(), static_cast<int>(queryVelocity.size()), &stmtVelocity, nullptr);
 	for (Point& point : points) {

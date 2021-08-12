@@ -51,6 +51,11 @@ public:
 	int Database::insertSimulation();
 	/** @brief inserts the stars (including positions and velocities)*/
 	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0, bool clusterStars=true);
+
+	void delede_star(int simulation_id, int star_id);
+
+	void delete_stars(const int simulation_id, const std::vector<int> stars_to_delete);
+
 	/** @brief inserts the analysis parameters for the given simulation*/
 	int insertAnalysis(int simulationID);
 	/** @brief inserts (or replaces/updates) one record of kinetic, potential and total energy */

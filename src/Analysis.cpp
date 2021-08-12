@@ -187,7 +187,7 @@ void Analysis::write(){
 void Analysis::generateHTPVelocity(bool observed)
 {
 	std::vector<std::vector<Point>>& points = database->select_time_series_points(id, 0, 2,-1,observed);
-
+	std::vector<int> stars_to_delete = {};
 	int errorCounter = 0;
 
 	for (Point& point0 : points[0]) { // loop through all points at timestep i
@@ -205,7 +205,7 @@ void Analysis::generateHTPVelocity(bool observed)
 		}
 		else
 		{
-			database->delede_star(futurePoint.id);
+			stars_to_delete.push_back(futurePoint.id);
 			futurePoint.id = point0.id;
 		}
 		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
@@ -213,7 +213,10 @@ void Analysis::generateHTPVelocity(bool observed)
 	}
 	if(!observed)
 		std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
-	database->updatePoints(points[0]);
+	else {
+		database->delete_stars(id, stars_to_delete);
+	}
+	database->updatePoints(points[0],0);
 }
 
 

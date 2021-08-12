@@ -43,8 +43,8 @@ def plot_points_velocity(observed_points,simulated_points):
     plt.scatter(observed_points[:,2], observed_points[:,3], s=1, c='b', marker="s", label='observed')
     plt.scatter(simulated_points[:,2], simulated_points[:,3], s=1, c='r', marker="o", label='simulated')
 
-    plt.xlabel('ascension [arcsec]', fontsize=16)
-    plt.ylabel('declination [arcsec]', fontsize=16)
+    plt.xlabel('v_asc [arcsec/dt]', fontsize=16)
+    plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
     plt.legend(loc='upper left')
     plt.show()
     #name = output+'\starPositions'+str(int(i))
