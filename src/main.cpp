@@ -163,7 +163,7 @@ int main() {
 					//HTP velocity
 					std::cout << "generating HTP velocities ..." << std::endl;
 					Analysis analysis = Analysis(simulationID, &db);
-					analysis.generateHTPVelocity(false);
+					analysis.generateHTPVelocity(false,false);
 					std::cout << "done\n" << std::endl;
 				}
 				else if (selection == 2) {

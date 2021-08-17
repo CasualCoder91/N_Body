@@ -104,7 +104,7 @@ public: //methods
      @param nTimesteps the amount of timesteps used for each number of stars.
      @param integrator the integrator used for integration over time.
      */
-    void generateHTPVelocity(bool observed = false);
+    void generateHTPVelocity(bool observed = false, bool force_correct_selection = false);
 
     void cluster(std::vector<Point>& points);
 

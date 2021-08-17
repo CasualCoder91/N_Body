@@ -184,37 +184,52 @@ void Analysis::write(){
 	}
 }
 
-void Analysis::generateHTPVelocity(bool observed)
+void Analysis::generateHTPVelocity(bool observed, bool force_correct_selection)
 {
 	std::vector<std::vector<Point>>& points = database->select_time_series_points(id, 0, 2,-1,observed);
 	std::vector<int> stars_to_delete = {};
 	int errorCounter = 0;
 
-	for (Point& point0 : points[0]) { // loop through all points at timestep i
-		double minDist = -1;
-		Point futurePoint;
-		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
-			double currentDist = point0.getDistance(point1);
-			if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < Constants::epsMagnitude) {
-				minDist = currentDist;
-				futurePoint = point1;
-			}
-		}
-		if (point0.id != futurePoint.id && !observed) {
-			errorCounter++;
-		}
-		else
-		{
-			stars_to_delete.push_back(futurePoint.id);
-			futurePoint.id = point0.id;
-		}
-		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
-		point0.velocity[1] = futurePoint.y - point0.y;
+	if (observed && force_correct_selection) {
+		std::cout << "Forcing correct velocity estimation may only be used for simulated stars!\naborting!" << std::endl;
 	}
-	if(!observed)
-		std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
+
+	if (force_correct_selection) {
+		for (Point& point0 : points[0]) {
+			Point futurePoint;
+			auto it = std::find_if(points[1].begin(), points[1].end(), [point0](const Point& obj) {return obj.id == point0.id; });
+			point0.velocity[0] = it->x - point0.x; //tecnically division by dt needed but dt is equal for all points
+			point0.velocity[1] = it->y - point0.y;
+		}
+	}
 	else {
-		database->delete_stars(id, stars_to_delete);
+		for (Point& point0 : points[0]) { // loop through all points at timestep i
+			double minDist = -1;
+			Point futurePoint;
+			//Point esimated_point_moved = Point(point0.id, point0.x + 0.165583299404586, point0.y, point0.clusterStar, point0.magnitude);
+			for (Point& point1 : points[1]) { //compare to all points at timestep i+1
+				double currentDist = point0.getDistance(point1);
+				if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < Constants::epsMagnitude) {
+					minDist = currentDist;
+					futurePoint = point1;
+				}
+			}
+			if (point0.id != futurePoint.id && !observed) {
+				errorCounter++;
+			}
+			else
+			{
+				stars_to_delete.push_back(futurePoint.id);
+				futurePoint.id = point0.id;
+			}
+			point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
+			point0.velocity[1] = futurePoint.y - point0.y;
+		}
+		if (!observed)
+			std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
+		else {
+			database->delete_stars(id, stars_to_delete);
+		}
 	}
 	database->updatePoints(points[0],0);
 }

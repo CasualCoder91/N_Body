@@ -80,27 +80,27 @@ void Simulation::run(){
 			root.calculateMassDistribution();
 
 			//Force clusterStars -- use if Euler
-			//for (int j = 0; j < clusterStars.size(); ++j) {
-			//	clusterStars[j]->acceleration.reset();
-			//	potential->applyForce(clusterStars[j]);
-			//	root.applyForce(clusterStars[j]->position, clusterStars[j]->acceleration);
-			//}
-			//integrator.euler(clusterStars);
+			for (int j = 0; j < clusterStars.size(); ++j) {
+				clusterStars[j]->acceleration.reset();
+				potential->applyForce(clusterStars[j]);
+				root.applyForce(clusterStars[j]->position, clusterStars[j]->acceleration);
+			}
+			integrator.euler(clusterStars);
 
-			integrator.Leapfrog(clusterStars, &root, this->potential);
+			//integrator.Leapfrog(clusterStars, &root, this->potential);
 		}
 
 		//Force fieldStars -- use if Euler
-		//if (fieldStars.size() > 0) {
-		//	for (int i = 0; i < fieldStars.size(); ++i) {
-		//		fieldStars[i]->acceleration.reset();
-		//		potential->applyForce(fieldStars[i]);
-		//	}
-		//}
+		if (fieldStars.size() > 0) {
+			for (int i = 0; i < fieldStars.size(); ++i) {
+				fieldStars[i]->acceleration.reset();
+				potential->applyForce(fieldStars[i]);
+			}
+		}
 
 		if (fieldStars.size() > 0) {
-			//integrator.euler(fieldStars);
-			integrator.Leapfrog(fieldStars, this->potential);
+			integrator.euler(fieldStars);
+			//integrator.Leapfrog(fieldStars, this->potential);
 		}
 
 	}

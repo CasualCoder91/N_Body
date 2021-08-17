@@ -1,0 +1,6 @@
+with adding average displacement
+epsMagnitude = 0.0000000001
+60 nWrong 
+
+epsMagnitude = 0.000000001
+590 nWrong
