@@ -186,52 +186,134 @@ void Analysis::write(){
 
 void Analysis::generateHTPVelocity(bool observed, bool force_correct_selection)
 {
-	std::vector<std::vector<Point>>& points = database->select_time_series_points(id, 0, 2,-1,observed);
-	std::vector<int> stars_to_delete = {};
-	int errorCounter = 0;
-
 	if (observed && force_correct_selection) {
 		std::cout << "Forcing correct velocity estimation may only be used for simulated stars!\naborting!" << std::endl;
+		return;
 	}
 
+	std::vector<Point> points_t0 = database->select_points(id, 0, -1, observed);
+	std::vector<Point> points_t1 = database->select_points(id, 1, -1, observed);
+
 	if (force_correct_selection) {
-		for (Point& point0 : points[0]) {
+		for (Point& point0 : points_t0) {
 			Point futurePoint;
-			auto it = std::find_if(points[1].begin(), points[1].end(), [point0](const Point& obj) {return obj.id == point0.id; });
+			auto it = std::find_if(points_t1.begin(), points_t1.end(), [point0](const Point& obj) {return obj.id == point0.id; });
 			point0.velocity[0] = it->x - point0.x; //tecnically division by dt needed but dt is equal for all points
 			point0.velocity[1] = it->y - point0.y;
 		}
+		database->updatePoints(points_t0, 0);
+		return;
+	}
+
+	arma::mat mat_points_t0 = arma::mat(2, points_t0.size());
+	for (size_t i = 0; i < points_t0.size(); i++) {
+		arma::vec column = arma::vec(2);
+		column.at(0) = points_t0[i].x;
+		column.at(1) = points_t0[i].y;
+		mat_points_t0.col(i) = column;
+	}
+
+	arma::mat mat_points_t1 = arma::mat(2, points_t1.size());
+	for (size_t i = 0; i < points_t1.size(); i++) {
+		arma::vec column = arma::vec(2);
+		column.at(0) = points_t1[i].x;
+		column.at(1) = points_t1[i].y;
+		mat_points_t1.col(i) = column;
+	}
+
+	mlpack::range::RangeSearch<mlpack::metric::EuclideanDistance, arma::mat, mlpack::tree::BallTree> a(mat_points_t0);
+	// The vector-of-vector objects we will store output in.
+	std::vector<std::vector<size_t> > resultingNeighbors;
+	std::vector<std::vector<double> > resultingDistances;
+	// The range we will use.
+	mlpack::math::Range r(0.00, 0.5);
+	a.Search(mat_points_t1, r, resultingNeighbors, resultingDistances);
+	std::vector<int> stars_to_delete = {};
+	int errorCounter = 0;
+	for (size_t point_t1_index = 0; point_t1_index < resultingNeighbors.size(); point_t1_index++) {
+		for (size_t point_t0_index = 0; point_t0_index < resultingNeighbors[point_t1_index].size(); point_t0_index++) {
+			if (abs(1 - points_t1[point_t1_index].magnitude / points_t0[resultingNeighbors[point_t1_index][point_t0_index]].magnitude) < Constants::epsMagnitude ) {
+				if (points_t0[resultingNeighbors[point_t1_index][point_t0_index]].id != points_t1[point_t1_index].id && !observed) {
+					errorCounter++;
+				}
+				else
+				{
+					stars_to_delete.push_back(points_t1[point_t1_index].id);
+					points_t1[point_t1_index].id = points_t0[resultingNeighbors[point_t1_index][point_t0_index]].id;
+				}
+				points_t0[resultingNeighbors[point_t1_index][point_t0_index]].velocity[0] = points_t1[point_t1_index].x - points_t0[resultingNeighbors[point_t1_index][point_t0_index]].x; //tecnically division by dt needed but dt is equal for all points
+				points_t0[resultingNeighbors[point_t1_index][point_t0_index]].velocity[1] = points_t1[point_t1_index].y - points_t0[resultingNeighbors[point_t1_index][point_t0_index]].y;
+			}
+		}
+	}
+	if (!observed) {
+		std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
 	}
 	else {
-		for (Point& point0 : points[0]) { // loop through all points at timestep i
-			double minDist = -1;
-			Point futurePoint;
-			//Point esimated_point_moved = Point(point0.id, point0.x + 0.165583299404586, point0.y, point0.clusterStar, point0.magnitude);
-			for (Point& point1 : points[1]) { //compare to all points at timestep i+1
-				double currentDist = point0.getDistance(point1);
-				if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < Constants::epsMagnitude) {
-					minDist = currentDist;
-					futurePoint = point1;
-				}
-			}
-			if (point0.id != futurePoint.id && !observed) {
-				errorCounter++;
-			}
-			else
-			{
-				stars_to_delete.push_back(futurePoint.id);
-				futurePoint.id = point0.id;
-			}
-			point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
-			point0.velocity[1] = futurePoint.y - point0.y;
-		}
-		if (!observed)
-			std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
-		else {
-			database->delete_stars(id, stars_to_delete);
-		}
+		database->delete_stars(id, stars_to_delete);
 	}
-	database->updatePoints(points[0],0);
+	database->updatePoints(points_t0, 0);
+	return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//std::vector<std::vector<Point>>& points = database->select_time_series_points(id, 0, 2,-1,observed);
+	//std::vector<int> stars_to_delete = {};
+	//int errorCounter = 0;
+
+	//if (observed && force_correct_selection) {
+	//	std::cout << "Forcing correct velocity estimation may only be used for simulated stars!\naborting!" << std::endl;
+	//	return;
+	//}
+
+	//if (force_correct_selection) {
+	//	for (Point& point0 : points[0]) {
+	//		Point futurePoint;
+	//		auto it = std::find_if(points[1].begin(), points[1].end(), [point0](const Point& obj) {return obj.id == point0.id; });
+	//		point0.velocity[0] = it->x - point0.x; //tecnically division by dt needed but dt is equal for all points
+	//		point0.velocity[1] = it->y - point0.y;
+	//	}
+	//}
+	//else {
+	//	for (Point& point0 : points[0]) { // loop through all points at timestep i
+	//		double minDist = -1;
+	//		Point futurePoint;
+	//		//Point esimated_point_moved = Point(point0.id, point0.x + 0.165583299404586, point0.y, point0.clusterStar, point0.magnitude);
+	//		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
+	//			double currentDist = point0.getDistance(point1);
+	//			if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < Constants::epsMagnitude) {
+	//				minDist = currentDist;
+	//				futurePoint = point1;
+	//			}
+	//		}
+	//		if (point0.id != futurePoint.id && !observed) {
+	//			errorCounter++;
+	//		}
+	//		else
+	//		{
+	//			stars_to_delete.push_back(futurePoint.id);
+	//			futurePoint.id = point0.id;
+	//		}
+	//		point0.velocity[0] = futurePoint.x - point0.x; //tecnically division by dt needed but dt is equal for all points
+	//		point0.velocity[1] = futurePoint.y - point0.y;
+	//	}
+	//	if (!observed)
+	//		std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
+	//	else {
+	//		database->delete_stars(id, stars_to_delete);
+	//	}
+	//}
+	//database->updatePoints(points[0],0);
 }
 
 
