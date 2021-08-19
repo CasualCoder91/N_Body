@@ -1,61 +1,48 @@
 from point import Point
 import numpy as np
-from config import eps_magnitude
+#from config import eps_magnitude
 import matplotlib.pyplot as plt
 from sklearn.neighbors import BallTree
 
-#todo: optimize for speed
-def generate_velocity_and_index(points_t0, points_t1):
-	""" 
-    Extracting the stars(=points) at t1 from the image online gives information about position and magnitude but not velocity or id of the star.
-	This function finds the corresponding stars from the previous timestep and sets the id of the future timestep 
-	as well as the velocity of the stars from the previous timestep accordingly.
+#currently not in use. This part is done in cpp after writing observed stars to db
+#def generate_velocity_and_index(points_t0, points_t1):
+#	""" 
+#    Extracting the stars(=points) at t1 from the image online gives information about position and magnitude but not velocity or id of the star.
+#	This function finds the corresponding stars from the previous timestep and sets the id of the future timestep 
+#	as well as the velocity of the stars from the previous timestep accordingly.
+#
+#    :returns: updated point arrays
+#    """
+#	vectorized_positions = np.vectorize(lambda obj: obj.position, otypes=[np.ndarray])
+#
+#	positions_t1 = vectorized_positions(points_t1)
+#	positions_t1 = np.stack(positions_t1)
+#
+#	positions_t0 = vectorized_positions(points_t0)
+#	positions_t0 = np.stack(positions_t0)
+#
+#	tree = BallTree(positions_t1)
+#
+#	n_nearest_neighbors = 10
+#
+#	distances, indices = tree.query(positions_t0, k=n_nearest_neighbors) #k = number of nearest neighbors
+#
+#	indices = indices.transpose()# closest indices are at indices[0]
+#
+#	
+#
+#	for t0_i,t1_is in enumerate(indices.T):
+#		for dist_index, t1_i in enumerate(t1_is):#go through future points starting at closest one
+#			if abs(1 - points_t1[t1_i].magnitude / points_t0[t0_i].magnitude) < eps_magnitude:
+#				points_t0[t0_i].velocity = points_t1[t1_i].position - points_t0[t0_i].position
+#				points_t1[t1_i].id = points_t0[t0_i].id
+#				break
+#			elif dist_index == n_nearest_neighbors-1:
+#				print("""Warning: eps_magnitude to strict or not enough nearest neighbors!\nignoring eps""")
+#				points_t0[t0_i].velocity = points_t1[t1_is[0]].position - points_t0[t0_i].position
+#				points_t1[t1_is[0]].id = points_t0[t0_i].id
 
-    :returns: updated point arrays
-    """
-	vectorized_positions = np.vectorize(lambda obj: obj.position, otypes=[np.ndarray])
-
-	positions_t1 = vectorized_positions(points_t1)
-	positions_t1 = np.stack(positions_t1)
-
-	positions_t0 = vectorized_positions(points_t0)
-	positions_t0 = np.stack(positions_t0)
-
-	tree = BallTree(positions_t1)
-
-	n_nearest_neighbors = 10
-
-	distances, indices = tree.query(positions_t0, k=n_nearest_neighbors) #k = number of nearest neighbors
-
-	indices = indices.transpose()# closest indices are at indices[0]
-
-	
-
-	for t0_i,t1_is in enumerate(indices.T):
-		for dist_index, t1_i in enumerate(t1_is):#go through future points starting at closest one
-			if abs(1 - points_t1[t1_i].magnitude / points_t0[t0_i].magnitude) < eps_magnitude:
-				points_t0[t0_i].velocity = points_t1[t1_i].position - points_t0[t0_i].position
-				points_t1[t1_i].id = points_t0[t0_i].id
-				break
-			elif dist_index == n_nearest_neighbors-1:
-				print("""Warning: eps_magnitude to strict or not enough nearest neighbors!\nignoring eps""")
-				points_t0[t0_i].velocity = points_t1[t1_is[0]].position - points_t0[t0_i].position
-				points_t1[t1_is[0]].id = points_t0[t0_i].id
-
-
-	#for i in range(len(points_t0)): # loop through all points at timestep 0
-	#	min_dist = -1
-	#	future_point_index = -1
-	#
-	#	for j in range(len(points_t1)): #compare to all points at timestep 1
-	#		current_dist = points_t0[i].get_distance(points_t1[j])
-	#		if (current_dist < min_dist or min_dist == -1) and abs(1 - points_t1[j].magnitude / points_t0[i].magnitude) < eps_magnitude:
-	#			min_dist = current_dist
-	#			future_point_index = j
-	#	points_t0[i].velocity = points_t1[future_point_index].position - points_t0[i].position #tecnically division by dt needed but dt is equal for all points
-	#	#points_t0[i].velocity[1] = points_t1[future_point_index].position[1] - points_t0[i].position[1];
-	#	points_t1[future_point_index].id = points_t0[i].id
-	return points_t0, points_t1
+#	return points_t0, points_t1
 
 def estimate_MKs():
 	x = [19.8,18.5,17.7,15,11,10,7.3,6.0,5.4,5.1,4.7,4.3,3.92,3.38,2.75,2.68,2.18,2.05,1.98,1.86,1.93,1.88,1.83,1.77,1.81,1.75,1.61,1.50,1.46,1.44,1.38,1.33,1.25,1.21,1.18,1.13,1.08,1.06,1.03,1.00,0.99,0.985,0.98,0.97,0.95,0.94,0.90,0.88,0.86,0.82,0.78,0.73,0.70,0.69,0.64,0.62,0.59,0.57,0.54,0.50,0.47,0.44,0.40,0.37,0.27,0.23,0.184,0.162,0.123,0.102,0.093,0.090,0.088,0.085,0.080,0.079,0.078,0.077,0.076,0.075,0.01]

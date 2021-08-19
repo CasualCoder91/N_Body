@@ -17,4 +17,4 @@ save_img = True
 n_pixel = 14976 #Whole picutre: 14976 | 1 fov: 4096
 
 #analysis
-eps_magnitude = 0.00001
+#eps_magnitude = 0.00001

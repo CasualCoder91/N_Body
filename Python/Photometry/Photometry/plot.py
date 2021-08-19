@@ -65,6 +65,7 @@ def main():
     sp_arr = np.vstack(simulated_points[:]).astype(float)
 
     plot_points_velocity(op_arr,sp_arr)
+    #plot_points(op_arr,sp_arr)
 
     #print(float_arr)
 

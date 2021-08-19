@@ -18,7 +18,7 @@ from astropy.table import QTable
 
 from config import fits_path, output_path, save_img, timestep, pixelfactor,n_pixel, exposure_time
 from database import Database
-from util import generate_velocity_and_index, magnitude_histogram
+#from util import magnitude_histogram
 from point import Point
 
 def flux_to_mag(flux):
@@ -83,7 +83,7 @@ def use_DAOStarFinder(image):
     mean, median, std = sigma_clipped_stats(image, sigma=3.0)
 
     bkg_sigma = mad_std(image)
-    daofind = DAOStarFinder(fwhm=3., threshold=5.*bkg_sigma, roundlo=-round_bound,roundhi=round_bound,sharplo=sharplo)
+    daofind = DAOStarFinder(fwhm=3., threshold=5.*bkg_sigma, roundlo=-round_bound,roundhi=round_bound,sharplo=sharplo,)
     sources = daofind(image)#daofind(image - median)
     #for col in sources.colnames:
     #    sources[col].info.format = '%.8g'  # for consistent table output

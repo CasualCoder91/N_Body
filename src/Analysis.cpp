@@ -221,36 +221,53 @@ void Analysis::generateHTPVelocity(bool observed, bool force_correct_selection)
 		mat_points_t1.col(i) = column;
 	}
 
-	mlpack::range::RangeSearch<mlpack::metric::EuclideanDistance, arma::mat, mlpack::tree::BallTree> a(mat_points_t0);
+	//mlpack::range::RangeSearch<mlpack::metric::EuclideanDistance, arma::mat, mlpack::tree::BallTree> a(mat_points_t0);
+
+	mlpack::neighbor::KNN a(mat_points_t0);
+
+
 	// The vector-of-vector objects we will store output in.
-	std::vector<std::vector<size_t> > resultingNeighbors;
-	std::vector<std::vector<double> > resultingDistances;
+	//std::vector<std::vector<size_t> > resultingNeighbors;
+	//std::vector<std::vector<double> > resultingDistances;
 	// The range we will use.
-	mlpack::math::Range r(0.00, 0.5);
-	a.Search(mat_points_t1, r, resultingNeighbors, resultingDistances);
+
+	//mlpack::math::Range r(0.00, 0.5);
+	//a.Search(mat_points_t1, r, resultingNeighbors, resultingDistances);
+
+	arma::Mat<size_t> resultingNeighbors;
+	arma::mat resultingDistances;
+
+	a.Search(mat_points_t1, 40, resultingNeighbors, resultingDistances);
+
 	std::vector<int> stars_to_delete = {};
 	int errorCounter = 0;
-	for (size_t point_t1_index = 0; point_t1_index < resultingNeighbors.size(); point_t1_index++) {
-		for (size_t point_t0_index = 0; point_t0_index < resultingNeighbors[point_t1_index].size(); point_t0_index++) {
-			if (abs(1 - points_t1[point_t1_index].magnitude / points_t0[resultingNeighbors[point_t1_index][point_t0_index]].magnitude) < Constants::epsMagnitude ) {
-				if (points_t0[resultingNeighbors[point_t1_index][point_t0_index]].id != points_t1[point_t1_index].id && !observed) {
+	int error_couter_cluster = 0;
+	for (size_t point_t1_index = 0; point_t1_index < resultingNeighbors.n_cols; point_t1_index++) {
+		for (size_t point_t0_index = 0; point_t0_index < resultingNeighbors.n_rows; point_t0_index++) {
+			if (abs(1 - points_t1[point_t1_index].magnitude / points_t0[resultingNeighbors(point_t0_index,point_t1_index)].magnitude) < Constants::epsMagnitude ) {
+				if (points_t0[resultingNeighbors(point_t0_index, point_t1_index)].id != points_t1[point_t1_index].id && !observed) {
 					errorCounter++;
+					if (points_t0[resultingNeighbors(point_t0_index, point_t1_index)].clusterStar) {
+						error_couter_cluster++;
+					}
 				}
 				else
 				{
 					stars_to_delete.push_back(points_t1[point_t1_index].id);
-					points_t1[point_t1_index].id = points_t0[resultingNeighbors[point_t1_index][point_t0_index]].id;
+					points_t1[point_t1_index].id = points_t0[resultingNeighbors(point_t0_index, point_t1_index)].id;
 				}
-				points_t0[resultingNeighbors[point_t1_index][point_t0_index]].velocity[0] = points_t1[point_t1_index].x - points_t0[resultingNeighbors[point_t1_index][point_t0_index]].x; //tecnically division by dt needed but dt is equal for all points
-				points_t0[resultingNeighbors[point_t1_index][point_t0_index]].velocity[1] = points_t1[point_t1_index].y - points_t0[resultingNeighbors[point_t1_index][point_t0_index]].y;
+				points_t0[resultingNeighbors(point_t0_index, point_t1_index)].velocity[0] = points_t1[point_t1_index].x - points_t0[resultingNeighbors(point_t0_index, point_t1_index)].x; //tecnically division by dt needed but dt is equal for all points
+				points_t0[resultingNeighbors(point_t0_index, point_t1_index)].velocity[1] = points_t1[point_t1_index].y - points_t0[resultingNeighbors(point_t0_index, point_t1_index)].y;
+				break;
 			}
 		}
 	}
 	if (!observed) {
 		std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
+		std::cout << " - #Wrong cluster stars: " << error_couter_cluster << std::endl;
 	}
 	else {
-		database->delete_stars(id, stars_to_delete);
+		//database->delete_stars(id, stars_to_delete);
 	}
 	database->updatePoints(points_t0, 0);
 	return;
@@ -320,13 +337,14 @@ void Analysis::generateHTPVelocity(bool observed, bool force_correct_selection)
 void Analysis::cluster(std::vector<Point>& points) {
 
 	//remove points with 0 velocity because they could be identified as a cluster.
-	//points.erase(std::remove_if(
-	//	points.begin(), points.end(),
-	//	[](const Point& x) {
-	//		return x.velocity[0] == 0 && x.velocity[1] == 0;
-	//	}), points.end());
+	//0 velocity happens if no star with similar magnitude was found between timesteps
+	points.erase(std::remove_if(
+		points.begin(), points.end(),
+		[](const Point& x) {
+			return x.velocity[0] == 0 && x.velocity[1] == 0;
+		}), points.end());
 
-	mlpack::dbscan::DBSCAN<> dbscan(7.46105964516358e-06*0.3, 200);
+	mlpack::dbscan::DBSCAN<> dbscan(7.46105964516358e-06*0.5, 200);
 
 	arma::mat matPoints = arma::mat(2, points.size());
 	for (size_t i = 0; i < points.size();i++) {

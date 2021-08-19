@@ -2,6 +2,7 @@ import sqlite3
 import numpy as np #used in makeSource
 import matplotlib.pyplot as plt
 import scopesim as sim
+sim.rc.__config__['!SIM.sub_pixel.flag'] = True
 import pyckles #used for spectra in makeSource
 import scopesim_templates as sim_tp
 from astropy.table import Table

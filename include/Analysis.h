@@ -12,6 +12,7 @@
 
 #include <mlpack/core.hpp>
 #include <mlpack/methods/dbscan/dbscan.hpp>
+#include <mlpack/methods/neighbor_search/neighbor_search.hpp>
 #include <mlpack/methods/range_search/range_search.hpp>
 
 #include "Star.h"
