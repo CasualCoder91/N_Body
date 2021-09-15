@@ -123,21 +123,14 @@ def main():
 
     hdu = fits.open(fits_path)[1]
     image = hdu.data[:, :].astype(float)
-    print("[1]DAOStarFinder\n[2]Image Segmentation")
-    user_input = input()
-    selection = int(user_input)
+
     stars = QTable()
-    if selection == 1:
-        cls = lambda: print('\n'*200)
-        cls()
-        print("[1]DAOStarFinder <- \n[2]Image Segmentation")
-        stars = use_DAOStarFinder(image)
-    elif selection == 2:
-        stars = image_segmentation(image,save_color=True,deblend=False)
+    stars = use_DAOStarFinder(image)
     stars = stars[[np.isfinite(star['flux']) for star in stars]]
-    print(stars.info)
-    print("[1] Write found stars to DB!\n[2] no ty")
-    selection = int(input())
+    # print(stars.info)
+    # print("[1] Write found stars to DB!\n[2] no ty")
+    print("StarFinder done\nWriting stars to DB")
+    selection = 1 # int(input())
     if selection == 1:
         db = Database()
         origin = n_pixel/2.+0.5 #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
@@ -146,7 +139,8 @@ def main():
             points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
                                 velocity = np.array([np.nan,np.nan]),
                                 id=-1,
-                                magnitude=flux_to_mag(star['flux']))
+                                magnitude=flux_to_mag(star['flux']),
+                                cluster_id=-1)
         if(timestep>0):
             #points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
             #points_t0, points = generate_velocity_and_index(points_t0,points)

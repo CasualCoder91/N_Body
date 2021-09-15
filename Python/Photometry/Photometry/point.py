@@ -7,11 +7,12 @@ class Point:
     velocity: np.array([np.nan,np.nan])
     id: int #usually equal to id of the star
     magnitude: float
+    cluster_id: int
 
     def get_distance(self,pt2) -> float:
         return np.linalg.norm(self.position-pt2.position)
 
     def __array__(self) -> np.ndarray:
-        return np.array([self.position[0], self.position[1], self.velocity[0],self.velocity[1]])
+        return np.array([self.position[0], self.position[1], self.velocity[0],self.velocity[1],self.cluster_id,self.magnitude])
 
 

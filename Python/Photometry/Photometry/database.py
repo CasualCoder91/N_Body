@@ -137,7 +137,7 @@ class Database:
 
     def select_points(self, timestep, observed = True):
         cur = self.conn.cursor()
-        cur.execute("""SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude 
+        cur.execute("""SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude, star.idCluster 
 		    FROM star 
 		    LEFT JOIN position on position.id_star = star.id 
 		    LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep 
@@ -146,7 +146,22 @@ class Database:
         result = cur.fetchall()
         array = np.ndarray((len(result),),dtype=object)
         for i, line in enumerate(result):
-            array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7])
+            array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
+        return array
+
+    def select_cluster(self, timestep, observed = True):
+        cur = self.conn.cursor()
+        cur.execute("""SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude, star.idCluster 
+		    FROM star 
+		    LEFT JOIN position on position.id_star = star.id 
+		    LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep 
+		    WHERE star.id_simulation = ?1 AND position.timestep = ?2 
+            AND star.idCluster > -1
+		    AND star.isObserved = ?3""", (simulation_id,timestep,observed))
+        result = cur.fetchall()
+        array = np.ndarray((len(result),),dtype=object)
+        for i, line in enumerate(result):
+            array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
         return array
 
     def insert_points(self,points,timestep):

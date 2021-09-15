@@ -1161,7 +1161,6 @@ void Database::updatePoints(std::vector<Point>& points, int timestep)
 
 void Database::set_fk_star(std::vector<Point>& points)
 {
-	int timeStep = 0;
 
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
