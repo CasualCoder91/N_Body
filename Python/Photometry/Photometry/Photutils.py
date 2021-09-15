@@ -16,7 +16,7 @@ from astropy.stats import gaussian_fwhm_to_sigma
 from astropy.visualization import SqrtStretch, simple_norm
 from astropy.table import QTable
 
-from config import fits_path, output_path, save_img, timestep, pixelfactor,n_pixel, exposure_time
+from config import output_path, save_img, pixelfactor,n_pixel, exposure_time
 from database import Database
 #from util import magnitude_histogram
 from point import Point
@@ -102,7 +102,7 @@ def use_DAOStarFinder(image):
         fig.savefig(output_path + "/DAOPhotutils_{0}round_{1}sharp_{2}.png".format(round_bound,sharplo,datetime.now().strftime("%Y_%m_%d_%H%M%S")),dpi=960)
     return sources
 
-def main():
+def pu_all():
 
     #t0 = np.ndarray((2,),dtype=object)
     #t0[0] = Point(position=np.array([1,2]),velocity = np.array([np.nan,np.nan]),id=1,magnitude=0.5)
@@ -120,38 +120,40 @@ def main():
     #points_simulated = db.select_points(0,False) 
     #magnitude_histogram(points_simulated,points_observed)
     #return
+    print("Observing stars ...")
 
-    hdu = fits.open(fits_path)[1]
-    image = hdu.data[:, :].astype(float)
+    for timestep in [0,1]:
+        hdu = fits.open(output_path +"/scopesim_t"+str(timestep)+".fits")[1]
+        image = hdu.data[:, :].astype(float)
 
-    stars = QTable()
-    stars = use_DAOStarFinder(image)
-    stars = stars[[np.isfinite(star['flux']) for star in stars]]
-    # print(stars.info)
-    # print("[1] Write found stars to DB!\n[2] no ty")
-    print("StarFinder done\nWriting stars to DB")
-    selection = 1 # int(input())
-    if selection == 1:
-        db = Database()
-        origin = n_pixel/2.+0.5 #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
-        points = np.ndarray((len(stars),),dtype=object)
-        for i, star in enumerate(stars):
-            points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
-                                velocity = np.array([np.nan,np.nan]),
-                                id=-1,
-                                magnitude=flux_to_mag(star['flux']),
-                                cluster_id=-1)
-        if(timestep>0):
-            #points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
-            #points_t0, points = generate_velocity_and_index(points_t0,points)
-            #db.insert_velocities_HTP(timestep-1,points_t0)
-            #db.insert_positions_HTP(timestep,points) #positions with star id = -1 -> asign velocity and id via c++
-            db.insert_points(points,timestep)
-            #db.update_points(points,timestep)#inserts position and velocity at timestep
-        else:
-            db.insert_points(points,timestep)
+        stars = QTable()
+        stars = use_DAOStarFinder(image)
+        stars = stars[[np.isfinite(star['flux']) for star in stars]]
+        # print(stars.info)
+        # print("[1] Write found stars to DB!\n[2] no ty")
+        print("StarFinder done\nWriting stars to DB")
+        selection = 1 # int(input())
+        if selection == 1:
+            db = Database()
+            origin = n_pixel/2.+0.5 #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
+            points = np.ndarray((len(stars),),dtype=object)
+            for i, star in enumerate(stars):
+                points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
+                                    velocity = np.array([np.nan,np.nan]),
+                                    id=-1,
+                                    magnitude=flux_to_mag(star['flux']),
+                                    cluster_id=-1)
+            if(timestep>0):
+                #points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
+                #points_t0, points = generate_velocity_and_index(points_t0,points)
+                #db.insert_velocities_HTP(timestep-1,points_t0)
+                #db.insert_positions_HTP(timestep,points) #positions with star id = -1 -> asign velocity and id via c++
+                db.insert_points(points,timestep)
+                #db.update_points(points,timestep)#inserts position and velocity at timestep
+            else:
+                db.insert_points(points,timestep)
 
 
 
 if __name__ == '__main__':
-    main()
+    pu_all()

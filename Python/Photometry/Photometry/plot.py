@@ -24,10 +24,20 @@ def plot_points(observed_points,simulated_points):
     plt.ylabel('declination [arcsec]', fontsize=16)
     plt.legend(loc='upper left')
     plt.show()
-    #name = output+'\starPositions'+str(int(i))
 
-    #plt.savefig(name+'.jpg')
-    #plt.close(fig)
+def plot_points(simulated_points):
+
+    fig = plt.figure()
+
+    fig.set_size_inches(9,9)
+
+    plt.scatter(simulated_points[:,0], simulated_points[:,1], s=1, c=simulated_points[:,4], marker="o", label='simulated')
+
+    plt.xlabel('ascension [arcsec]', fontsize=16)
+    plt.ylabel('declination [arcsec]', fontsize=16)
+    plt.legend(loc='upper left')
+    plt.show()
+
 
 def plot_magnitude_hist(observed_points,simulated_points):
     fig = plt.figure()
@@ -66,10 +76,10 @@ def plot_points_velocity(observed_points,simulated_points):
 
 def main():
     db = Database()
-    #observed_points = db.select_points(0, True)
-    #simulated_points = db.select_points(0, False)
-    observed_points = db.select_cluster(0, True)
-    simulated_points = db.select_cluster(0, False)
+    observed_points = db.select_points(0, True)
+    simulated_points = db.select_points(0, False)
+    #observed_points = db.select_cluster(0, True)
+    #simulated_points = db.select_cluster(0, False)
 
     #print(len(observed_points))
     #print(len(simulated_points))
@@ -78,7 +88,7 @@ def main():
     sp_arr = np.vstack(simulated_points[:]).astype(float)
 
     plot_points_velocity(op_arr,sp_arr)
-    #plot_points(op_arr,sp_arr)
+    #plot_points(sp_arr)
     #plot_magnitude_hist(op_arr,sp_arr)
     #print(float_arr)
 
