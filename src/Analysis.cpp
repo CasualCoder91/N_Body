@@ -344,7 +344,7 @@ void Analysis::cluster(std::vector<Point>& points) {
 			return x.velocity[0] == 0 && x.velocity[1] == 0;
 		}), points.end());
 
-	mlpack::dbscan::DBSCAN<> dbscan(9.98651532830144e-06*0.4, 200);
+	mlpack::dbscan::DBSCAN<> dbscan(0.000381057258287357*0.03, 200);
 
 	arma::mat matPoints = arma::mat(2, points.size());
 	for (size_t i = 0; i < points.size();i++) {

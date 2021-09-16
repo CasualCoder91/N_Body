@@ -151,18 +151,51 @@ class Database:
 
     def select_cluster(self, timestep, observed = True):
         cur = self.conn.cursor()
-        cur.execute("""SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude, star.idCluster 
+
+        sql = """SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude, star.idCluster 
 		    FROM star 
 		    LEFT JOIN position on position.id_star = star.id 
 		    LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep 
-		    WHERE star.id_simulation = ?1 AND position.timestep = ?2 
-            AND star.idCluster > -1
-		    AND star.isObserved = ?3""", (simulation_id,timestep,observed))
+		    WHERE star.id_simulation = ?1 AND position.timestep = ?2"""
+        if(observed):
+            sql+= " AND star.idCluster > -1 AND star.isObserved = 1"
+        else:
+            sql+= " AND star.isCluster = 1 AND star.isObserved = 0"
+        cur.execute(sql, (simulation_id,timestep))
         result = cur.fetchall()
         array = np.ndarray((len(result),),dtype=object)
         for i, line in enumerate(result):
             array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
         return array
+
+    def select_observed_cluster_stars(self, timestep):
+        cur = self.conn.cursor()
+        cur.execute("""select obs.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, obs.isCluster, obs.magnitude, obs.idCluster
+            from star sim 
+            inner join star obs on obs.fkStar=sim.id
+            LEFT join position on position.id_star=obs.id
+            LEFT JOIN velocity on velocity.id_star = obs.id AND position.timestep = velocity.timestep 
+            where sim.id_simulation = ?1
+            AND
+            sim.isCluster=1 
+            AND position.timestep = ?2""", (simulation_id,timestep))
+        result = cur.fetchall()
+        array = np.ndarray((len(result),),dtype=object)
+        for i, line in enumerate(result):
+            array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
+        return array
+
+    def select_distace(self):
+        cur = self.conn.cursor()
+        cur.execute("""select sim_pos.aHTP,sim_pos.dHTP,obs_pos.aHTP,obs_pos.dHTP from star sim 
+            inner join position sim_pos on sim.id=sim_pos.id_star
+            inner join star obs on obs.fkStar=sim.id 
+            inner join position obs_pos on obs.id=obs_pos.id_star
+            where
+            sim_pos.timestep=0 and obs_pos.timestep=0""")
+        rows = np.array(cur.fetchall())
+        return rows
+
 
     def insert_points(self,points,timestep):
         for point in points:

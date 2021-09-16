@@ -64,8 +64,8 @@ void Simulation::run(){
 
 	for (int i = 0; i <= Constants::nTimesteps; i++) {
 		if (i>0 && i % Constants::outputTimestep == 0) {
-			database->timestep(i, clusterStars);
-			database->timestep(i, fieldStars);
+			database->timestep(i/Constants::outputTimestep, clusterStars);
+			database->timestep(i/Constants::outputTimestep, fieldStars);
 			progressBar.Update(i);
 			progressBar.Print();
 		}
