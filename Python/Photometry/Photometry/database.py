@@ -124,14 +124,19 @@ class Database:
             self.conn.commit()
 
 
-    def select_2d_stars(self,timestep):
+    def select_2d_stars(self,timestep,aHTP_min=None,aHTP_max=None,dHTP_min=None,dHTP_max=None):
         cur = self.conn.cursor()
-        cur.execute("""SELECT position.rH, position.aHTP, position.dHTP, star.mass 
+        sql = """SELECT position.rH, position.aHTP, position.dHTP, star.mass 
            FROM star
            INNER JOIN position on position.id_star = star.id
            where star.id_simulation = ?1
            and position.timestep = ?2
-           and position.rH NOT NULL""", (simulation_id,timestep))
+           and position.rH NOT NULL"""
+        if aHTP_min is not None:
+            sql=sql + ' AND position.aHTP > ?3 AND position.aHTP < ?4 AND position.dHTP > ?5 AND position.dHTP < ?6'
+            cur.execute(sql, (simulation_id,timestep,aHTP_min,aHTP_max,dHTP_min,dHTP_max))
+        else:
+            cur.execute(sql, (simulation_id,timestep))
         rows = np.array(cur.fetchall())
         return rows
 

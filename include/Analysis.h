@@ -81,6 +81,10 @@ public: //methods
      @brief calculates the average velocity of the given \p points
      */
     static double average(std::vector<Point>& points);
+    /**
+     @brief calculates the minimum spatial Euclidean distance between all points
+     */
+    double minimum_distance();
 
     /**
      @static

@@ -5,33 +5,20 @@ from database import Database
 from point import Point
 from config import n_pixel
 
-def plot_points(observed_points,simulated_points):
-    #loop timesteps
+def plot_points(b_observed_points=True,b_simulated_points=True):
+
+    db = Database()
     fig = plt.figure()
-
-    fig.set_size_inches(9,9)
-    #print(maxDist[0],maxDist[1])
-    #plotDist = 0.00002345 #np.minimum(maxDist[0],maxDist[1])
-    #
-    #delta = 0.0075
-    #plt.xlim(20.4921513908745-delta, 20.4921513908745+delta)
-    #plt.ylim(-5.09226524786853-delta, -5.09226524786853+delta)
-
-    plt.scatter(observed_points[:,0], observed_points[:,1], s=1, c=observed_points[:,4], marker="s", label='observed')
-    plt.scatter(simulated_points[:,0], simulated_points[:,1], s=1, c=simulated_points[:,4], marker="o", label='simulated')
-
-    plt.xlabel('ascension [arcsec]', fontsize=16)
-    plt.ylabel('declination [arcsec]', fontsize=16)
-    plt.legend(loc='upper left')
-    plt.show()
-
-def plot_points(simulated_points):
-
-    fig = plt.figure()
-
     fig.set_size_inches(9,9)
 
-    plt.scatter(simulated_points[:,0], simulated_points[:,1], s=1, c=simulated_points[:,4], marker="o", label='simulated')
+    if(b_observed_points):
+        observed_points = db.select_points(0, True)
+        op_arr = np.vstack(observed_points[:]).astype(float)
+        plt.scatter(op_arr[:,0], op_arr[:,1], s=1, c='r', marker="s", label='observed')
+    if(b_simulated_points):
+        simulated_points = db.select_points(0, False)
+        sp_arr = np.vstack(simulated_points[:]).astype(float)
+        plt.scatter(sp_arr[:,0], sp_arr[:,1], s=1, c='g', marker="o", label='simulated')
 
     plt.xlabel('ascension [arcsec]', fontsize=16)
     plt.ylabel('declination [arcsec]', fontsize=16)
@@ -97,8 +84,8 @@ def main():
 
     #op_arr = np.vstack(observed_points[:]).astype(float)
     #sp_arr = np.vstack(simulated_points[:]).astype(float)
-
-    plot_points_velocity(True,True)
+    plot_points()
+    #plot_points_velocity(True,True)
     #plot_points(sp_arr)
     #plot_magnitude_hist(op_arr,sp_arr)
     #print(float_arr)

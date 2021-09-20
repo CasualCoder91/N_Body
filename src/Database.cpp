@@ -118,6 +118,7 @@ void Database::setup(){
 		"kinE REAL,"
 		"potE REAL,"
 		"totE REAL,"
+		"min_dist REAL,"
 		"id_simulation INTEGER NOT NULL,"
 		"PRIMARY KEY(dt,id_simulation),"
 		"FOREIGN KEY (id_simulation) "
@@ -284,7 +285,7 @@ int Database::insertAnalysis(int simulationID){
 	return getLastID();
 }
 
-void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, double potE){
+void Database::insertAnalysisdtEnergy(int simulation_id, int dt, double kinE, double potE){
 	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt,kinE,potE,totE,id_simulation,"
 		"avgVel3DCluster, avgVel2DCluster, avgVel3DFS, avgVel2DFS, disp3DCluster, disp2DCluster, disp3DFS, disp2DFS) VALUES "
 		"(?1,?2,?3,?4,?5,"
@@ -302,12 +303,12 @@ void Database::insertAnalysisdtEnergy(int analysisID, int dt, double kinE, doubl
 	sqlite3_bind_double(st, 2, kinE);
 	sqlite3_bind_double(st, 3, potE);
 	sqlite3_bind_double(st, 4, kinE+potE);
-	sqlite3_bind_int(st, 5, analysisID);
+	sqlite3_bind_int(st, 5, simulation_id);
 	int returnCode = sqlite3_step(st);
 	sqlite3_finalize(st);
 }
 
-void Database::insertAnalysisdtVelocity3D(int analysisID, int dt, double avgVel3DCluster, double disp3DCluster, double avgVel3DFS, double disp3DFS){
+void Database::insertAnalysisdtVelocity3D(int simulation_id, int dt, double avgVel3DCluster, double disp3DCluster, double avgVel3DFS, double disp3DFS){
 	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis "
 		              "(dt,avgVel3DCluster,disp3DCluster,avgVel3DFS,disp3DFS,id_simulation,"
 		              "kinE,potE,totE,avgVel2DCluster,avgVel2DFS,disp2DCluster,disp2DFS) VALUES "
@@ -326,12 +327,12 @@ void Database::insertAnalysisdtVelocity3D(int analysisID, int dt, double avgVel3
 	sqlite3_bind_double(st, 3, disp3DCluster);
 	sqlite3_bind_double(st, 4, avgVel3DFS);
 	sqlite3_bind_double(st, 5, disp3DFS);
-	sqlite3_bind_int(st, 6, analysisID);
+	sqlite3_bind_int(st, 6, simulation_id);
 	int returnCode = sqlite3_step(st);
 	sqlite3_finalize(st);
 }
 
-void Database::insertAnalysisdtVelocity2D(int analysisID, int dt, double avgVel2DCluster, double disp2DCluster, double avgVel2DFS, double disp2DFS){
+void Database::insertAnalysisdtVelocity2D(int simulation_id, int dt, double avgVel2DCluster, double disp2DCluster, double avgVel2DFS, double disp2DFS){
 	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis "
 		"(dt,avgVel2DCluster,disp2DCluster,avgVel2DFS,disp2DFS,id_simulation,"
 		"kinE,potE,totE,avgVel3DCluster,avgVel3DFS,disp3DCluster,disp3DFS) VALUES "
@@ -350,9 +351,42 @@ void Database::insertAnalysisdtVelocity2D(int analysisID, int dt, double avgVel2
 	sqlite3_bind_double(st, 3, disp2DCluster);
 	sqlite3_bind_double(st, 4, avgVel2DFS);
 	sqlite3_bind_double(st, 5, disp2DFS);
-	sqlite3_bind_int(st, 6, analysisID);
+	sqlite3_bind_int(st, 6, simulation_id);
 	int returnCode = sqlite3_step(st);
 	sqlite3_finalize(st);
+}
+
+void Database::insert_analysis_dt_min_dist(int simulation_id, int dt, double minimum_distance)
+{
+	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt, id_simulation, min_dist) VALUES (?1,?2,?3)";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare(db, sql.c_str(), -1, &stmt, NULL);
+	sqlite3_bind_int(stmt, 1, dt);
+	sqlite3_bind_int(stmt, 2, simulation_id);
+	sqlite3_bind_double(stmt, 3, minimum_distance);
+	if (sqlite3_step(stmt) != SQLITE_DONE)
+	{
+		printf("insert_analysis_dt_min_dist: Commit Failed!\n");
+	}
+	sqlite3_finalize(stmt);
+}
+
+double Database::select_analysis_dt_min_dist(int simulation_id, int dt)
+{
+	if (!this->isOpen)
+		this->open();
+	std::string sql = "select min_dist from timeStepAnalysis WHERE dt=?1 AND id_simulation=?2";
+	sqlite3_stmt* st;
+	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
+	sqlite3_bind_int(st, 1, dt);
+	sqlite3_bind_int(st, 2, simulation_id);
+	if (sqlite3_step(st) != SQLITE_DONE)
+	{
+		printf("select_analysis_dt_min_dist: Commit Failed!\n");
+	}
+	int min_dist = sqlite3_column_int(st, 0);
+	sqlite3_finalize(st);
+	return min_dist;
 }
 
 void Database::timestep(int timestep, std::vector<Star*>& stars){

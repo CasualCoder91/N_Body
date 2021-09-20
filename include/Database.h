@@ -59,10 +59,14 @@ public:
 	/** @brief inserts the analysis parameters for the given simulation*/
 	int insertAnalysis(int simulationID);
 	/** @brief inserts (or replaces/updates) one record of kinetic, potential and total energy */
-	void insertAnalysisdtEnergy(int analysisID,int dt, double kinE, double potE);
+	void insertAnalysisdtEnergy(int simulation_id,int dt, double kinE, double potE);
 	/** @brief inserts (or replaces/updates) one record of the average velocity */
-	void insertAnalysisdtVelocity3D(int analysisID, int dt, double avgVel3DCluster, double disp3DCluster, double avgVel3DFS, double disp3DFS);
-	void insertAnalysisdtVelocity2D(int analysisID, int dt, double avgVel2DCluster, double disp2DCluster, double avgVel2DFS, double disp2DFS);
+	void insertAnalysisdtVelocity3D(int simulation_id, int dt, double avgVel3DCluster, double disp3DCluster, double avgVel3DFS, double disp3DFS);
+	void insertAnalysisdtVelocity2D(int simulation_id, int dt, double avgVel2DCluster, double disp2DCluster, double avgVel2DFS, double disp2DFS);
+
+	void insert_analysis_dt_min_dist(int simulation_id, int dt, double minimum_distance);
+
+	double select_analysis_dt_min_dist(int simulation_id, int dt);
 
 	/** @brief inserts positions and velocities of given \p stars and \p timestep */
 	void timestep(int timestep, std::vector<Star*>& stars);

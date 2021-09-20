@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 from matplotlib.colors import LogNorm
 from datetime import datetime #for naming output
 import os
@@ -7,7 +8,7 @@ import os
 import photutils
 from photutils import DAOStarFinder, CircularAperture, aperture_photometry
 from photutils.segmentation import detect_threshold, detect_sources, deblend_sources, SourceCatalog
-from photutils.background import Background2D
+from photutils.background import Background2D, MedianBackground
 
 from astropy.stats import mad_std, sigma_clipped_stats
 from astropy.io import fits
@@ -15,11 +16,14 @@ from astropy.convolution import Gaussian2DKernel
 from astropy.stats import gaussian_fwhm_to_sigma
 from astropy.visualization import SqrtStretch, simple_norm
 from astropy.table import QTable
+from astropy.nddata import Cutout2D
+from astropy import wcs
 
 from config import output_path, save_img, pixelfactor,n_pixel, exposure_time
 from database import Database
 #from util import magnitude_histogram
 from point import Point
+
 
 def flux_to_mag(flux):
     #http://ircamera.as.arizona.edu/astr_250/Lectures/Lecture_13.htm
@@ -27,14 +31,38 @@ def flux_to_mag(flux):
     #Data from http://www.astronomy.ohio-state.edu/~martini/usefuldata.html
     return -2.5 * np.log10(flux/(exposure_time*43.6*4000*978e4 ))
 
+def image_segmentation_cut(fits_file):
+    n_cuts = 6
+    shape = n_pixel/n_cuts # likely n_pixel*2/n_cuts
+    w = wcs.WCS(fits_file[0].header)
+    stars = QTable()
+    for i in np.arange(0,n_cuts,1):
+        for j in np.arange(0,n_cuts,1):
+            print(i,j)
+            position = (i*shape,j*shape)
+            cutout = Cutout2D(fits_file[1].data, position, shape-1, wcs=w)
+            image = cutout.data[:, :].astype(float)
+            stars_segm = image_segmentation(image, False, True)
+            if len(stars_segm)>0:
+                stars_segm['xcentroid'] = stars_segm['xcentroid']+position[0]-shape/2+2
+                stars_segm['ycentroid'] = stars_segm['ycentroid']+position[1]-shape/2+2
+                if len(stars)==0:
+                    stars = stars_segm
+                else:
+                    stars = np.append(stars,stars_segm, axis=0)
+    stars = stars[[np.isfinite(star['flux']) for star in stars]]
+    return stars
+
+
+
 def image_segmentation(image, save_color=False,deblend=True):
     #threshold = detect_threshold(image, nsigma=2.)
 
     box_size = 32 # 8 is too little
-    threshold_factor = 1.1
+    threshold_factor = 50#1.1
     sigma_factor = 5 # FWHM = 3.
     gaussian_size = 8
-    contrast = 0.0005
+    contrast = 0.05
     npixel = 9 #für K Filter | J Filter 4
 
     background2D = Background2D(image,box_size) 
@@ -46,6 +74,8 @@ def image_segmentation(image, save_color=False,deblend=True):
     kernel.normalize()
     #npixels = minimum amount of connected pixels over threshold to classify as star
     segm = detect_sources(data, threshold, npixels=npixel, filter_kernel=kernel)
+    if segm is None:
+        return QTable()
     if deblend:
         segm = deblend_sources(image, segm, npixels=npixel,
                                    filter_kernel=kernel, nlevels=32,
@@ -70,21 +100,29 @@ def image_segmentation(image, save_color=False,deblend=True):
             fig = plt.figure(figsize=(n_pixel/960, n_pixel/960), dpi=96)
             plt.imshow(image, origin='upper', norm=LogNorm())
             apertures.plot(color='white', lw=0.5, alpha=0.5)
-            fig.savefig(output_path + "/ISPhotutils_{0}BK_{1}THRE_{2}Kernel{3}{3}_{4}deblended.png"
-                        .format(box_size,threshold_factor,sigma_factor,gaussian_size,contrast),dpi=960)
+            #fig.savefig(output_path + "/ISPhotutils_{0}BK_{1}THRE_{2}Kernel{3}{3}_{4}deblended.png"
+            #            .format(box_size,threshold_factor,sigma_factor,gaussian_size,contrast),dpi=960)
     return tbl
 
-#todo: return stars
 def use_DAOStarFinder(image):
 
-    round_bound = 0.5
+    roundlo = -0.6#0.5
+    roundhi = 0.6#0.5
     sharplo = 0.2
+    box_size = 32
 
     mean, median, std = sigma_clipped_stats(image, sigma=3.0)
 
+    #bkg_estimator = MedianBackground()
+    #bkg = Background2D(image, box_size, filter_size=(5, 5), bkg_estimator=bkg_estimator)
+    #bkg_rms = bkg.background_rms
+    threshold = (5. * std) #5.*bkg_sigma
+
+    data = image - median  # subtract the background
     bkg_sigma = mad_std(image)
-    daofind = DAOStarFinder(fwhm=3., threshold=5.*bkg_sigma, roundlo=-round_bound,roundhi=round_bound,sharplo=sharplo,)
-    sources = daofind(image)#daofind(image - median)
+    daofind = DAOStarFinder(fwhm=3., threshold=threshold)
+    mask = get_masks(image)
+    sources = daofind(data, mask=mask)
     #for col in sources.colnames:
     #    sources[col].info.format = '%.8g'  # for consistent table output
     #print(sources)
@@ -96,11 +134,46 @@ def use_DAOStarFinder(image):
         #for col in phot_table.colnames:
         #    phot_table[col].info.format = '%.8g'  # for consistent table output
         #print(phot_table)
-        fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
+        fig, ax = plt.subplots()
+        #fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
         plt.imshow(image, origin='upper', norm=LogNorm())
         apertures.plot(color='white', lw=0.5, alpha=0.5)
-        fig.savefig(output_path + "/DAOPhotutils_{0}round_{1}sharp_{2}.png".format(round_bound,sharplo,datetime.now().strftime("%Y_%m_%d_%H%M%S")),dpi=960)
+        #for source in sources:
+        #    if source["flux"]>200:
+        #        width = 0.01*source["flux"]+22
+        #        if width > 255:
+        #            width = 255
+        #        rect = patches.Rectangle((source['xcentroid']-width/2, source['ycentroid']-width/2), width, width, linewidth=1, edgecolor='r', facecolor='none')
+        #        ax.add_patch(rect)
+        fig.savefig(output_path + "/DAOPhotutils_{0}round_{1}sharp_{2}.png".format(roundlo,sharplo,datetime.now().strftime("%Y_%m_%d_%H%M%S")),dpi=960)
     return sources
+
+def get_masks(image):
+    mask = np.zeros(image.shape, dtype=bool)
+
+    mean, median, std = sigma_clipped_stats(image, sigma=3.0)
+
+    #bkg_estimator = MedianBackground()
+    #bkg = Background2D(image, box_size, filter_size=(5, 5), bkg_estimator=bkg_estimator)
+    #bkg_rms = bkg.background_rms
+    threshold = (5. * std) #5.*bkg_sigma
+
+    data = image - median  # subtract the background
+
+    bkg_sigma = mad_std(image)
+    daofind = DAOStarFinder(fwhm=3., threshold=threshold)
+    sources = daofind(data)
+
+    for source in sources:
+        if source["flux"]>200:
+            width = 0.01*source["flux"]+22
+            if width > 255:
+                width = 255
+            mask[int(source['ycentroid']-width/2):int(source['ycentroid']+width/2),int(source['xcentroid']-width/2):int(source['xcentroid']+width/2)] = True
+
+    return mask
+
+
 
 def pu_all():
 
@@ -135,7 +208,7 @@ def pu_all():
         selection = 1 # int(input())
         if selection == 1:
             db = Database()
-            origin = n_pixel/2.+0.5 #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
+            origin = n_pixel/2.-0.5 #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
             points = np.ndarray((len(stars),),dtype=object)
             for i, star in enumerate(stars):
                 points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
@@ -153,7 +226,41 @@ def pu_all():
             else:
                 db.insert_points(points,timestep)
 
+def test():
+    timestep=0
 
+    fits_file = fits.open(output_path +"/scopesim_t"+str(timestep)+".fits")
+    image = fits_file[1].data[:, :].astype(float)
+    #stars = QTable()
+    #stars = image_segmentation(image, False, True)
+    stars = use_DAOStarFinder(image)
+    #stars = image_segmentation_cut(fits_file)
+
+    origin = n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
+    points = np.ndarray((len(stars),),dtype=object)
+    for i, star in enumerate(stars):
+        points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
+                            velocity = np.array([np.nan,np.nan]),
+                            id=-1,
+                            magnitude=flux_to_mag(star['flux']),
+                            cluster_id=-1)
+
+    db = Database()
+    simulated_points = db.select_points(0, False)
+    sp_arr = np.vstack(simulated_points[:]).astype(float)
+    op_arr = np.vstack(points[:]).astype(float)
+
+    fig = plt.figure()
+    fig.set_size_inches(9,9)
+
+    plt.scatter(sp_arr[:,0], sp_arr[:,1], s=1, c='g', marker="o", label='simulated')
+    plt.scatter(op_arr[:,0], op_arr[:,1], s=1, c='r', marker="s", label='observed')
+
+    plt.xlabel('ascension [arcsec]', fontsize=16)
+    plt.ylabel('declination [arcsec]', fontsize=16)
+    plt.legend(loc='upper left')
+    plt.show()
 
 if __name__ == '__main__':
-    pu_all()
+    test()
+    #pu_all()

@@ -94,5 +94,5 @@ def ss_all():
 
 
 if __name__ == '__main__':
+    #print(sim.__file__)
     ss_all()
-

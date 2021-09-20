@@ -121,6 +121,38 @@ double Analysis::average(std::vector<Point>& points) {
 	return average / points.size();
 }
 
+double Analysis::minimum_distance()
+{
+	std::vector<Point> points = database->select_points(id, 0, -1, false);
+
+	arma::mat mat_points = arma::mat(2, points.size());
+	for (size_t i = 0; i < points.size(); i++) {
+		arma::vec column = arma::vec(2);
+		column.at(0) = points[i].x;
+		column.at(1) = points[i].y;
+		mat_points.col(i) = column;
+	}
+
+	mlpack::neighbor::NeighborSearch<mlpack::neighbor::NearestNeighborSort, mlpack::metric::EuclideanDistance>model(mat_points);
+
+	arma::Mat<size_t> neighbors;
+	arma::mat distances;
+	model.Search(1, neighbors, distances); //1 because only neares neighbor of interest
+
+	double global_minimum_distance = -1;
+	for (size_t i = 0; i < neighbors.n_elem; ++i) 
+	{
+		if (distances[i] < global_minimum_distance || global_minimum_distance == -1) 
+		{
+			global_minimum_distance = distances[i];
+		}
+	}
+
+	database->insert_analysis_dt_min_dist(id, 0, global_minimum_distance);
+
+	return global_minimum_distance;
+}
+
 double Analysis::dispersion(std::vector<Vec3D>& vectors, double average){
 	size_t n = vectors.size();
 	if (average == -1) { //average not passed as parameter
@@ -388,8 +420,7 @@ void Analysis::cluster(std::vector<Point>& points) {
 
 void Analysis::map_observed()
 {
-
-	//double factor = 1000;
+	double max_range = this->minimum_distance()*0.9; //max distance for mapping is halve the minimum distance between simulated stars
 
 	std::vector<Point> simulated_points = database->select_points(id, 0, -1, false);
 	arma::mat mat_simulated_points = arma::mat(2, simulated_points.size());
@@ -415,12 +446,13 @@ void Analysis::map_observed()
 		std::vector<std::vector<size_t> > resultingNeighbors;
 		std::vector<std::vector<double> > resultingDistances;
 		// The range we will use.
-		mlpack::math::Range r(0.00, 0.015);
+
+		mlpack::math::Range r(0.00, max_range);
 		a.Search(mat_observed_points, r, resultingNeighbors, resultingDistances);
 
 		for (size_t observed_point_index = 0; observed_point_index < resultingNeighbors.size(); observed_point_index++) {
 			size_t observed_point_id = observed_point_index;
-			if (resultingNeighbors[observed_point_index].size() == 1) {
+			if (resultingNeighbors[observed_point_index].size() >= 1) {
 				observed_points[observed_point_index].fk_star = simulated_points[resultingNeighbors[observed_point_index][0]].id; //+1 because index in db starts at 1
 				//std::cout << "observed_point_id: " << observed_points[observed_point_index].id << std::endl;
 				//std::cout << "simulated_point_id: " << simulated_points[resultingNeighbors[observed_point_index][0]].id << std::endl;
