@@ -121,8 +121,10 @@ def use_DAOStarFinder(image, save_img=True):
     data = image - median  # subtract the background
     bkg_sigma = mad_std(image)
     daofind = DAOStarFinder(fwhm=3., threshold=threshold)
-    mask = get_masks(image)
+    mask, center_of_mask = get_masks(image)
     sources = daofind(data, mask=mask)
+    if not center_of_mask is None:
+        sources = np.hstack([sources, center_of_mask])
     #for col in sources.colnames:
     #    sources[col].info.format = '%.8g'  # for consistent table output
     #print(sources)
@@ -163,20 +165,23 @@ def get_masks(image):
     bkg_sigma = mad_std(image)
     daofind = DAOStarFinder(fwhm=3., threshold=threshold)
     sources = daofind(data)
-    sources.sort(["flux"]) #order by flux descending
-    center_of_mask = sources
-    center_of_mask.remove_rows([0, len(sources)-1])
-    print(len(sources))
+    sources.sort(["flux"], reverse=True) #order by flux descending
+    center_of_mask = QTable(sources)
+    center_of_mask = center_of_mask.remove_rows([0, len(sources)-1])
+    #print(len(sources))
     for source in sources:
         if source["flux"]>100:
             width = 0.01*source["flux"]+28
             if width > 255:
                 width = 255
             if( mask[int(source['ycentroid']),int(source['xcentroid'])] == False):
-                center_of_mask.add_row(source)
+                if(center_of_mask is None):
+                    center_of_mask = QTable(source)
+                else:
+                    center_of_mask.add_row(source)
             mask[int(source['ycentroid']-width/2):int(source['ycentroid']+width/2),int(source['xcentroid']-width/2):int(source['xcentroid']+width/2)] = True
 
-    return mask
+    return mask, center_of_mask
 
 #calculates largest distance along x/y between real star and any fake stars.
 #returns flux of the real star and found distance
@@ -251,7 +256,7 @@ def pu_all():
         selection = 1 # int(input())
         if selection == 1:
             db = Database()
-            origin = n_pixel/2.-0.5 #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
+            origin = n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
             points = np.ndarray((len(stars),),dtype=object)
             for i, star in enumerate(stars):
                 points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
@@ -305,5 +310,5 @@ def test():
     plt.show()
 
 if __name__ == '__main__':
-    test()
-    #pu_all()
+    #test()
+    pu_all()

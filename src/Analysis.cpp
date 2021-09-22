@@ -420,7 +420,7 @@ void Analysis::cluster(std::vector<Point>& points) {
 
 void Analysis::map_observed()
 {
-	double max_range = this->minimum_distance()*0.9; //max distance for mapping is halve the minimum distance between simulated stars
+	double max_range = 0.015;// this->minimum_distance(); //max distance for mapping is halve the minimum distance between simulated stars
 
 	std::vector<Point> simulated_points = database->select_points(id, 0, -1, false);
 	arma::mat mat_simulated_points = arma::mat(2, simulated_points.size());

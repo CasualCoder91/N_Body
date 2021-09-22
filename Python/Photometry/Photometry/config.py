@@ -14,7 +14,7 @@ fits_path = os.path.join(output_base_path, "Simulation" + str(simulation_id)+r"\
 
 #images
 save_img = True
-n_pixel = 4096 #Whole picture: 14976 | 1 fov: 4096 | test: 1000
+n_pixel = 14976 #Whole picture: 14976 | 1 fov: 4096 | test: 1000
 
 #analysis
 #eps_magnitude = 0.00001

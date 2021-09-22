@@ -26,12 +26,19 @@ def plot_points(b_observed_points=True,b_simulated_points=True):
     plt.show()
 
 
-def plot_magnitude_hist(observed_points,simulated_points):
+def plot_magnitude_hist():
+    db = Database()
     fig = plt.figure()
     fig.set_size_inches(9,9)
 
-    plt.hist(observed_points[:,5]-15.5, density=True, bins=50, alpha=0.5, label='observed')
-    plt.hist(simulated_points[:,5], density=True, bins=50, alpha=0.5, label='simulated')
+    observed_points = db.select_points(0, True)
+    op_arr = np.vstack(observed_points[:]).astype(float)
+
+    simulated_points = db.select_points(0, False)
+    sp_arr = np.vstack(simulated_points[:]).astype(float)
+
+    plt.hist(op_arr[:,5]-12.5, density=True, bins=50, alpha=0.5, label='observed')
+    plt.hist(sp_arr[:,5], density=True, bins=50, alpha=0.5, label='simulated')
 
     plt.legend(loc='upper left')
     plt.show()
@@ -52,11 +59,17 @@ def plot_points_velocity(b_observed_points=True,b_simulated_points=True):
     if(b_observed_points):
         observed_points = db.select_points(0, True)
         op_arr = np.vstack(observed_points[:]).astype(float)
-        plt.scatter(op_arr[:,2], op_arr[:,3], s=1, c='r', marker="s", label='observed')
+        op_cluster = op_arr[op_arr[:,4] > -1]
+        plt.scatter(op_cluster[:,2], op_cluster[:,3], s=1, c='r', marker="s", label='observed_cluster')
+        op_fs = op_arr[op_arr[:,4] == -1]
+        plt.scatter(op_fs[:,2], op_fs[:,3], s=1, c='black', marker="s", label='observed_fs')
     if(b_simulated_points):
         simulated_points = db.select_points(0, False)
         sp_arr = np.vstack(simulated_points[:]).astype(float)
-        plt.scatter(sp_arr[:,2], sp_arr[:,3], s=1, c='g', marker="o", label='simulated')
+        sp_cluster = sp_arr[sp_arr[:,4] > -1]
+        plt.scatter(sp_cluster[:,2], sp_cluster[:,3], s=1, c='g', marker="s", label='simulated_cluster')
+        sp_fs = sp_arr[sp_arr[:,4] == -1]
+        plt.scatter(sp_fs[:,2], sp_fs[:,3], s=1, c='blue', marker="s", label='simulated_fs')
 
     plt.xlabel('v_asc [arcsec/dt]', fontsize=16)
     plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
@@ -84,7 +97,8 @@ def main():
 
     #op_arr = np.vstack(observed_points[:]).astype(float)
     #sp_arr = np.vstack(simulated_points[:]).astype(float)
-    plot_points()
+    #plot_points()
+    plot_magnitude_hist()
     #plot_points_velocity(True,True)
     #plot_points(sp_arr)
     #plot_magnitude_hist(op_arr,sp_arr)
