@@ -15,7 +15,7 @@ from astropy.io import fits
 from astropy.convolution import Gaussian2DKernel
 from astropy.stats import gaussian_fwhm_to_sigma
 from astropy.visualization import SqrtStretch, simple_norm
-from astropy.table import QTable
+from astropy.table import Table, QTable
 from astropy.nddata import Cutout2D
 from astropy import wcs
 
@@ -104,7 +104,7 @@ def image_segmentation(image, save_color=False,deblend=True):
             #            .format(box_size,threshold_factor,sigma_factor,gaussian_size,contrast),dpi=960)
     return tbl
 
-def use_DAOStarFinder(image):
+def use_DAOStarFinder(image, save_img=True):
 
     roundlo = -0.6#0.5
     roundhi = 0.6#0.5
@@ -163,16 +163,59 @@ def get_masks(image):
     bkg_sigma = mad_std(image)
     daofind = DAOStarFinder(fwhm=3., threshold=threshold)
     sources = daofind(data)
-
+    sources.sort(["flux"]) #order by flux descending
+    center_of_mask = sources
+    center_of_mask.remove_rows([0, len(sources)-1])
+    print(len(sources))
     for source in sources:
-        if source["flux"]>200:
-            width = 0.01*source["flux"]+22
+        if source["flux"]>100:
+            width = 0.01*source["flux"]+28
             if width > 255:
                 width = 255
+            if( mask[int(source['ycentroid']),int(source['xcentroid'])] == False):
+                center_of_mask.add_row(source)
             mask[int(source['ycentroid']-width/2):int(source['ycentroid']+width/2),int(source['xcentroid']-width/2):int(source['xcentroid']+width/2)] = True
 
     return mask
 
+#calculates largest distance along x/y between real star and any fake stars.
+#returns flux of the real star and found distance
+def find_mask_borders(timestep=0):
+    hdu = fits.open(output_path +"/scopesim_t"+str(timestep)+".fits")[1]
+    image = hdu.data[:, :].astype(float)
+
+    mean, median, std = sigma_clipped_stats(image, sigma=3.0)
+
+    threshold = (5. * std) #5.*bkg_sigma
+
+    data = image - median  # subtract the background
+
+    bkg_sigma = mad_std(image)
+    daofind = DAOStarFinder(fwhm=3., threshold=threshold)
+    sources = daofind(data)
+
+    max_flux = 0
+    max_flux_x = 0
+    max_flux_y = 0
+    max_flux_dist_x = 0
+    max_flux_dist_y = 0
+
+    for source in sources:
+        if source["flux"]>max_flux:
+            max_flux=source["flux"]
+            max_flux_x=source["xcentroid"]
+            max_flux_y=source["ycentroid"]
+
+    for source in sources:
+        if np.abs(source["xcentroid"]-max_flux_x)>max_flux_dist_x:
+            max_flux_dist_x = np.abs(source["xcentroid"]-max_flux_x)
+        if np.abs(source["ycentroid"]-max_flux_y)>max_flux_dist_y:
+            max_flux_dist_y = np.abs(source["ycentroid"]-max_flux_y)
+
+    if max_flux_dist_x > max_flux_dist_y:
+        return max_flux, max_flux_dist_x
+
+    return max_flux, max_flux_dist_y
 
 
 def pu_all():

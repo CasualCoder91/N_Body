@@ -67,6 +67,12 @@ def ss_all():
     #                      "locations/Armazones", 
     #                      "instruments/MICADO"]) #"MAORY"
 
+    for timestep in [0,1]:
+        data = db.select_2d_stars(timestep)
+        make_fits(data, timestep, save_file, save_img, n_pixel)
+
+def make_fits(data,timestep=0,save_file=True,save_img=False,n_pixel=n_pixel):
+
     cmd = sim.UserCommands(use_instrument="MICADO_Sci")
     cmd["!DET.width"] = n_pixel
     cmd["!DET.height"] = n_pixel
@@ -77,20 +83,16 @@ def ss_all():
     opt["scao_const_psf"].meta["rotational_blur_angle"] = 15*exposure_time/3600 # depends on time  ~15°/h (complex function)
     #opt["scao_const_psf"].meta["psf_side_length"] = 1024 #size of diameter in sechseck hinter hellen sternen
 
-    for timestep in [0,1]:
-        data = db.select_2d_stars(timestep)
+    source = make_source(data)
+    opt.observe(source)
 
-        source = make_source(data)
-        opt.observe(source)
+    if save_file:
+        opt.readout(filename=output_path +"/scopesim_t"+str(timestep)+".fits")
 
-        if save_file:
-            opt.readout(filename=output_path +"/scopesim_t"+str(timestep)+".fits")
-
-        if save_img:
-            fig = plt.figure(figsize=(n_pixel/960, n_pixel/960), dpi=96)
-            plt.imshow(opt.image_planes[0].image, norm=LogNorm())
-            #plt.colorbar()
-            fig.savefig(output_path + "/scopesim_t"+str(timestep)+".png",dpi=960)
+    if save_img:
+        fig = plt.figure(figsize=(n_pixel/960, n_pixel/960), dpi=96)
+        plt.imshow(opt.image_planes[0].image, norm=LogNorm())
+        fig.savefig(output_path + "/scopesim_t"+str(timestep)+".png",dpi=960)
 
 
 if __name__ == '__main__':
