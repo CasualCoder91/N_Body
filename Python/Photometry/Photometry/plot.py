@@ -97,8 +97,8 @@ def main():
 
     #op_arr = np.vstack(observed_points[:]).astype(float)
     #sp_arr = np.vstack(simulated_points[:]).astype(float)
-    #plot_points()
-    plot_magnitude_hist()
+    plot_points()
+    #plot_magnitude_hist()
     #plot_points_velocity(True,True)
     #plot_points(sp_arr)
     #plot_magnitude_hist(op_arr,sp_arr)

@@ -1,6 +1,6 @@
 import os # for relative paths
 
-simulation_id = 1
+simulation_id = 3
 timestep = 0
 pixelfactor = 0.004 #depends on instrument used with scopesim -> print(cmd["!INST.pixel_scale"])
 

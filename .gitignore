@@ -355,6 +355,7 @@ Output/*
 Data/eintest.txt
 !Output/NGC2244
 !Output/Simulation1
+!Output/25_observations.xlsx
 
 !build/
 build/*

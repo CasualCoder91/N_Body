@@ -17,4 +17,4 @@ def fake_star_test():
         print(flux, dist)
 
 
-fake_star_test()
+all()

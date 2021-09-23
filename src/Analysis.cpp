@@ -368,6 +368,10 @@ void Analysis::generateHTPVelocity(bool observed, bool force_correct_selection)
 
 void Analysis::cluster(std::vector<Point>& points) {
 
+	if (points.size() == 0) {
+		std::cout << " Analysis::cluster parameter must mave size > 0" << std::endl;
+	}
+
 	//remove points with 0 velocity because they could be identified as a cluster.
 	//0 velocity happens if no star with similar magnitude was found between timesteps
 	points.erase(std::remove_if(
@@ -450,10 +454,30 @@ void Analysis::map_observed()
 		mlpack::math::Range r(0.00, max_range);
 		a.Search(mat_observed_points, r, resultingNeighbors, resultingDistances);
 
+		std::vector<int> assigned_simulated_points;
+
 		for (size_t observed_point_index = 0; observed_point_index < resultingNeighbors.size(); observed_point_index++) {
 			size_t observed_point_id = observed_point_index;
 			if (resultingNeighbors[observed_point_index].size() >= 1) {
-				observed_points[observed_point_index].fk_star = simulated_points[resultingNeighbors[observed_point_index][0]].id; //+1 because index in db starts at 1
+				int simulated_point_id = simulated_points[resultingNeighbors[observed_point_index][0]].id;
+				auto it_observed = std::find_if(observed_points.begin(), observed_points.end(), [simulated_point_id](const Point& obj) {return obj.fk_star == simulated_point_id; });
+				if (it_observed != observed_points.end())
+				{
+					auto it_simulated = std::find_if(simulated_points.begin(), simulated_points.end(), [simulated_point_id](const Point& obj) {return obj.id == simulated_point_id; });
+					double old_found_dist = it_observed->getDistance(*it_simulated);
+					double new_found_dist = observed_points[observed_point_index].getDistance(*it_simulated);
+					if (new_found_dist < old_found_dist) {
+						observed_points[observed_point_index].fk_star = simulated_point_id; //new one gets mapping
+						it_observed->fk_star = 0;
+					}
+					else {
+						observed_points[observed_point_index].fk_star = 0; //new one gets mapping
+					}
+				}
+				else
+				{
+					observed_points[observed_point_index].fk_star = simulated_points[resultingNeighbors[observed_point_index][0]].id;
+				}
 				//std::cout << "observed_point_id: " << observed_points[observed_point_index].id << std::endl;
 				//std::cout << "simulated_point_id: " << simulated_points[resultingNeighbors[observed_point_index][0]].id << std::endl;
 				//std::cout << "Distance: " << resultingDistances[observed_point_index][0] << std::endl;
