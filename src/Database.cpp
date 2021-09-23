@@ -176,9 +176,9 @@ int Database::insertSimulation(){
 	sqlite3_bind_double(st, 2, Constants::boxLength);
 	sqlite3_bind_double(st, 3, Constants::dt);
 	sqlite3_bind_int(st, 4, Constants::nTimesteps);
-	char* cstr = new char[Constants::title.length() + 1];
-	strcpy_s(cstr, sizeof cstr, Constants::title.c_str());
-	sqlite3_bind_text(st, 5, cstr, -1, SQLITE_TRANSIENT);
+	//char* cstr = new char[Constants::title.length() + 1];
+	//strcpy_s(cstr, sizeof cstr, Constants::title.c_str());
+	sqlite3_bind_text(st, 5, Constants::title.c_str(), -1, SQLITE_TRANSIENT);
 	sqlite3_bind_int(st, 6, Constants::outputTimestep);
 	sqlite3_bind_double(st, 7, Constants::softening);
 	sqlite3_bind_double(st, 8, Constants::precission);
