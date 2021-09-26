@@ -32,14 +32,14 @@ class Analysis
 private:
 
     static std::string path;
-    int id;
+    int simulation_id;
     Database* database;
 
 public: //variables
 
 public: //methods
 
-    Analysis(int id, Database* database);
+    Analysis(int simulation_id, Database* database);
 
     std::vector<double> totE;
     std::vector<double> potE;
@@ -109,7 +109,7 @@ public: //methods
      @param nTimesteps the amount of timesteps used for each number of stars.
      @param integrator the integrator used for integration over time.
      */
-    void generateHTPVelocity(bool observed = false, bool force_correct_selection = false);
+    void generateHTPVelocity(int observed = 0, bool force_correct_selection = false);
 
     void cluster(std::vector<Point>& points);
 
@@ -117,5 +117,10 @@ public: //methods
      @brief maps observed stars to simulated stars by setting star.fkStar of the observed to star.id to the simulated star.
      */
     void map_observed();
+
+    /**
+    @brief removes stars outside circle of vision
+    */
+    void remove_stars();
 };
 

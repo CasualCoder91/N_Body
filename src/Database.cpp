@@ -1050,31 +1050,37 @@ Point Database::select_point(int point_id, int simulationID, int timeStep)
 	return point;
 }
 
-std::vector<Point> Database::select_points(int simulationID, int timeStep, double minMagnitude, bool observed)
+std::vector<Point> Database::select_points(int simulationID, int timestep, double minMagnitude, int observed)
 {
 	std::vector<Point> points;
-	if (timeStep < 0) {
-		std::cout << "time step must be >= 0" << std::endl;
-		return points;
-	}
 
 	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude "
 		"FROM star "
 		"LEFT JOIN position on position.id_star = star.id "
 		"LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep "
-		"WHERE star.id_simulation = ?1 AND position.timestep = ?2 "
-		"AND star.isObserved = ?3";
+		"WHERE star.id_simulation = ?1";
+	if (timestep > -1) {
+		query += " AND position.timestep = ?2";
+	}
+	if (observed > -1) {
+		query += " AND star.isObserved = ?3 ";
+	}
 	if (minMagnitude != -1) {
-		query += " AND star.magnitude < ?5";
+		query += " AND star.magnitude < ?4";
 	}
 	query += " order by position.timestep";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 	sqlite3_bind_int(stmt, 1, simulationID);
-	sqlite3_bind_int(stmt, 2, timeStep);
-	sqlite3_bind_int(stmt, 3, observed);
+	
+	if (timestep > -1) {
+		sqlite3_bind_int(stmt, 2, timestep);
+	}
+	if (observed > -1) {
+		sqlite3_bind_int(stmt, 3, observed);
+	}
 	if (minMagnitude != -1) {
-		sqlite3_bind_double(stmt, 5, minMagnitude);
+		sqlite3_bind_double(stmt, 4, minMagnitude);
 	}
 
 	while (sqlite3_step(stmt) == SQLITE_ROW) {

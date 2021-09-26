@@ -9,6 +9,11 @@ double Point::getVelDelta(const Point& pt2) {
     return sqrt((velocity[0] - pt2.velocity[0]) * (velocity[0] - pt2.velocity[0]) + (velocity[1] - pt2.velocity[1]) * (velocity[1] - pt2.velocity[1]));
 }
 
+double Point::distance_origin()
+{
+    return sqrt(x*x +y*y);
+}
+
 Point::Point(){
     this->cluster = 0;
     this->fk_star = 0;

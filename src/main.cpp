@@ -163,13 +163,15 @@ int main() {
 					//HTP velocity
 					std::cout << "generating HTP velocities ..." << std::endl;
 					Analysis analysis = Analysis(simulationID, &db);
-					analysis.generateHTPVelocity(false,false);
+					analysis.generateHTPVelocity(0);
+					std::cout << "removing stars outside vision" << std::endl;
+					analysis.remove_stars();
 					std::cout << "done\n" << std::endl;
 				}
 				else if (selection == 2) {
 					std::cout << "generating HTP velocities ..." << std::endl;
 					Analysis analysis = Analysis(simulationID, &db);
-					analysis.generateHTPVelocity(true);
+					analysis.generateHTPVelocity(1);
 					std::cout << "done\n" << std::endl;
 				}
 			}

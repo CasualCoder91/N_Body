@@ -2,9 +2,9 @@
 
 std::string Analysis::path = "src/Test/";
 
-Analysis::Analysis(int id, Database* database)
+Analysis::Analysis(int simulation_id, Database* database)
 {
-	this->id = id;
+	this->simulation_id = simulation_id;
 	this->database = database;
 }
 
@@ -37,12 +37,12 @@ double Analysis::kineticEnergy(const std::vector<Star>& stars){
 
 void Analysis::energy()
 {
-	std::vector<int> timeSteps = database->selectTimesteps(id);
+	std::vector<int> timeSteps = database->selectTimesteps(simulation_id);
 	for (int timeStep : timeSteps) {
-		std::vector<Star> stars = database->selectStars(id, timeStep);
+		std::vector<Star> stars = database->selectStars(simulation_id, timeStep);
 		double kinE = kineticEnergy(stars);
 		double potE = potentialEnergy(stars);
-		database->insertAnalysisdtEnergy(id, timeStep, kinE, potE);
+		database->insertAnalysisdtEnergy(simulation_id, timeStep, kinE, potE);
 	}
 }
 
@@ -123,7 +123,7 @@ double Analysis::average(std::vector<Point>& points) {
 
 double Analysis::minimum_distance()
 {
-	std::vector<Point> points = database->select_points(id, 0, -1, false);
+	std::vector<Point> points = database->select_points(simulation_id, 0, -1, 0);
 
 	arma::mat mat_points = arma::mat(2, points.size());
 	for (size_t i = 0; i < points.size(); i++) {
@@ -148,7 +148,7 @@ double Analysis::minimum_distance()
 		}
 	}
 
-	database->insert_analysis_dt_min_dist(id, 0, global_minimum_distance);
+	database->insert_analysis_dt_min_dist(simulation_id, 0, global_minimum_distance);
 
 	return global_minimum_distance;
 }
@@ -216,15 +216,15 @@ void Analysis::write(){
 	}
 }
 
-void Analysis::generateHTPVelocity(bool observed, bool force_correct_selection)
+void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 {
 	if (observed && force_correct_selection) {
 		std::cout << "Forcing correct velocity estimation may only be used for simulated stars!\naborting!" << std::endl;
 		return;
 	}
 
-	std::vector<Point> points_t0 = database->select_points(id, 0, -1, observed);
-	std::vector<Point> points_t1 = database->select_points(id, 1, -1, observed);
+	std::vector<Point> points_t0 = database->select_points(simulation_id, 0, -1, observed);
+	std::vector<Point> points_t1 = database->select_points(simulation_id, 1, -1, observed);
 
 	if (force_correct_selection) {
 		for (Point& point0 : points_t0) {
@@ -426,7 +426,7 @@ void Analysis::map_observed()
 {
 	double max_range = 0.015;// this->minimum_distance(); //max distance for mapping is halve the minimum distance between simulated stars
 
-	std::vector<Point> simulated_points = database->select_points(id, 0, -1, false);
+	std::vector<Point> simulated_points = database->select_points(simulation_id, 0, -1, 0);
 	arma::mat mat_simulated_points = arma::mat(2, simulated_points.size());
 	for (size_t i = 0; i < simulated_points.size(); i++) {
 		arma::vec column = arma::vec(2);
@@ -436,7 +436,7 @@ void Analysis::map_observed()
 	}
 
 	for (size_t t = 0; t < 2; t++) {
-		std::vector<Point> observed_points = database->select_points(id, t, -1, true);
+		std::vector<Point> observed_points = database->select_points(simulation_id, t, -1, 1);
 		arma::mat mat_observed_points = arma::mat(2, observed_points.size());
 		for (size_t i = 0; i < observed_points.size(); i++) {
 			arma::vec column = arma::vec(2);
@@ -486,5 +486,20 @@ void Analysis::map_observed()
 
 		database->set_fk_star(observed_points);
 	}
+}
+
+void Analysis::remove_stars()
+{
+	double cutoff_angle = Constants::angleOfView * Constants::degInRad * Constants::radInArcsec *0.5;
+	std::vector<int> stars_to_delete;
+
+	std::vector<Point> points = database->select_points(this->simulation_id, -1, -1, -1);
+	for (Point point : points) {
+		if (point.distance_origin() > cutoff_angle) {
+			stars_to_delete.push_back(point.id);
+		}
+	}
+	database->delete_stars(this->simulation_id, stars_to_delete);
+
 }
 
