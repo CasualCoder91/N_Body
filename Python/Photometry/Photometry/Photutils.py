@@ -253,26 +253,25 @@ def pu_all():
         # print(stars.info)
         # print("[1] Write found stars to DB!\n[2] no ty")
         print("StarFinder done\nWriting stars to DB")
-        selection = 1 # int(input())
-        if selection == 1:
-            db = Database()
-            origin = n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
-            points = np.ndarray((len(stars),),dtype=object)
-            for i, star in enumerate(stars):
-                points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
-                                    velocity = np.array([np.nan,np.nan]),
-                                    id=-1,
-                                    magnitude=flux_to_mag(star['flux']),
-                                    cluster_id=-1)
-            if(timestep>0):
-                #points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
-                #points_t0, points = generate_velocity_and_index(points_t0,points)
-                #db.insert_velocities_HTP(timestep-1,points_t0)
-                #db.insert_positions_HTP(timestep,points) #positions with star id = -1 -> asign velocity and id via c++
-                db.insert_points(points,timestep)
-                #db.update_points(points,timestep)#inserts position and velocity at timestep
-            else:
-                db.insert_points(points,timestep)
+
+        db = Database()
+        origin = n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
+        points = np.ndarray((len(stars),),dtype=object)
+        for i, star in enumerate(stars):
+            points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
+                                velocity = np.array([np.nan,np.nan]),
+                                id=-1,
+                                magnitude=flux_to_mag(star['flux']),
+                                cluster_id=-1)
+        if(timestep>0):
+            #points_t0 = db.select_points(timestep-1,True) #get observed stars from previous timestep
+            #points_t0, points = generate_velocity_and_index(points_t0,points)
+            #db.insert_velocities_HTP(timestep-1,points_t0)
+            #db.insert_positions_HTP(timestep,points) #positions with star id = -1 -> asign velocity and id via c++
+            db.insert_points(points,timestep)
+            #db.update_points(points,timestep)#inserts position and velocity at timestep
+        else:
+            db.insert_points(points,timestep)
 
 def test():
     timestep=0

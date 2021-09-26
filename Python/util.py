@@ -20,4 +20,4 @@ def calcFocus(angle):
     return
 
 #degNeeded(8000,1.1)
-calcFocus(5)
+calcFocus(0)
