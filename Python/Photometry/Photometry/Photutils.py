@@ -248,7 +248,7 @@ def pu_all():
         image = hdu.data[:, :].astype(float)
 
         stars = QTable()
-        stars = use_DAOStarFinder(image)
+        stars = use_DAOStarFinder(image,False)
         stars = stars[[np.isfinite(star['flux']) for star in stars]]
         # print(stars.info)
         # print("[1] Write found stars to DB!\n[2] no ty")
