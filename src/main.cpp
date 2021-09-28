@@ -36,6 +36,50 @@ typedef int mode_t;
 //global parameters
 bool debug = false;
 
+void do_it_all(size_t amount_of_times) {
+	Database db = Database();
+	db.open();
+	db.setup();
+
+	for (size_t i = 0; i < amount_of_times; ++i)
+	{
+		int simulationID = db.insertSimulation();
+		db.insertAnalysis(simulationID);
+		Simulation simulation = Simulation(simulationID, &db);
+		std::cout << "New simulation created. ID = " << simulationID << std::endl;
+		std::cout << "Starting simulation" << std::endl;
+		simulation.run();
+
+		std::cout << "generating HTP positions ..." << std::endl;
+		db.generateHTP(simulationID, false); //todo: move this to Analysis
+		std::cout << "generating magnitude ..." << std::endl;
+		db.generateMagnitude(simulationID);
+		//HTP velocity
+		std::cout << "generating HTP velocities ..." << std::endl;
+		Analysis analysis = Analysis(simulationID, &db);
+		analysis.generateHTPVelocity(0);
+		std::cout << "removing stars outside vision" << std::endl;
+		analysis.remove_stars();
+		std::cout << "done\n" << std::endl;
+
+		analysis.cluster(db.select_points(simulationID, 0, -1, 0));
+
+		std::string pythonFile = std::filesystem::current_path().string() + "/Python/Photometry/Photometry/main.py " + std::to_string(simulationID);
+		std::string command = "python3 " + pythonFile;
+		system(command.c_str());
+
+		std::cout << "generating HTP velocities ..." << std::endl;
+		analysis.generateHTPVelocity(1);
+		std::cout << "done\n" << std::endl;
+
+		analysis.map_observed();
+		std::cout << "Mapping done!" << std::endl;
+
+		analysis.cluster(db.select_points(simulationID, 0, -1, 1));
+	}
+}
+
+
 int main() {
 
 	//InitialConditions testInitialConditions = InitialConditions();
@@ -300,6 +344,9 @@ int main() {
 		}
 		else if (selection == 4) {
 			return 0;
+		}
+		else if (selection == 5) {
+			do_it_all(10);
 		}
 	}
 	return 0;

@@ -68,7 +68,10 @@ void Simulation::run(){
 			database->timestep(i/Constants::outputTimestep, fieldStars);
 			progressBar.Update(i);
 			progressBar.Print();
+			if (Constants::nTimesteps - i < Constants::outputTimestep)
+				break;
 		}
+		if(Constants::nTimesteps -i < Constants::outputTimestep)
 
 		if (clusterStars.size() > 0) {
 			Node::findCorners(tlf, brb, clusterStars);

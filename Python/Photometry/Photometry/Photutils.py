@@ -19,7 +19,7 @@ from astropy.table import Table, QTable
 from astropy.nddata import Cutout2D
 from astropy import wcs
 
-from config import output_path, save_img, pixelfactor,n_pixel, exposure_time
+import config
 from database import Database
 #from util import magnitude_histogram
 from point import Point
@@ -29,7 +29,7 @@ def flux_to_mag(flux):
     #http://ircamera.as.arizona.edu/astr_250/Lectures/Lecture_13.htm
     #3880 = 0-magnitude flux in V filter | 640 for K filter
     #Data from http://www.astronomy.ohio-state.edu/~martini/usefuldata.html
-    return -2.5 * np.log10(flux/(exposure_time*43.6*4000*978e4 ))
+    return -2.5 * np.log10(flux/(config.exposure_time*43.6*4000*978e4 ))
 
 def image_segmentation_cut(fits_file):
     n_cuts = 6
@@ -147,7 +147,7 @@ def use_DAOStarFinder(image, save_img=True):
         #            width = 255
         #        rect = patches.Rectangle((source['xcentroid']-width/2, source['ycentroid']-width/2), width, width, linewidth=1, edgecolor='r', facecolor='none')
         #        ax.add_patch(rect)
-        fig.savefig(output_path + "/DAOPhotutils_{0}round_{1}sharp_{2}.png".format(roundlo,sharplo,datetime.now().strftime("%Y_%m_%d_%H%M%S")),dpi=960)
+        fig.savefig(config.output_path + "/DAOPhotutils_{0}round_{1}sharp_{2}.png".format(roundlo,sharplo,datetime.now().strftime("%Y_%m_%d_%H%M%S")),dpi=960)
     return sources
 
 def get_masks(image):
@@ -244,7 +244,7 @@ def pu_all():
     print("Observing stars ...")
 
     for timestep in [0,1]:
-        hdu = fits.open(output_path +"/scopesim_t"+str(timestep)+".fits")[1]
+        hdu = fits.open(config.output_path +"/scopesim_t"+str(timestep)+".fits")[1]
         image = hdu.data[:, :].astype(float)
 
         stars = QTable()
@@ -255,10 +255,10 @@ def pu_all():
         print("StarFinder done\nWriting stars to DB")
 
         db = Database()
-        origin = n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
+        origin = config.n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
         points = np.ndarray((len(stars),),dtype=object)
         for i, star in enumerate(stars):
-            points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
+            points[i] = Point(position=np.array([config.pixelfactor*(star['xcentroid']-origin),config.pixelfactor*(star['ycentroid']-origin)]),
                                 velocity = np.array([np.nan,np.nan]),
                                 id=-1,
                                 magnitude=flux_to_mag(star['flux']),

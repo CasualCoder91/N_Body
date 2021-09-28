@@ -2,7 +2,7 @@ import sqlite3
 import numpy as np
 from point import Point
 
-from config import simulation_id, database_path
+import config
 
 class Database:
     conn = None #DB connection
@@ -14,7 +14,7 @@ class Database:
             print("Connection failed!")
 
     def __init__(self):
-        self.connect(database_path)
+        self.connect(config.database_path)
 
     def select_last_ID(self,table):
         """ 
@@ -34,7 +34,7 @@ class Database:
 
     def insert_position_HTP(self,timestep,id_star,ascension,declination,commit=True):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         cur.execute("INSERT INTO position (id_star,timestep,aHTP,dHTP) VALUES (?1,?2,?3,?4)",
                    (id_star,timestep,ascension,declination))
@@ -43,7 +43,7 @@ class Database:
 
     def update_position_HTP(self,timestep,id_star,ascension,declination,commit=True):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         cur.execute("UPDATE position set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4",
                    (ascension,declination,timestep,id_star))
@@ -52,7 +52,7 @@ class Database:
 
     def insert_velocity_HTP(self,timestep,id_star,ascension,declination,commit=True):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         cur.execute("INSERT INTO velocity (id_star,timestep,aHTP,dHTP) VALUES (?1,?2,?3,?4)",
                    (id_star,timestep,ascension,declination))
@@ -61,7 +61,7 @@ class Database:
 
     def insert_velocities_HTP(self,timestep,points):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         for point in points:
             cur.execute("INSERT INTO velocity (id_star,timestep,aHTP,dHTP) VALUES (?1,?2,?3,?4)",
@@ -70,7 +70,7 @@ class Database:
 
     def insert_positions_HTP(self,timestep,points):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         for point in points:
             cur.execute("INSERT INTO position (id_star,timestep,aHTP,dHTP) VALUES (?1,?2,?3,?4)",
@@ -80,7 +80,7 @@ class Database:
 
     def update_velocity_HTP(self,timestep,id_star,ascension,declination):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         cur.execute("UPDATE velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4",
                    (ascension,declination,timestep,id_star))
@@ -88,7 +88,7 @@ class Database:
 
     def update_velocities_HTP(self,timestep,points):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         for point in points:
             cur.execute("UPDATE velocity set aHTP=?1, dHTP=?2 where timestep = ?3 and id_star = ?4",
@@ -98,10 +98,10 @@ class Database:
 
     def insert_star(self,timestep,magnitude,ascension,declination,v_ascension=np.nan,v_declination=np.nan,observed=True,commit=True):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         cur = self.conn.cursor()
         cur.execute("INSERT INTO star (id_simulation, magnitude, isObserved) VALUES (?1,?2,?3)",
-            (simulation_id,magnitude,observed))
+            (config.simulation_id,magnitude,observed))
         id_star = cur.lastrowid
         if np.isfinite(ascension) and np.isfinite(declination):
             self.insert_position_HTP(timestep,id_star,ascension,declination,commit)
@@ -112,7 +112,7 @@ class Database:
 
     def update_point(self, point, timestep, commit=True):
         if self.conn is None:
-            connect(database_path)
+            connect(config.database_path)
         if point.id < 1:
             print("update_point: id has to be greater than 0!")
             return
@@ -134,9 +134,9 @@ class Database:
            and position.rH NOT NULL"""
         if aHTP_min is not None:
             sql=sql + ' AND position.aHTP > ?3 AND position.aHTP < ?4 AND position.dHTP > ?5 AND position.dHTP < ?6'
-            cur.execute(sql, (simulation_id,timestep,aHTP_min,aHTP_max,dHTP_min,dHTP_max))
+            cur.execute(sql, (config.simulation_id,timestep,aHTP_min,aHTP_max,dHTP_min,dHTP_max))
         else:
-            cur.execute(sql, (simulation_id,timestep))
+            cur.execute(sql, (config.simulation_id,timestep))
         rows = np.array(cur.fetchall())
         return rows
 
@@ -147,7 +147,7 @@ class Database:
 		    LEFT JOIN position on position.id_star = star.id 
 		    LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep 
 		    WHERE star.id_simulation = ?1 AND position.timestep = ?2 
-		    AND star.isObserved = ?3""", (simulation_id,timestep,observed))
+		    AND star.isObserved = ?3""", (config.simulation_id,timestep,observed))
         result = cur.fetchall()
         array = np.ndarray((len(result),),dtype=object)
         for i, line in enumerate(result):
@@ -166,7 +166,7 @@ class Database:
             sql+= " AND star.idCluster > -1 AND star.isObserved = 1"
         else:
             sql+= " AND star.isCluster = 1 AND star.isObserved = 0"
-        cur.execute(sql, (simulation_id,timestep))
+        cur.execute(sql, (config.simulation_id,timestep))
         result = cur.fetchall()
         array = np.ndarray((len(result),),dtype=object)
         for i, line in enumerate(result):
@@ -183,7 +183,7 @@ class Database:
             where sim.id_simulation = ?1
             AND
             sim.isCluster=1 
-            AND position.timestep = ?2""", (simulation_id,timestep))
+            AND position.timestep = ?2""", (config.simulation_id,timestep))
         result = cur.fetchall()
         array = np.ndarray((len(result),),dtype=object)
         for i, line in enumerate(result):
