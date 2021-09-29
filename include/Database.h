@@ -19,9 +19,6 @@
 #include "Misc.h"
 //#include "Constants.h"
 
-using Record = std::vector<std::string>;
-using Records = std::vector<Record>;
-
 class Database{
 	static char* dataBaseDataPath;
 	bool isOpen;
@@ -128,6 +125,8 @@ public:
 	void updatePoints(std::vector<Point>& points, int timestep = 0);
 
 	void set_fk_star(std::vector<Point>& points);
+
+	void set_extinction(std::vector<Star>& stars);
 };
 
 #endif

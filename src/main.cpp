@@ -27,6 +27,8 @@
 #include "WangPotential.h"
 #include "Projection.h"
 
+#include "Extinction.h"
+
 #include "Test.h"
 #include "Plot.h"
 
@@ -140,7 +142,7 @@ int main() {
 			else if(selection==2) {
 				Analysis analysis = Analysis(simulationID,&db);
 				std::cout << "What would you like to analyze?" << std::endl;
-				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster\n[5] Map observed stars" << std::endl;
+				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster\n[5] Map observed stars\n[6] Extinction" << std::endl;
 				std::cin >> selection;
 				std::cin.clear();
 				std::vector<int> timeSteps = db.selectTimesteps(simulationID);
@@ -190,6 +192,16 @@ int main() {
 				else if (selection == 5) {
 					analysis.map_observed();
 					std::cout << "Mapping done!" << std::endl;
+				}
+				else if (selection == 6) {
+					Extinction extinction = Extinction();
+
+					std::vector<Star> stars = db.selectStars(simulationID, 0);
+					for (Star& star : stars) {
+						extinction.set_extinction(star);
+					}
+					db.set_extinction(stars);
+					std::cout << "done" << std::endl;
 				}
 				else {
 					std::cout << "Feature not yet implemented" << std::endl;

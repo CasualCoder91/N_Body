@@ -74,6 +74,7 @@ void Database::setup(){
 		"isObserved INTEGER NOT NULL,"
 		"fkStar INTEGER,"
 		"idCluster INTEGER, "
+		"extinction REAL, "
 		"PRIMARY KEY (id),"
 		"FOREIGN KEY (id_simulation) "
 			"REFERENCES simulation(id) "
@@ -1201,7 +1202,6 @@ void Database::updatePoints(std::vector<Point>& points, int timestep)
 
 void Database::set_fk_star(std::vector<Point>& points)
 {
-
 	char* errorMessage;
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
 	std::string query = "update star set fkStar=?1 where id=?2";
@@ -1223,5 +1223,28 @@ void Database::set_fk_star(std::vector<Point>& points)
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
 	sqlite3_finalize(stmt);
 	std::cout << "Database: star.fkStar updated" << std::endl;
+}
+
+void Database::set_extinction(std::vector<Star>& stars)
+{
+	char* errorMessage;
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	std::string query = "update star set extinction=?1 where id=?2";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	for (const Star& star : stars) {
+		sqlite3_bind_double(stmt, 1, star.extinction);
+		sqlite3_bind_int(stmt, 2, star.id);
+		if (sqlite3_step(stmt) != SQLITE_DONE)
+		{
+			printf("set_extinction: Commit Failed!\n");
+			printf(errorMessage);
+		}
+		sqlite3_reset(stmt);
+
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmt);
+	std::cout << "Database: star.extinction updated" << std::endl;
 }
 

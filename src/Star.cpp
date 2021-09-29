@@ -6,6 +6,7 @@ Star::Star(int id){
 	this->position = Vec3D();
 	this->velocity = Vec3D();
 	this->acceleration = Vec3D();
+	this->extinction = 0;
 }
 
 Star::Star(int id, double mass){
@@ -14,6 +15,7 @@ Star::Star(int id, double mass){
 	this->position = Vec3D();
 	this->velocity = Vec3D();
 	this->acceleration = Vec3D();
+	this->extinction = 0;
 }
 
 Star::Star(int id, double mass, Vec3D position){
@@ -22,6 +24,7 @@ Star::Star(int id, double mass, Vec3D position){
 	this->position = position;
 	this->velocity = Vec3D();
 	this->acceleration = Vec3D();
+	this->extinction = 0;
 }
 
 Star::Star(int id, double mass, double x, double y, double z){
@@ -30,6 +33,7 @@ Star::Star(int id, double mass, double x, double y, double z){
 	this->position = Vec3D(x, y, z);
 	this->velocity = Vec3D();
 	this->acceleration = Vec3D();
+	this->extinction = 0;
 }
 
 Star::Star(int id, double mass, double xPos, double yPos, double zPos, double xVel, double yVel, double zVel){
@@ -38,6 +42,7 @@ Star::Star(int id, double mass, double xPos, double yPos, double zPos, double xV
 	this->position = Vec3D(xPos, yPos, zPos);
 	this->velocity = Vec3D(xVel, yVel, zVel);
 	this->acceleration = Vec3D();
+	this->extinction = 0;
 }
 
 std::string Star::dump()
@@ -56,4 +61,5 @@ void Star::reset(){
 		this->velocity.reset(); 
 	if(this->acceleration.x)
 		this->acceleration.reset();
+	this->extinction = 0;
 }

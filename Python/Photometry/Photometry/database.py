@@ -126,7 +126,7 @@ class Database:
 
     def select_2d_stars(self,timestep,aHTP_min=None,aHTP_max=None,dHTP_min=None,dHTP_max=None):
         cur = self.conn.cursor()
-        sql = """SELECT position.rH, position.aHTP, position.dHTP, star.mass 
+        sql = """SELECT position.rH, position.aHTP, position.dHTP, star.mass, star.extinction  
            FROM star
            INNER JOIN position on position.id_star = star.id
            where star.id_simulation = ?1

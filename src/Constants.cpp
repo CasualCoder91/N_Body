@@ -27,7 +27,7 @@ Vec3D Constants::focus = config.GetVec3D("focus");
 //General Parameters, todo: put into separate class
 /** @brief Gravitational constant in astronomical units: parsec/solar mass*km^2/s^2*/
 double Constants::G = config.GetDouble("G");// = 4.483e-3;
-double Constants::degInRad = 0.0174533;
+double Constants::degInRad = 0.017453292519943295769480039544949184171511371924940265706568;
 double Constants::radInArcsec = 206264.806;
 double Constants::radmyrInArcsecyr = 0.206264806;
 double Constants::kmInpc = 3.086e-13;

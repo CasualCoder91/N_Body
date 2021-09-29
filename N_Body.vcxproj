@@ -168,6 +168,7 @@
     <ClInclude Include="include\Configuration.h" />
     <ClInclude Include="include\Constants.h" />
     <ClInclude Include="include\Database.h" />
+    <ClInclude Include="include\Extinction.h" />
     <ClInclude Include="include\Matrix.h" />
     <ClInclude Include="include\Misc.h" />
     <ClInclude Include="include\Point.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="src\Configuration.cpp" />
     <ClCompile Include="src\Constants.cpp" />
     <ClCompile Include="src\Database.cpp" />
+    <ClCompile Include="src\Extinction.cpp" />
     <ClCompile Include="src\Matrix.cpp" />
     <ClCompile Include="src\Misc.cpp" />
     <ClCompile Include="src\Point.cpp" />

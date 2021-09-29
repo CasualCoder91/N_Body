@@ -41,7 +41,7 @@ def make_source(data):
            for spt in spec_types]
 
     # 6. make weight list from Mv + dist_mod(distance)
-    Mvs = np.array(sim_tp.utils.cluster_utils.mass2Mv(masses))
+    Mvs = np.array(sim_tp.utils.cluster_utils.mass2Mv(masses)) + data[:,4] #add extionction here?!
     dist_mod = 5 * np.log10(distances) - 5
     weight = 10 ** (-0.4 * (Mvs + dist_mod))
 
@@ -65,9 +65,10 @@ def ss_all():
     #                      "locations/Armazones", 
     #                      "instruments/MICADO"]) #"MAORY"
 
-    for timestep in [0,1]:
-        data = db.select_2d_stars(timestep)
-        make_fits(data, timestep, True, config.save_img, config.n_pixel)
+    #for timestep in [0,1]:
+    timestep = 0
+    data = db.select_2d_stars(timestep)
+    make_fits(data, timestep, True, config.save_img, config.n_pixel)
 
 def make_fits(data,timestep=0,save_file=True,save_img=False,n_pixel=config.n_pixel):
 

@@ -25,6 +25,8 @@ public:
 	/** @brief Acceleration of the star in km^2/(parsec*s^2)
 	@note Reason for this choice of units: dt is in parsec*s/km*/
 	Vec3D acceleration;
+
+	double extinction;
 	/**
 	 @brief creates string containing all member variables.
 	 @return created string
