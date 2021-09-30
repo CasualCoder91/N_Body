@@ -23,6 +23,7 @@ def make_source(data):
 
     masses = data[:,3]
     distances = data[:,0]
+    extinction = data[:,4]
 
     # 2. get spec_types for masses
     spec_types = sim_tp.utils.cluster_utils.mass2spt(masses)
@@ -41,9 +42,9 @@ def make_source(data):
            for spt in spec_types]
 
     # 6. make weight list from Mv + dist_mod(distance)
-    Mvs = np.array(sim_tp.utils.cluster_utils.mass2Mv(masses)) + data[:,4] #add extionction here?!
+    Mvs = np.array(sim_tp.utils.cluster_utils.mass2Mv(masses))
     dist_mod = 5 * np.log10(distances) - 5
-    weight = 10 ** (-0.4 * (Mvs + dist_mod))
+    weight = 10 ** (-0.4 * (Mvs + dist_mod + extinction))
 
 
     # 8. make table with (x,y,ref,weight)
@@ -65,10 +66,9 @@ def ss_all():
     #                      "locations/Armazones", 
     #                      "instruments/MICADO"]) #"MAORY"
 
-    #for timestep in [0,1]:
-    timestep = 0
-    data = db.select_2d_stars(timestep)
-    make_fits(data, timestep, True, config.save_img, config.n_pixel)
+    for timestep in [0,1]:
+        data = db.select_2d_stars(timestep)
+        make_fits(data, timestep, True, config.save_img, config.n_pixel)
 
 def make_fits(data,timestep=0,save_file=True,save_img=False,n_pixel=config.n_pixel):
 

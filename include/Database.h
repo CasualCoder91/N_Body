@@ -127,6 +127,9 @@ public:
 	void set_fk_star(std::vector<Point>& points);
 
 	void set_extinction(std::vector<Star>& stars);
+
+	void print_clustering_info(int simulation_id);
+
 };
 
 #endif

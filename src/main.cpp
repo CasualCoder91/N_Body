@@ -43,31 +43,47 @@ void do_it_all(size_t amount_of_times) {
 	db.open();
 	db.setup();
 
+	Extinction extinction = Extinction();
+
+	//for (size_t i = 0; i < amount_of_times; ++i)
+	//{
+	//	db.print_clustering_info(i+1);
+	//}
+	//return;
+
 	for (size_t i = 0; i < amount_of_times; ++i)
 	{
-		int simulationID = db.insertSimulation();
-		db.insertAnalysis(simulationID);
-		Simulation simulation = Simulation(simulationID, &db);
-		std::cout << "New simulation created. ID = " << simulationID << std::endl;
+		int simulation_id = db.insertSimulation();
+		db.insertAnalysis(simulation_id);
+		Simulation simulation = Simulation(simulation_id, &db);
+		std::cout << "New simulation created. ID = " << simulation_id << std::endl;
 		std::cout << "Starting simulation" << std::endl;
 		simulation.run();
 
 		std::cout << "generating HTP positions ..." << std::endl;
-		db.generateHTP(simulationID, false); //todo: move this to Analysis
+		db.generateHTP(simulation_id, false); //todo: move this to Analysis
 		std::cout << "generating magnitude ..." << std::endl;
-		db.generateMagnitude(simulationID);
+		db.generateMagnitude(simulation_id);
 		//HTP velocity
 		std::cout << "generating HTP velocities ..." << std::endl;
-		Analysis analysis = Analysis(simulationID, &db);
+		Analysis analysis = Analysis(simulation_id, &db);
 		analysis.generateHTPVelocity(0);
 		std::cout << "removing stars outside vision" << std::endl;
 		analysis.remove_stars();
 		std::cout << "done\n" << std::endl;
 
-		analysis.cluster(db.select_points(simulationID, 0, -1, 0));
+		for (size_t i = 0; i < 2; ++i) {
+			std::vector<Star> stars = db.selectStars(simulation_id, 0);
+			for (Star& star : stars) {
+				extinction.set_extinction(star);
+			}
+			db.set_extinction(stars);
+		}
 
-		std::string pythonFile = std::filesystem::current_path().string() + "/Python/Photometry/Photometry/main.py " + std::to_string(simulationID);
-		std::string command = "python3 " + pythonFile;
+		analysis.cluster(db.select_points(simulation_id, 0, -1, 0));
+
+		std::string python_file = std::filesystem::current_path().string() + "/Python/Photometry/Photometry/main.py " + std::to_string(simulation_id);
+		std::string command = "python3 " + python_file;
 		system(command.c_str());
 
 		std::cout << "generating HTP velocities ..." << std::endl;
@@ -77,7 +93,7 @@ void do_it_all(size_t amount_of_times) {
 		analysis.map_observed();
 		std::cout << "Mapping done!" << std::endl;
 
-		analysis.cluster(db.select_points(simulationID, 0, -1, 1));
+		analysis.cluster(db.select_points(simulation_id, 0, -1, 1));
 	}
 }
 
