@@ -1248,6 +1248,19 @@ void Database::set_extinction(std::vector<Star>& stars)
 	std::cout << "Database: star.extinction updated" << std::endl;
 }
 
+std::string set_mass_range(std::string sql, double min=-1, double max=-1) {
+	if (min > 0) 
+	{
+		sql += " and sim.mass >= " + std::to_string(min) +" ";
+	}
+	if (max > 0)
+	{
+		sql += " and sim.mass < " + std::to_string(max) + " ";
+	}
+	return sql;
+}
+
+
 void Database::print_clustering_info(int simulation_id)
 {
 	auto execute_sql = [simulation_id, this](std::string sql)
@@ -1260,6 +1273,29 @@ void Database::print_clustering_info(int simulation_id)
 		}
 		sqlite3_finalize(st);
 	};
+
+	auto set_mass_range = [](std::string sql, double min = -1, double max = -1) -> std::string
+	{
+		if (min > 0)
+		{
+			sql += " and sim.mass >= " + std::to_string(min) + " ";
+		}
+		if (max > 0)
+		{
+			sql += " and sim.mass < " + std::to_string(max) + " ";
+		}
+		return sql;
+	};
+
+	auto query_mass_range = [execute_sql, set_mass_range](std::string sql, std::vector<double> mass_ranges){
+		execute_sql(sql);
+		execute_sql(set_mass_range(sql, mass_ranges[0]));
+		for (size_t i = 0; i < mass_ranges.size() - 1;++i) {
+			execute_sql(set_mass_range(sql, mass_ranges[i+1], mass_ranges[i]));
+		}
+	};
+
+	std::vector<double> mass_ranges = { 2, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001 };
 
 	//false positive
 	execute_sql("select count(*) from star where idCluster > -1 and isCluster = 0 and isObserved = 0 and id_simulation = ?1");
@@ -1282,41 +1318,17 @@ void Database::print_clustering_info(int simulation_id)
 	//Unconfirmed Negative
 	execute_sql("select count(*) from star inner join position on star.id=position.id_star where position.timestep = 0 and star.isObserved = 1 and star.idCluster = -1 and star.fkStar is NULL and id_simulation = ?1");
 
-	//Confirmed False positive > 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass >= 2");
+	//Confirmed False positive
+	query_mass_range("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1", mass_ranges);
 
-	//Confirmed False positive 1M - 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 2 and sim.mass >=1");
+	//Confirmed True positive
+	query_mass_range("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster > -1 and obs.isObserved = 1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1", mass_ranges);
 
-	//Confirmed False positive < 1M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 1");
+	//Confirmed False Negative
+	query_mass_range("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1", mass_ranges);
 
-	//Confirmed True positive > 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster > -1 and obs.isObserved = 1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass >= 2");
-
-	//Confirmed True positive 1M - 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster > -1 and obs.isObserved = 1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 2 and sim.mass >=1");
-	
-	//Confirmed True positive < 1M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster > -1 and obs.isObserved = 1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 1");
-
-	//Confirmed False Negative > 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass >= 2");
-
-	//Confirmed False Negative 1M - 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 2 and sim.mass >=1");
-
-	//Confirmed False Negative < 1M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 1");
-
-	//Confirmed True Negative > 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 0 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass >= 2");
-
-	//Confirmed True Negative 1M - 2M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 0 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 2 and sim.mass >=1");
-
-	//Confirmed True Negative < 1M
-	execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 0 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and sim.mass < 1");
+	//Confirmed True Negative
+	query_mass_range("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster = -1 and sim.isCluster = 0 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1", mass_ranges);
 
 	//Observed stars
 	execute_sql("select count(*) from star inner join position on star.id = position.id_star where isObserved = 1 and timestep = 0 and id_simulation = ?1");
