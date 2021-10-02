@@ -51,34 +51,33 @@ void do_it_all(size_t amount_of_times) {
 	}
 	return;
 
-	for (size_t i = 0; i < amount_of_times; ++i)
+	for (size_t i = 1; i < amount_of_times; ++i)
 	{
+		//int simulation_id = i+1;
 		int simulation_id = db.insertSimulation();
 		db.insertAnalysis(simulation_id);
 		Simulation simulation = Simulation(simulation_id, &db);
 		std::cout << "New simulation created. ID = " << simulation_id << std::endl;
-		std::cout << "Starting simulation" << std::endl;
+		//std::cout << "Starting simulation" << std::endl;
 		simulation.run();
 
-		std::cout << "generating HTP positions ..." << std::endl;
+		//std::cout << "generating HTP positions ..." << std::endl;
 		db.generateHTP(simulation_id, false); //todo: move this to Analysis
-		std::cout << "generating magnitude ..." << std::endl;
+		//std::cout << "generating magnitude ..." << std::endl;
 		db.generateMagnitude(simulation_id);
 		//HTP velocity
-		std::cout << "generating HTP velocities ..." << std::endl;
+		//std::cout << "generating HTP velocities ..." << std::endl;
 		Analysis analysis = Analysis(simulation_id, &db);
 		analysis.generateHTPVelocity(0);
-		std::cout << "removing stars outside vision" << std::endl;
+		//std::cout << "removing stars outside vision" << std::endl;
 		analysis.remove_stars();
-		std::cout << "done\n" << std::endl;
+		//std::cout << "done\n" << std::endl;
 
-		for (size_t i = 0; i < 2; ++i) {
-			std::vector<Star> stars = db.selectStars(simulation_id, 0);
-			for (Star& star : stars) {
-				extinction.set_extinction(star);
-			}
-			db.set_extinction(stars);
+		std::vector<Star> stars = db.select_stars(simulation_id, 0);
+		for (Star& star : stars) {
+			extinction.set_extinction(star);
 		}
+		db.set_extinction(stars);
 
 		analysis.cluster(db.select_points(simulation_id, 0, -1, 0));
 
@@ -86,14 +85,16 @@ void do_it_all(size_t amount_of_times) {
 		std::string command = "python3 " + python_file;
 		system(command.c_str());
 
-		std::cout << "generating HTP velocities ..." << std::endl;
+		//std::cout << "generating HTP velocities ..." << std::endl;
 		analysis.generateHTPVelocity(1);
-		std::cout << "done\n" << std::endl;
+		//std::cout << "done\n" << std::endl;
 
 		analysis.map_observed();
-		std::cout << "Mapping done!" << std::endl;
+		//std::cout << "Mapping done!" << std::endl;
 
 		analysis.cluster(db.select_points(simulation_id, 0, -1, 1));
+
+		analysis.estimate_mass();
 	}
 }
 
@@ -158,7 +159,7 @@ int main() {
 			else if(selection==2) {
 				Analysis analysis = Analysis(simulationID,&db);
 				std::cout << "What would you like to analyze?" << std::endl;
-				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster\n[5] Map observed stars\n[6] Extinction" << std::endl;
+				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster\n[5] Map observed stars\n[6] Extinction\[7] Estimate mass" << std::endl;
 				std::cin >> selection;
 				std::cin.clear();
 				std::vector<int> timeSteps = db.selectTimesteps(simulationID);
@@ -168,7 +169,7 @@ int main() {
 				}
 				else if (selection == 2) { //Velocity3D
 					for (int timeStep : timeSteps) {
-						//std::vector<Star*> stars = db.selectStars(simulationID, timeStep);
+						//std::vector<Star*> stars = db.select_stars(simulationID, timeStep);
 						std::vector<Vec3D> clusterVelocities = db.selectVelocities3D(simulationID, timeStep, false, true);
 						std::vector<Vec3D> fsVelocities = db.selectVelocities3D(simulationID, timeStep, true, false);
 						double avgVel3DCluster = analysis.average(clusterVelocities);
@@ -212,12 +213,15 @@ int main() {
 				else if (selection == 6) {
 					Extinction extinction = Extinction();
 
-					std::vector<Star> stars = db.selectStars(simulationID, 0);
+					std::vector<Star> stars = db.select_stars(simulationID, 0);
 					for (Star& star : stars) {
 						extinction.set_extinction(star);
 					}
 					db.set_extinction(stars);
 					std::cout << "done" << std::endl;
+				}
+				else if (selection == 7) {
+					analysis.estimate_mass();
 				}
 				else {
 					std::cout << "Feature not yet implemented" << std::endl;

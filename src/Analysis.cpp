@@ -39,7 +39,7 @@ void Analysis::energy()
 {
 	std::vector<int> timeSteps = database->selectTimesteps(simulation_id);
 	for (int timeStep : timeSteps) {
-		std::vector<Star> stars = database->selectStars(simulation_id, timeStep);
+		std::vector<Star> stars = database->select_stars(simulation_id, timeStep);
 		double kinE = kineticEnergy(stars);
 		double potE = potentialEnergy(stars);
 		database->insertAnalysisdtEnergy(simulation_id, timeStep, kinE, potE);
@@ -233,7 +233,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 			point0.velocity[0] = it->x - point0.x; //tecnically division by dt needed but dt is equal for all points
 			point0.velocity[1] = it->y - point0.y;
 		}
-		database->updatePoints(points_t0, 0);
+		database->update_points(points_t0, 0);
 		return;
 	}
 
@@ -301,7 +301,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 	else {
 		//database->delete_stars(id, stars_to_delete);
 	}
-	database->updatePoints(points_t0, 0);
+	database->update_points(points_t0, 0);
 	return;
 
 
@@ -362,7 +362,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 	//		database->delete_stars(id, stars_to_delete);
 	//	}
 	//}
-	//database->updatePoints(points[0],0);
+	//database->update_points(points[0],0);
 }
 
 
@@ -419,7 +419,7 @@ void Analysis::cluster(std::vector<Point>& points) {
 	std::cout << "nTruePositive: " << nTruePositive << std::endl;
 	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
 	//points.push_back(resultAt0);
-	database->updatePoints(points);
+	database->update_points(points);
 }
 
 void Analysis::map_observed()
@@ -501,5 +501,52 @@ void Analysis::remove_stars()
 	}
 	database->delete_stars(this->simulation_id, stars_to_delete);
 
+}
+
+void Analysis::estimate_mass()
+{
+	database->set_mapped_star_mass();
+	std::vector<Point> observed_points = database->select_points(simulation_id, 0, -1, 1);
+
+	std::vector<Point> mapped_points = observed_points;
+	mapped_points.erase(std::remove_if(
+		mapped_points.begin(), mapped_points.end(),
+		[](const Point& x) {
+			return x.fk_star == 0;
+		}), mapped_points.end());
+
+	std::vector<Point> non_mapped_points = observed_points;
+	non_mapped_points.erase(std::remove_if(
+		non_mapped_points.begin(), non_mapped_points.end(),
+		[](const Point& x) {
+			return x.fk_star != 0;
+		}), non_mapped_points.end());
+
+	arma::mat mat_mapped_points = arma::mat(1, mapped_points.size());
+	for (size_t i = 0; i < mapped_points.size(); i++) {
+		arma::vec column = arma::vec(1);
+		column.at(0) = mapped_points[i].magnitude;
+		mat_mapped_points.col(i) = column;
+	}
+
+	arma::mat mat_non_mapped_points = arma::mat(1, non_mapped_points.size());
+	for (size_t i = 0; i < non_mapped_points.size(); i++) {
+		arma::vec column = arma::vec(1);
+		column.at(0) = non_mapped_points[i].magnitude;
+		mat_non_mapped_points.col(i) = column;
+	}
+
+	mlpack::neighbor::KNN a(mat_mapped_points); 
+
+	arma::Mat<size_t> resulting_neighbors;
+	arma::mat resulting_distances;
+
+	a.Search(mat_non_mapped_points, 1, resulting_neighbors, resulting_distances);
+
+	for (size_t non_mapped_points_index = 0; non_mapped_points_index < resulting_neighbors.n_cols; non_mapped_points_index++) {
+		non_mapped_points[non_mapped_points_index].mass = mapped_points[resulting_neighbors(0, non_mapped_points_index)].mass;
+	}
+
+	database->set_mass(non_mapped_points);
 }
 

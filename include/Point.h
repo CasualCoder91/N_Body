@@ -9,12 +9,15 @@ public:
     double velocity[2] = { 0,0 };
     int id, nNeighbors, cluster, fk_star;
     bool clusterStar;
+    double mass;
     double magnitude;
     static const std::string header;
 
     Point();
     Point(int id, double x, double y, bool clusterStar, double magnitude);
     Point(int id, double x, double y, double vx, double vy,  bool clusterStar, double magnitude);
+    Point(int id, double x, double y, double vx, double vy, bool clusterStar, double magnitude, int fk_star);
+    Point(int id, double x, double y, double vx, double vy, bool clusterStar, double magnitude, int fk_star, double mass);
 
     double getDistance(const Point& pt2);
     double getVelDelta(const Point& pt2);

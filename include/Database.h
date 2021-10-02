@@ -49,7 +49,7 @@ public:
 	/** @brief inserts the stars (including positions and velocities)*/
 	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0, bool clusterStars=true);
 
-	void delede_star(int simulation_id, int star_id);
+	void delete_star(int simulation_id, int star_id);
 
 	void delete_stars(const int simulation_id, const std::vector<int> stars_to_delete);
 
@@ -103,12 +103,16 @@ public:
 	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true, double minMagnitude = -1);
 	/** @brief returns all timesteps for simulation with ID \p simulationID*/
 	std::vector<int> selectTimesteps(int simulationID);
+
+
+	Star select_star(int star_id, int timestep = 0);
+
 	/** @brief returns all stars for a given simulation with velocity and position at the given timestep (pass 0 to retrieve initial values) 
 		@param simulationID ID of the Simulation for which to retrieve the stars
 		@param timeStep position and velocity of the star depend on the timestep
 		@param observed set true to retrieve stars observed with photutils, false to get simulated stars
 	*/
-	std::vector<Star> selectStars(int simulationID, int timeStep, bool observed = false);
+	std::vector<Star> select_stars(int simulationID, int timeStep, bool observed = false);
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
 
@@ -122,13 +126,17 @@ public:
 	std::vector<std::vector<Point>>select_time_series_points(int simulationID = 1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = -1, bool observed = false);
 
 	//updates velocity.aHTP and velocity.dHTP
-	void updatePoints(std::vector<Point>& points, int timestep = 0);
+	void update_points(std::vector<Point>& points, int timestep = 0);
+
+	void set_mass(const std::vector<Point>& points);
 
 	void set_fk_star(std::vector<Point>& points);
 
 	void set_extinction(std::vector<Star>& stars);
 
 	void print_clustering_info(int simulation_id);
+
+	void set_mapped_star_mass();
 
 };
 

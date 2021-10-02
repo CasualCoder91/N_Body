@@ -45,3 +45,32 @@ Point::Point(int id, double x, double y, double vx, double vy, bool clusterStar,
     this->velocity[1] = vy;
     this->fk_star = 0;
 }
+
+Point::Point(int id, double x, double y, double vx, double vy, bool clusterStar, double magnitude, int fk_star)
+{
+    this->id = id;
+    this->x = x;
+    this->y = y;
+    this->clusterStar = clusterStar;
+    this->magnitude = magnitude;
+    this->cluster = -1; //-1 = NOT_CLASSIFIED (Position & Velocity) | 0 = NOT_CLASSIFIED (Velocity)
+    this->nNeighbors = 0;
+    this->velocity[0] = vx;
+    this->velocity[1] = vy;
+    this->fk_star = fk_star;
+}
+
+Point::Point(int id, double x, double y, double vx, double vy, bool clusterStar, double magnitude, int fk_star, double mass)
+{
+    this->id = id;
+    this->x = x;
+    this->y = y;
+    this->clusterStar = clusterStar;
+    this->magnitude = magnitude;
+    this->cluster = -1; //-1 = NOT_CLASSIFIED (Position & Velocity) | 0 = NOT_CLASSIFIED (Velocity)
+    this->nNeighbors = 0;
+    this->velocity[0] = vx;
+    this->velocity[1] = vy;
+    this->fk_star = fk_star;
+    this->mass = mass;
+}

@@ -122,5 +122,9 @@ public: //methods
     @brief removes stars outside circle of vision
     */
     void remove_stars();
+    /**
+    @brief sets mass of mapped stars and estimates mass of non mapped stars based on their apparent magnitude
+    */
+    void estimate_mass();
 };
 

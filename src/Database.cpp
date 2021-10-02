@@ -239,7 +239,7 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 
 }
 
-void Database::delede_star(int simulation_id, int star_id)
+void Database::delete_star(int simulation_id, int star_id)
 {
 	std::string sql = "DELETE from star where id = ?1 and id_simulation = ?2";
 	sqlite3_stmt* st;
@@ -869,7 +869,31 @@ std::vector<int> Database::selectTimesteps(int simulationID){
 	return timeSteps;
 }
 
-std::vector<Star> Database::selectStars(int simulationID, int timeStep, bool observed){
+Star Database::select_star(int star_id, int timestep)
+{
+	Star star = Star(star_id);
+	if (!this->isOpen)
+		this->open();
+	std::string query = "SELECT star.id,mass,position.x,position.y,position.z,velocity.x,velocity.y,velocity.z "
+		"FROM star INNER JOIN velocity on velocity.id_star = star.id "
+		"INNER JOIN position on position.id_star = star.id "
+		"where position.timestep = ?1 AND velocity.timestep = ?1 AND star.id = ?2 ";
+	sqlite3_stmt* stmt;
+	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
+		printf("Database::select_star error\n");
+	}
+	sqlite3_bind_int(stmt, 1, timestep);
+	sqlite3_bind_int(stmt, 2, star_id);
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		star = Star(sqlite3_column_int(stmt, 0), sqlite3_column_double(stmt, 1),
+			sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3), sqlite3_column_double(stmt, 4),
+			sqlite3_column_double(stmt, 5), sqlite3_column_double(stmt, 6), sqlite3_column_double(stmt, 7));
+	}
+	sqlite3_finalize(stmt);
+	return star;
+}
+
+std::vector<Star> Database::select_stars(int simulationID, int timeStep, bool observed){
 	std::vector<Star> stars = {};
 	if (!this->isOpen)
 		this->open();
@@ -880,7 +904,7 @@ std::vector<Star> Database::selectStars(int simulationID, int timeStep, bool obs
 		"and star.isObserved = ?3";
 	sqlite3_stmt* stmt;
 	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
-		printf("Database::selectStars error\n");
+		printf("Database::select_stars error\n");
 	}
 	sqlite3_bind_int(stmt, 1, timeStep);
 	sqlite3_bind_int(stmt, 2, simulationID);
@@ -1055,7 +1079,7 @@ std::vector<Point> Database::select_points(int simulationID, int timestep, doubl
 {
 	std::vector<Point> points;
 
-	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude "
+	std::string query = "SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude, star.fkStar, star.mass "
 		"FROM star "
 		"LEFT JOIN position on position.id_star = star.id "
 		"LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep "
@@ -1090,8 +1114,10 @@ std::vector<Point> Database::select_points(int simulationID, int timestep, doubl
 			sqlite3_column_double(stmt, 3),  //y
 			sqlite3_column_double(stmt, 4),  //vx
 			sqlite3_column_double(stmt, 5),  //vy
-			sqlite3_column_int(stmt, 6),      //clusterStar
-			sqlite3_column_double(stmt, 7)); //magnitude
+			sqlite3_column_int(stmt, 6),     //clusterStar
+			sqlite3_column_double(stmt, 7),  //magnitude
+			sqlite3_column_int(stmt, 8),     //fkStar
+			sqlite3_column_double(stmt, 9)); //mass
 	}
 	sqlite3_finalize(stmt);
 
@@ -1149,7 +1175,7 @@ std::vector<std::vector<Point>> Database::select_time_series_points(int simulati
 	return points;
 }
 
-void Database::updatePoints(std::vector<Point>& points, int timestep)
+void Database::update_points(std::vector<Point>& points, int timestep)
 {
 
 	char* errorMessage;
@@ -1170,7 +1196,7 @@ void Database::updatePoints(std::vector<Point>& points, int timestep)
 		sqlite3_bind_int(stmtVelocity, 4, point.id);
 		if (sqlite3_step(stmtVelocity) != SQLITE_DONE)
 		{
-			printf("updatePoints: Commit Failed!\n");
+			printf("update_points: Commit Failed!\n");
 			printf(errorMessage);
 		}
 		sqlite3_reset(stmtVelocity);
@@ -1190,7 +1216,7 @@ void Database::updatePoints(std::vector<Point>& points, int timestep)
 		sqlite3_bind_int(stmtStar, 2, point.id);
 		if (sqlite3_step(stmtStar) != SQLITE_DONE)
 		{
-			printf("updatePoints: Commit Failed!\n");
+			printf("update_points: Commit Failed!\n");
 			printf(errorMessage);
 		}
 		sqlite3_reset(stmtStar);
@@ -1248,16 +1274,20 @@ void Database::set_extinction(std::vector<Star>& stars)
 	std::cout << "Database: star.extinction updated" << std::endl;
 }
 
-std::string set_mass_range(std::string sql, double min=-1, double max=-1) {
-	if (min > 0) 
-	{
-		sql += " and sim.mass >= " + std::to_string(min) +" ";
+void Database::set_mapped_star_mass()
+{
+	if (!this->isOpen)
+		this->open();
+	std::string query = "update star set mass = (select mass from star sim where sim.id = star.fkStar) where star.isObserved = 1 and star.fkStar > 0";
+	sqlite3_stmt* stmt;
+	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
+	if (!sqlite3_step(stmt) == SQLITE_ROW) {
+		std::cout << "Error in set_mapped_star_mass" << std::endl;
 	}
-	if (max > 0)
-	{
-		sql += " and sim.mass < " + std::to_string(max) + " ";
-	}
-	return sql;
+	sqlite3_finalize(stmt);
+
+	return;
+
 }
 
 
@@ -1278,11 +1308,11 @@ void Database::print_clustering_info(int simulation_id)
 	{
 		if (min > 0)
 		{
-			sql += " and sim.mass >= " + std::to_string(min) + " ";
+			sql += " and obs.mass >= " + std::to_string(min) + " ";
 		}
 		if (max > 0)
 		{
-			sql += " and sim.mass < " + std::to_string(max) + " ";
+			sql += " and obs.mass < " + std::to_string(max) + " ";
 		}
 		return sql;
 	};
@@ -1295,7 +1325,7 @@ void Database::print_clustering_info(int simulation_id)
 		}
 	};
 
-	std::vector<double> mass_ranges = { 2, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001 };
+	std::vector<double> mass_ranges = { 2, 0.5, 0.08 };//{ 2, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001 };
 
 	//false positive
 	execute_sql("select count(*) from star where idCluster > -1 and isCluster = 0 and isObserved = 0 and id_simulation = ?1");
@@ -1313,10 +1343,10 @@ void Database::print_clustering_info(int simulation_id)
 	execute_sql("select count(*) from star where isObserved=0 and id_simulation=?1");
 
 	//Unconfirmed Positive
-	execute_sql("select count(*) from star inner join position on star.id=position.id_star where position.timestep = 0 and star.isObserved = 1 and star.idCluster > -1 and star.fkStar is NULL and id_simulation = ?1");
+	query_mass_range("select count(*) from star obs inner join position on obs.id=position.id_star where position.timestep = 0 and obs.isObserved = 1 and obs.idCluster > -1 and obs.fkStar is NULL and id_simulation = ?1", mass_ranges);
 
 	//Unconfirmed Negative
-	execute_sql("select count(*) from star inner join position on star.id=position.id_star where position.timestep = 0 and star.isObserved = 1 and star.idCluster = -1 and star.fkStar is NULL and id_simulation = ?1");
+	query_mass_range("select count(*) from star obs inner join position on obs.id=position.id_star where position.timestep = 0 and obs.isObserved = 1 and obs.idCluster = -1 and obs.fkStar is NULL and id_simulation = ?1", mass_ranges);
 
 	//Confirmed False positive
 	query_mass_range("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1", mass_ranges);
@@ -1337,5 +1367,27 @@ void Database::print_clustering_info(int simulation_id)
 	execute_sql("select count(*) from star inner join position on star.id = position.id_star where not fkStar is NULL and position.timestep = 0 and id_simulation = ?1");
 
 	std::cout << std::endl;
+}
+
+void Database::set_mass(const std::vector<Point>& points)
+{
+	char* errorMessage;
+	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
+	std::string queryStar = "update star set mass=?1 where id=?2";
+	sqlite3_stmt* stmtStar;
+	sqlite3_prepare_v2(db, queryStar.c_str(), static_cast<int>(queryStar.size()), &stmtStar, nullptr);
+	for (const Point& point : points) {
+		sqlite3_bind_double(stmtStar, 1, point.mass);
+		sqlite3_bind_int(stmtStar, 2, point.id);
+		if (sqlite3_step(stmtStar) != SQLITE_DONE)
+		{
+			printf("set_mass: Commit Failed!\n");
+			printf(errorMessage);
+		}
+		sqlite3_reset(stmtStar);
+	}
+	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
+	sqlite3_finalize(stmtStar);
+	std::cout << "Database: mass updated" << std::endl;
 }
 
