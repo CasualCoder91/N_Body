@@ -35,11 +35,13 @@ private:
 public:
 	sqlite3* db;
 	Database();
+	~Database();
 	/**
 	@brief Opens a database connection. In case the database does not exist yet it creates a new one 
 	@param name file path of the database. If not passed \ref Database.dataBaseDataPath is used. If name is given, that database will be used/created.
 	*/
 	bool open(char* name ="");
+	bool close();
 	/** @brief Creates all tables (and database) if they do not exist yet. */
 	void setup();
 	/** @brief returns the largest id from the given \p table */

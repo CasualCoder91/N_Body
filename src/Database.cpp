@@ -7,6 +7,13 @@ Database::Database(){
 	this->open();
 }
 
+Database::~Database()
+{
+	if (this->isOpen) {
+		sqlite3_close(db);
+	}
+}
+
 bool Database::open(char* pDataBaseDataPath){
 	if (std::strlen(pDataBaseDataPath) == 0) {
 		pDataBaseDataPath = this->dataBaseDataPath;
@@ -22,6 +29,16 @@ bool Database::open(char* pDataBaseDataPath){
 		return true;
 	}
 	this->isOpen = true;
+	return false;
+}
+
+bool Database::close()
+{
+	int rc = sqlite3_close(db);
+	if (rc) {
+		this->isOpen = false;
+		return true;
+	}
 	return false;
 }
 

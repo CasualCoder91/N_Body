@@ -129,8 +129,8 @@ def use_DAOStarFinder(image, save_img=True):
     #    sources[col].info.format = '%.8g'  # for consistent table output
     #print(sources)
 
-    positions = np.transpose((sources['xcentroid'], sources['ycentroid']))
     if save_img:
+        positions = np.transpose((sources['xcentroid'], sources['ycentroid']))
         apertures = CircularAperture(positions, r=3.)
         #phot_table = aperture_photometry(image, apertures)
         #for col in phot_table.colnames:
@@ -252,7 +252,7 @@ def pu_all():
         stars = stars[[np.isfinite(star['flux']) for star in stars]]
         # print(stars.info)
         # print("[1] Write found stars to DB!\n[2] no ty")
-        print("StarFinder done\nWriting stars to DB")
+        print(timestep,": StarFinder done\nWriting stars to DB")
 
         db = Database()
         origin = config.n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
