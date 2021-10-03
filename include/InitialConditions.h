@@ -34,7 +34,7 @@ public:
 	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
 	@param nStars Amout of stars generated
 	*/
-	static std::vector<Star*> initStars(int& firstID, const int nStars);
+	static std::vector<Star> initStars(int& firstID, const int nStars);
 	/**
 	@brief Creates field stars in the field of view defined by \p focus, \p viewPoint, \p distance and \p angleOfView.
 	@param [in,out] firstID ID of the first star in the return vector. Gets incremented with every added star.
@@ -43,7 +43,7 @@ public:
 	@param distance how far the observer can see/the render distance
 	@param angleOfView the angle of view in degrees
 	*/
-	std::vector<Star*> initFieldStars(int& firstID, const Vec3D& focus, const Vec3D& viewPoint, double distance, double angleOfView);
+	std::vector<Star> initFieldStars(int& firstID, const Vec3D& focus, const Vec3D& viewPoint, double distance, double angleOfView);
 	/**@brief Calculates total mass of stars inside given cone. Only properly works along axis. Todo: Replace with new cone method*/
 	double bulgeStarMass(const Vec3D& focus, const Vec3D& viewPoint, double distance, double dx, double angleOfView);
 	/**
@@ -53,24 +53,24 @@ public:
 	@param maxMass The largest possible mass.
 	@param alpha The exponent used in the IMF.
 	*/
-	double initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha= -2.35);
+	double initialMassSalpeter(std::vector<Star>& stars, double minMass, double maxMass, double alpha= -2.35);
 	/**
 	@brief Inverse transformation sampling of mass from power law function defined by given \p massLimits and \p exponents.
 	*/
-	double brokenPowerLaw(std::vector<Star*>& stars, const std::vector<double>& massLimits, const std::vector<double>& exponents);
+	double brokenPowerLaw(std::vector<Star>& stars, const std::vector<double>& massLimits, const std::vector<double>& exponents);
 	/**
 	@brief Creates stars belonging to the disk with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	@param [in,out] starID ID of the first star in the return vector. Gets incremented with every added star.
 	*/
-	std::vector<Star*> diskIMF(double totalMass, int& starID);
+	std::vector<Star> diskIMF(double totalMass, int& starID);
 	/**
 	@brief Creates stars belonging to the bulge/spheroid with mass optained through rejection sampling.
 	@param totalMass The sum of stellar masses should be equal to the totalMass. In actuality the sum is a bit larger.
 	@param [in,out] starID ID of the first star in the return vector. Gets incremented with every added star.
 	@see bulgeIMF
 	*/
-	std::vector<Star*> bulgeIMF(double totalMass, int& starID);
+	std::vector<Star> bulgeIMF(double totalMass, int& starID);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc inside a cube.
 	@param [in,out] stars The positions of these stars will be modified.
@@ -78,7 +78,7 @@ public:
 	@param volumeElement leghts of the sides of the cube (typicaly all positive and equal size) [kpc].
 	@see sampleBulgePositions
 	*/
-	void sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
+	void sampleDiskPositions(std::vector<Star>& stars, Vec3D position, Vec3D volumeElement);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc inside a cone.
 	@param [in,out] stars The positions of these stars will be modified.
@@ -88,7 +88,7 @@ public:
 	@param distance Height of the cone.
 	@param transformationMatrix Rotation and translation matrix changing the position and orientation of the cone.
 	*/
-	void sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
+	void sampleDiskPositions(std::vector<Star>& stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
 	/**
 	@brief Adds velocity (circular with dispersion) at given \p position to \p velocity 
 	@param [in,out] velocity [km/s]
@@ -101,7 +101,7 @@ public:
 	@param [in,out] stars
 	@see sampleDiskVelocity
 	*/
-	void sampleDiskVelocities(std::vector<Star*> stars);
+	void sampleDiskVelocities(std::vector<Star>& stars);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the bulge.
 	@param [in,out] stars The positions of these stars will be modified.
@@ -109,9 +109,9 @@ public:
 	@param volumeElement leghts of the sides of the cube (typicaly all positive and equal size) [kpc].
 	@see sampleDiskPositions
 	*/
-	void sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement);
-	void sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
-	void sampleBulgePositionsCylinder(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
+	void sampleBulgePositions(std::vector<Star>& stars, Vec3D position, Vec3D volumeElement);
+	void sampleBulgePositions(std::vector<Star>& stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
+	void sampleBulgePositionsCylinder(std::vector<Star>& stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix);
 	/**
 	@brief Adds velocity (circular with dispersion) at given \p position to \p velocity
 	@param [in,out] velocity [km/s]
@@ -124,7 +124,7 @@ public:
 	@param [in,out] stars
 	@see sampleBulgeVelocity
 	*/
-	void sampleBulgeVelocities(std::vector<Star*> stars);
+	void sampleBulgeVelocities(std::vector<Star>& stars);
 	/**
 	@brief Sets position and velocity of \p stars overwriting(!) current values. Used to setup clusters.
 	@param [in,out] stars Obtain this parameter with for instance initStars(int& firstID)
@@ -132,13 +132,13 @@ public:
 	@param scaleParameter size of the cluster core [pc]
 	@param G gravitational constant
 	*/
-	void plummerSphere(std::vector<Star*>& stars, double totalMass, double scaleParameter, double G);
+	void plummerSphere(std::vector<Star>& stars, double totalMass, double scaleParameter, double G);
 	/**
 	@brief Adds \p offset to positions of \p stars 
 	@param [in,out] stars
 	@param offset [pc]
 	*/
-	void offsetCluster(std::vector<Star*>& stars, const Vec3D& offset) const;
+	void offsetCluster(std::vector<Star>& stars, const Vec3D& offset) const;
 
 private:
 	friend class Test;
@@ -152,7 +152,7 @@ private:
 	@param totalMass [SolarMass] of the cluster
 	@param G gravitational constant
 	*/
-	void plummerVelocity(Star* star, double scaleParameter, double distance, double totalMass, double G);
+	void plummerVelocity(Star& star, double scaleParameter, double distance, double totalMass, double G);
 	/** @brief calculates the value which is closest to zero in the intervall [a,b] */
 	static double closestToZero(double a, double b);
 	/** @brief calculates the value which is farthest away from zero in the intervall [a,b] */

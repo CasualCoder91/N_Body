@@ -12,15 +12,15 @@ Integrator::Integrator(double dt){
 	this->positionDetla2 = 0.5 * positionDetla;
 }
 
-void Integrator::euler(std::vector<Star*> stars, double dt){
+void Integrator::euler(std::vector<Star>& stars, double dt){
 	if (dt != 0) {
 		this->dt = dt;
 	}
 	//#pragma omp parallel for //1:10
 	for (int i = 0; i < stars.size(); ++i){
 		//root->applyForce(stars[i]->position, &stars[i]->acceleration);
-		stars[i]->velocity += (stars[i]->acceleration * this->dts);
-		stars[i]->position += (stars[i]->velocity * this->positionDetla);
+		stars[i].velocity += (stars[i].acceleration * this->dts);
+		stars[i].position += (stars[i].velocity * this->positionDetla);
 	}
 }
 

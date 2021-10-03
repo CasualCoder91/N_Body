@@ -36,31 +36,30 @@ public:
 	void potentialCircularVelocity();
 	void potentialCircularVelocityOutput(std::string path = "");
 
-	void initialConditionsMassSalpeterOutput(int nStars = 10000);
-	static void initialConditionsMassBulgeOutput(double totalMass);
-	static void potentialSurfaceDensityBulge();
-	static void potentialSurfaceDensityDisk();
-	static void initialConditionsSampleDisk(); //wip
+	//void initialConditionsMassSalpeterOutput(int nStars = 10000);
+	//static void initialConditionsMassBulgeOutput(double totalMass);
+	//static void potentialSurfaceDensityBulge();
+	//static void potentialSurfaceDensityDisk();
+	//static void initialConditionsSampleDisk(); //wip
 
-	static void massDistributionTimer();
+	//static void massDistributionTimer();
 
-	static void velocityBulgeR();
-	static void velocityDispersionBulgerGC();
-	static void initialConditionsSampleBulgeVelocity();
-	void velocityBulge();
+	//static void velocityBulgeR();
+	//static void velocityDispersionBulgerGC();
+	//static void initialConditionsSampleBulgeVelocity();
+	//void velocityBulge();
 
-	void velocityDisk();
+	//void velocityDisk();
 
-	static void escapeVelocity();
+	//static void escapeVelocity();
 
-	void initialConditionsInitFieldStars();
-	std::vector<Star*> initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView=0.005);
-	std::vector<Star*> initBulgeStarsCylinder(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView = 0.005);
+	//void initialConditionsInitFieldStars();
+	//std::vector<Star*> initBulgeStars(int& starID, Vec3D focus, Vec3D viewPoint, double distance, double angleOfView=0.005);
 
-	static void bulgeMass();
+	//static void bulgeMass();
 
-	void checkBrokenPowerLaw();
+	//void checkBrokenPowerLaw();
 
-	static void transformation();
+	//static void transformation();
 
 };

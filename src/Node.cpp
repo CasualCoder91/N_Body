@@ -38,24 +38,24 @@ Node::~Node(){
 	//no NOT delete star pointer ^^
 }
 
-void Node::findCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>& stars){
+void Node::findCorners(Vec3D& tlf, Vec3D& brb, const std::vector<Star>& stars){
 	if (stars.size() == 0)
 		return;
-	tlf = stars[0]->position;
-	brb = stars[0]->position;
-	for (Star* star : stars) {
-		if (star->position.x > brb.x)
-			brb.x = star->position.x;
-		else if (star->position.x < tlf.x)
-			tlf.x = star->position.x;
-		if (star->position.y > tlf.y)
-			tlf.y = star->position.y;
-		else if (star->position.y < brb.y)
-			brb.y = star->position.y;
-		if (star->position.z > brb.z)
-			brb.z = star->position.z;
-		else if (star->position.z < tlf.z)
-			tlf.z = star->position.z;
+	tlf = stars[0].position;
+	brb = stars[0].position;
+	for (const Star& star : stars) {
+		if (star.position.x > brb.x)
+			brb.x = star.position.x;
+		else if (star.position.x < tlf.x)
+			tlf.x = star.position.x;
+		if (star.position.y > tlf.y)
+			tlf.y = star.position.y;
+		else if (star.position.y < brb.y)
+			brb.y = star.position.y;
+		if (star.position.z > brb.z)
+			brb.z = star.position.z;
+		else if (star.position.z < tlf.z)
+			tlf.z = star.position.z;
 	}
 	//Add padding between box and stars
 	tlf.x -= abs(tlf.x)*0.1;

@@ -83,7 +83,7 @@ public:
      @brief creates string containing coordinates of the vector. Used for output.
      @return coordinates of vector as sting in format: x,y,z.
      */
-    std::string print();
+    std::string const print();
     /**
      @static
      @brief Calculates distance (euclidean norm) between given vectors.

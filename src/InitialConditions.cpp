@@ -1,7 +1,6 @@
 #include "InitialConditions.h"
 
 
-
 double InitialConditions::closestToZero(double a, double b) {
 	double temp = 0;
 	if ((a < 0 && b> 0) || (a > 0 && b < 0))
@@ -52,18 +51,18 @@ InitialConditions::InitialConditions(MWPotential* potential):gen((std::random_de
 	this->potential = potential;
 }
 
-std::vector<Star*> InitialConditions::initStars(int& firstID,int nStars){
-	std::vector<Star*> stars = {};
+std::vector<Star> InitialConditions::initStars(int& firstID,int nStars){
+	std::vector<Star> stars = {};
 	int max = firstID + nStars;
 	for (; firstID < max; firstID++) {
-		Star* star =  new Star(firstID);
+		Star star =  Star(firstID);
 		stars.push_back(star);
 	}
 	return stars;
 }
 
 //Cone: https://www.math24.net/calculation-volumes-triple-integrals/
-std::vector<Star*> InitialConditions::initFieldStars(int& starID, const Vec3D& focus, const Vec3D& viewPoint, double distance, double angleOfView){
+std::vector<Star> InitialConditions::initFieldStars(int& starID, const Vec3D& focus, const Vec3D& viewPoint, double distance, double angleOfView){
 	std::cout << "Initializing field stars" << std::endl;
 	Vec3D direction = (focus - viewPoint).normalize();
 
@@ -74,17 +73,17 @@ std::vector<Star*> InitialConditions::initFieldStars(int& starID, const Vec3D& f
 	Vec3D coneBoundaryMax = transformationMatrix * Vec3D(coneR, coneR, distance * 1.10); //1.01 to make sure boundary is not inside cone.
 	setBoundaries(coneBoundaryMin, coneBoundaryMax);
 
-	std::vector<Star*> fieldStars; //return vector
+	std::vector<Star> fieldStars; //return vector
 
 	double diskMass = potential->massDisk(&transformationMatrix, distance, coneR);
-	std::vector<Star*> diskStars = diskIMF(diskMass, starID);
+	std::vector<Star> diskStars = diskIMF(diskMass, starID);
 	if (diskStars.size() > 0) {
 		sampleDiskPositions(diskStars, coneBoundaryMin, coneBoundaryMax, coneR, distance, &transformationMatrix); //test
 		sampleDiskVelocities(diskStars);
 		fieldStars.insert(std::end(fieldStars), std::begin(diskStars), std::end(diskStars));
 	}
 	double bulgeMass = potential->bulgePotential.mass(&transformationMatrix, distance, coneR);
-	std::vector<Star*> bulgeStars = bulgeIMF(bulgeMass, starID);
+	std::vector<Star> bulgeStars = bulgeIMF(bulgeMass, starID);
 	if (bulgeStars.size() > 0) {
 		sampleBulgePositions(bulgeStars, coneBoundaryMin, coneBoundaryMax, coneR, distance, &transformationMatrix); //test
 		sampleBulgeVelocities(bulgeStars);
@@ -123,19 +122,19 @@ double InitialConditions::bulgeStarMass(const Vec3D& focus, const Vec3D& viewPoi
 	return totalMass;
 }
 
-double InitialConditions::initialMassSalpeter(std::vector<Star*>& stars, double minMass, double maxMass, double alpha){
+double InitialConditions::initialMassSalpeter(std::vector<Star>& stars, double minMass, double maxMass, double alpha){
 	std::uniform_real_distribution<> dis(0.0, 1.0);//avoid close to singularity
 	double totalMass = 0.0;
 	double temp = alpha + 1.0;
 	double factor = (pow(maxMass / minMass, temp) - 1.0);
-	for (Star* star : stars) {
-		star->mass = minMass * pow(1.0 + factor * dis(gen), 1.0 / temp);
-		totalMass += star->mass;
+	for (Star& star : stars) {
+		star.mass = minMass * pow(1.0 + factor * dis(gen), 1.0 / temp);
+		totalMass += star.mass;
 	}
 	return totalMass;
 }
 
-double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, const std::vector<double>& massLimits, const std::vector<double>& exponents){
+double InitialConditions::brokenPowerLaw(std::vector<Star>& stars, const std::vector<double>& massLimits, const std::vector<double>& exponents){
 	size_t nIntervals = massLimits.size() - 1;
 	double totalMass = 0;
 	for (double exponent : exponents) {
@@ -167,12 +166,12 @@ double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, const std::v
 	}
 
 	std::uniform_real_distribution<> dis(0.0, 1.0);
-	for (Star* star : stars) {
+	for (Star& star : stars) {
 		double sample = dis(gen); // sample = y
 		for (size_t i = 0; i < nIntervals; i++) {
 			if (sample < inverseTemps[i + 1]) {
-				star->mass = pow((sample - inverseTemps[i]) * exponentTemp[i] / (constant * continuity[i]) + pow(massLimits[i], exponentTemp[i]), 1 / exponentTemp[i]);
-				totalMass += star->mass;
+				star.mass = pow((sample - inverseTemps[i]) * exponentTemp[i] / (constant * continuity[i]) + pow(massLimits[i], exponentTemp[i]), 1 / exponentTemp[i]);
+				totalMass += star.mass;
 				break;
 			}
 		}
@@ -180,7 +179,7 @@ double InitialConditions::brokenPowerLaw(std::vector<Star*>& stars, const std::v
 	return totalMass;
 }
 
-void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement) {
+void InitialConditions::sampleDiskPositions(std::vector<Star>& stars, Vec3D position, Vec3D volumeElement) {
 	//get Limits for "Accept" distribution. Depends on Volume. Largest density is found at positions closest to 0
 	double smallestx = closestToZero(position.x, position.x + volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
@@ -203,7 +202,7 @@ void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D posi
 	std::uniform_real_distribution<> disy(x2_low, x2_high);
 	std::uniform_real_distribution<> disz(x3_low, x3_high);
 
-	for (Star* star : stars) {
+	for (Star& star : stars) {
 		while (true) {
 			double x = disx(gen);
 			double y = disy(gen);
@@ -213,7 +212,7 @@ void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D posi
 			double temp = potential->densityDisk(x, y, z);
 
 			if (accept < temp) {
-				star->position = Vec3D(x, y, z);
+				star.position = Vec3D(x, y, z);
 				break;
 			}
 		}
@@ -221,7 +220,7 @@ void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D posi
 	return;
 }
 
-void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix) {
+void InitialConditions::sampleDiskPositions(std::vector<Star>& stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix) {
 	double acceptUpperLimit = potential->densityDisk(coneBoundaryMin.x, coneBoundaryMin.y, coneBoundaryMin.z);
 	double acceptLowerLimit = potential->densityDisk(coneBoundaryMax.x, coneBoundaryMax.y, coneBoundaryMax.z);
 	//create distribution with calculated limits
@@ -231,7 +230,7 @@ void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D cone
 	std::uniform_real_distribution<> disy(-coneR, coneR);
 	std::uniform_real_distribution<> disz(0, distance);
 
-	for (Star* star : stars) {
+	for (Star& star : stars) {
 		while (true) {
 			double x = disx(gen);
 
@@ -260,7 +259,7 @@ void InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D cone
 					//std::cin.get();
 				}
 				if (accept < temp && trialPosition.length()>1) {
-					star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
+					star.position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
 					break;
 				}
 			}
@@ -308,14 +307,14 @@ void InitialConditions::sampleDiskVelocity(Vec3D& velocity, Vec3D& position){
 	velocity += sampledVelocity;
 }
 
-void InitialConditions::sampleDiskVelocities(std::vector<Star*> stars){
-	for (Star* star : stars) {
-		sampleDiskVelocity(star->velocity, star->position);
+void InitialConditions::sampleDiskVelocities(std::vector<Star>& stars){
+	for (Star& star : stars) {
+		sampleDiskVelocity(star.velocity, star.position);
 	}
 	return;
 }
 
-void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D position, Vec3D volumeElement) {
+void InitialConditions::sampleBulgePositions(std::vector<Star>& stars, Vec3D position, Vec3D volumeElement) {
 	double smallestx = closestToZero(position.x, position.x + volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);
 	double smallestz = closestToZero(position.z, position.z + volumeElement.z);
@@ -347,7 +346,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 	//const double lamda = 1 / (MWPotential::aBulge * 2);
 	//std::exponential_distribution<double> disr(lamda);
 	//std::exponential_distribution<double> disaccept(lamda);
-	for (Star* star : stars) {
+	for (Star& star : stars) {
 		while (true) {
 			double x = disx(gen);
 			double y = disy(gen);
@@ -356,7 +355,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 			double temp = potential->bulgePotential.density(x, y, z);
 
 			if (accept < temp) {
-				star->position = Vec3D(x, y, z);
+				star.position = Vec3D(x, y, z);
 				break;
 			}
 		}
@@ -364,7 +363,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D pos
 	return; //todo: return average velocity maybe?
 }
 
-void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix){
+void InitialConditions::sampleBulgePositions(std::vector<Star>& stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix){
 
 	double acceptUpperLimit = potential->bulgePotential.density(coneBoundaryMin.x, coneBoundaryMin.y, coneBoundaryMin.z);
 	double acceptLowerLimit = potential->bulgePotential.density(coneBoundaryMax.x, coneBoundaryMax.y, coneBoundaryMax.z);
@@ -376,7 +375,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D con
 	std::uniform_real_distribution<> disz(0, distance);
 
 
-	for(Star* star : stars){
+	for(Star& star : stars){
 		while (true) {
 			double x = disx(gen);
 			double y = disy(gen);
@@ -397,7 +396,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D con
 					//	std::cin.get();
 				}
 				if (accept < temp) {
-					star->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
+					star.position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
 					break;
 				}
 			}
@@ -406,7 +405,7 @@ void InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D con
 	return; //todo: return average velocity maybe?
 }
 
-void InitialConditions::sampleBulgePositionsCylinder(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix)
+void InitialConditions::sampleBulgePositionsCylinder(std::vector<Star>& stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix* transformationMatrix)
 {
 	double acceptUpperLimit = potential->bulgePotential.density(coneBoundaryMin.x, coneBoundaryMin.y, coneBoundaryMin.z);
 	double acceptLowerLimit = potential->bulgePotential.density(coneBoundaryMax.x, coneBoundaryMax.y, coneBoundaryMax.z);
@@ -439,7 +438,7 @@ void InitialConditions::sampleBulgePositionsCylinder(std::vector<Star*> stars, V
 					//	std::cin.get();
 				}
 				if (accept < temp) {
-					stars[i]->position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
+					stars[i].position = Vec3D(trialPosition.x, trialPosition.y, trialPosition.z);
 					break;
 				}
 			}
@@ -510,17 +509,17 @@ void InitialConditions::sampleBulgeVelocity(Vec3D& velocity, Vec3D& position){
 	//velocity = Vec3D(cos(phi)*cos(theta)*vRand + patternSpeed * position.y, cos(phi) * sin(theta) * vRand -patternSpeed*position.x, sin(phi)*vRand);
 }
 
-void InitialConditions::sampleBulgeVelocities(std::vector<Star*> stars){
-	for (Star* star : stars) {
-		sampleBulgeVelocity(star->velocity, star->position);
+void InitialConditions::sampleBulgeVelocities(std::vector<Star>& stars){
+	for (Star& star : stars) {
+		sampleBulgeVelocity(star.velocity, star.position);
 	}
 }
 
-std::vector<Star*> InitialConditions::diskIMF(double totalMass, int& starID){
-	std::vector<Star*> stars;
+std::vector<Star> InitialConditions::diskIMF(double totalMass, int& starID){
+	std::vector<Star> stars;
 	if (totalMass <= 0)
 		return stars;
-	Star* proposedStar;
+	Star proposedStar = Star(0);
 	double pickedTotalMass = 0;
 	static std::uniform_real_distribution<> disM(0.08, 63.1); // mass sample
 	static std::uniform_real_distribution<> disAccept(0, 0.86); //upper limit
@@ -542,37 +541,37 @@ std::vector<Star*> InitialConditions::diskIMF(double totalMass, int& starID){
 			if (logM < 0) { // m < 1
 				temp = factor1/(m* ln10)* exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
 				if (disAccept(gen) < temp ) {
-					proposedStar = new Star(0, m);
+					proposedStar = Star(0, m);
 					break;
 				}
 			}
 			else if (logM < 0.54) {
 				temp = factor2 / (m * ln10) * pow(m, -exponent2);
 				if (disAccept(gen) < temp) {
-					proposedStar = new Star(0, m);
+					proposedStar = Star(0, m);
 					break;
 				}
 			}
 			else if (logM < 1.26){
 				temp = factor3 / (m * ln10) * pow(m, -exponent3);
 				if (disAccept(gen)< temp) {
-					proposedStar = new Star(0, m);
+					proposedStar = Star(0, m);
 					break;
 				}
 			}
 			else{
 				temp = factor4 / (m * ln10) * pow(m, -exponent4);
 				if (disAccept(gen) < temp) {
-					proposedStar = new Star(0, m);
+					proposedStar = Star(0, m);
 					break;
 				}
 			}
 		}
-		if (pickedTotalMass + proposedStar->mass / 2 < totalMass) {
-			proposedStar->id = starID;
+		if (pickedTotalMass + proposedStar.mass / 2 < totalMass) {
+			proposedStar.id = starID;
 			starID++;
 			stars.push_back(proposedStar); // todo: which id?!
-			pickedTotalMass += proposedStar->mass;
+			pickedTotalMass += proposedStar.mass;
 		}
 		else
 			break;
@@ -584,9 +583,9 @@ std::vector<Star*> InitialConditions::diskIMF(double totalMass, int& starID){
 	return stars;
 }
 
-std::vector<Star*> InitialConditions::bulgeIMF(double totalMass, int& starID){
-	std::vector<Star*> stars;
-	Star* proposedStar;
+std::vector<Star> InitialConditions::bulgeIMF(double totalMass, int& starID){
+	std::vector<Star> stars;
+	Star proposedStar = Star(0);
 	double pickedTotalMass = 0;
 	static std::uniform_real_distribution<> disM(0.08, 1); // mass sample
 	static std::uniform_real_distribution<> disAccept(0, 0.00095); //upper limit
@@ -604,22 +603,22 @@ std::vector<Star*> InitialConditions::bulgeIMF(double totalMass, int& starID){
 			if (m<0.7) { // m < 1
 				temp = factor1 / (m * ln10) * exp(-pow(logM - log10(chabrierMass), 2) / (2.0 * pow(chabrierSigma, 2)));
 				if (disAccept(gen) < temp) {
-					proposedStar = new Star(0, m);
+					proposedStar = Star(0, m);
 					break;
 				}
 			}
 			else{
 				temp = factor2 / (m * ln10) * pow(m, -exponent2);
 				if (disAccept(gen) < temp) {
-					proposedStar = new Star(0, m);
+					proposedStar = Star(0, m);
 					break;
 				}
 			}
 		}
-		if (pickedTotalMass + proposedStar->mass / 2 < totalMass) {
-			proposedStar->id = starID;
+		if (pickedTotalMass + proposedStar.mass / 2 < totalMass) {
+			proposedStar.id = starID;
 			stars.push_back(proposedStar); // todo: which id?!
-			pickedTotalMass += proposedStar->mass;
+			pickedTotalMass += proposedStar.mass;
 			starID++;
 		}
 		else
@@ -632,19 +631,19 @@ std::vector<Star*> InitialConditions::bulgeIMF(double totalMass, int& starID){
 	return stars;
 }
 
-void InitialConditions::plummerSphere(std::vector<Star*>& stars, double totalMass, double scaleParameter, double G){
+void InitialConditions::plummerSphere(std::vector<Star>& stars, double totalMass, double scaleParameter, double G){
 	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
-	for (Star* star : stars) {
+	for (Star& star : stars) {
 		double distance = dis(gen);//
 		scaleParameter / sqrt(pow(dis(gen), -2. / 3.) - 1);
-		star->position = Vec3D::randomAngles(distance);// randomVector(distance);
+		star.position = Vec3D::randomAngles(distance);// randomVector(distance);
 		plummerVelocity(star, scaleParameter, distance, totalMass, G);
 	}
 }
 
-void InitialConditions::offsetCluster(std::vector<Star*>& stars, const Vec3D& offset) const{
-	for (Star* star : stars) {
-		star->position += offset;
+void InitialConditions::offsetCluster(std::vector<Star>& stars, const Vec3D& offset) const{
+	for (Star& star : stars) {
+		star.position += offset;
 	}
 }
 
@@ -654,7 +653,7 @@ double InitialConditions::plummerEscapeVelocity(double distance, double structur
 	return sqrt(2. * G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
 }
 
-void InitialConditions::plummerVelocity(Star* star, double structuralLength, double distance, double totalMass, double G){
+void InitialConditions::plummerVelocity(Star& star, double structuralLength, double distance, double totalMass, double G){
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	//Rejection Technique
 	std::uniform_real_distribution<> dis_g(0.0, 0.1);
@@ -665,7 +664,7 @@ void InitialConditions::plummerVelocity(Star* star, double structuralLength, dou
 		g = dis_g(gen);
 	}
 	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass, G)/1.01;
-	star->velocity = Vec3D::randomVector(velocity);
+	star.velocity = Vec3D::randomVector(velocity);
 }
 
 

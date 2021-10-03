@@ -35,7 +35,7 @@ namespace InOut{
      @param stars Vector of star pointers. All elements are written to filePath
      @param filename The name and location of the filePath. Can be used as path relative to excelcuateble ie "folder/filename.dat"
      */
-	void write(std::vector<Star*> stars,std::string filename);
+	void write(std::vector<Star>& stars,std::string filename);
     /**
      @brief Writes all star coordinates and star id into a filePath. Format according to Vec3D::print(). Id is the memory location of the respective star.
      @param stars Vector of star pointers. All elements are written to filePath
@@ -48,7 +48,7 @@ namespace InOut{
      @param filename The name and location of the filePath. Can be used as path relative to excelcuateble ie "folder/filename.dat"
      @note meant for debugging purposes.
      */
-	void writeAll(std::vector<Star*> stars, std::string filename);
+	void writeAll(std::vector<Star>& stars, std::string filename);
     /**
      @brief Writes octree cell coorindates (top left front and bottom right back) into a filePath. Format: Vec3D::print(),Vec3D::print().
      @param tree Pointer to the root of the tree.
@@ -83,7 +83,7 @@ namespace InOut{
     /** @brief checks if the given \p inputString can be converted into a double. */
     bool checkIsDouble(std::string inputString);
 
-    std::vector<Star*> readMcLuster(int firstID, std::string filename);
+    std::vector<Star> readMcLuster(int firstID, std::string filename);
 
 };
 

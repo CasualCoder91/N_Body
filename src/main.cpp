@@ -51,7 +51,7 @@ void do_it_all(size_t amount_of_times) {
 	}
 	return;
 
-	for (size_t i = 1; i < amount_of_times; ++i)
+	for (size_t i = 0; i < amount_of_times; ++i)
 	{
 		//int simulation_id = i+1;
 		int simulation_id = db.insertSimulation();
@@ -59,7 +59,7 @@ void do_it_all(size_t amount_of_times) {
 		Simulation simulation = Simulation(simulation_id, &db);
 		std::cout << "New simulation created. ID = " << simulation_id << std::endl;
 		//std::cout << "Starting simulation" << std::endl;
-		simulation.run();
+		simulation.run(true);
 
 		//std::cout << "generating HTP positions ..." << std::endl;
 		db.generateHTP(simulation_id, false); //todo: move this to Analysis

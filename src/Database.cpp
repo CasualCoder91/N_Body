@@ -210,7 +210,7 @@ int Database::insertSimulation(){
 	return simulationID;
 }
 
-void Database::insertStars(int simulationID, std::vector<Star*>& stars, int timestep, bool clusterStars){
+void Database::insertStars(int simulationID, const std::vector<Star>& stars, int timestep, bool clusterStars){
 	std::cout << "Adding " << stars.size() << " stars to database" << std::endl;
 	if (!this->isOpen)
 		this->open();
@@ -221,8 +221,8 @@ void Database::insertStars(int simulationID, std::vector<Star*>& stars, int time
 	sqlite3_prepare_v2(db, buffer.c_str(), static_cast<int>(buffer.size()), &stmt, NULL);
 	//#pragma omp parallel for
 	for (int i = 0; i < stars.size();++i) {
-		sqlite3_bind_int(stmt, 1, stars[i]->id);
-		sqlite3_bind_double(stmt, 2, stars[i]->mass);
+		sqlite3_bind_int(stmt, 1, stars[i].id);
+		sqlite3_bind_double(stmt, 2, stars[i].mass);
 		sqlite3_bind_int(stmt, 3, simulationID);
 		sqlite3_bind_int(stmt, 4, int(clusterStars));
 		if (sqlite3_step(stmt) != SQLITE_DONE)
@@ -390,7 +390,7 @@ double Database::select_analysis_dt_min_dist(int simulation_id, int dt)
 	return min_dist;
 }
 
-void Database::timestep(int timestep, std::vector<Star*>& stars){
+void Database::timestep(int timestep, const std::vector<Star>& stars){
 	if (!this->isOpen)
 		this->open();
 	char* errorMessage;
@@ -401,10 +401,10 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, buffer, 69, &stmt, NULL);
 	for (unsigned i = 0; i < stars.size(); i++){
-		sqlite3_bind_double(stmt, 1, stars[i]->velocity.x);
-		sqlite3_bind_double(stmt, 2, stars[i]->velocity.y);
-		sqlite3_bind_double(stmt, 3, stars[i]->velocity.z);
-		sqlite3_bind_int(stmt, 4, stars[i]->id);
+		sqlite3_bind_double(stmt, 1, stars[i].velocity.x);
+		sqlite3_bind_double(stmt, 2, stars[i].velocity.y);
+		sqlite3_bind_double(stmt, 3, stars[i].velocity.z);
+		sqlite3_bind_int(stmt, 4, stars[i].id);
 		sqlite3_bind_int(stmt, 5, timestep);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
@@ -421,10 +421,10 @@ void Database::timestep(int timestep, std::vector<Star*>& stars){
 	char buffer2[] = "INSERT INTO position (x,y,z,id_star,timestep) VALUES (?1,?2,?3,?4,?5)";
 	sqlite3_prepare_v2(db, buffer2, 69, &stmt, NULL);
 	for (unsigned i = 0; i < stars.size(); i++) {
-		sqlite3_bind_double(stmt, 1, stars[i]->position.x);
-		sqlite3_bind_double(stmt, 2, stars[i]->position.y);
-		sqlite3_bind_double(stmt, 3, stars[i]->position.z);
-		sqlite3_bind_int(stmt, 4, stars[i]->id);
+		sqlite3_bind_double(stmt, 1, stars[i].position.x);
+		sqlite3_bind_double(stmt, 2, stars[i].position.y);
+		sqlite3_bind_double(stmt, 3, stars[i].position.z);
+		sqlite3_bind_int(stmt, 4, stars[i].id);
 		sqlite3_bind_int(stmt, 5, timestep);
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 		{
@@ -893,7 +893,7 @@ Star Database::select_star(int star_id, int timestep)
 	return star;
 }
 
-std::vector<Star> Database::select_stars(int simulationID, int timeStep, bool observed){
+std::vector<Star> Database::select_stars(int simulationID, int timeStep, bool observed, int type){
 	std::vector<Star> stars = {};
 	if (!this->isOpen)
 		this->open();
@@ -901,7 +901,8 @@ std::vector<Star> Database::select_stars(int simulationID, int timeStep, bool ob
 		"FROM star INNER JOIN velocity on velocity.id_star = star.id "
 		"INNER JOIN position on position.id_star = star.id "
 		"where position.timestep = ?1 AND velocity.timestep = ?1 AND star.id_simulation = ?2 "
-		"and star.isObserved = ?3";
+		"and star.isObserved = ?3 "
+		"AND (star.isCluster = ?4 OR ?4=-1)";
 	sqlite3_stmt* stmt;
 	if (sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr) != SQLITE_OK) {
 		printf("Database::select_stars error\n");
@@ -909,6 +910,7 @@ std::vector<Star> Database::select_stars(int simulationID, int timeStep, bool ob
 	sqlite3_bind_int(stmt, 1, timeStep);
 	sqlite3_bind_int(stmt, 2, simulationID);
 	sqlite3_bind_int(stmt, 3, observed);
+	sqlite3_bind_int(stmt, 4, type);
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		stars.push_back(Star(sqlite3_column_int(stmt, 0),sqlite3_column_double(stmt,1), 
 			sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3), sqlite3_column_double(stmt, 4),

@@ -68,7 +68,7 @@ public:
 	@param [in,out] tlf, brb Vectors which store the corners of the root node after the call
 	@param stars Stars which are within the cube volume defined by tlf and brb.
 	*/
-	static void findCorners(Vec3D& tlf, Vec3D& brb, std::vector<Star*>&stars);
+	static void findCorners(Vec3D& tlf, Vec3D& brb, const std::vector<Star>&stars);
 	/**
 	@static
 	@brief Inserts a star into the octree. This always creates at least one new node in the tree.

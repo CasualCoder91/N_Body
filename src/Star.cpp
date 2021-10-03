@@ -45,7 +45,7 @@ Star::Star(int id, double mass, double xPos, double yPos, double zPos, double xV
 	this->extinction = 0;
 }
 
-std::string Star::dump()
+std::string const Star::dump()
 {
 	return "mass: " + std::to_string(mass) + '\n'
 		+ "position: " + position.print() + '\n'

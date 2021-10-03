@@ -31,7 +31,7 @@ public:
 	 @brief creates string containing all member variables.
 	 @return created string
 	 */
-	std::string dump();
+	std::string const dump();
 	/**
 	 @brief set all member variables to 0.
 	 @return created string

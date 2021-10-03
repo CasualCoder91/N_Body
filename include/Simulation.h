@@ -39,7 +39,7 @@ public:
     of the stars are updated based on the potential and in case of the cluster stars based on each other and 2. the timestep is 
     integrated by one of the available integration methods. At defined timestep intervals the current values for position and velocity are stored into the database.
     */
-    void run();
+    void run(bool reuse_cluster=false);
 private:
     Simulation(int id); //todo: do not need this?
 };

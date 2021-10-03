@@ -47,7 +47,7 @@ public:
 	/** @brief inserts the given parameters into the "simulation" table and returns the id of the new simulation*/
 	int Database::insertSimulation();
 	/** @brief inserts the stars (including positions and velocities)*/
-	void insertStars(int simulationID, std::vector<Star*>& stars, int timestep=0, bool clusterStars=true);
+	void insertStars(int simulationID, const std::vector<Star>& stars, int timestep=0, bool clusterStars=true);
 
 	void delete_star(int simulation_id, int star_id);
 
@@ -66,7 +66,7 @@ public:
 	double select_analysis_dt_min_dist(int simulation_id, int dt);
 
 	/** @brief inserts positions and velocities of given \p stars and \p timestep */
-	void timestep(int timestep, std::vector<Star*>& stars);
+	void timestep(int timestep, const std::vector<Star>& stars);
 
 	void generateHEQ(int simulationID);
 
@@ -111,8 +111,9 @@ public:
 		@param simulationID ID of the Simulation for which to retrieve the stars
 		@param timeStep position and velocity of the star depend on the timestep
 		@param observed set true to retrieve stars observed with photutils, false to get simulated stars
+		@param type: -1 any type, 0: field, 1: cluster
 	*/
-	std::vector<Star> select_stars(int simulationID, int timeStep, bool observed = false);
+	std::vector<Star> select_stars(int simulationID, int timeStep, bool observed = false, int type = -1);
 	/** @brief saves all stars at all timesteps into a file. Passed \p filePath must exist and is relative to the executable */
 	void outputStars(int simulationID, std::string filePath, bool allStars = true, bool clusterStars = false, bool fieldStars = false);
 

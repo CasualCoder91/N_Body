@@ -22,11 +22,11 @@ void InOut::setOutputDirectory(std::string& filename){
 		filename = outputDirectory + filename;
 }
 
-void InOut::write(std::vector<Star*> stars, std::string filename) {
+void InOut::write(std::vector<Star>& stars, std::string filename) {
 	setOutputDirectory(filename);
 	std::ofstream file(filename);
-	for (Star* star : stars) {
-		file << star->position.print() << '\n';
+	for (Star& star : stars) {
+		file << star.position.print() << '\n';
 	}
 	file.close();
 }
@@ -40,13 +40,13 @@ void InOut::writeWithLabel(std::vector<Star*> stars, std::string filename){
 	file.close();
 }
 
-void InOut::writeAll(std::vector<Star*> stars, std::string filename){
+void InOut::writeAll(std::vector<Star>& stars, std::string filename){
 	setOutputDirectory(filename);
 	std::ofstream file(filename);
 	#pragma omp parallel for
 	for (int i = 0; i < stars.size(); ++i) {
 		file << "Star: " << i << '\n';
-		file << stars[i]->dump() << '\n';
+		file << stars[i].dump() << '\n';
 	}
 	file.close();
 }
@@ -107,8 +107,8 @@ bool InOut::checkIsDouble(std::string inputString){
 	return true;
 }
 
-std::vector<Star*> InOut::readMcLuster(int firstID, std::string filename){
-	std::vector<Star*> stars;
+std::vector<Star> InOut::readMcLuster(int firstID, std::string filename){
+	std::vector<Star> stars;
 	std::string line;
 	std::string delimiter = "\t";
 	std::ifstream sStars(filename);
@@ -137,7 +137,7 @@ std::vector<Star*> InOut::readMcLuster(int firstID, std::string filename){
 				line.erase(0, pos + delimiter.length());
 				double vz = std::stod(line, nullptr);
 
-				stars.push_back(new Star(id,mass,x, y, z,vx,vy,vz));
+				stars.push_back(Star(id,mass,x, y, z,vx,vy,vz));
 				id++;
 			}
 		}

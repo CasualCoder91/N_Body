@@ -60,7 +60,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 		MWPotential potential = MWPotential();
 		InitialConditions initialConditions = InitialConditions(&potential);
 		int starID = 0;
-		std::vector<Star*> stars = initialConditions.initStars(starID,Constants::nStars);
+		std::vector<Star> stars = initialConditions.initStars(starID,Constants::nStars);
 		double totalMass = initialConditions.initialMassSalpeter(stars, 0.08, 100);
 		initialConditions.plummerSphere(stars, totalMass, Constants::boxLength, Constants::G);
 
@@ -69,14 +69,14 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 
 			Node::findCorners(tlf, brb, stars);
 			Node root = Node(tlf, brb, nullptr);
-			for (Star* star : stars) {
-				root.insert(star);
+			for (Star& star : stars) {
+				root.insert(&star);
 			}
 			root.calculateMassDistribution();
 			#pragma omp parallel for //1:10
 			for (int i = 0; i < stars.size(); ++i) {
-				stars[i]->acceleration.reset(); // reset acceleration to 0,0,0
-				root.applyForce(stars[i]);
+				stars[i].acceleration.reset(); // reset acceleration to 0,0,0
+				root.applyForce(&stars[i]);
 			}
 			integrator.euler(stars);
 		}

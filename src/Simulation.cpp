@@ -20,36 +20,46 @@ int Simulation::getID(){
 	return id;
 }
 
-void Simulation::run(){
+void Simulation::run(bool reuse_cluster){
+
+	reuse_cluster = reuse_cluster && this->id != 1; // can only reuse the cluster if it already exists.
 
 	//Init stars
 	InitialConditions initialConditions = InitialConditions(Simulation::potential);
 
 	//Init clusterStars
 	int nextStarIndex = database->selectLastID("star") + 1;
-	std::vector<Star*> clusterStars;
-	if (Constants::bMcLuster) {
-		clusterStars = InOut::readMcLuster(nextStarIndex, Constants::mcLusterFilePath);
+	size_t cluster_star_startindex = nextStarIndex;
+	std::vector<Star> clusterStars;
+	if (reuse_cluster) {
+		clusterStars = database->select_stars(1, 0, false, 1);
+		for (Star& star : clusterStars) {
+			star.id = star.id + cluster_star_startindex;
+		}
 	}
 	else {
-		clusterStars = initialConditions.initStars(nextStarIndex, Constants::nStars);
-		double totalMass = initialConditions.brokenPowerLaw(clusterStars, Constants::massLimits, Constants::exponents);
-		initialConditions.plummerSphere(clusterStars, totalMass, Constants::boxLength, Constants::G);
+		if (Constants::bMcLuster) {
+			clusterStars = InOut::readMcLuster(nextStarIndex, Constants::mcLusterFilePath);
+		}
+		else {
+			clusterStars = initialConditions.initStars(nextStarIndex, Constants::nStars);
+			double totalMass = initialConditions.brokenPowerLaw(clusterStars, Constants::massLimits, Constants::exponents);
+			initialConditions.plummerSphere(clusterStars, totalMass, Constants::boxLength, Constants::G);
+		}
+		initialConditions.offsetCluster(clusterStars, Constants::clusterLocation);
+		double circVel = potential->circularVelocity(&Constants::clusterLocation);
+		Vec3D clusterVelocity = Vec3D(0, -circVel, 10);
+		//initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
+		for (Star& star : clusterStars) {
+			star.velocity += clusterVelocity;
+		}
 	}
-	initialConditions.offsetCluster(clusterStars, Constants::clusterLocation);
-
-	double circVel = potential->circularVelocity(&Constants::clusterLocation);
-	Vec3D clusterVelocity = Vec3D(0,-circVel,10);
-	//initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
-	for (Star* star : clusterStars) {
-		star->velocity += clusterVelocity;
-	}
-	database->insertStars(this->getID(), clusterStars, 0,true);
+	database->insertStars(this->getID(), clusterStars, 0, true);
 
 	//Init field stars
 	nextStarIndex = database->selectLastID("star") + 1;
-	std::vector<Star*> fieldStars = initialConditions.initFieldStars(nextStarIndex, Constants::focus, Constants::viewPoint, Constants::distance, Constants::angleOfView);
-	database->insertStars(this->getID(), fieldStars, 0,false);
+	std::vector<Star> fieldStars = initialConditions.initFieldStars(nextStarIndex, Constants::focus, Constants::viewPoint, Constants::distance, Constants::angleOfView);
+	database->insertStars(this->getID(), fieldStars, 0, false);
 
 	std::cout << "Starting integration" << std::endl;
 	//Integrate
@@ -64,6 +74,12 @@ void Simulation::run(){
 
 	for (int i = 0; i <= Constants::nTimesteps; i++) {
 		if (i>0 && i % Constants::outputTimestep == 0) {
+			if (reuse_cluster) {
+				clusterStars = database->select_stars(1, i / Constants::outputTimestep, false, 1);
+				for (Star& star : clusterStars) {
+					star.id = star.id + cluster_star_startindex;
+				}
+			}
 			database->timestep(i/Constants::outputTimestep, clusterStars);
 			database->timestep(i/Constants::outputTimestep, fieldStars);
 			progressBar.Update(i);
@@ -73,20 +89,20 @@ void Simulation::run(){
 		}
 		if(Constants::nTimesteps -i < Constants::outputTimestep)
 
-		if (clusterStars.size() > 0) {
+		if (clusterStars.size() > 0 && !reuse_cluster) {
 			Node::findCorners(tlf, brb, clusterStars);
 			Node root = Node(tlf, brb, nullptr); // Cleanup/Destructor of tree needed in every timestep
 
-			for (Star* star : clusterStars) {
-				root.insert(star);
+			for (Star& star : clusterStars) {
+				root.insert(&star);
 			}
 			root.calculateMassDistribution();
 
 			//Force clusterStars -- use if Euler
 			for (int j = 0; j < clusterStars.size(); ++j) {
-				clusterStars[j]->acceleration.reset();
-				potential->applyForce(clusterStars[j]);
-				root.applyForce(clusterStars[j]->position, clusterStars[j]->acceleration);
+				clusterStars[j].acceleration.reset();
+				potential->applyForce(&clusterStars[j]);
+				root.applyForce(clusterStars[j].position, clusterStars[j].acceleration);
 			}
 			integrator.euler(clusterStars);
 
@@ -96,8 +112,8 @@ void Simulation::run(){
 		//Force fieldStars -- use if Euler
 		if (fieldStars.size() > 0) {
 			for (int i = 0; i < fieldStars.size(); ++i) {
-				fieldStars[i]->acceleration.reset();
-				potential->applyForce(fieldStars[i]);
+				fieldStars[i].acceleration.reset();
+				potential->applyForce(&fieldStars[i]);
 			}
 		}
 
