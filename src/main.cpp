@@ -45,11 +45,11 @@ void do_it_all(size_t amount_of_times) {
 
 	Extinction extinction = Extinction();
 
-	//for (size_t i = 0; i < amount_of_times; ++i)
-	//{
-	//	db.print_clustering_info(i+1);
-	//}
-	//return;
+	for (size_t i = 0; i < amount_of_times; ++i)
+	{
+		db.print_clustering_info(i+1);
+	}
+	return;
 
 	//std::vector<std::string> paths = { "Data/4000.txt","Data/10000.txt","Data/25000.txt" };
 	//Constants::mcLusterFilePath = "test";
