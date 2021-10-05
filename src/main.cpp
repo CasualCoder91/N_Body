@@ -47,7 +47,15 @@ void do_it_all(size_t amount_of_times) {
 
 	for (size_t i = 0; i < amount_of_times; ++i)
 	{
-		db.print_clustering_info(i+1);
+		int simulation_id = i + 1;
+		//Analysis analysis = Analysis(simulation_id, &db);
+		//std::vector<Star> stars = db.select_stars(simulation_id, 0);
+		//for (Star& star : stars) {
+		//	extinction.set_extinction(star);
+		//}
+		//db.set_extinction(stars);
+		//analysis.estimate_mass();
+		db.print_clustering_info(simulation_id);
 	}
 	return;
 

@@ -46,9 +46,9 @@ void Extinction::set_extinction(Star& star)
             }
         }
     }
-    std::cout << "no excitction found" << std::endl;
-    std::cin.clear();
-    std::cin.get();
+    //std::cout << "no excitction found" << std::endl;
+    //std::cin.clear();
+    //std::cin.get();
 
     return;
 }
