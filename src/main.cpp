@@ -45,19 +45,19 @@ void do_it_all(size_t amount_of_times) {
 
 	Extinction extinction = Extinction();
 
-	for (size_t i = 0; i < amount_of_times; ++i)
-	{
-		int simulation_id = i + 1;
-		//Analysis analysis = Analysis(simulation_id, &db);
-		//std::vector<Star> stars = db.select_stars(simulation_id, 0);
-		//for (Star& star : stars) {
-		//	extinction.set_extinction(star);
-		//}
-		//db.set_extinction(stars);
-		//analysis.estimate_mass();
-		db.print_clustering_info(simulation_id);
-	}
-	return;
+	//for (size_t i = 0; i < amount_of_times; ++i)
+	//{
+	//	int simulation_id = i + 1;
+	//	//Analysis analysis = Analysis(simulation_id, &db);
+	//	//std::vector<Star> stars = db.select_stars(simulation_id, 0);
+	//	//for (Star& star : stars) {
+	//	//	extinction.set_extinction(star);
+	//	//}
+	//	//db.set_extinction(stars);
+	//	//analysis.estimate_mass();
+	//	db.print_clustering_info(simulation_id);
+	//}
+	//return;
 
 	//std::vector<std::string> paths = { "Data/4000.txt","Data/10000.txt","Data/25000.txt" };
 	//Constants::mcLusterFilePath = "test";
@@ -272,40 +272,7 @@ int main() {
 			simulation.run();
 		}
 		else if (selection == 3) {
-			//Vec3D pGCP = Vec3D(-9000, 206.3059*Constants::degInRad, - 02.0720 * Constants::degInRad);
-			//Vec3D vGCP = Vec3D();
 
-			//Vec3D pGCA = Vec3D(0.1,0.2,0.3), vGCA = Vec3D(-1,-2,-3);
-			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
-			//Vec3D pLSR, vLSR;
-			//Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
-			//Projection::LSRtoGCA(pLSR, vLSR, pGCA, vGCA);
-			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
-
-			//Vec3D pGCA = Vec3D(9594, -640, -52);
-			//Vec3D vGCA = Vec3D(58.62, -12.39, -14.55);
-
-			////Projection::GCPtoGCA(pGCP, vGCP, pGCA, vGCA);
-			//std::cout << "GCA: " << pGCA.print() << " | " << vGCA.print() << std::endl;
-
-			//Vec3D pLSR, vLSR;
-			//Projection::GCAtoLSR(pGCA, vGCA, pLSR, vLSR);
-			//std::cout << "LSR: " << pLSR.print() << " | " << vLSR.print() << std::endl;
-
-			//Vec3D pHCA, vHCA;
-			//Projection::LSRtoHCA(pLSR, vLSR, pHCA, vHCA);
-			//std::cout << "HCA: " << pHCA.print() << " | " << vHCA.print() << std::endl;
-
-			//Vec3D pHEQ, vHEQ;
-			//Projection::HCAtoHEQ(pHCA, vHCA, pHEQ, vHEQ);
-			//std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
-
-			//Vec3D pHGP, vHGP;
-			//Projection::HCAtoHGP(pHCA, vHCA, pHGP, vHGP);
-			//std::cout << "HGP: " << pHGP.print() << " | " << vHGP.print() << std::endl;
-
-			//Projection::HGPtoHEQ(pHGP, vHGP, pHEQ, vHEQ);
-			//std::cout << "HEQ: " << pHEQ.print() << " | " << vHEQ.print() << std::endl;
 
 
 			Vec3D pHGP = Vec3D(1719, 16.94 * Constants::degInRad, 0.8 * Constants::degInRad);

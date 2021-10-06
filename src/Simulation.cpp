@@ -48,7 +48,7 @@ void Simulation::run(bool reuse_cluster){
 		}
 		initialConditions.offsetCluster(clusterStars, Constants::clusterLocation);
 		double circVel = potential->circularVelocity(&Constants::clusterLocation);
-		Vec3D clusterVelocity = Vec3D(0, -circVel, 10);
+		Vec3D clusterVelocity = Vec3D(0, -circVel, 0);
 		//initialConditions.sampleDiskVelocity(clusterVelocity, clusterLocation);
 		for (Star& star : clusterStars) {
 			star.velocity += clusterVelocity;

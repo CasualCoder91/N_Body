@@ -366,7 +366,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 }
 
 
-void Analysis::cluster(std::vector<Point>& points) {
+void Analysis::cluster(std::vector<Point>& points, double eps, double min_n) {
 
 	if (points.size() == 0) {
 		std::cout << " Analysis::cluster parameter must mave size > 0" << std::endl;
@@ -380,7 +380,7 @@ void Analysis::cluster(std::vector<Point>& points) {
 			return x.velocity[0] == 0 && x.velocity[1] == 0;
 		}), points.end());
 
-	mlpack::dbscan::DBSCAN<> dbscan(0.000381057258287357*0.03, 200);
+	mlpack::dbscan::DBSCAN<> dbscan(eps, min_n);
 
 	arma::mat matPoints = arma::mat(2, points.size());
 	for (size_t i = 0; i < points.size();i++) {

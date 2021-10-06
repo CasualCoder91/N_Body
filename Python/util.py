@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 #calculate needed degrees to show whole cluster
 #param: clusterDist in pc, clusterSize: diameter of cluster in pc
 def degNeeded(clusterDist,clusterSize):
-    angle = 2*np.degrees(np.arctan2(0.5*1.1,clusterDist))
+    angle = 2*np.degrees(np.arctan2(0.5*clusterSize,clusterDist))
     print("Minimum angle required: ", angle)
     return
 
@@ -19,5 +19,5 @@ def calcFocus(angle):
     print("focus: ",x,y,z)
     return
 
-#degNeeded(8000,1.1)
-calcFocus(0)
+degNeeded(8000,1)
+#calcFocus(0)

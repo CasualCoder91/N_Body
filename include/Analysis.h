@@ -111,7 +111,7 @@ public: //methods
      */
     void generateHTPVelocity(int observed = 0, bool force_correct_selection = false);
 
-    void cluster(std::vector<Point>& points);
+    void cluster(std::vector<Point>& points, double eps= 0.000381057258287357 * 0.03, double min_n = 200);
 
     /**
      @brief maps observed stars to simulated stars by setting star.fkStar of the observed to star.id to the simulated star.

@@ -88,16 +88,38 @@ def plot_points_velocity(b_observed_points=True,b_simulated_points=True):
 #    plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
 #    plt.show()
 
+def plot_map():
+    masses =np.array([640,1600,4000,10000,25000])
+    x = [a+0.5 for a in range(len(masses))]
+    angles = np.array([180,25,10,5,0])
+    y = [a+0.5 for a in range(len(angles))]
+    #z = [0.999831366,0.999470002,0.999053414,0.99863088,0.993632332,0.961191213,0.965806713,0.975989894,0.980775459,0.985457224,0.855673786,
+    #    0.873354153,0.9015785,0.92996853,0.950666177,0.926183906,0.939546943,0.956671385,0.963135931,0.972534242,0.625338221,0.697084463,0.771201291,
+    #    0.823656487,0.866523918] #total
+    z = [0.999755501,0.999253485,0.998640674,0.998111424,0.992187177,0.953405272,0.960113393,0.971606404,0.97693511,0.982810825,0.808736986,
+         0.846920703,0.878962645,0.916749616,0.942218371,0.870929796,0.912485069,0.938408026,0.951847771,0.964182264,0.486505394,0.612119595,0.698490662,0.771850264,0.821191887] #C P 0.5 - 0.08
+    z = np.reshape(z, (5, 5))
+    #plt.xscale('log')
+    #plt.ylim(0,60)
+    plt.xlabel('cluster mass [$M_{\odot}$]', fontsize=16)
+    plt.ylabel('angle [$^\circ$]', fontsize=16)
+    plt.title('confidence 0.5 - 0.08 [$M_{\odot}$]')
+    plt.pcolor(z)
+    plt.xticks(x, masses, fontsize=16)
+    plt.yticks(y, angles, fontsize=16)
+    #plt.contourf(x,y,z)
+    plt.colorbar()
+    plt.show();
 
 def main():
     db = Database()
-
+    plot_map()
     #print(len(observed_points))
     #print(len(simulated_points))
 
     #op_arr = np.vstack(observed_points[:]).astype(float)
     #sp_arr = np.vstack(simulated_points[:]).astype(float)
-    plot_points()
+    #plot_points()
     #plot_magnitude_hist()
     #plot_points_velocity(True,True)
     #plot_points(sp_arr)
