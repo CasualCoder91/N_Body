@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 from database import Database
 from point import Point
-from config import n_pixel
+import config
 
 def plot_points(b_observed_points=True,b_simulated_points=True):
 
@@ -88,7 +88,7 @@ def plot_points_velocity(b_observed_points=True,b_simulated_points=True):
 #    plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
 #    plt.show()
 
-def plot_map():
+def plot_map(z,title,cmap):
     masses =np.array([640,1600,4000,10000,25000])
     x = [a+0.5 for a in range(len(masses))]
     angles = np.array([180,25,10,5,0])
@@ -96,24 +96,36 @@ def plot_map():
     #z = [0.999831366,0.999470002,0.999053414,0.99863088,0.993632332,0.961191213,0.965806713,0.975989894,0.980775459,0.985457224,0.855673786,
     #    0.873354153,0.9015785,0.92996853,0.950666177,0.926183906,0.939546943,0.956671385,0.963135931,0.972534242,0.625338221,0.697084463,0.771201291,
     #    0.823656487,0.866523918] #total
-    z = [0.999755501,0.999253485,0.998640674,0.998111424,0.992187177,0.953405272,0.960113393,0.971606404,0.97693511,0.982810825,0.808736986,
-         0.846920703,0.878962645,0.916749616,0.942218371,0.870929796,0.912485069,0.938408026,0.951847771,0.964182264,0.486505394,0.612119595,0.698490662,0.771850264,0.821191887] #C P 0.5 - 0.08
+ #C P 0.5 - 0.08
     z = np.reshape(z, (5, 5))
     #plt.xscale('log')
     #plt.ylim(0,60)
+    plt.clf()
     plt.xlabel('cluster mass [$M_{\odot}$]', fontsize=16)
     plt.ylabel('angle [$^\circ$]', fontsize=16)
-    plt.title('confidence 0.5 - 0.08 [$M_{\odot}$]')
-    plt.pcolor(z)
+    plt.title(title+' [$M_{\odot}$]')
+    plt.pcolor(z, cmap=cmap)
     plt.xticks(x, masses, fontsize=16)
     plt.yticks(y, angles, fontsize=16)
     #plt.contourf(x,y,z)
     plt.colorbar()
-    plt.show();
+    fig = plt.gcf()
+    fig.set_size_inches(9, 9)
+    fig.savefig(config.output_base_path+'\\Clustering\\'+title+'.png', dpi=100)
+    #plt.show();
+
+def plot_maps():
+    #C P 0.5 - 0.08
+    z = [0.99976,0.99926,0.99865,0.99812,0.9922,0.954,0.961,0.9717,0.977,0.9829,0.809,0.847,0.879,0.9168,0.9423,0.871,0.913,0.9385,0.9519,0.9642,0.487,0.613,0.6985,0.7719,0.8212]
+    plot_map(z,'confidence 0.5 - 0.08','Reds_r')
+    z = [1,1,1,1,0.9968,0.9697,0.9733,0.9817,0.9874,0.9897,0.914,0.905,0.933,0.9484,0.9616,0.9683,0.9685,0.978,0.9789,0.9839,0.809,0.817,0.8722,0.899,0.9261]
+    plot_map(z,'confidence 2 - 0.5','Oranges_r')
+    z = [1,1,1,1,0.99961,1,1,0.9994,0.99974,0.99989,0.992,0.9951,0.9975,0.9981,0.9982,1,0.9987,0.9985,0.9991,0.9993,1,0.9976,1,0.9996,0.99968]
+    plot_map(z,'confidence 100 - 2','Blues_r')
 
 def main():
     db = Database()
-    plot_map()
+    plot_maps()
     #print(len(observed_points))
     #print(len(simulated_points))
 
