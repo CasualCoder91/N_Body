@@ -12,6 +12,8 @@ from matplotlib.colors import LogNorm
 import config #my "global variables"
 from database import Database
 
+import pyckles
+
 def make_source(data):
     """
     Generate a source object from np.array (radius,ascension,declination,mass)
@@ -95,5 +97,5 @@ def make_fits(data,timestep=0,save_file=True,save_img=False,n_pixel=config.n_pix
 
 
 if __name__ == '__main__':
-    #print(sim.__file__)
     ss_all()
+    #print(sim.__file__)

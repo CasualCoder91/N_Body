@@ -1223,7 +1223,7 @@ void Database::update_points(std::vector<Point>& points, int timestep)
 	}
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
 	sqlite3_finalize(stmtVelocity);
-	std::cout << "Database: velocity.aHTP and velocity.dHTP updated" << std::endl;
+	//std::cout << "Database: velocity.aHTP and velocity.dHTP updated" << std::endl;
 
 
 	sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &errorMessage);
@@ -1242,7 +1242,7 @@ void Database::update_points(std::vector<Point>& points, int timestep)
 	}
 	sqlite3_exec(db, "COMMIT TRANSACTION", NULL, NULL, &errorMessage);
 	sqlite3_finalize(stmtStar);
-	std::cout << "Database: idCluster updated" << std::endl;
+	//std::cout << "Database: idCluster updated" << std::endl;
 }
 
 void Database::set_fk_star(std::vector<Point>& points)
@@ -1307,6 +1307,32 @@ void Database::set_mapped_star_mass()
 
 	return;
 
+}
+
+double Database::confidence_score(int simulation_id)
+{
+	auto execute_sql = [simulation_id, this](std::string sql) -> int
+	{
+		int ret = 0;
+		sqlite3_stmt* st;
+		sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &st, NULL);
+		sqlite3_bind_int(st, 1, simulation_id);
+		if (sqlite3_step(st) == SQLITE_ROW) {
+			ret = sqlite3_column_int(st, 0);
+		}
+		sqlite3_finalize(st);
+		return ret;
+	};
+
+	double n_clusters = execute_sql("select max(idCluster) from star where isObserved = 1") + 1;
+	if (n_clusters != 1)
+		return 0;
+
+	double n_true_pos = execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster > -1 and obs.isObserved = 1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and obs.mass < 0.5");
+	double n_unconf_pos = execute_sql("select count(*) from star obs inner join position on obs.id=position.id_star where position.timestep = 0 and obs.isObserved = 1 and obs.idCluster > -1 and obs.fkStar is NULL and id_simulation = ?1 and obs.mass < 0.5");
+	double n_false_pos = execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and obs.mass < 0.5");
+
+	return (n_true_pos / (n_true_pos + n_unconf_pos + n_false_pos));
 }
 
 

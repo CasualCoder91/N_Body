@@ -392,7 +392,7 @@ void Analysis::cluster(std::vector<Point>& points, double eps, double min_n) {
 	arma::Row<size_t> assignments;
 	const size_t nClusters = dbscan.Cluster(matPoints, assignments);
 
-	printf("%zu cluster(s) detected\n", nClusters);
+	//printf("%zu cluster(s) detected\n", nClusters);
 
 	int nFalsePositive = 0;
 	int nFalseNegative = 0;
@@ -414,10 +414,10 @@ void Analysis::cluster(std::vector<Point>& points, double eps, double min_n) {
 			nFalsePositive++;
 	}
 
-	std::cout << "nFalsePositive: " << nFalsePositive << std::endl;
-	std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
-	std::cout << "nTruePositive: " << nTruePositive << std::endl;
-	std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
+	//std::cout << "nFalsePositive: " << nFalsePositive << std::endl;
+	//std::cout << "nFalseNegative: " << nFalseNegative << std::endl;
+	//std::cout << "nTruePositive: " << nTruePositive << std::endl;
+	//std::cout << "nTrueNegative: " << nTrueNegative << std::endl;
 	//points.push_back(resultAt0);
 	database->update_points(points);
 }

@@ -33,10 +33,28 @@
 #include "Plot.h"
 
 typedef int mode_t;
-//namespace plt = matplotlibcpp;
 
 //global parameters
 bool debug = false;
+
+void optimize_clustering() {
+	Database db = Database();
+	db.open();
+	db.setup();
+	Analysis analysis = Analysis(1, &db);
+	//analysis.cluster(db.select_points(1, 0, -1, 1), 0.5e-4, 160);
+	//return;
+
+	for (double size = 100; size < 350; size+=50) {
+		for (double eps = 0.000006; eps < 0.000015; eps += 0.000001) {
+			analysis.cluster(db.select_points(1, 0, -1, 1),eps, size );
+			double conf = db.confidence_score(1);
+			std::cout << size << " " << eps << " " << conf << std::endl;
+		}
+	}
+
+}
+
 
 void do_it_all(size_t amount_of_times) {
 	Database db = Database();
@@ -45,19 +63,19 @@ void do_it_all(size_t amount_of_times) {
 
 	Extinction extinction = Extinction();
 
-	//for (size_t i = 0; i < amount_of_times; ++i)
-	//{
-	//	int simulation_id = i + 1;
-	//	//Analysis analysis = Analysis(simulation_id, &db);
-	//	//std::vector<Star> stars = db.select_stars(simulation_id, 0);
-	//	//for (Star& star : stars) {
-	//	//	extinction.set_extinction(star);
-	//	//}
-	//	//db.set_extinction(stars);
-	//	//analysis.estimate_mass();
-	//	db.print_clustering_info(simulation_id);
-	//}
-	//return;
+	for (size_t i = 0; i < amount_of_times; ++i)
+	{
+		int simulation_id = i + 1;
+		//Analysis analysis = Analysis(simulation_id, &db);
+		//std::vector<Star> stars = db.select_stars(simulation_id, 0);
+		//for (Star& star : stars) {
+		//	extinction.set_extinction(star);
+		//}
+		//db.set_extinction(stars);
+		//analysis.estimate_mass();
+		db.print_clustering_info(simulation_id);
+	}
+	return;
 
 	//std::vector<std::string> paths = { "Data/4000.txt","Data/10000.txt","Data/25000.txt" };
 	//Constants::mcLusterFilePath = "test";
@@ -356,7 +374,8 @@ int main() {
 			return 0;
 		}
 		else if (selection == 5) {
-			do_it_all(10);
+			optimize_clustering();
+			//do_it_all(10);
 		}
 	}
 	return 0;
