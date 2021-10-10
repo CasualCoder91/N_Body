@@ -16,7 +16,7 @@ std::vector<double> Constants::massLimits = config.GetDoubleVector("massLimits")
 std::vector<double> Constants::exponents = config.GetDoubleVector("exponents"); //broken powerlaw
 Vec3D Constants::clusterLocation = config.GetVec3D("offset");
 bool Constants::bMcLuster = config.GetBool("bMcLuster");
-std::string Constants::mcLusterFilePath = config.GetString("mcLusterFilePath");
+std::string Constants::mcluster_filepath = config.GetString("mcluster_filepath");
 
 //View cone
 double Constants::angleOfView = config.GetDouble("angle"); //degree
@@ -48,4 +48,4 @@ double Constants::pi2 = 2.*3.14159265358979323846;
 double Constants::pi4 = 4.*3.14159265358979323846;
 
 //double Constants::minDist = config.GetDouble("minDist");
-double Constants::epsMagnitude = config.GetDouble("epsMagnitude");
+double Constants::eps_magnitude = config.GetDouble("eps_magnitude");

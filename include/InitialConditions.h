@@ -78,7 +78,7 @@ public:
 	@param volumeElement leghts of the sides of the cube (typicaly all positive and equal size) [kpc].
 	@see sampleBulgePositions
 	*/
-	void sampleDiskPositions(std::vector<Star>& stars, Vec3D position, Vec3D volumeElement);
+	void sampleDiskPositions(std::vector<Star>& stars, const Vec3D& position, const Vec3D& volumeElement);
 	/**
 	@brief Sets positions of stars by rejection sampling the density function of the disc inside a cone.
 	@param [in,out] stars The positions of these stars will be modified.

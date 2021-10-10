@@ -179,7 +179,7 @@ double InitialConditions::brokenPowerLaw(std::vector<Star>& stars, const std::ve
 	return totalMass;
 }
 
-void InitialConditions::sampleDiskPositions(std::vector<Star>& stars, Vec3D position, Vec3D volumeElement) {
+void InitialConditions::sampleDiskPositions(std::vector<Star>& stars, const Vec3D& position, const Vec3D& volumeElement) {
 	//get Limits for "Accept" distribution. Depends on Volume. Largest density is found at positions closest to 0
 	double smallestx = closestToZero(position.x, position.x + volumeElement.x);
 	double smallesty = closestToZero(position.y, position.y + volumeElement.y);

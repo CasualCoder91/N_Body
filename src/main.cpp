@@ -78,7 +78,7 @@ void do_it_all(size_t amount_of_times) {
 	//return;
 
 	//std::vector<std::string> paths = { "Data/4000.txt","Data/10000.txt","Data/25000.txt" };
-	//Constants::mcLusterFilePath = "test";
+	//Constants::mcluster_filepath = "test";
 
 	for (size_t i = 0; i < amount_of_times; ++i)
 	{

@@ -39,7 +39,7 @@ void Simulation::run(bool reuse_cluster){
 	}
 	else {
 		if (Constants::bMcLuster) {
-			clusterStars = InOut::readMcLuster(nextStarIndex, Constants::mcLusterFilePath);
+			clusterStars = InOut::readMcLuster(nextStarIndex, Constants::mcluster_filepath);
 		}
 		else {
 			clusterStars = initialConditions.initStars(nextStarIndex, Constants::nStars);

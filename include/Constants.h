@@ -22,7 +22,7 @@ namespace Constants {
 	extern std::vector<double> exponents; //broken powerlaw
 	extern Vec3D clusterLocation;
 	extern bool bMcLuster;
-	extern std::string mcLusterFilePath;
+	extern std::string mcluster_filepath;
 
 	//View cone
 	extern double angleOfView; //rad
@@ -57,5 +57,5 @@ namespace Constants {
 
 	//Clustering
 	//extern double minDist; //"resolution of the telescope" in arcsec
-	extern double epsMagnitude; //[%] maximum change in magnitude to be considered the same star
+	extern double eps_magnitude; //[%] maximum change in magnitude to be considered the same star
 }

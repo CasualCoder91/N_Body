@@ -79,7 +79,9 @@ void Database::setup(){
 		"viewPointX REAL NOT NULL,"
 		"viewPointY REAL NOT NULL,"
 		"viewPointZ REAL NOT NULL,"
-		"bMcLuster INTEGER NOT NULL"
+		"bMcLuster INTEGER NOT NULL,"
+		"mcluster_filepath TEXT NOT NULL,"
+		"eps_magnitude REAL NOT NULL"
 		");";
 	this->exec(sql);
 	sql = "CREATE TABLE IF NOT EXISTS star("
@@ -186,16 +188,14 @@ int Database::insertSimulation(){
 	if (!this->isOpen)
 		this->open();
 	std::string sql = "INSERT INTO simulation (n_stars,plummer_radius,dt,n_timesteps,title,outputTimestep,softening,precission,"
-		"offsetX,offsetY,offsetZ,angle,distance,focusX,focusY,focusZ,viewPointX,viewPointY,viewPointZ,bMcLuster)"
-		"VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20)";
+		"offsetX,offsetY,offsetZ,angle,distance,focusX,focusY,focusZ,viewPointX,viewPointY,viewPointZ,bMcLuster,mcluster_filepath,eps_magnitude)"
+		"VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, Constants::nStars);
 	sqlite3_bind_double(st, 2, Constants::plummer_radius);
 	sqlite3_bind_double(st, 3, Constants::dt);
 	sqlite3_bind_int(st, 4, Constants::nTimesteps);
-	//char* cstr = new char[Constants::title.length() + 1];
-	//strcpy_s(cstr, sizeof cstr, Constants::title.c_str());
 	sqlite3_bind_text(st, 5, Constants::title.c_str(), -1, SQLITE_TRANSIENT);
 	sqlite3_bind_int(st, 6, Constants::outputTimestep);
 	sqlite3_bind_double(st, 7, Constants::softening);
@@ -212,6 +212,8 @@ int Database::insertSimulation(){
 	sqlite3_bind_double(st, 18, Constants::viewPoint.y);
 	sqlite3_bind_double(st, 19, Constants::viewPoint.z);
 	sqlite3_bind_int(st, 20, Constants::bMcLuster);
+	sqlite3_bind_text(st, 21, Constants::mcluster_filepath.c_str(), -1, SQLITE_TRANSIENT);
+	sqlite3_bind_double(st, 22, Constants::eps_magnitude);
 
 	int returnCode = sqlite3_step(st);
 	if (returnCode != SQLITE_DONE){
@@ -755,7 +757,7 @@ void Database::selectConstants(int ID){
 	if (!this->isOpen)
 		this->open();
 	std::string query = "SELECT title, n_stars, plummer_radius, dt, n_timesteps, outputTimestep, softening, precission," 
-		"offsetX, offsetY, offsetZ, angle, distance, focusX, focusY, focusZ, viewPointX, viewPointY, viewPointZ, bMcLuster "
+		"offsetX, offsetY, offsetZ, angle, distance, focusX, focusY, focusZ, viewPointX, viewPointY, viewPointZ, bMcLuster, mcluster_filepath, eps_magnitude "
 		"FROM simulation "
         "Where ID = " + std::to_string(ID);
 	sqlite3_stmt* stmt;
@@ -782,6 +784,8 @@ void Database::selectConstants(int ID){
 		Constants::viewPoint.y = sqlite3_column_double(stmt, 17);
 		Constants::viewPoint.z = sqlite3_column_double(stmt, 18);
 		Constants::bMcLuster = sqlite3_column_int(stmt, 19);
+		Constants::mcluster_filepath = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 20));
+		Constants::eps_magnitude = sqlite3_column_int(stmt, 21);
 	}
 	sqlite3_finalize(stmt);
 	return;

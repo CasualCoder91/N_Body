@@ -277,7 +277,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 	int n_novelocity = 0;
 	for (size_t point_t1_index = 0; point_t1_index < resultingNeighbors.n_cols; point_t1_index++) {
 		for (size_t point_t0_index = 0; point_t0_index < resultingNeighbors.n_rows; point_t0_index++) {
-			if (abs(1 - points_t1[point_t1_index].magnitude / points_t0[resultingNeighbors(point_t0_index,point_t1_index)].magnitude) < Constants::epsMagnitude ) {
+			if (abs(1 - points_t1[point_t1_index].magnitude / points_t0[resultingNeighbors(point_t0_index,point_t1_index)].magnitude) < Constants::eps_magnitude ) {
 				if (points_t0[resultingNeighbors(point_t0_index, point_t1_index)].id != points_t1[point_t1_index].id && !observed) {
 					errorCounter++;
 					if (points_t0[resultingNeighbors(point_t0_index, point_t1_index)].clusterStar) {
@@ -351,7 +351,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 	//		//Point esimated_point_moved = Point(point0.id, point0.x + 0.165583299404586, point0.y, point0.clusterStar, point0.magnitude);
 	//		for (Point& point1 : points[1]) { //compare to all points at timestep i+1
 	//			double currentDist = point0.getDistance(point1);
-	//			if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < Constants::epsMagnitude) {
+	//			if ((currentDist < minDist || minDist == -1) && abs(1 - point1.magnitude / point0.magnitude) < Constants::eps_magnitude) {
 	//				minDist = currentDist;
 	//				futurePoint = point1;
 	//			}
