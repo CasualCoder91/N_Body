@@ -123,7 +123,7 @@ double Analysis::average(std::vector<Point>& points) {
 
 double Analysis::minimum_distance()
 {
-	std::vector<Point> points = database->select_points(simulation_id, 0, -1, 0);
+	std::vector<Point> points = database->select_points(simulation_id, 0, 0);
 
 	arma::mat mat_points = arma::mat(2, points.size());
 	for (size_t i = 0; i < points.size(); i++) {
@@ -223,8 +223,8 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 		return;
 	}
 
-	std::vector<Point> points_t0 = database->select_points(simulation_id, 0, -1, observed);
-	std::vector<Point> points_t1 = database->select_points(simulation_id, 1, -1, observed);
+	std::vector<Point> points_t0 = database->select_points(simulation_id, 0, observed);
+	std::vector<Point> points_t1 = database->select_points(simulation_id, 1, observed);
 
 	if (force_correct_selection) {
 		for (Point& point0 : points_t0) {
@@ -437,7 +437,7 @@ void Analysis::map_observed()
 {
 	double max_range = 0.015;// this->minimum_distance(); //max distance for mapping is halve the minimum distance between simulated stars
 
-	std::vector<Point> simulated_points = database->select_points(simulation_id, 0, -1, 0);
+	std::vector<Point> simulated_points = database->select_points(simulation_id, 0, 0);
 	arma::mat mat_simulated_points = arma::mat(2, simulated_points.size());
 	for (size_t i = 0; i < simulated_points.size(); i++) {
 		arma::vec column = arma::vec(2);
@@ -447,7 +447,7 @@ void Analysis::map_observed()
 	}
 
 	for (size_t t = 0; t < 2; t++) {
-		std::vector<Point> observed_points = database->select_points(simulation_id, t, -1, 1);
+		std::vector<Point> observed_points = database->select_points(simulation_id, t, 1);
 		arma::mat mat_observed_points = arma::mat(2, observed_points.size());
 		for (size_t i = 0; i < observed_points.size(); i++) {
 			arma::vec column = arma::vec(2);
@@ -504,7 +504,7 @@ void Analysis::remove_stars()
 	double cutoff_angle = Constants::angleOfView * Constants::degInRad * Constants::radInArcsec *0.5;
 	std::vector<int> stars_to_delete;
 
-	std::vector<Point> points = database->select_points(this->simulation_id, -1, -1, -1);
+	std::vector<Point> points = database->select_points(this->simulation_id, -1, -1);
 	for (Point point : points) {
 		if (point.distance_origin() > cutoff_angle) {
 			stars_to_delete.push_back(point.id);
@@ -517,7 +517,7 @@ void Analysis::remove_stars()
 void Analysis::estimate_mass()
 {
 	database->set_mapped_star_mass();
-	std::vector<Point> observed_points = database->select_points(simulation_id, 0, -1, 1);
+	std::vector<Point> observed_points = database->select_points(simulation_id, 0, 1);
 
 	std::vector<Point> mapped_points = observed_points;
 	mapped_points.erase(std::remove_if(

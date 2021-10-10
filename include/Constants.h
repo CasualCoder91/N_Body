@@ -56,7 +56,6 @@ namespace Constants {
 	extern double pi4;
 
 	//Clustering
-	extern double minMagnitude; // stars with "smaller" magnitude then this are detectable
 	//extern double minDist; //"resolution of the telescope" in arcsec
 	extern double epsMagnitude; //[%] maximum change in magnitude to be considered the same star
 }

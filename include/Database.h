@@ -102,7 +102,7 @@ public:
 
 	/** @brief returns all velocities at the given \p timestep */
 	std::vector<Vec3D> selectVelocities3D(int simulationID, int timestep = -1, bool fieldStars= false, bool clusterStars=true);
-	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true, double minMagnitude = -1);
+	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true);
 	/** @brief returns all timesteps for simulation with ID \p simulationID*/
 	std::vector<int> selectTimesteps(int simulationID);
 
@@ -124,9 +124,9 @@ public:
 
 	Point select_point(int point_id, int simulationID = 1, int timeStep = 0);
 
-	std::vector<Point>select_points(int simulationID = 1, int timeStep = 0, double minMagnitude = -1, int observed = 0);
+	std::vector<Point>select_points(int simulationID = 1, int timeStep = 0, int observed = 0);
 
-	std::vector<std::vector<Point>>select_time_series_points(int simulationID = 1, int timeStep=0, int nTimeSteps = 2, double minMagnitude = -1, bool observed = false);
+	std::vector<std::vector<Point>>select_time_series_points(int simulationID = 1, int timeStep=0, int nTimeSteps = 2, bool observed = false);
 
 	//updates velocity.aHTP and velocity.dHTP
 	void update_points(std::vector<Point>& points, int timestep = 0);

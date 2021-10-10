@@ -836,7 +836,7 @@ std::vector<Vec3D> Database::selectVelocities3D(int simulationID, int timestep, 
 	return velocities;
 }
 
-std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep, bool fieldStars, bool clusterStars, double minMagnitude){
+std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep, bool fieldStars, bool clusterStars){
 	std::vector<Vec2D> velocities = {};
 	if (!this->isOpen)
 		this->open();
@@ -845,9 +845,6 @@ std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep,
 		"FROM star "
 		"INNER JOIN velocity on velocity.id_star = star.id "
 		"WHERE star.id_simulation =  " +std::to_string(simulationID);
-	if (minMagnitude != -1) {
-		query += " AND star.magnitude < " + std::to_string(minMagnitude);
-	}
 	if (timestep != -1) {
 		query += " AND velocity.timestep = " + std::to_string(timestep);
 	}
@@ -1094,7 +1091,7 @@ Point Database::select_point(int point_id, int simulationID, int timeStep)
 	return point;
 }
 
-std::vector<Point> Database::select_points(int simulationID, int timestep, double minMagnitude, int observed)
+std::vector<Point> Database::select_points(int simulationID, int timestep, int observed)
 {
 	std::vector<Point> points;
 
@@ -1109,9 +1106,6 @@ std::vector<Point> Database::select_points(int simulationID, int timestep, doubl
 	if (observed > -1) {
 		query += " AND star.isObserved = ?3 ";
 	}
-	if (minMagnitude != -1) {
-		query += " AND star.magnitude < ?4";
-	}
 	query += " order by position.timestep";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
@@ -1122,9 +1116,6 @@ std::vector<Point> Database::select_points(int simulationID, int timestep, doubl
 	}
 	if (observed > -1) {
 		sqlite3_bind_int(stmt, 3, observed);
-	}
-	if (minMagnitude != -1) {
-		sqlite3_bind_double(stmt, 4, minMagnitude);
 	}
 
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -1145,7 +1136,7 @@ std::vector<Point> Database::select_points(int simulationID, int timestep, doubl
 
 
 
-std::vector<std::vector<Point>> Database::select_time_series_points(int simulationID, int timeStep, int nTimeSteps, double minMagnitude, bool observed){
+std::vector<std::vector<Point>> Database::select_time_series_points(int simulationID, int timeStep, int nTimeSteps, bool observed){
 	std::vector<std::vector<Point>> points;
 	std::vector<Point> timeStepPoints;
 	if (nTimeSteps < 1) {
@@ -1157,20 +1148,14 @@ std::vector<std::vector<Point>> Database::select_time_series_points(int simulati
 		"LEFT JOIN position on position.id_star = star.id "
 		"LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep "
 		"WHERE star.id_simulation = ?1 AND position.timestep IN (?2,?3) "
-		"AND star.isObserved = ?4";
-		if (minMagnitude != -1) {
-			query += " AND star.magnitude < ?5";
-		}
-	query += " order by position.timestep";
+		"AND star.isObserved = ?4 "
+		"order by position.timestep";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
 	sqlite3_bind_int(stmt, 1, simulationID);
 	sqlite3_bind_int(stmt, 2, timeStep);
 	sqlite3_bind_int(stmt, 3, timeStep + nTimeSteps -1);
 	sqlite3_bind_int(stmt, 4, observed);
-	if (minMagnitude != -1) {
-		sqlite3_bind_double(stmt, 5, minMagnitude);
-	}
 
 	int currentTimeStep = timeStep;
 

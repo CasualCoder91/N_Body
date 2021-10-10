@@ -47,7 +47,7 @@ void optimize_clustering(size_t simulation_id=1) {
 
 	for (double size = 100; size < 350; size+=50) {
 		for (double eps = 0.000006; eps < 0.000015; eps += 0.000001) {
-			analysis.cluster(db.select_points(simulation_id, 0, -1, 1),eps, size );
+			analysis.cluster(db.select_points(simulation_id, 0, 1),eps, size );
 			double conf = db.confidence_score(simulation_id);
 			std::cout << size << " " << eps << " " << conf << std::endl;
 		}
@@ -108,7 +108,7 @@ void do_it_all(size_t amount_of_times) {
 		}
 		db.set_extinction(stars);
 
-		analysis.cluster(db.select_points(simulation_id, 0, -1, 0));
+		analysis.cluster(db.select_points(simulation_id, 0, 0));
 
 		std::string python_file = std::filesystem::current_path().string() + "/Python/Photometry/Photometry/main.py " + std::to_string(simulation_id);
 		std::string command = "python3 " + python_file;
@@ -121,7 +121,7 @@ void do_it_all(size_t amount_of_times) {
 		analysis.generateHTPVelocity(1);
 		//std::cout << "done\n" << std::endl;
 
-		analysis.cluster(db.select_points(simulation_id, 0, -1, 1));
+		analysis.cluster(db.select_points(simulation_id, 0, 1));
 
 		analysis.estimate_mass();
 	}
@@ -211,8 +211,8 @@ int main() {
 				}
 				else if (selection == 3) { //velocityHTP
 					for (int timeStep : timeSteps) {
-						std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulationID, timeStep, false, true, Constants::minMagnitude);
-						std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulationID, timeStep, true, false, Constants::minMagnitude);
+						std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulationID, timeStep, false, true);
+						std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulationID, timeStep, true, false);
 						double avgVelHTPCluster = analysis.average(clusterVelocities);
 						double dispHTPCluster = analysis.dispersion(clusterVelocities, avgVelHTPCluster);
 						double avgVelHTPFS = analysis.average(fsVelocities);
@@ -228,10 +228,10 @@ int main() {
 
 					std::cout << "Running cluster analysis ..." << std::endl;
 					if (selection == 1) {
-						analysis.cluster(db.select_points(simulationID, 0, -1));
+						analysis.cluster(db.select_points(simulationID, 0));
 					}
 					else {
-						analysis.cluster(db.select_points(simulationID, 0, -1,true));
+						analysis.cluster(db.select_points(simulationID, 0,true));
 					}
 					std::cout << "Cluster analysis done" << std::endl;
 				}
