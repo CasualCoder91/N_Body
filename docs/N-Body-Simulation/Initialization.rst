@@ -5,9 +5,9 @@ Initialization
 Cluster
 -------
 
-Different density profiles (King :cite:`Harfst2010`, Plummer :cite:`Walker2016` and Elson, Fall & Freeman :cite:`Grudić2018`), metalicities, binary fractions and initial mass functions (IMF) have been used to simulate YMCs.
+Different density profiles (King :cite:`King1972`, Plummer :cite:`Plummer1911` and Elson, Fall & Freeman :cite:`Elson1987`), metalicities, binary fractions and initial mass functions (IMF) have been used (:cite:`Harfst2010`, :cite:`Walker2016`, :cite:`Grudić2018`) to simulate YMCs.
 The Plummer profile has been implemented as descriped in :cite:`Aarseth1974`. 
-Alternatively cluster stars can be generated using the open source code McLuster :cite:`Kuepper2011` which supports the density profiles and other parameters mentioned. The generated file can then be imported by setting the appropriate parameters.
+Alternatively cluster stars can be generated using the open source code McLuster :cite:`Kuepper2011` which supports the density profiles and other parameters mentioned above. The generated file can then be imported by setting the appropriate parameters.
 
 Initial Mass Function (IMF)
 ---------------------------

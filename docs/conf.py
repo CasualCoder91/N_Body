@@ -39,6 +39,7 @@ extensions = [
 ]
 needs_sphinx = '1.4.3'
 bibtex_bibfiles = ['/N-Body_Simulation/bibtex.bib']
+bibtex_default_style = 'plain'
 
 # tikz Configuration
 tikz_proc_suite = 'GhostScript'
