@@ -37,18 +37,18 @@ typedef int mode_t;
 //global parameters
 bool debug = false;
 
-void optimize_clustering() {
+void optimize_clustering(size_t simulation_id=1) {
 	Database db = Database();
 	db.open();
 	db.setup();
-	Analysis analysis = Analysis(1, &db);
+	Analysis analysis = Analysis(simulation_id, &db);
 	//analysis.cluster(db.select_points(1, 0, -1, 1), 0.5e-4, 160);
 	//return;
 
 	for (double size = 100; size < 350; size+=50) {
 		for (double eps = 0.000006; eps < 0.000015; eps += 0.000001) {
-			analysis.cluster(db.select_points(1, 0, -1, 1),eps, size );
-			double conf = db.confidence_score(1);
+			analysis.cluster(db.select_points(simulation_id, 0, -1, 1),eps, size );
+			double conf = db.confidence_score(simulation_id);
 			std::cout << size << " " << eps << " " << conf << std::endl;
 		}
 	}
@@ -63,19 +63,19 @@ void do_it_all(size_t amount_of_times) {
 
 	Extinction extinction = Extinction();
 
-	for (size_t i = 0; i < amount_of_times; ++i)
-	{
-		int simulation_id = i + 1;
-		//Analysis analysis = Analysis(simulation_id, &db);
-		//std::vector<Star> stars = db.select_stars(simulation_id, 0);
-		//for (Star& star : stars) {
-		//	extinction.set_extinction(star);
-		//}
-		//db.set_extinction(stars);
-		//analysis.estimate_mass();
-		db.print_clustering_info(simulation_id);
-	}
-	return;
+	//for (size_t i = 0; i < amount_of_times; ++i)
+	//{
+	//	int simulation_id = i + 1;
+	//	//Analysis analysis = Analysis(simulation_id, &db);
+	//	//std::vector<Star> stars = db.select_stars(simulation_id, 0);
+	//	//for (Star& star : stars) {
+	//	//	extinction.set_extinction(star);
+	//	//}
+	//	//db.set_extinction(stars);
+	//	//analysis.estimate_mass();
+	//	db.print_clustering_info(simulation_id);
+	//}
+	//return;
 
 	//std::vector<std::string> paths = { "Data/4000.txt","Data/10000.txt","Data/25000.txt" };
 	//Constants::mcLusterFilePath = "test";
@@ -114,12 +114,12 @@ void do_it_all(size_t amount_of_times) {
 		std::string command = "python3 " + python_file;
 		system(command.c_str());
 
+		analysis.map_observed();
+		//std::cout << "Mapping done!" << std::endl;
+
 		//std::cout << "generating HTP velocities ..." << std::endl;
 		analysis.generateHTPVelocity(1);
 		//std::cout << "done\n" << std::endl;
-
-		analysis.map_observed();
-		//std::cout << "Mapping done!" << std::endl;
 
 		analysis.cluster(db.select_points(simulation_id, 0, -1, 1));
 
@@ -374,8 +374,9 @@ int main() {
 			return 0;
 		}
 		else if (selection == 5) {
-			optimize_clustering();
-			//do_it_all(10);
+			//std::cout << "confidence score: " << db.confidence_score(2) << std::endl;
+			//optimize_clustering();
+			do_it_all(1);
 		}
 	}
 	return 0;

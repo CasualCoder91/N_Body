@@ -44,7 +44,7 @@ void Simulation::run(bool reuse_cluster){
 		else {
 			clusterStars = initialConditions.initStars(nextStarIndex, Constants::nStars);
 			double totalMass = initialConditions.brokenPowerLaw(clusterStars, Constants::massLimits, Constants::exponents);
-			initialConditions.plummerSphere(clusterStars, totalMass, Constants::boxLength, Constants::G);
+			initialConditions.plummerSphere(clusterStars, totalMass, Constants::plummer_radius, Constants::G);
 		}
 		initialConditions.offsetCluster(clusterStars, Constants::clusterLocation);
 		double circVel = potential->circularVelocity(&Constants::clusterLocation);

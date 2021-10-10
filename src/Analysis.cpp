@@ -62,7 +62,7 @@ void Analysis::scaling(int maxNStars, int nTimesteps, Integrator& integrator){
 		int starID = 0;
 		std::vector<Star> stars = initialConditions.initStars(starID,Constants::nStars);
 		double totalMass = initialConditions.initialMassSalpeter(stars, 0.08, 100);
-		initialConditions.plummerSphere(stars, totalMass, Constants::boxLength, Constants::G);
+		initialConditions.plummerSphere(stars, totalMass, Constants::plummer_radius, Constants::G);
 
 		startTime = std::chrono::steady_clock::now();
 		for (int i = 0; i < nTimesteps; i++) {
@@ -269,11 +269,12 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 	arma::Mat<size_t> resultingNeighbors;
 	arma::mat resultingDistances;
 
-	a.Search(mat_points_t1, 40, resultingNeighbors, resultingDistances);
+	a.Search(mat_points_t1, 80, resultingNeighbors, resultingDistances);
 
 	std::vector<int> stars_to_delete = {};
 	int errorCounter = 0;
 	int error_couter_cluster = 0;
+	int n_novelocity = 0;
 	for (size_t point_t1_index = 0; point_t1_index < resultingNeighbors.n_cols; point_t1_index++) {
 		for (size_t point_t0_index = 0; point_t0_index < resultingNeighbors.n_rows; point_t0_index++) {
 			if (abs(1 - points_t1[point_t1_index].magnitude / points_t0[resultingNeighbors(point_t0_index,point_t1_index)].magnitude) < Constants::epsMagnitude ) {
@@ -285,6 +286,11 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 				}
 				else
 				{
+					if (points_t0[resultingNeighbors(point_t0_index, point_t1_index)].fk_star != points_t1[point_t1_index].fk_star
+						&& points_t0[resultingNeighbors(point_t0_index, point_t1_index)].fk_star > 0 && points_t1[point_t1_index].fk_star > 0) {
+						errorCounter++;
+					}
+
 					stars_to_delete.push_back(points_t1[point_t1_index].id);
 					points_t1[point_t1_index].id = points_t0[resultingNeighbors(point_t0_index, point_t1_index)].id;
 				}
@@ -292,10 +298,15 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 				points_t0[resultingNeighbors(point_t0_index, point_t1_index)].velocity[1] = points_t1[point_t1_index].y - points_t0[resultingNeighbors(point_t0_index, point_t1_index)].y;
 				break;
 			}
+			else 
+			{
+				n_novelocity++;
+			}
 		}
 	}
+	std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
+	std::cout << "#no match found: " << n_novelocity << std::endl;
 	if (!observed) {
-		std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
 		std::cout << " - #Wrong cluster stars: " << error_couter_cluster << std::endl;
 	}
 	else {

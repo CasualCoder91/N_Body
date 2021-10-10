@@ -62,7 +62,7 @@ void Database::setup(){
 		"id INTEGER PRIMARY KEY,"
 		"title TEXT NOT NULL,"
 		"n_stars INTEGER NOT NULL,"
-		"boxlength REAL NOT NULL,"
+		"plummer_radius REAL NOT NULL,"
 		"dt REAL NOT NULL,"
 		"n_timesteps INTEGER NOT NULL,"
 		"outputTimestep INTEGER NOT NULL,"
@@ -185,13 +185,13 @@ int Database::selectLastID(std::string table){
 int Database::insertSimulation(){
 	if (!this->isOpen)
 		this->open();
-	std::string sql = "INSERT INTO simulation (n_stars,boxLength,dt,n_timesteps,title,outputTimestep,softening,precission,"
+	std::string sql = "INSERT INTO simulation (n_stars,plummer_radius,dt,n_timesteps,title,outputTimestep,softening,precission,"
 		"offsetX,offsetY,offsetZ,angle,distance,focusX,focusY,focusZ,viewPointX,viewPointY,viewPointZ,bMcLuster)"
 		"VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20)";
 	sqlite3_stmt* st;
 	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
 	sqlite3_bind_int(st, 1, Constants::nStars);
-	sqlite3_bind_double(st, 2, Constants::boxLength);
+	sqlite3_bind_double(st, 2, Constants::plummer_radius);
 	sqlite3_bind_double(st, 3, Constants::dt);
 	sqlite3_bind_int(st, 4, Constants::nTimesteps);
 	//char* cstr = new char[Constants::title.length() + 1];
@@ -754,7 +754,7 @@ void Database::insertVelocity(int& idStar, Vec3D& velocity, int& timestep){
 void Database::selectConstants(int ID){
 	if (!this->isOpen)
 		this->open();
-	std::string query = "SELECT title, n_stars, boxlength, dt, n_timesteps, outputTimestep, softening, precission," 
+	std::string query = "SELECT title, n_stars, plummer_radius, dt, n_timesteps, outputTimestep, softening, precission," 
 		"offsetX, offsetY, offsetZ, angle, distance, focusX, focusY, focusZ, viewPointX, viewPointY, viewPointZ, bMcLuster "
 		"FROM simulation "
         "Where ID = " + std::to_string(ID);
@@ -764,7 +764,7 @@ void Database::selectConstants(int ID){
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		Constants::title = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
 		Constants::nStars = sqlite3_column_int(stmt, 1);
-		Constants::boxLength = sqlite3_column_double(stmt, 2);
+		Constants::plummer_radius = sqlite3_column_double(stmt, 2);
 		Constants::dt = sqlite3_column_double(stmt, 3);
 		Constants::nTimesteps = sqlite3_column_int(stmt, 4);
 		Constants::outputTimestep = sqlite3_column_int(stmt, 5);
@@ -790,7 +790,7 @@ void Database::selectConstants(int ID){
 bool Database::printSimulations(){
 	if (!this->isOpen)
 		this->open();
-	std::string query = "SELECT id,title,n_stars,boxlength,dt,n_timesteps,outputTimestep FROM simulation";
+	std::string query = "SELECT id,title,n_stars,plummer_radius,dt,n_timesteps,outputTimestep FROM simulation";
 
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db, query.c_str(), static_cast<int>(query.size()), &stmt, nullptr);
@@ -1324,13 +1324,13 @@ double Database::confidence_score(int simulation_id)
 		return ret;
 	};
 
-	double n_clusters = execute_sql("select max(idCluster) from star where isObserved = 1") + 1;
+	double n_clusters = execute_sql("select max(idCluster) from star where isObserved = 1 and id_simulation = ?1") + 1;
 	if (n_clusters != 1)
 		return 0;
 
-	double n_true_pos = execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster > -1 and obs.isObserved = 1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and obs.mass < 0.5");
-	double n_unconf_pos = execute_sql("select count(*) from star obs inner join position on obs.id=position.id_star where position.timestep = 0 and obs.isObserved = 1 and obs.idCluster > -1 and obs.fkStar is NULL and id_simulation = ?1 and obs.mass < 0.5");
-	double n_false_pos = execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and obs.mass < 0.5");
+	double n_true_pos = execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id inner join position on obs.id = position.id_star where obs.idCluster > -1 and obs.isObserved = 1 and sim.isCluster = 1 and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and obs.mass < 0.01");
+	double n_unconf_pos = execute_sql("select count(*) from star obs inner join position on obs.id=position.id_star where position.timestep = 0 and obs.isObserved = 1 and obs.idCluster > -1 and obs.fkStar is NULL and id_simulation = ?1 and obs.mass < 0.01");
+	double n_false_pos = execute_sql("select count(*) from star sim inner join star obs on obs.fkStar = sim.id where obs.idCluster > -1 and sim.isCluster = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and obs.mass < 0.01");
 
 	return (n_true_pos / (n_true_pos + n_unconf_pos + n_false_pos));
 }

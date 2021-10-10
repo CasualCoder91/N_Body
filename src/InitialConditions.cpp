@@ -631,13 +631,12 @@ std::vector<Star> InitialConditions::bulgeIMF(double totalMass, int& starID){
 	return stars;
 }
 
-void InitialConditions::plummerSphere(std::vector<Star>& stars, double totalMass, double scaleParameter, double G){
+void InitialConditions::plummerSphere(std::vector<Star>& stars, double totalMass, double plummer_radius, double G){
 	std::uniform_real_distribution<> dis(0.0, 0.99);//avoid close to singularity
 	for (Star& star : stars) {
-		double distance = dis(gen);//
-		scaleParameter / sqrt(pow(dis(gen), -2. / 3.) - 1);
+		double distance = plummer_radius / sqrt(pow(dis(gen), -2. / 3.) - 1);
 		star.position = Vec3D::randomAngles(distance);// randomVector(distance);
-		plummerVelocity(star, scaleParameter, distance, totalMass, G);
+		plummer_velocity(star, plummer_radius, distance, totalMass, G);
 	}
 }
 
@@ -647,13 +646,14 @@ void InitialConditions::offsetCluster(std::vector<Star>& stars, const Vec3D& off
 	}
 }
 
-double InitialConditions::plummerEscapeVelocity(double distance, double structuralLength, double totalMass, double G){
-	//return sqrt(2.) * pow(distance * distance + structuralLength, -0.25);
+double InitialConditions::plummerEscapeVelocity(double distance, double plummer_radius, double total_mass, double G){
 	//https://github.com/bacook17/behalf/blob/master/behalf/initialConditions.py
-	return sqrt(2. * G * totalMass / structuralLength) *pow(1.+distance*distance/(structuralLength* structuralLength),-0.25);
+	return sqrt(2. * G * total_mass / plummer_radius) *pow(1.+distance*distance/(plummer_radius* plummer_radius),-0.25);
 }
 
-void InitialConditions::plummerVelocity(Star& star, double structuralLength, double distance, double totalMass, double G){
+
+//1974A&A....37..183A
+void InitialConditions::plummer_velocity(Star& star, double plummer_radius, double distance, double total_mass, double G){
 	std::uniform_real_distribution<> dis(0.0, 1.0);
 	//Rejection Technique
 	std::uniform_real_distribution<> dis_g(0.0, 0.1);
@@ -663,7 +663,7 @@ void InitialConditions::plummerVelocity(Star& star, double structuralLength, dou
 		q = dis(gen);
 		g = dis_g(gen);
 	}
-	double velocity = q * plummerEscapeVelocity(distance, structuralLength, totalMass, G)/1.01;
+	double velocity = q * plummerEscapeVelocity(distance, plummer_radius, total_mass, G)/1.01;
 	star.velocity = Vec3D::randomVector(velocity);
 }
 

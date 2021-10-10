@@ -129,10 +129,10 @@ public:
 	@brief Sets position and velocity of \p stars overwriting(!) current values. Used to setup clusters.
 	@param [in,out] stars Obtain this parameter with for instance initStars(int& firstID)
 	@param totalMass The sum of star masses.
-	@param scaleParameter size of the cluster core [pc]
+	@param plummer_radius size of the cluster core [pc]
 	@param G gravitational constant
 	*/
-	void plummerSphere(std::vector<Star>& stars, double totalMass, double scaleParameter, double G);
+	void plummerSphere(std::vector<Star>& stars, double totalMass, double plummer_radius, double G);
 	/**
 	@brief Adds \p offset to positions of \p stars 
 	@param [in,out] stars
@@ -143,16 +143,16 @@ public:
 private:
 	friend class Test;
 	/** @brief Calculates the local escape velocity [km*s^-1] in the Plummer model */
-	double plummerEscapeVelocity(double distance, double structuralLength, double totalMass, double G);
+	double plummerEscapeVelocity(double distance, double structuralLength, double total_mass, double G);
 	/**
 	@brief Sets the (isotropic) velocity of the \p star in a plummer sphere.
 	@param [in,out] star
-	@param scaleParameter size of the cluster core [pc]
+	@param plummer_radius size of the cluster core [pc]
 	@param distance of the \p star from the center of the sphere [pc]
 	@param totalMass [SolarMass] of the cluster
 	@param G gravitational constant
 	*/
-	void plummerVelocity(Star& star, double scaleParameter, double distance, double totalMass, double G);
+	void plummer_velocity(Star& star, double plummer_radius, double distance, double total_mass, double G);
 	/** @brief calculates the value which is closest to zero in the intervall [a,b] */
 	static double closestToZero(double a, double b);
 	/** @brief calculates the value which is farthest away from zero in the intervall [a,b] */

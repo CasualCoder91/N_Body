@@ -12,7 +12,7 @@ namespace Constants {
 	extern double softening;
 	extern double precission;
 	extern std::string title;
-	extern double boxLength;
+	extern double plummer_radius;
 	extern double dt; //[day]
 	extern int nTimesteps;
 	extern int outputTimestep;

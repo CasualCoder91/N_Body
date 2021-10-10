@@ -40,6 +40,10 @@ def plot_cluster(b_observed_points=True,b_simulated_points=True):
         sp_arr = np.vstack(simulated_points[:]).astype(float)
         plt.scatter(sp_arr[:,0], sp_arr[:,1], s=1, c='g', marker="o", label='simulated')
 
+    false_negative = db.select_false_negative()
+    fn_arr = np.vstack(false_negative[:]).astype(float)
+    plt.scatter(fn_arr[:,0], fn_arr[:,1], s=1, c='b', marker="x", label='false negative')
+
     plt.xlabel('ascension [arcsec]', fontsize=16)
     plt.ylabel('declination [arcsec]', fontsize=16)
     plt.legend(loc='upper left')
@@ -81,14 +85,18 @@ def plot_points_velocity(b_observed_points=True,b_simulated_points=True):
         op_cluster = op_arr[op_arr[:,4] > -1]
         plt.scatter(op_cluster[:,2], op_cluster[:,3], s=1, c='r', marker="s", label='observed_cluster')
         op_fs = op_arr[op_arr[:,4] == -1]
-        plt.scatter(op_fs[:,2], op_fs[:,3], s=1, c='black', marker="s", label='observed_fs')
+        #plt.scatter(op_fs[:,2], op_fs[:,3], s=1, c='black', marker="s", label='observed_fs')
     if(b_simulated_points):
         simulated_points = db.select_points(0, False)
         sp_arr = np.vstack(simulated_points[:]).astype(float)
         sp_cluster = sp_arr[sp_arr[:,4] > -1]
         plt.scatter(sp_cluster[:,2], sp_cluster[:,3], s=1, c='g', marker="s", label='simulated_cluster')
         sp_fs = sp_arr[sp_arr[:,4] == -1]
-        plt.scatter(sp_fs[:,2], sp_fs[:,3], s=1, c='blue', marker="s", label='simulated_fs')
+        #plt.scatter(sp_fs[:,2], sp_fs[:,3], s=1, c='blue', marker="s", label='simulated_fs')
+
+    false_negative = db.select_false_negative()
+    fn_arr = np.vstack(false_negative[:]).astype(float)
+    plt.scatter(fn_arr[:,2], fn_arr[:,3], s=1, c='yellow', marker="x", label='false negative')
 
     plt.xlabel('v_asc [arcsec/dt]', fontsize=16)
     plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
@@ -176,10 +184,10 @@ def main():
     #op_arr = np.vstack(observed_points[:]).astype(float)
     #sp_arr = np.vstack(simulated_points[:]).astype(float)
     #plot_points()
-    plot_clustering_map()
+    #plot_clustering_map()
     #plot_cluster(True,True)
     #plot_magnitude_hist()
-    #plot_points_velocity(True,True)
+    plot_points_velocity(True,True)
     #plot_points(sp_arr)
     #plot_magnitude_hist(op_arr,sp_arr)
     #print(float_arr)
