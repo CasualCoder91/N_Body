@@ -6,7 +6,7 @@ The objective is to detect all cluster stars present in the observed data with a
 One image contains a set of stars :math:`s_{i}` with positions :math:`\vec{x}_{i}\left ( t \right )` in pixel coordinates and apparent magnitudes :math:`m_{i}`.
 This information is not enough to detect cluster memberships. The number density of cluster stars in position space is similar to that of the field stars.
 Furthermore, cluster and field star positions overlap significantly.
-Moreover, depending on the distance of the cluster to the observer and the cluster size, cluster stars often cover a significant area of if not the whole image.
+Moreover, depending on the distance of the cluster to the observer, the cluster size and the field of view angle, cluster stars often cover a significant area of if not the whole image.
 The proper motion :math:`\vec{v_{i}}(t)` density of cluster stars on the other hand is very high relative to that of field stars and hardly any field stars have :math:`\vec{v_{i}}(t)` close to cluster stars.
 
 Velocity approximation
@@ -65,3 +65,4 @@ The difference in velocity between two stars has to be smaller than :math:`\epsi
     \left \|\vec{v}_{1}-\vec{v}_{2}  \right \|_{2}< \epsilon_{v}
 
 Large :math:`\epsilon_{x}` lead to more accurate membership detection. It turned out, the spatial distance condition does not benefit the results at all and was dropped.
+For larger areas than used here, constraining the spatial distance, for instance via subdivision, should be benefitial.
