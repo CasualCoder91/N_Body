@@ -2,6 +2,25 @@
 Initialization
 ==============
 
+Sampling distribution functions
+-------------------------------
+
+:cite:`Devroye1986`
+
+Rejection sampling
+^^^^^^^^^^^^^^^^^^
+
+Inverse transform sampling 
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the cumulative probability function (cpf) of the probability distribution :math:`f(y)` is continous and its inverse obtainable, this method can be utilized and is more efficient than rejection sampling.
+The cpf describes the probability that the random variable is smaller or equal to x
+
+.. math::
+    F(x)=P(X \leq x) = \int_{-\infty }^{x}f(y) dy
+
+The inverse :math:`F^{-1}(y)` may be calculated via :math:`F(F^{-1}(y)) = y`. With :math:`y` drawn from a uniform distribution the results of :math:`F^{-1}(y)` have the desired probability distribution :math:`f(y)`.
+
 Cluster
 -------
 
