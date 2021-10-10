@@ -47,5 +47,4 @@ double Constants::pi = 3.14159265358979323846;
 double Constants::pi2 = 2.*3.14159265358979323846;
 double Constants::pi4 = 4.*3.14159265358979323846;
 
-//double Constants::minDist = config.GetDouble("minDist");
 double Constants::eps_magnitude = config.GetDouble("eps_magnitude");

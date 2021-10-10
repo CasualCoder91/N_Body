@@ -6,7 +6,6 @@ Extinction::Extinction()
     std::string line;
     std::ifstream file("src/LookupTables/extinction.dat");
 
-    double key, value;
     while (std::getline(file, line)) {
         std::istringstream iss(line);
         std::vector<std::string> tokens;

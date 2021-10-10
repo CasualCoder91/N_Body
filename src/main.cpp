@@ -188,7 +188,7 @@ int main() {
 			else if(selection==2) {
 				Analysis analysis = Analysis(simulationID,&db);
 				std::cout << "What would you like to analyze?" << std::endl;
-				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster\n[5] Map observed stars\n[6] Extinction\[7] Estimate mass" << std::endl;
+				std::cout << "[1] Energy\n[2] Velocity\n[3] velocityHTP\n[4] Cluster\n[5] Map observed stars\n[6] Extinction\n[7] Estimate mass" << std::endl;
 				std::cin >> selection;
 				std::cin.clear();
 				std::vector<int> timeSteps = db.selectTimesteps(simulationID);

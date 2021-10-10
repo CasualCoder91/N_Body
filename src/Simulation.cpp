@@ -87,7 +87,6 @@ void Simulation::run(bool reuse_cluster){
 			if (Constants::nTimesteps - i < Constants::outputTimestep)
 				break;
 		}
-		if(Constants::nTimesteps -i < Constants::outputTimestep)
 
 		if (clusterStars.size() > 0 && !reuse_cluster) {
 			Node::findCorners(tlf, brb, clusterStars);

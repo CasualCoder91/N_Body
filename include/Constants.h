@@ -56,6 +56,5 @@ namespace Constants {
 	extern double pi4;
 
 	//Clustering
-	//extern double minDist; //"resolution of the telescope" in arcsec
 	extern double eps_magnitude; //[%] maximum change in magnitude to be considered the same star
 }

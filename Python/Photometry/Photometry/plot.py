@@ -67,7 +67,7 @@ def plot_magnitude_hist():
     plt.show()
 
 
-def plot_points_velocity(b_observed_points=True,b_simulated_points=True):
+def plot_points_velocity(b_observed_points=True,b_simulated_points=True,b_false_negative=False):
 
     db = Database()
     fig = plt.figure()
@@ -92,11 +92,11 @@ def plot_points_velocity(b_observed_points=True,b_simulated_points=True):
         sp_cluster = sp_arr[sp_arr[:,4] > -1]
         plt.scatter(sp_cluster[:,2], sp_cluster[:,3], s=1, c='g', marker="s", label='simulated_cluster')
         sp_fs = sp_arr[sp_arr[:,4] == -1]
-        #plt.scatter(sp_fs[:,2], sp_fs[:,3], s=1, c='blue', marker="s", label='simulated_fs')
-
-    false_negative = db.select_false_negative()
-    fn_arr = np.vstack(false_negative[:]).astype(float)
-    plt.scatter(fn_arr[:,2], fn_arr[:,3], s=1, c='yellow', marker="x", label='false negative')
+        plt.scatter(sp_fs[:,2], sp_fs[:,3], s=1, c='blue', marker="s", label='simulated_fs')
+    if(b_false_negative):
+        false_negative = db.select_false_negative()
+        fn_arr = np.vstack(false_negative[:]).astype(float)
+        plt.scatter(fn_arr[:,2], fn_arr[:,3], s=1, c='yellow', marker="x", label='false negative')
 
     plt.xlabel('v_asc [arcsec/dt]', fontsize=16)
     plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
@@ -183,11 +183,11 @@ def main():
 
     #op_arr = np.vstack(observed_points[:]).astype(float)
     #sp_arr = np.vstack(simulated_points[:]).astype(float)
-    #plot_points()
+    #plot_points(False,True)
     #plot_clustering_map()
     #plot_cluster(True,True)
     #plot_magnitude_hist()
-    plot_points_velocity(True,True)
+    plot_points_velocity(False,True)
     #plot_points(sp_arr)
     #plot_magnitude_hist(op_arr,sp_arr)
     #print(float_arr)
