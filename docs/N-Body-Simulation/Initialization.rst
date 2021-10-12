@@ -24,7 +24,7 @@ and :math:`m` the maximum of :math:`f(x)` within :math:`\left [ a,b \right ]` th
 .. math::
     u \leq f(x)
 
-here u is a uniform distribution :math:`U(0,Cg(x)) = U(0,m)`.
+here u is a uniform distribution :math:`U(0,Cg(x)) = U(0,m)`. While :math:`Cg(x)` has to be larger than :math:`f(x)` the area between them should be as small as possible to ensure a decent acceptance fraction.
 
 
 Inverse transform sampling 
