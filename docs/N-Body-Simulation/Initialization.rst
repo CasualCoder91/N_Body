@@ -5,10 +5,27 @@ Initialization
 Sampling distribution functions
 -------------------------------
 
-:cite:`Devroye1986`
+Space, velocity and mass distributions are sampled during various steps of the initialization using the following two methods.
+For further destails and alternative methods see :cite:`Devroye1986`.
 
 Rejection sampling
 ^^^^^^^^^^^^^^^^^^
+
+A proposed distribution function :math:`g(x)` is sampled and each resultin sample accepted with a probability of :math:`\frac{f(x)}{Cg(x)}`.
+:math:`C` is a constant ensuring :math:`f(x)\leqslant Cg(x) \forall x` and :math:`f(x)` the target distribution.
+
+If :math:`g(x)` is the pdf of a uniform distribution with :math:`x \in \left [ a,b \right ]`
+
+.. math::
+    g(x)=\frac{1}{b-a}
+
+and :math:`m` the maximum of :math:`f(x)` within :math:`\left [ a,b \right ]` then :math:`C=\frac{m}{b-a}` and the acceptance criterion becomes
+
+.. math::
+    u \leq f(x)
+
+here u is a uniform distribution :math:`U(0,Cg(x)) = U(0,m)`.
+
 
 Inverse transform sampling 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

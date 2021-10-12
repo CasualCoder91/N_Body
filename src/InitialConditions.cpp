@@ -570,7 +570,7 @@ std::vector<Star> InitialConditions::diskIMF(double totalMass, int& starID){
 		if (pickedTotalMass + proposedStar.mass / 2 < totalMass) {
 			proposedStar.id = starID;
 			starID++;
-			stars.push_back(proposedStar); // todo: which id?!
+			stars.push_back(proposedStar);
 			pickedTotalMass += proposedStar.mass;
 		}
 		else
