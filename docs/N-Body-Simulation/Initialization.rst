@@ -48,6 +48,10 @@ Alternatively cluster stars can be generated using the open source code McLuster
 Initial Mass Function (IMF)
 ---------------------------
 
+The IMF describes the initial mass distribution of stars, that is, how many stars have which mass in some set of stars at the start. 
+It is still subject of debate wether the IMF of star clusters is universal :cite:`Bastian2010` and the present day mass function (PDMF) usually differs from the IMF.
+:cite:`Espinoza2009` depicts the Salpeter IMF and the PDMF of Arches. Hence, the IMF is deemed a realistic estimate for the PDMF of a generic YMSC.
+ 
 Salpeter (1955)
 ^^^^^^^^^^^^^^^
 
@@ -55,9 +59,8 @@ Salpeter (1955)
 
 .. plot:: pyplots/initialConditionsMassSalpeter.py
 
-Background
-
-When it comes to sampling an IMF, one possible approach is called inverse transform sampling. Here one must integrate the IMF over the mass, yielding a cumulative probability function (cpf), and normalize it (ncpf).
+This comparatively simple and widely used (todo:cite) IMF is sampled used inverse transform sampling.
+Here one must integrate the IMF over the mass, yielding a cumulative probability function (cpf), and normalize it (ncpf).
 Then one has to take the inverse of the ncpf. Since Salpeter is a power-law distribution function, all this can be done analytically:
 
  https://www.usna.edu/Users/cs/crabbe/SI475/current/particleFilter/particleFilter.pdf
