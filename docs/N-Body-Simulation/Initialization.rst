@@ -53,14 +53,14 @@ It is subject of debate wether the IMF of star clusters is universal :cite:`Bast
 Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF and the PDMF of Arches. Hence, the IMF is deemed a adequate estimate for the PDMF of a generic YMSC.
 Sampling routines for the following two IMFs have been implemented by the author.
  
-Salpeter (1955)
-^^^^^^^^^^^^^^^
+Salpeter IMF :cite:`Salpeter1955`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. math::
     p(m)=\frac{dN}{dm}=A*m^{-\alpha }
     :label: salpeter
 
-This comparatively simple and widely used (:cite:`Saro2006`, :cite:`Portinari2007`, :cite:`Saro2006`, :cite:`Goswami2012`) IMF can be sampled using inverse transform sampling.
+This comparatively simple and widely used (:cite:`Saro2006`, :cite:`Portinari2007`, :cite:`Goswami2012`) IMF can be sampled using inverse transform sampling.
 To do so one must integrate the IMF over the mass and normalize it, yielding the normalized cumulative distribution function (NCDF).
 
 .. math::
