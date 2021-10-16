@@ -50,26 +50,19 @@ Initial Mass Function (IMF)
 
 The IMF describes the initial mass distribution of stars, that is, how many stars have which mass in some set of stars at the start. 
 It is still subject of debate wether the IMF of star clusters is universal :cite:`Bastian2010` and the present day mass function (PDMF) usually differs from the IMF.
-:cite:`Espinoza2009` depicts the Salpeter IMF and the PDMF of Arches. Hence, the IMF is deemed a realistic estimate for the PDMF of a generic YMSC.
+Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF and the PDMF of Arches. Hence, the IMF is deemed a realistic estimate for the PDMF of a generic YMSC.
  
 Salpeter (1955)
 ^^^^^^^^^^^^^^^
-
-.. doxygenfunction:: InitialConditions::initialMassSalpeter
-
-.. plot:: pyplots/initialConditionsMassSalpeter.py
-
-This comparatively simple and widely used (todo:cite) IMF is sampled used inverse transform sampling.
-Here one must integrate the IMF over the mass, yielding a cumulative probability function (cpf), and normalize it (ncpf).
-Then one has to take the inverse of the ncpf. Since Salpeter is a power-law distribution function, all this can be done analytically:
-
- https://www.usna.edu/Users/cs/crabbe/SI475/current/particleFilter/particleFilter.pdf
- https://local.strw.leidenuniv.nl/events/phdtheses/haas/05.pdf
 
 .. math::
     p(m)=\frac{dN}{dm}=A*m^{-\alpha }
     :label: salpeter
 
+This comparatively simple and widely used (:cite:`Saro2006` todo:cite more) IMF can be sampled using inverse transform sampling.
+To do so one must integrate the IMF over the mass and normalize it, yielding the normalized cumulative probability function (NCPF).
+
+.. math::
     P(m)=\int_{m_{min}}^{m}A*m^{-\alpha } dm = \frac{A}{-\alpha +1}\left ( m^{-\alpha +1} -m_{min}^{-\alpha +1}\right )
 
 A is defined by normalization:
@@ -77,17 +70,20 @@ A is defined by normalization:
 .. math::
     P({m_{max}})\equiv 1\rightarrow A=\frac{-\alpha +1}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1} }
 
-Inserting this into P(m) yields:
+With this () becomes:
 
 .. math::
     P(m)=\frac{m^{-\alpha +1} -m_{min}^{-\alpha +1}}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1}}
 
-Inverting this function and some simplifications lead to:
+Since Salpeter is a power-law distribution function, the inverse of the ncpf can calculated analytically. With some simplifications the final result becomes
 
 .. math::
     m_{rand} = m_{min}*\left [ 1+x*\left ( \left ( \frac{m_{max}}{m_{min}} -1\right )^{-\alpha +1} \right ) \right ]^{\frac{1}{-\alpha +1}}
 
 where x is a random number in range [0,1]
+
+.. plot:: pyplots/initialConditionsMassSalpeter.py
+
 
 Broken Power Law (BPL)
 ^^^^^^^^^^^^^^^^^^^^^^
