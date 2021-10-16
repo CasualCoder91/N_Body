@@ -143,6 +143,11 @@ Different density profiles (King :cite:`King1972`, Plummer :cite:`Plummer1911` a
 The Plummer profile has been implemented as descriped in :cite:`Aarseth1974`.
 
 
+Field Stars (FS)
+----------------
+
+Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potenital described in "Galactic Potential (?)".
+
 
 Spheroid/Bulge - Chabrier (2003)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
