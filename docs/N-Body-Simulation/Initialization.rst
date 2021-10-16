@@ -41,9 +41,9 @@ The inverse :math:`F^{-1}(y)` may be calculated via :math:`F(F^{-1}(y)) = y`. Wi
 Cluster
 -------
 
-Different density profiles (King :cite:`King1972`, Plummer :cite:`Plummer1911` and Elson, Fall & Freeman :cite:`Elson1987`), metalicities, binary fractions and initial mass functions (IMF) have been used (:cite:`Harfst2010`, :cite:`Walker2016`, :cite:`Grudić2018`) to simulate YMCs.
-The Plummer profile has been implemented as descriped in :cite:`Aarseth1974`. 
-Alternatively cluster stars can be generated using the open source code McLuster :cite:`Kuepper2011` which supports the density profiles and other parameters mentioned above. The generated file can then be imported by setting the appropriate parameters.
+A cluster can be characteristed via a number of parameters, namely its density profile, metalicity, binary fraction and initial mass function (IMF).
+The following sections cover methods implemented by the author. Alternatively cluster stars can be generated using the open source code McLuster :cite:`Kuepper2011` which supports more density profiles and all other parameters mentioned above. 
+The generated file can then be imported by setting the appropriate parameters.
 
 Initial Mass Function (IMF)
 ---------------------------
@@ -90,7 +90,7 @@ Broken Power Law (BPL)
 ^^^^^^^^^^^^^^^^^^^^^^
 
 The BPL IMF has the benefit of being highly adaptable. It can be utilized to approximate any other IMF.
-The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003` (multi part power law), :cite:`Kroupa_2003` (single power law)
+It has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs (:cite:`Porras_2003`, :cite:`Kroupa_2003`).
 
 The following is a generalization of the equation given by :cite:`Kroupa:2001jy` for :math:`n-1` intervals.
 
@@ -134,6 +134,14 @@ Inverting the NCDF leads to
      \end{cases}
 
 where y is a random number in range [0,1]
+
+
+Density Profile
+---------------
+
+Different density profiles (King :cite:`King1972`, Plummer :cite:`Plummer1911` and Elson, Fall & Freeman :cite:`Elson1987`) have been used (:cite:`Harfst2010`, :cite:`Walker2016`, :cite:`Grudić2018`) to simulate YMCs.
+The Plummer profile has been implemented as descriped in :cite:`Aarseth1974`.
+
 
 
 Spheroid/Bulge - Chabrier (2003)
