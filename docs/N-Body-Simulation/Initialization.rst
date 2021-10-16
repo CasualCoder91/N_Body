@@ -49,8 +49,9 @@ Initial Mass Function (IMF)
 ---------------------------
 
 The IMF describes the initial mass distribution of stars, that is, how many stars have which mass in some set of stars at the start. 
-It is still subject of debate wether the IMF of star clusters is universal :cite:`Bastian2010` and the present day mass function (PDMF) usually differs from the IMF.
-Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF and the PDMF of Arches. Hence, the IMF is deemed a realistic estimate for the PDMF of a generic YMSC.
+It is subject of debate wether the IMF of star clusters is universal :cite:`Bastian2010` and the present day mass function (PDMF) usually differs from the IMF.
+Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF and the PDMF of Arches. Hence, the IMF is deemed a adequate estimate for the PDMF of a generic YMSC.
+Sampling routines for the following two IMFs have been implemented by the author.
  
 Salpeter (1955)
 ^^^^^^^^^^^^^^^
@@ -59,8 +60,8 @@ Salpeter (1955)
     p(m)=\frac{dN}{dm}=A*m^{-\alpha }
     :label: salpeter
 
-This comparatively simple and widely used (:cite:`Saro2006` todo:cite more) IMF can be sampled using inverse transform sampling.
-To do so one must integrate the IMF over the mass and normalize it, yielding the normalized cumulative probability function (NCPF).
+This comparatively simple and widely used (:cite:`Saro2006`, :cite:`Portinari2007`, :cite:`Saro2006`, :cite:`Goswami2012`) IMF can be sampled using inverse transform sampling.
+To do so one must integrate the IMF over the mass and normalize it, yielding the normalized cumulative distribution function (NCDF).
 
 .. math::
     P(m)=\int_{m_{min}}^{m}A*m^{-\alpha } dm = \frac{A}{-\alpha +1}\left ( m^{-\alpha +1} -m_{min}^{-\alpha +1}\right )
@@ -75,7 +76,7 @@ With this () becomes:
 .. math::
     P(m)=\frac{m^{-\alpha +1} -m_{min}^{-\alpha +1}}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1}}
 
-Since Salpeter is a power-law distribution function, the inverse of the ncpf can calculated analytically. With some simplifications the final result becomes
+Since Salpeter is a power-law distribution function, the inverse of the NCPF can calculated analytically. After some simplifications the final result reads
 
 .. math::
     m_{rand} = m_{min}*\left [ 1+x*\left ( \left ( \frac{m_{max}}{m_{min}} -1\right )^{-\alpha +1} \right ) \right ]^{\frac{1}{-\alpha +1}}
@@ -87,6 +88,9 @@ where x is a random number in range [0,1]
 
 Broken Power Law (BPL)
 ^^^^^^^^^^^^^^^^^^^^^^
+
+The BPL IMF has the benefit of being highly adaptable. It can be utilized to approximate any other IMF.
+The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003` (multi part power law), :cite:`Kroupa_2003` (single power law)
 
 The following is a generalization of the equation given by :cite:`Kroupa:2001jy` for :math:`n-1` intervals.
 
@@ -106,12 +110,9 @@ where :math:`A` is a normalization constant and :math:`k_{i}` is defined as
     k_{2} = m_{2}^{\alpha_{2}} \\
     k_{i} = k_{i-1}m_{i}^{\alpha_{i}-\alpha_{i-1}}
 
-This IMF has the benefit of being highly adaptable. It can be utilized to approximate any other IMF.
-The BPL has been used to describe both globular cluster IMFs :cite:`Baumgardt_2017` as well as young star cluster IMFs :cite:`Porras_2003` (multi part power law), :cite:`Kroupa_2003` (single power law)
-
 As in the case of Salpeter, random samples are drawn with inverse transform sampling.
 
-The normalized cumulative distribution function (NCFD) can be calculated by integrating :math:`\xi(m)` over the mass interval.
+The NCDF can be obtained by integrating :math:`\xi(m)` over the mass interval.
 
 .. math::
     F(m)=\int_{m_{1}}^{m}\xi(m)\,dm
@@ -121,7 +122,7 @@ Where A is defined by the normalization constraint:
 .. math::
     A * \sum_{i=1}^{n-1} \left ( k_{i}\int_{m_{i}}^{m_{i+1}}m^{-\alpha_{i}}\,dm \right ) = 1
 
-Inverting the NCFD leads to
+Inverting the NCDF leads to
 
 .. math::
     F^{-1}(y)=
@@ -134,7 +135,6 @@ Inverting the NCFD leads to
 
 where y is a random number in range [0,1]
 
-.. doxygenfunction:: InitialConditions::brokenPowerLaw
 
 Spheroid/Bulge - Chabrier (2003)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
