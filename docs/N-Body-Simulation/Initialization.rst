@@ -152,7 +152,7 @@ The cone of vision (COV) is defined by the angle of view :math:`\alpha`, the vie
 
 The COV is constructed by transforming a right circular cone, where the vertex is at the origin and the circular base normal to the z axis.
 
-Per this transformation the tip of the cone is displaced from the origin to the view point :math:`vP` and its axis is rotated to align with the line of sight :math:`l`.
+Per transformation the tip of the cone is displaced from the origin to the view point :math:`vP` and its axis is rotated to align with the line of sight :math:`l`.
 Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
 
 .. figure:: Images/cone/cone.svg
@@ -210,7 +210,9 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
     0  & 0 & 0 & 1
     \end{bmatrix}
 
-The total mass of disc and bulge stars is obtained by integrating the respective density over the COV. For a right circular cone 
+The total mass :math:`M` of disc and bulge stars is obtained by integrating the respective density over the COV. 
+
+For a right circular cone 
 
 .. math::
     \tan\left (\frac{\alpha }{2}  \right ) = \frac{R}{h}
@@ -218,7 +220,7 @@ The total mass of disc and bulge stars is obtained by integrating the respective
 and on its surface
 
 .. math::
-    \tan\left (\frac{\alpha }{2}  \right ) = \frac{r}{z}
+    \tan\left (\frac{\alpha }{2}  \right ) = \frac{r}{z} \\
     z = \frac{h}{R}r
 
 where :math:`R` is the base radius of the cone and :math:`r = \sqrt{x^2+y^2}`. Hence :math:`\frac{h}{R}r\leq z\leq h`. Both :math:`x` and :math:`y` are bound by the base radius. 
@@ -236,6 +238,9 @@ By rejection sampling the following function, given by :cite:`2003PASP..115..763
 
 For :math:`m<0.7` the log-normal distribution equation :eq:`lognormal` is used. Parameters are :math:`A=3.6*10^{-4}`, :math:`m_{c}=0.22` and :math:`\sigma=0.33`.
 For :math:`m>0.7` a Salpeter slope :eq:`salpeter` with parameters :math:`A=7.1*10^{-5}` and :math:`x=1.3` is chosen.
+
+Samples are drawn until the sum of all samples :math:`M_s = \sum_{i=1}^n m_i` is larger than the total mass :math:`M`. 
+If :math:`\sum_{i=1}^{n-1} m_i +\frac{m_n}{2} > M` the last sample is removed.
 
 .. plot:: pyplots/initialConditionsMassBulge.py
 
