@@ -140,7 +140,7 @@ Density Profile
 ---------------
 
 Different density profiles (King :cite:`King1972`, Plummer :cite:`Plummer1911` and Elson, Fall & Freeman :cite:`Elson1987`) have been used (:cite:`Harfst2010`, :cite:`Walker2016`, :cite:`Grudić2018`) to simulate YMCs.
-The Plummer profile has been implemented as descriped in :cite:`Aarseth1974`.
+The Plummer profile has been implemented here as descriped in :cite:`Aarseth1974`.
 
 
 Field Stars (FS)
@@ -149,30 +149,19 @@ Field Stars (FS)
 Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potenital described in "Galactic Potential (?)".
 
 
-Spheroid/Bulge - Chabrier (2003)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. doxygenfunction:: InitialConditions::bulgeIMF
+Bulge Stellar Mass Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. plot:: pyplots/initialConditionsMassBulge.py
-
-Per rejection sampling the following function, given by :cite:`2003PASP..115..763C`, the mass of stars, which belong to the bulge, is determined.
+By rejection sampling the following function, given by :cite:`2003PASP..115..763C`, the mass of bulge stars is determined.
 
 For :math:`m<0.7` the log-normal distribution equation :eq:`lognormal` is used. Parameters are :math:`A=3.6*10^{-4}`, :math:`m_{c}=0.22` and :math:`\sigma=0.33`.
 For :math:`m>0.7` a Salpeter slope :eq:`salpeter` with parameters :math:`A=7.1*10^{-5}` and :math:`x=1.3` is chosen.
 
-
-Present Day Mass Function (PDMF)
---------------------------------
-
-.. Bulge: (m>1) http://adsabs.harvard.edu/full/1999A%26A...348..457M (m<1) https://hubblesite.org/uploads/science_paper/file_attachment/200/pdf.pdf
+.. plot:: pyplots/initialConditionsMassBulge.py
 
 Disk Stellar Mass Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. doxygenfunction:: InitialConditions::diskIMF
-
-.. plot:: pyplots/initialConditionsMassDisk.py
 
 Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by :cite:`2003PASP..115..763C`.
 
@@ -197,6 +186,7 @@ or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
 .. math::
     \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}
 
+.. plot:: pyplots/initialConditionsMassDisk.py
 
 Positions
 ---------
