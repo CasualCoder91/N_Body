@@ -148,76 +148,10 @@ Field Stars (FS)
 
 Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potenital described in "Galactic Potential (?)".
 
+The cone of vision (COV) is defined by the angle of view :math:`\alpha`, the view distance :math:`h` (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
+The COV is constructed by transforming a right circular cone, where the vertex is at the origin and the circular base normal to the z axis.
 
-Bulge Stellar Mass Function
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-By rejection sampling the following function, given by :cite:`2003PASP..115..763C`, the mass of bulge stars is determined.
-
-For :math:`m<0.7` the log-normal distribution equation :eq:`lognormal` is used. Parameters are :math:`A=3.6*10^{-4}`, :math:`m_{c}=0.22` and :math:`\sigma=0.33`.
-For :math:`m>0.7` a Salpeter slope :eq:`salpeter` with parameters :math:`A=7.1*10^{-5}` and :math:`x=1.3` is chosen.
-
-.. plot:: pyplots/initialConditionsMassBulge.py
-
-Disk Stellar Mass Function
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by :cite:`2003PASP..115..763C`.
-
-For :math:`m<1` the PDMF reads
-
-.. math::
-    \xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]
-    :label: lognormal
-
-or equivalently (this version is sampled)
-
-.. math::
-    \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)}*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]
-
-For :math:`m>1` the PDMF has the form
-
-.. math::
-    \xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A m^{-x}
-
-or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
-
-.. math::
-    \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}
-
-.. plot:: pyplots/initialConditionsMassDisk.py
-
-Positions
----------
-
-The positions of the field stars within the cone of vision are generated in two steps of rejection sampling followed by a transformation.
-The cone of vision is defined by the angle of view :math:`\alpha`, the view distance :math:`h` (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
-
-In the first step trial positions are drawn from a uniform distribution within a cuboid containing the cone.
-The boundaries of the cuboid are given by
-
-.. math::
-    |x|\leq R \\
-    |y|\leq R \\
-    0\leq z\leq h
-
-where :math:`R=h*\textup{tan}\left ( \frac{\alpha}{2} \right )` is the base radius of the cone.
-
-Those trial positions are rejected in case they are outside the boundaries of the cone.
-The conditions for acceptance are:
-
-.. math::
-    \sqrt{x^{2}+y^{2}}\leq R \\
-    z\geq h*\frac{\sqrt{x^{2}+y^{2}}}{R} \\
-
-This method ensures that the positions are indeed homogeneously distributed which is essential for the second step.
-
-The second step consists of rejection sampling the density distribution.
-The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
-If this test variable is smaller than the density at the trial position generated in step two, the trial position is accepted and rejected otherwise.
-
-Then the accepted position is transformed via a transformation matrix.
 Per this transformation the tip of the cone is displaced from the origin to the view point :math:`vP` and its axis is rotated to align with the line of sight :math:`l`.
 Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
 
@@ -275,6 +209,94 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
     -2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & t_{z}\\
     0  & 0 & 0 & 1
     \end{bmatrix}
+
+The total mass of disc and bulge stars is obtained by integrating the respective density over the COV. For a right circular cone 
+
+.. math::
+    \tan\left (\frac{\alpha }{2}  \right ) = \frac{R}{h}
+
+and on its surface
+
+.. math::
+    \tan\left (\frac{\alpha }{2}  \right ) = \frac{r}{z}
+    z = \frac{h}{R}r
+
+where :math:`R` is the base radius of the cone and :math:`r = \sqrt{x^2+y^2}`. Hence :math:`\frac{h}{R}r\leq z\leq h`. Both :math:`x` and :math:`y` are bound by the base radius. 
+Choosing :math:`\left | x \right | \leq R` implies :math:`\left | y \right | \leq \sqrt{R^2-x^2}`.
+
+.. math::
+    M = \int_{-R}^{R}\int_{-\sqrt{R^2-x^2}}^{\sqrt{R^2-x^2}}\int_{\frac{h}{R}r}^{h} \rho \left ( \mathbf{T}*\begin{pmatrix}x\\ y\\ z\end{pmatrix} \right ) dzdydx
+
+
+
+Bulge Stellar Mass Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By rejection sampling the following function, given by :cite:`2003PASP..115..763C`, the mass of bulge stars is determined.
+
+For :math:`m<0.7` the log-normal distribution equation :eq:`lognormal` is used. Parameters are :math:`A=3.6*10^{-4}`, :math:`m_{c}=0.22` and :math:`\sigma=0.33`.
+For :math:`m>0.7` a Salpeter slope :eq:`salpeter` with parameters :math:`A=7.1*10^{-5}` and :math:`x=1.3` is chosen.
+
+.. plot:: pyplots/initialConditionsMassBulge.py
+
+Disk Stellar Mass Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by :cite:`2003PASP..115..763C`.
+
+For :math:`m<1` the PDMF reads
+
+.. math::
+    \xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]
+    :label: lognormal
+
+or equivalently (this version is sampled)
+
+.. math::
+    \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)}*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]
+
+For :math:`m>1` the PDMF has the form
+
+.. math::
+    \xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A m^{-x}
+
+or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
+
+.. math::
+    \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}
+
+.. plot:: pyplots/initialConditionsMassDisk.py
+
+Positions
+---------
+
+The positions of the field stars within the cone of vision are generated in two steps of rejection sampling followed by the transformation (?).
+
+In the first step trial positions are drawn from a uniform distribution within a cuboid containing the cone.
+The boundaries of the cuboid are given by
+
+.. math::
+    |x|\leq R \\
+    |y|\leq R \\
+    0\leq z\leq h
+
+where :math:`R=h*\textup{tan}\left ( \frac{\alpha}{2} \right )` is the base radius of the cone.
+
+These trial positions are rejected in case they lie outside the boundaries of the cone.
+The conditions for acceptance are:
+
+.. math::
+    \sqrt{x^{2}+y^{2}}\leq R \\
+    z\geq h*\frac{\sqrt{x^{2}+y^{2}}}{R} \\
+
+This method ensures that the positions are indeed homogeneously distributed which is essential for the second step.
+
+The second step consists of rejection sampling the density distribution.
+The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
+If this test variable is smaller than the density at the trial position generated in step two, the trial position is accepted and rejected otherwise.
+
+Finally the accepted position is transformed via the transformation matrix (?).
+
 
 .. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
 
