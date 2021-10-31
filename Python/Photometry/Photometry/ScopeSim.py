@@ -96,6 +96,17 @@ def make_fits(data,timestep=0,save_file=True,save_img=False,n_pixel=config.n_pix
         fig.savefig(config.output_path + "/scopesim_t"+str(timestep)+".png",dpi=960)
 
 
+def test_make_source():
+    """SELECT position.rH, position.aHTP, position.dHTP, star.mass, star.extinction  
+           FROM star
+           INNER JOIN position on position.id_star = star.id
+           where star.id_simulation = ?1
+           and position.timestep = ?2
+           and position.rH NOT NULL"""
+    data = np.array([[8000,0,0,0.5,0],[8100,1,1,1.5,3]])
+    make_source(data)
+
 if __name__ == '__main__':
+    #test_make_source()
     ss_all()
     #print(sim.__file__)
