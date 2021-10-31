@@ -17,8 +17,8 @@ The spectral information is aquired using multiple functions from the ScopeSim T
 3. That spectrum is scaled such that it has 0 apparent Vega mag in the V filter.
 4. The absolute magnitude :math:`M_V` of the star in the V filter is determined from its mass using :cite:`Mamajek2013` with linear interpolation.
 5. The apparent magnitude :math:`m_V` is obtained from :math:`m_V = M_V + 5\log_{10}\left ( d \right )-5`
-7. The interstellar exctinction :math:`e` is taken into account using :cite:`Marshall2006`
-6. The weight :math:`w` of the spectrum :math:`s` is defined as
+6. The interstellar exctinction :math:`e` is taken into account using :cite:`Marshall2006`
+7. The weight :math:`w` of the spectrum :math:`s` is defined as
 
 ..  math::
     F\left (x,y \right ) = s * w
