@@ -1,6 +1,6 @@
-docutils==0.12
+docutils
 breathe
-Sphinx==3.3.0
+Sphinx
 matplotlib
-sphinxcontrib-bibtex==1.0.0
+sphinxcontrib-bibtex
 sphinxcontrib.tikz
