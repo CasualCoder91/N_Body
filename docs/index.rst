@@ -22,7 +22,8 @@ Simulating stellar motions for open clusters in the Milky Way
    N-Body-Simulation/CoordinateSystems
    N-Body-Simulation/Database
    N-Body-Simulation/Potential
-   N-Body-Simulation/Mock Observations
+   N-Body-Simulation/MockObservations
+   N-Body-Simulation/DataReduction
    N-Body-Simulation/Clustering
    N-Body-Simulation/Code
 
