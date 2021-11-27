@@ -20,13 +20,13 @@ The spatial information consists of x and y in arcsec relative to the FOV axis, 
 
 The spectral information is aquired using multiple functions from the ScopeSim Templates library involving the following steps:
 
-1. The spectral type of a star is determined by looking up the closest spectral type from "A Modern Mean Dwarf Stellar Color and Effective Temperature Sequence" :cite:`Mamajek2013` given its mass.
-2. The spectrum is taken from Pickles catalogue :cite:`Pickles1998` requireing metalicity in range 0.5 - 2 solar and age of about 5 Gyr.
-3. That spectrum is scaled such that it has 0 apparent Vega mag in the V filter.
-4. The absolute magnitude :math:`M_V` of the star in the V filter is determined from its mass using :cite:`Mamajek2013` with linear interpolation.
-5. The apparent magnitude :math:`m_V` is obtained from :math:`m_V = M_V + 5\log_{10}\left ( d \right )-5`
-6. The interstellar exctinction :math:`e` is taken into account using :cite:`Marshall2006`
-7. The weight :math:`w` of the spectrum :math:`s` is defined as
+#. The spectral type of a star is determined by looking up the closest spectral type from "A Modern Mean Dwarf Stellar Color and Effective Temperature Sequence" :cite:`Mamajek2013` given its mass.
+#. The spectrum is taken from Pickles catalogue :cite:`Pickles1998` requireing metalicity in range 0.5 - 2 solar and age of about 5 Gyr.
+#. That spectrum is scaled such that it has 0 apparent Vega mag in the V filter.
+#. The absolute magnitude :math:`M_V` of the star in the V filter is determined from its mass using :cite:`Mamajek2013` with linear interpolation.
+#. The apparent magnitude :math:`m_V` is obtained from :math:`m_V = M_V + 5\log_{10}\left ( d \right )-5`
+#. The interstellar exctinction :math:`e` is taken into account using :cite:`Marshall2006`
+#. The weight :math:`w` of the spectrum :math:`s` is defined as
 
 ..  math::
     F\left (x,y \right ) = s * w

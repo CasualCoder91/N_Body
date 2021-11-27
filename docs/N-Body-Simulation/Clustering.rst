@@ -66,3 +66,30 @@ The difference in velocity between two stars has to be smaller than :math:`\epsi
 
 Large :math:`\epsilon_{x}` lead to more accurate membership detection. It turned out, the spatial distance condition does not benefit the results at all and was dropped.
 For larger areas than used here, constraining the spatial distance, for instance via subdivision, should be benefitial.
+
+Accuracy
+^^^^^^^^
+
+Observed stars are mapped to simulated stars via their proximity. If a star is not the closest observed star to any simulated star he remains not mapped.
+Not mapped stars exist due to Background (Todo: Link) and parts of the PSFs of bright stars beeing detected as stars.
+
+After mapping the true classification is available and the performance of the algorithm can be meassured with the accuracy metric:
+
+.. math::
+    A = \frac{TP+TN}{TP+TN+FP+FN}
+
+#. True Positive (TP): correctly classified as cluster star.
+#. False Positive (FN): wrongly classified as cluster star.
+#. True Negative (TN): correctly classified as field star.
+#. False Negative (FN): wrongly classified as field star.
+#. Unconfirmed Positive (UP): not mapped star classified as cluster star. Treated as FP.
+#. Unconfirmed Negative (UN): not mapped star classified as field star. Treated as TN
+
+Precision
+^^^^^^^^^
+
+.. math::
+    P = \frac{TP}{TP+FP+UP}
+
+
+
