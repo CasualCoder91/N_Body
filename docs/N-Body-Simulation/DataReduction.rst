@@ -29,9 +29,7 @@ A linear fit of the resulting dataset :ref:`appendix-label` lead to the "empiric
 ToDo: Add 3 images "without mask" "drawn mask" "after mask"
 
 The DAOStarFinder method is called twice:
-1. To find the bright stars and generate the mask. The resulting table contains one row for each source. 
-This table is sorted by the flux column in descending order and iterated from top to bottom until the current entry has :math:`F_i < 100`. 
-Elements of the mask - a 2D boolean array with the same size as the image - is updated according to function (?) and the current entry stored in a new table if located outside a masked area.
-2. passing the mask parameter generated in the previous step and returning sources outside the masked areas.
+#. To find the bright stars and generate the mask. The resulting table contains one row for each source. This table is sorted by the flux column in descending order and iterated from top to bottom until the current entry has :math:`F_i < 100`. Elements of the mask - a 2D boolean array with the same size as the image - is updated according to function (?) and the current entry stored in a new table if located outside a masked area.
+#. passing the mask parameter generated in the previous step and returning sources outside the masked areas.
 
 Both the bright sources recorded after the first and the faint sources returned from second call are stored in the database.
