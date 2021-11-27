@@ -18,7 +18,7 @@ The side length :math:`l_i` of the square depends on the flux :math:`F_i` of the
 
 To find the approriate function, FITS for single stars at a given distance and with varying mass were generated, 
 the sources in each file detected using DAOStarFinder and their flux and maximum distance between the correct and any wrong sources calculated.
-A linear fit of the resulting dataset lead to the "empirical" function
+A linear fit of the resulting dataset :ref:`appendix-label` lead to the "empirical" function
 
 ..  math::
     l_i = \begin{cases}
