@@ -106,7 +106,25 @@ def test_make_source():
     data = np.array([[8000,0,0,0.5,0],[8100,1,1,1.5,3]])
     make_source(data)
 
+def background():
+
+    cmd = sim.UserCommands(use_instrument="MICADO_Sci")
+    cmd["!DET.width"] = config.n_pixel
+    cmd["!DET.height"] = config.n_pixel
+    cmd["!DET.dit"] = config.exposure_time #seconds | 3600s=1h
+
+    opt = sim.OpticalTrain(cmd)
+    opt["scao_const_psf"].meta["convolve_mode"] = "same"
+    opt["scao_const_psf"].meta["rotational_blur_angle"] = 15*config.exposure_time/3600 # depends on time  ~15°/h (complex function)
+    #opt["scao_const_psf"].meta["psf_side_length"] = 1024 #size of diameter in sechseck hinter hellen sternen
+
+    data = np.array([[8000,0,0,0.5,0],[8100,0,0,1.5,3]])
+    source = make_source(data)
+    opt.observe(source)
+    opt.readout(filename=config.output_base_path +"/background.fits")
+
+
 if __name__ == '__main__':
-    #test_make_source()
-    ss_all()
+    background()
+    #ss_all()
     #print(sim.__file__)

@@ -276,38 +276,32 @@ def pu_all():
 def test():
     timestep=0
 
-    fits_file = fits.open(output_path +"/scopesim_t"+str(timestep)+".fits")
-    image = fits_file[1].data[:, :].astype(float)
-    #stars = QTable()
-    #stars = image_segmentation(image, False, True)
-    stars = use_DAOStarFinder(image)
-    #stars = image_segmentation_cut(fits_file)
+    #hdu = fits.open(config.output_path +"/scopesim_t"+str(timestep)+".fits")[1]
 
-    origin = n_pixel/2. #+0.5 because "For a 2-dimensional array, (x, y) = (0, 0) corresponds to the center of the bottom, leftmost array element. That means the first pixel spans the x and y pixel values from -0.5 to 0.5"
-    points = np.ndarray((len(stars),),dtype=object)
-    for i, star in enumerate(stars):
-        points[i] = Point(position=np.array([pixelfactor*(star['xcentroid']-origin),pixelfactor*(star['ycentroid']-origin)]),
-                            velocity = np.array([np.nan,np.nan]),
-                            id=-1,
-                            magnitude=flux_to_mag(star['flux']),
-                            cluster_id=-1)
+    hdu = fits.open(config.output_base_path +"/background.fits")[1]
+    image = hdu.data[:, :].astype(float)
 
-    db = Database()
-    simulated_points = db.select_points(0, False)
-    sp_arr = np.vstack(simulated_points[:]).astype(float)
-    op_arr = np.vstack(points[:]).astype(float)
+    stars = QTable()
+    stars = use_DAOStarFinder(image,False)
+    stars = stars[[np.isfinite(star['flux']) for star in stars]]
+    print(stars.info)
 
-    fig = plt.figure()
+    positions = np.transpose((stars['xcentroid'], stars['ycentroid']))
+    apertures = CircularAperture(positions, r=3.)
+    #phot_table = aperture_photometry(image, apertures)
+    #for col in phot_table.colnames:
+    #    phot_table[col].info.format = '%.8g'  # for consistent table output
+    #print(phot_table)
+    fig, ax = plt.subplots()
     fig.set_size_inches(9,9)
-
-    plt.scatter(sp_arr[:,0], sp_arr[:,1], s=1, c='g', marker="o", label='simulated')
-    plt.scatter(op_arr[:,0], op_arr[:,1], s=1, c='r', marker="s", label='observed')
+    #fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
+    plt.imshow(image, origin='upper', norm=LogNorm())
+    apertures.plot(color='white', lw=0.5, alpha=0.5)
 
     plt.xlabel('ascension [arcsec]', fontsize=16)
     plt.ylabel('declination [arcsec]', fontsize=16)
-    plt.legend(loc='upper left')
     plt.show()
 
 if __name__ == '__main__':
-    #test()
-    pu_all()
+    test()
+    #pu_all()

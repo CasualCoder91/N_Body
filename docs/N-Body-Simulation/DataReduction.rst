@@ -11,6 +11,11 @@ Due to hardware and time constraints, options such as Image Segmentation were no
 Detecting Stars
 ---------------
 
+Background
+^^^^^^^^^^
+
+A FITS file generated with no sources still results in 125(?) detected sources.
+
 PSFs of bright stars were wrongfully detected as stars. Increasing the detection threshold would have meant not detecting real faint stars in different areas.
 Hence the decission was made to mask square areas around bright stars leading to only one detection within those areas.
 
@@ -29,6 +34,7 @@ A linear fit of the resulting dataset :ref:`appendix-label` lead to the "empiric
 ToDo: Add 3 images "without mask" "drawn mask" "after mask"
 
 The DAOStarFinder method is called twice:
+
 #. To find the bright stars and generate the mask. The resulting table contains one row for each source. This table is sorted by the flux column in descending order and iterated from top to bottom until the current entry has :math:`F_i < 100`. Elements of the mask - a 2D boolean array with the same size as the image - is updated according to function (?) and the current entry stored in a new table if located outside a masked area.
 #. passing the mask parameter generated in the previous step and returning sources outside the masked areas.
 
