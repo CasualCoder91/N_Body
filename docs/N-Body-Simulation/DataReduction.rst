@@ -14,7 +14,13 @@ Detecting Stars
 Background
 ^^^^^^^^^^
 
-A FITS file generated with no sources still results in 125(?) detected sources.
+Testing FITS files generated with no input sources still yield some amount of detected sources.
+For parameters used during (???) 125 sources were detected from an empty background.
+The FITS files contain a raster of 64 images, sometimes overlapping and sometimes separated by one pixel due to rounding.
+This leads to wrong detections at the corners. However, this effect only explains a fraction of the detections.
+
+Masking bright stars
+^^^^^^^^^^^^^^^^^^^^
 
 PSFs of bright stars were wrongfully detected as stars. Increasing the detection threshold would have meant not detecting real faint stars in different areas.
 Hence the decission was made to mask square areas around bright stars leading to only one detection within those areas.

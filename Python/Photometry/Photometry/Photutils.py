@@ -284,22 +284,22 @@ def test():
     stars = QTable()
     stars = use_DAOStarFinder(image,False)
     stars = stars[[np.isfinite(star['flux']) for star in stars]]
-    print(stars.info)
 
     positions = np.transpose((stars['xcentroid'], stars['ycentroid']))
-    apertures = CircularAperture(positions, r=3.)
+    apertures = CircularAperture(positions, r=30.)
     #phot_table = aperture_photometry(image, apertures)
     #for col in phot_table.colnames:
     #    phot_table[col].info.format = '%.8g'  # for consistent table output
     #print(phot_table)
     fig, ax = plt.subplots()
-    fig.set_size_inches(9,9)
+    #fig.set_size_inches(9,9)
     #fig = plt.figure(figsize=(409.6/96, 409.6/96), dpi=96)
     plt.imshow(image, origin='upper', norm=LogNorm())
-    apertures.plot(color='white', lw=0.5, alpha=0.5)
+    apertures.plot(color='white', lw=5, alpha=1)
 
-    plt.xlabel('ascension [arcsec]', fontsize=16)
-    plt.ylabel('declination [arcsec]', fontsize=16)
+    plt.title("Background Sources", fontsize=16)
+    plt.xlabel('ascension [px]', fontsize=16)
+    plt.ylabel('declination [px]', fontsize=16)
     plt.show()
 
 if __name__ == '__main__':
