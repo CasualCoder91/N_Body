@@ -155,6 +155,7 @@ The COV is constructed by transforming a right circular cone, where the vertex i
 Per transformation the tip of the cone is displaced from the origin to the view point :math:`vP` and its axis is rotated to align with the line of sight :math:`l`.
 Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
 
+.. _fig-cone:
 .. figure:: Images/cone/cone.svg
     :align: center
 
