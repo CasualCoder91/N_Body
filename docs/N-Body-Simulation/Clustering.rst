@@ -78,7 +78,7 @@ Not mapped stars exist due to Background (Todo: Link) and parts of the PSFs of b
 #. True Negative (TN): correctly classified as field star.
 #. False Negative (FN): wrongly classified as field star.
 #. Unconfirmed Positive (UP): not mapped star classified as cluster star. Treated as FP.
-#. Unconfirmed Negative (UN): not mapped star classified as field star. Treated as FN
+#. Unconfirmed Negative (UN): not mapped star classified as field star. Not taken into account since FN is unlikely.
 
 Accuracy
 ^^^^^^^^
@@ -99,7 +99,7 @@ When FPs are more problematic than FNs the precision :math:`P` should be high
 On the flip side, if FNs are a big concern but FPs tolerable the recall :math:`R` is a good metric
 
 .. math::
-    R = \frac{TP}{TP+UP+FN}
+    R = \frac{TP}{TP+FN}
 
 F1 Score
 ^^^^^^^^
@@ -107,7 +107,7 @@ F1 Score
 This metric is a balance between :math:`P` and :math:`R`. Contrary to :math:`A` TN is not taken into account.
 
 .. math::
-    F_1 = 2 \frac{P*R}{P+R} = \frac{TP}{TP+0.5(FP+FN)}
+    F_1 = 2 \frac{P*R}{P+R} = \frac{TP}{TP+0.5(FP+UP+FN)}
 
 
 
