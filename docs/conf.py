@@ -18,12 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'N_Body'
-copyright = '2020, Alarich Herzner'
+copyright = '2021, Alarich Herzner'
 author = 'Alarich Herzner'
 
 # The full version, including alpha/beta/rc tags
 release = 'alpha'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -39,6 +38,7 @@ extensions = [
 ]
 needs_sphinx = '1.4.3'
 bibtex_bibfiles = ['/N-Body_Simulation/bibtex.bib']
+numfig = True #https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-numfig
 
 # tikz Configuration
 tikz_proc_suite = 'GhostScript'
