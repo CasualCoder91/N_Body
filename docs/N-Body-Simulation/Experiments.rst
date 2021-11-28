@@ -50,8 +50,14 @@ The following parameters remained unchanged between the simulations.
 * (f) IMF: 1 Kroupa ranging from 0.08 Msun to 100 Msun
 * (C) Output: 3 The resulting mass, position and velocity for each star is written into a file.
 
+Results
+^^^^^^^
 
+.. _fig-25_precision:
+.. figure:: Images/25_precision.svg
+    :align: center
 
+    Precision for different mass bins, angles and cluster masses
 
 
 five different FOV angles (180°,25,10, 5, 0  ) and cluster masses (0.64, 1.6, 4.0, 10, 25)
