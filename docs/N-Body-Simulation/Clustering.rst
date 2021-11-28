@@ -40,14 +40,14 @@ DBSCAN
 The clustering algorithm of choice is DBSCAN since it is density based and able to detect clusters of arbitrary shape. 
 Additionaly and contrary to other algorithms the amount of clusters to find is not a parameter. DBSCAN detects any clusters present in the data based on two parameters:
 
-1. :math:`\epsilon`: the maximum distance between points to be considered neighbors
-2. nPoints: the minimum amount of neighbors for a point to be classified as core point.
+#. :math:`\epsilon`: the maximum distance between points to be considered neighbors
+#. nPoints: the minimum amount of neighbors for a point to be classified as core point.
 
 During excecution all datapoints are classified as one of the following:
 
-1. core point: a point with at least nPoints within :math:`\epsilon`:
-2. border point: a point having at least one core point but less than nPoints within :math:`\epsilon`:
-3. noise/outlier: any other point
+#. core point: a point with at least nPoints within :math:`\epsilon`:
+#. border point: a point having at least one core point but less than nPoints within :math:`\epsilon`:
+#. noise/outlier: any other point
 
 The implementation of DBSCAN can be summarized as follows: Iterate the list of points. If the current point is not already classified, check if it meets the requirements to be classified as core point.
 Once a core point has been found, the neighboring points of that point are tested. If they too have enough neigbors the recursion continues untill all neighbors are classified as eighter core or border points. 
@@ -67,29 +67,49 @@ The difference in velocity between two stars has to be smaller than :math:`\epsi
 Large :math:`\epsilon_{x}` lead to more accurate membership detection. It turned out, the spatial distance condition does not benefit the results at all and was dropped.
 For larger areas than used here, constraining the spatial distance, for instance via subdivision, should be benefitial.
 
+Performance
+-----------
+
+Observed stars are mapped to simulated stars via their proximity in order to measure the performance. If a star is not the closest observed star to any simulated star he remains not mapped.
+Not mapped stars exist due to Background (Todo: Link) and parts of the PSFs of bright stars beeing detected as stars. Observed stars can then be attributed one of the following types:
+
+#. True Positive (TP): correctly classified as cluster star.
+#. False Positive (FP): wrongly classified as cluster star.
+#. True Negative (TN): correctly classified as field star.
+#. False Negative (FN): wrongly classified as field star.
+#. Unconfirmed Positive (UP): not mapped star classified as cluster star. Treated as FP.
+#. Unconfirmed Negative (UN): not mapped star classified as field star. Treated as FN
+
 Accuracy
 ^^^^^^^^
-
-Observed stars are mapped to simulated stars via their proximity. If a star is not the closest observed star to any simulated star he remains not mapped.
-Not mapped stars exist due to Background (Todo: Link) and parts of the PSFs of bright stars beeing detected as stars.
-
-After mapping the true classification is available and the performance of the algorithm can be meassured with the accuracy metric:
 
 .. math::
     A = \frac{TP+TN}{TP+TN+FP+FN}
 
-#. True Positive (TP): correctly classified as cluster star.
-#. False Positive (FN): wrongly classified as cluster star.
-#. True Negative (TN): correctly classified as field star.
-#. False Negative (FN): wrongly classified as field star.
-#. Unconfirmed Positive (UP): not mapped star classified as cluster star. Treated as FP.
-#. Unconfirmed Negative (UN): not mapped star classified as field star. Treated as TN
+With a large amount of field stars relative to cluster stars, this metric is not ideal as it will give a good rating even if most clusterstars are FN.
 
-Precision
-^^^^^^^^^
+Precision and Recall
+^^^^^^^^^^^^^^^^^^^^
+
+When FPs are more problematic than FNs the precision :math:`P` should be high
 
 .. math::
     P = \frac{TP}{TP+FP+UP}
+
+On the flip side, if FNs are a big concern but FPs tolerable the recall :math:`R` is a good metric
+
+.. math::
+    R = \frac{TP}{TP+UP+FN}
+
+F1 Score
+^^^^^^^^
+
+This metric is a balance between :math:`P` and :math:`R`. Contrary to :math:`A` TN is not taken into account.
+
+.. math::
+    F_1 = 2 \frac{P*R}{P+R} = \frac{TP}{TP+0.5(FP+FN)}
+
+
 
 
 
