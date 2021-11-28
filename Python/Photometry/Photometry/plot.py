@@ -162,7 +162,7 @@ def plot_clustering_map():
     cmap = mpl.cm.get_cmap("autumn_r").copy()
     cmap.set_bad(color='black')
 
-    plt.xlabel(r'$\epsilon * 10^4$', fontsize=16)
+    plt.xlabel(r'$\epsilon * 10^5$', fontsize=16)
     plt.ylabel('nPoints', fontsize=16)
     plt.title('DBSCAN parameter space')
     plt.pcolor(z, cmap=cmap)
@@ -171,7 +171,7 @@ def plot_clustering_map():
     #plt.contourf(x,y,z)
     plt.colorbar()
     fig = plt.gcf()
-    fig.set_size_inches(9, 9)
+    #fig.set_size_inches(9, 9)
     #fig.savefig(config.output_base_path+'\\Clustering\\'+title+'.png', dpi=100)
     plt.show();
 

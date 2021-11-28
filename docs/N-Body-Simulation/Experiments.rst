@@ -6,15 +6,15 @@ Parameter optimization
 ----------------------
 
 .. _fig-DBSCAN:
-.. figure:: Images/cone/DBSCAN_parameter_space.svg
+.. figure:: Images/DBSCAN_parameter_space.svg
     :align: center
 
     Precision depending on DBSCAN parameters
 
 The quality of the cluster analysis with DBSCAN depends on the choice for its parameters.
-:numref:`fig-DBSCAN` depicts the precision for a :math:`1 kM_\odot` :math:`300 \textup{[pc]}` from the GC.
-
-
+:numref:`fig-DBSCAN` depicts the precision for a :math:`1 kM_\odot` cluster :math:`300 \textup{[pc]}` from the GC.
+Decreasing :math:`\epsilon` leads to a higher precission untill it is to small at which point multiple clusters are detected.
+Based on this observation :math:`\epsilon` was set to :math:`1.1*10^{-5}` and nPoints to 200 for all simulations.
 
 Setup
 -----
