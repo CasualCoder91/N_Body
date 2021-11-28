@@ -12,17 +12,22 @@ The following parameters remained unchanged:
 
 Simulation
 
-* FOV angle: :math:`54 \textup{[arcsec]}` \\
-The field of view angle, chosen large enough to cover most of the most massive cluster. See :math:`\alpha` in :numref:`fig-cone`
-* View distance: :math:`9 \textup{[kpc]}` \\ The height of the COV,
-* Cluster distance: :math:`8 \textup{[kpc]}` \\ The distance between the observer and the cluster.
-* View point: :math:`\begin{bmatrix}8300 & 0 & 27\end{bmatrix}^{T}_{GCA} \textup{[kpc]}` \\ The position of the observer
-* Timestep: :math:`28 \textup{[day]}` \\ Amount of time between the two recorded smapshots. The time per integration is :math:`7 \textup{[day]}`. Therefor snapshots are taken every 4 integations.
+* | FOV angle: :math:`54 \textup{[arcsec]}`
+  | The field of view angle, chosen large enough to cover most of the most massive cluster. See :math:`\alpha` in :numref:`fig-cone`
+* | View distance: :math:`9 \textup{[kpc]}`
+  | The height of the COV or line of sight distance. Reaching behind the GC when looking towards it.
+* | Cluster distance: :math:`8 \textup{[kpc]}`
+  | The distance between the observer and the cluster.
+* | View point: :math:`\begin{bmatrix}8300 & 0 & 27\end{bmatrix}^{T}_{GCA} \textup{[kpc]}`
+  | The position of the observer in GCA.
+* | Timestep: :math:`28 \textup{[day]}`
+  | Amount of time between the two recorded snapshots. The time per integration is :math:`7 \textup{[day]}`. Therefor snapshots are taken every 4 integrations.
 
 Cluster specific parameters (McLuster)
 
 * (P) Profile: 0 Plummer density profile
-* (R) Radius: -1 
+* | (R) Radius: -1
+  | With this setting the radius is calculated by mcluster via a mass to half-mass radius relation as described in :cite:`Marks2012`
 * (Q) Virial ratio: -0.5 
 * (f) IMF: 1 Kroupa
 * (C) Output: 3 
