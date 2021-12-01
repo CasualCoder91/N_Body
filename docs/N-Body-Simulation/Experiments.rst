@@ -65,6 +65,13 @@ Results
 
     F1 score for different mass bins, angles and cluster masses
 
+As is apparent in :numref:`fig-25_precision` the precision, with one exception, is corelated with the angle.
+Curiously for the same cluster mass the precision is lower at :math:`10\odot` than at :math:`5\odot`.
+
+
+
+
+
 five different FOV angles (180°,25,10, 5, 0  ) and cluster masses (0.64, 1.6, 4.0, 10, 25)
 
 ToDo: Continue here (25 observations)
