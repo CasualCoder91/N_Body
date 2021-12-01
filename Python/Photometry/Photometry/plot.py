@@ -176,23 +176,6 @@ def plot_precision_maps():
     plt.show()
 
 def RoundToSigFigs( x, sigfigs ):
-    """
-    Rounds the value(s) in x to the number of significant figures in sigfigs.
-    Return value has the same type as x.
-
-    Restrictions:
-    sigfigs must be an integer type and store a positive value.
-    x must be a real value or an array like object containing only real values.
-    """
-    if not ( type(sigfigs) is int or type(sigfigs) is long or
-             isinstance(sigfigs, np.integer) ):
-        raise TypeError( "RoundToSigFigs_fp: sigfigs must be an integer." )
-
-    if sigfigs <= 0:
-        raise ValueError( "RoundToSigFigs_fp: sigfigs must be positive." )
-
-    if not np.all(np.isreal( x )):
-        raise TypeError( "RoundToSigFigs_fp: all x must be real." )
 
     #temporarily suppres floating point errors
     errhanddict = np.geterr()
@@ -229,53 +212,61 @@ def RoundToSigFigs( x, sigfigs ):
     np.seterr(**errhanddict)
     return result
 
-
-def plot_f1_maps():
-
+def F1_error(mass_range):
     df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx',
                    'extinction', usecols = 'A:AG')
-
-    fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(12,5))
 
     masses = df['Mass'].unique()
     x = [a+0.5 for a in range(len(masses))]
     angles = df['Angle'].unique()
     y = [a+0.5 for a in range(len(angles))]
 
-    z = np.empty(shape=(0,))
-    for mass in masses:
-        for angle in angles:
-            UPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['UP > 2']
+    for angle in angles:
+        for mass in masses:
+            UPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['UP '+mass_range]
             UP = ufloat(UPdf.mean(), UPdf.std())
-            CFPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFP > 2']
+            CFPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFP '+mass_range]
             CFP = ufloat(CFPdf.mean(), CFPdf.std())
-            CTPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CTP > 2']
+            CTPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CTP '+mass_range]
             CTP = ufloat(CTPdf.mean(), CTPdf.std())
-            CFNdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFN > 2']
+            CFNdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFN '+mass_range]
             CFN = ufloat(CFNdf.mean(), CFNdf.std())
-            z = np.append(z,(CTP/(CTP+0.5*(CFP+UP+CFN))))
-            uncertainty = CTP/(CTP+0.5*(CFP+UP+CFN))
-            print(RoundToSigFigs(uncertainty.s, 2))
-            #print(z)
+            F1 = CTP/(CTP+0.5*(CFP+UP+CFN))
+            #print(uncertainty.s)
+            digits = np.abs(int(np.log10(abs(F1.s))-2))
+            F1_round = np.round(F1.n,digits)
+            format_string = '{:.'+str(digits)+'f}'
+            print(format_string.format(F1_round))
 
+def plot_f1_maps():
+
+    fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(12,5))
+
+    df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx',
+                   'extinction', usecols = 'A:AG')
+
+    masses = df['Mass'].unique()
+    x = [a+0.5 for a in range(len(masses))]
+    angles = df['Angle'].unique()
+    y = [a+0.5 for a in range(len(angles))]
 
     plt.setp(axes, xticks=x, xticklabels=masses, yticks=y, yticklabels=angles)
 
-    z = [0.633656032,0.812468074,0.847569837,0.925005263,0.940306188,0.62351293,0.746645057,0.809758136,0.871831786,0.916342996,0.449333843,0.620951154,0.722334961,0.79790995,0.86666704,0.337419393,0.485628643,0.605984825,0.719566569,0.811639383,0.389202629,0.517342844,0.619339322,0.705239242,0.763703142]
+    z = [0.635,0.8125,0.8476,0.925,0.9403,0.626,0.747,0.8098,0.8719,0.9163,0.45,0.621,0.7224,0.7979,0.8667,0.338,0.486,0.6061,0.7196,0.8117,0.39,0.518,0.619,0.7053,0.7637]
     z = np.reshape(z, (5, 5))
     c = axes[0].pcolor(z, cmap='Reds_r')
     fig.colorbar(c, ax=axes[0], pad=0.01)
     axes[0].set_title('0.5 - 0.08 [$M_{\odot}$]')
     axes[0].set_ylabel("angle [$^\circ$]", fontsize=14)
 
-    z = [0.728829107,0.906798449,0.923787593,0.953057571,0.958226201,0.805875621,0.891861897,0.935470562,0.947652198,0.954701948,0.750942795,0.874639874,0.907830042,0.931833639,0.946745221,0.781815417,0.865255899,0.923188097,0.941035366,0.953888371,0.785542421,0.827783767,0.883733581,0.897847365,0.917389219]
+    z = [0.732,0.9068,0.924,0.9531,0.9582,0.811,0.893,0.9355,0.9476,0.9547,0.751,0.875,0.9079,0.9318,0.9467,0.782,0.865,0.9233,0.9410,0.9539,0.786,0.828,0.8837,0.8978,0.9174]
     z = np.reshape(z, (5, 5))
     c = axes[1].pcolor(z, cmap='Oranges_r')
     fig.colorbar(c, ax=axes[1], pad=0.01)
     axes[1].set_title('2 - 0.5 [$M_{\odot}$]')
     axes[1].set_xlabel("cluster mass [$M_{\odot}$]", fontsize=14)
 
-    z = [0.704651835,0.94346912,0.907424865,0.934012064,0.94916746,0.896659937,0.922928841,0.927819038,0.951087731,0.955548177,0.743751986,0.938279338,0.950659158,0.959408446,0.967066157,0.838076044,0.906529232,0.944691263,0.958475649,0.970484196,0.92599767,0.962213202,0.95357905,0.964093224,0.965673618]
+    z = [0.712,0.944,0.9075,0.9340,0.9492,0.897,0.924,0.9278,0.9511,0.9556,0.744,0.9384,0.9507,0.9594,0.9671,0.838,0.907,0.9448,0.9585,0.9705,0.926,0.9622,0.9536,0.9641,0.9657]
     z = np.reshape(z, (5, 5))
     c = axes[2].pcolor(z, cmap='Blues_r')
     fig.colorbar(c, ax=axes[2], pad=0.01)
@@ -319,6 +310,8 @@ def main():
     #db = Database()
     #plot_precision_maps()
     plot_f1_maps()
+
+    #F1_error('> 2')
 
     #print(len(observed_points))
     #print(len(simulated_points))
