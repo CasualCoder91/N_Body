@@ -59,6 +59,11 @@ Results
 
     Precision for different mass bins, angles and cluster masses
 
+.. _fig-25_F1:
+.. figure:: Images/25_F1.svg
+    :align: center
+
+    F1 score for different mass bins, angles and cluster masses
 
 five different FOV angles (180°,25,10, 5, 0  ) and cluster masses (0.64, 1.6, 4.0, 10, 25)
 

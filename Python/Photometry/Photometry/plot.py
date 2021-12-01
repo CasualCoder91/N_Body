@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib as mpl
+import pandas as pd
+from uncertainties import ufloat
 
 from database import Database
 from point import Point
@@ -138,8 +140,7 @@ def plot_map(z,title,cmap):
     fig.savefig(config.output_base_path+'\\Clustering\\'+title+'.png', dpi=100)
     #plt.show();
 
-def plot_maps():
-    #C P 0.5 - 0.08
+def plot_precision_maps():
 
     fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(12,5))
 
@@ -172,10 +173,118 @@ def plot_maps():
 
     fig.tight_layout()
 
-    #fig.supxlabel("cluster mass [$M_{\odot}$]")
-    #fig.supylabel('angle [$^\circ$]')
+    plt.show()
+
+def RoundToSigFigs( x, sigfigs ):
+    """
+    Rounds the value(s) in x to the number of significant figures in sigfigs.
+    Return value has the same type as x.
+
+    Restrictions:
+    sigfigs must be an integer type and store a positive value.
+    x must be a real value or an array like object containing only real values.
+    """
+    if not ( type(sigfigs) is int or type(sigfigs) is long or
+             isinstance(sigfigs, np.integer) ):
+        raise TypeError( "RoundToSigFigs_fp: sigfigs must be an integer." )
+
+    if sigfigs <= 0:
+        raise ValueError( "RoundToSigFigs_fp: sigfigs must be positive." )
+
+    if not np.all(np.isreal( x )):
+        raise TypeError( "RoundToSigFigs_fp: all x must be real." )
+
+    #temporarily suppres floating point errors
+    errhanddict = np.geterr()
+    np.seterr(all="ignore")
+
+    matrixflag = False
+    if isinstance(x, np.matrix): #Convert matrices to arrays
+        matrixflag = True
+        x = np.asarray(x)
+
+    xsgn = np.sign(x)
+    absx = xsgn * x
+    mantissas, binaryExponents = np.frexp( absx )
+
+    decimalExponents = 3.010299956639811952137388947244930267681898814621085413104274611e-1 * binaryExponents
+    omags = np.floor(decimalExponents)
+
+    mantissas *= 10.0**(decimalExponents - omags)
+
+    if type(mantissas) is float or isinstance(mantissas, np.floating):
+        if mantissas < 1.0:
+            mantissas *= 10.0
+            omags -= 1.0
+        
+    else: #elif np.all(np.isreal( mantissas )):
+        fixmsk = mantissas < 1.0, 
+        mantissas[fixmsk] *= 10.0
+        omags[fixmsk] -= 1.0
+
+    result = xsgn * np.around( mantissas, decimals=sigfigs - 1 ) * 10.0**omags
+    if matrixflag:
+        result = np.matrix(result, copy=False)
+
+    np.seterr(**errhanddict)
+    return result
+
+
+def plot_f1_maps():
+
+    df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx',
+                   'extinction', usecols = 'A:AG')
+
+    fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(12,5))
+
+    masses = df['Mass'].unique()
+    x = [a+0.5 for a in range(len(masses))]
+    angles = df['Angle'].unique()
+    y = [a+0.5 for a in range(len(angles))]
+
+    z = np.empty(shape=(0,))
+    for mass in masses:
+        for angle in angles:
+            UPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['UP > 2']
+            UP = ufloat(UPdf.mean(), UPdf.std())
+            CFPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFP > 2']
+            CFP = ufloat(CFPdf.mean(), CFPdf.std())
+            CTPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CTP > 2']
+            CTP = ufloat(CTPdf.mean(), CTPdf.std())
+            CFNdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFN > 2']
+            CFN = ufloat(CFNdf.mean(), CFNdf.std())
+            z = np.append(z,(CTP/(CTP+0.5*(CFP+UP+CFN))))
+            uncertainty = CTP/(CTP+0.5*(CFP+UP+CFN))
+            print(RoundToSigFigs(uncertainty.s, 2))
+            #print(z)
+
+
+    plt.setp(axes, xticks=x, xticklabels=masses, yticks=y, yticklabels=angles)
+
+    z = [0.633656032,0.812468074,0.847569837,0.925005263,0.940306188,0.62351293,0.746645057,0.809758136,0.871831786,0.916342996,0.449333843,0.620951154,0.722334961,0.79790995,0.86666704,0.337419393,0.485628643,0.605984825,0.719566569,0.811639383,0.389202629,0.517342844,0.619339322,0.705239242,0.763703142]
+    z = np.reshape(z, (5, 5))
+    c = axes[0].pcolor(z, cmap='Reds_r')
+    fig.colorbar(c, ax=axes[0], pad=0.01)
+    axes[0].set_title('0.5 - 0.08 [$M_{\odot}$]')
+    axes[0].set_ylabel("angle [$^\circ$]", fontsize=14)
+
+    z = [0.728829107,0.906798449,0.923787593,0.953057571,0.958226201,0.805875621,0.891861897,0.935470562,0.947652198,0.954701948,0.750942795,0.874639874,0.907830042,0.931833639,0.946745221,0.781815417,0.865255899,0.923188097,0.941035366,0.953888371,0.785542421,0.827783767,0.883733581,0.897847365,0.917389219]
+    z = np.reshape(z, (5, 5))
+    c = axes[1].pcolor(z, cmap='Oranges_r')
+    fig.colorbar(c, ax=axes[1], pad=0.01)
+    axes[1].set_title('2 - 0.5 [$M_{\odot}$]')
+    axes[1].set_xlabel("cluster mass [$M_{\odot}$]", fontsize=14)
+
+    z = [0.704651835,0.94346912,0.907424865,0.934012064,0.94916746,0.896659937,0.922928841,0.927819038,0.951087731,0.955548177,0.743751986,0.938279338,0.950659158,0.959408446,0.967066157,0.838076044,0.906529232,0.944691263,0.958475649,0.970484196,0.92599767,0.962213202,0.95357905,0.964093224,0.965673618]
+    z = np.reshape(z, (5, 5))
+    c = axes[2].pcolor(z, cmap='Blues_r')
+    fig.colorbar(c, ax=axes[2], pad=0.01)
+    axes[2].set_title('100 - 2 [$M_{\odot}$]')
+
+    fig.tight_layout()
 
     plt.show()
+
 
 def plot_clustering_map():
     z=np.array([0,0.888889,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0,0,0,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0,0,0,0,0,0,0,0,0,0.893333,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0,0,0,0,0,0,0,0,0.893333,0.878981,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0.854031,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0,0,0,0,0,0,0.846715,0.830313,0.824,0.81085,0.797521,0.780612,0.770964,0.745724,0.745209,0.720807,0.682171,0.620837,0.55102,0.519401,0.478501,0,0,0,0])
@@ -208,7 +317,9 @@ def plot_clustering_map():
 
 def main():
     #db = Database()
-    plot_maps()
+    #plot_precision_maps()
+    plot_f1_maps()
+
     #print(len(observed_points))
     #print(len(simulated_points))
 
