@@ -32,11 +32,7 @@ double Constants::radInArcsec = 206264.806;
 double Constants::radmyrInArcsecyr = 0.206264806;
 double Constants::kmInpc = 3.086e-13;
 int Constants::nStars = config.GetInt("nStars");
-
-//Analysis Parameters
-//bool Constants::bEnergy = config.GetBool("bEnergy");
-//bool Constants::bAverageVelocity = config.GetBool("bAverageVelocity");
-//bool Constants::bAverage2DVelocity = config.GetBool("bAverage2DVelocity");
+std::string Constants::database_path = config.GetString("database_path");
 
 //Transformation
 Vec3D Constants::positionSun = Vec3D(8300, 0, 27).cartesianToCylindrical();

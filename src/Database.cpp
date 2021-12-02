@@ -1,9 +1,16 @@
 #include "Database.h"
 
-char* Database::dataBaseDataPath = "Output/Database/Default.db";
 
-Database::Database(){
+Database::Database(const std::string& path){
 	this->isOpen = false;
+
+	if (path.length() > 0) {
+		this->database_path = path.c_str();
+	}
+	else {
+		this->database_path = this->default_database_path;
+	}
+
 	this->open();
 }
 
@@ -14,14 +21,8 @@ Database::~Database()
 	}
 }
 
-bool Database::open(char* pDataBaseDataPath){
-	if (std::strlen(pDataBaseDataPath) == 0) {
-		pDataBaseDataPath = this->dataBaseDataPath;
-	}
-	else {
-		this->dataBaseDataPath =  pDataBaseDataPath;
-	}
-	int rc = sqlite3_open(this->dataBaseDataPath, &db);
+bool Database::open(){
+	int rc = sqlite3_open(this->database_path, &db);
 	if (rc){
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(db) << std::endl << std::endl;
 		sqlite3_close(db);

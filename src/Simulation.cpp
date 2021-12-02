@@ -2,7 +2,7 @@
 
 Simulation::Simulation(int id){
 	this->id = id;
-	this->database = new Database();
+	this->database = new Database(Constants::database_path);
 	this->potential = new MWPotential();
 }
 

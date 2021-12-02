@@ -66,7 +66,7 @@ Results
     F1 score for different mass bins, angles and cluster masses
 
 As is apparent in :numref:`fig-25_precision` the precision, with one exception, is corelated with the angle.
-Curiously for the same cluster mass the precision is lower at :math:`10\odot` than at :math:`5\odot`.
+Curiously for the same cluster mass the precision is lower at :math:`10^\circ` than at :math:`5^\circ`.
 
 
 

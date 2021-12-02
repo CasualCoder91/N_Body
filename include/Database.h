@@ -20,7 +20,8 @@
 //#include "Constants.h"
 
 class Database{
-	static char* dataBaseDataPath;
+	const char* default_database_path = "Output/Database/Default.db";
+	const char* database_path = "Output/Database/Default.db";
 	bool isOpen;
 
 private:
@@ -34,13 +35,12 @@ private:
 	int getLastID();
 public:
 	sqlite3* db;
-	Database();
+	Database(const std::string& path);
 	~Database();
 	/**
 	@brief Opens a database connection. In case the database does not exist yet it creates a new one 
-	@param name file path of the database. If not passed \ref Database.dataBaseDataPath is used. If name is given, that database will be used/created.
 	*/
-	bool open(char* name ="");
+	bool open();
 	bool close();
 	/** @brief Creates all tables (and database) if they do not exist yet. */
 	void setup();

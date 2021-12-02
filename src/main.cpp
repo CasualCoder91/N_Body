@@ -38,7 +38,7 @@ typedef int mode_t;
 bool debug = false;
 
 void optimize_clustering(size_t simulation_id=1) {
-	Database db = Database();
+	Database db = Database(Constants::database_path);
 	db.open();
 	db.setup();
 	Analysis analysis = Analysis(simulation_id, &db);
@@ -57,7 +57,7 @@ void optimize_clustering(size_t simulation_id=1) {
 
 
 void do_it_all(size_t amount_of_times) {
-	Database db = Database();
+	Database db = Database(Constants::database_path);
 	db.open();
 	db.setup();
 
@@ -148,7 +148,7 @@ int main() {
 	//MWPotential::generateVelocityDistributionBulgeLookupTable(25000);
 	//std::vector<std::vector<double>> test = InOut::readDoubleMatrix("velocityDistributionBulgeTable.dat");
 
-	Database db = Database();
+	Database db = Database(Constants::database_path);
 	db.open();
 	db.setup();
 

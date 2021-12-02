@@ -39,11 +39,7 @@ namespace Constants {
 	/**@brief 1km divided by 1pc*/
 	extern double kmInpc;
 	extern int nStars;
-
-	//Analysis Parameters (deprecated)
-	//extern bool bEnergy;
-	//extern bool bAverageVelocity;
-	//extern bool bAverage2DVelocity;
+	extern std::string database_path;
 
 	//Transformation
 	extern Vec3D positionSun; //in cylinder coordinates [pc,rad,pc]
