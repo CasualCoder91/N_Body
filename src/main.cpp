@@ -55,6 +55,38 @@ void optimize_clustering(size_t simulation_id=1) {
 
 }
 
+void calc_dispersion() 
+{
+	std::vector<int> masses = { 640,1600,4000,10000,25000 };
+	std::vector<int> degrees = { 180,25,10,5,0 };
+
+	for (int degree : degrees) {
+		for (int mass : masses)
+		{
+			std::string database_path = "Output/Database/Default_" + std::to_string(degree) + "_" + std::to_string(mass) + "_ext.db";
+			Constants::database_path = database_path;
+			Database db = Database(Constants::database_path);
+
+			//std::cout << "andgle: " << degree << " mass: " << mass << std::endl;
+			db.print_analysis_dt_velocity_2D();
+			for (int simulation_id = 1; simulation_id < 11; ++simulation_id) {
+
+				//Analysis analysis = Analysis(simulation_id, &db);
+				//std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulation_id, 0, false, true);
+				//std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulation_id, 0, true, false);
+				//double avgVelHTPCluster = analysis.average(clusterVelocities);
+				//double dispHTPCluster = analysis.dispersion(clusterVelocities, avgVelHTPCluster);
+				//double avgVelHTPFS = analysis.average(fsVelocities);
+				//double dispHTPFS = analysis.dispersion(fsVelocities, avgVelHTPFS);
+				//db.insertAnalysisdtVelocity2D(simulation_id, 0, avgVelHTPCluster, dispHTPCluster, avgVelHTPFS, dispHTPFS);
+
+			}
+
+		}
+	}
+
+
+}
 
 void do_it_all(size_t amount_of_times) {
 	Database db = Database(Constants::database_path);
@@ -376,7 +408,8 @@ int main() {
 		else if (selection == 5) {
 			//std::cout << "confidence score: " << db.confidence_score(2) << std::endl;
 			//optimize_clustering();
-			do_it_all(1);
+			//do_it_all(1);
+			calc_dispersion();
 		}
 	}
 	return 0;

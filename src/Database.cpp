@@ -377,6 +377,21 @@ void Database::insertAnalysisdtVelocity2D(int simulation_id, int dt, double avgV
 	sqlite3_finalize(st);
 }
 
+void Database::print_analysis_dt_velocity_2D()
+{
+	if (!this->isOpen)
+		this->open();
+	std::string sql = "select avgVel2DCluster,avgVel2DFS,disp2DCluster,disp2DFS from timeStepAnalysis";
+	sqlite3_stmt* st;
+	sqlite3_prepare(db, sql.c_str(), -1, &st, NULL);
+
+	while (sqlite3_step(st) == SQLITE_ROW)
+	{
+		printf("%.15f,%.15f,%.15f,%.15f\n", sqlite3_column_double(st, 0), sqlite3_column_double(st, 1), sqlite3_column_double(st, 2), sqlite3_column_double(st, 3));
+	}
+	sqlite3_finalize(st);
+}
+
 void Database::insert_analysis_dt_min_dist(int simulation_id, int dt, double minimum_distance)
 {
 	std::string sql = "INSERT OR REPLACE INTO timeStepAnalysis (dt, id_simulation, min_dist) VALUES (?1,?2,?3)";
@@ -841,7 +856,7 @@ std::vector<Vec3D> Database::selectVelocities3D(int simulationID, int timestep, 
 	return velocities;
 }
 
-std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep, bool fieldStars, bool clusterStars){
+std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep, bool fieldStars, bool clusterStars, bool observed){
 	std::vector<Vec2D> velocities = {};
 	if (!this->isOpen)
 		this->open();
@@ -850,6 +865,7 @@ std::vector<Vec2D> Database::selectVelocitiesHTP(int simulationID, int timestep,
 		"FROM star "
 		"INNER JOIN velocity on velocity.id_star = star.id "
 		"WHERE star.id_simulation =  " +std::to_string(simulationID);
+		" AND star.isObserved = " + std::to_string(observed);
 	if (timestep != -1) {
 		query += " AND velocity.timestep = " + std::to_string(timestep);
 	}

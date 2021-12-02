@@ -63,6 +63,8 @@ public:
 	void insertAnalysisdtVelocity3D(int simulation_id, int dt, double avgVel3DCluster, double disp3DCluster, double avgVel3DFS, double disp3DFS);
 	void insertAnalysisdtVelocity2D(int simulation_id, int dt, double avgVel2DCluster, double disp2DCluster, double avgVel2DFS, double disp2DFS);
 
+	void print_analysis_dt_velocity_2D();
+
 	void insert_analysis_dt_min_dist(int simulation_id, int dt, double minimum_distance);
 
 	double select_analysis_dt_min_dist(int simulation_id, int dt);
@@ -102,7 +104,7 @@ public:
 
 	/** @brief returns all velocities at the given \p timestep */
 	std::vector<Vec3D> selectVelocities3D(int simulationID, int timestep = -1, bool fieldStars= false, bool clusterStars=true);
-	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true);
+	std::vector<Vec2D> selectVelocitiesHTP(int simulationID, int timestep = -1, bool fieldStars = false, bool clusterStars = true, bool observed = false);
 	/** @brief returns all timesteps for simulation with ID \p simulationID*/
 	std::vector<int> selectTimesteps(int simulationID);
 

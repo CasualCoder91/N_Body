@@ -68,7 +68,11 @@ Results
 As is apparent in :numref:`fig-25_precision` the precision, with one exception, is corelated with the angle.
 Curiously for the same cluster mass the precision is lower at :math:`10^\circ` than at :math:`5^\circ`.
 
+.. _fig-25_avg_vel_640:
+.. figure:: Images/25_avg_vel_640.svg
+    :align: center
 
+    Average cluster and field star velocity at different angles
 
 
 
