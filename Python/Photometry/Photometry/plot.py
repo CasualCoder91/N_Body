@@ -2,11 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib as mpl
-import pandas as pd
-from uncertainties import ufloat
 
 from database import Database
 from point import Point
+import ErrorAnalysis
 import config
 
 def plot_points(b_observed_points=True,b_simulated_points=True):
@@ -140,7 +139,16 @@ def plot_map(z,title,cmap):
     fig.savefig(config.output_base_path+'\\Clustering\\'+title+'.png', dpi=100)
     #plt.show();
 
-def plot_precision_maps():
+def plot_precision_maps(simulated=False):
+
+    if simulated:
+        z = [[1,1,1,1,0.998,0.9943,0.9931,0.9947,0.99523,0.99591,0.9689,0.9749,0.9751,0.9801,0.98332,0.9878,0.9909,0.9912,0.99224,0.9931,0.893,0.916,0.9239,0.9405,0.9475],
+             [1,1,1,1,0.99847,0.9946,0.9931,0.995,0.99663,0.99654,0.978,0.9742,0.9787,0.9841,0.9861,0.9925,0.9918,0.9926,0.9943,0.99459,0.933,0.9399,0.9508,0.9636,0.968],
+             [1,1,1,1,0.99981,1,1,0.9996,0.99984,0.99994,1,0.9981,0.9992,0.9989,0.99937,1,1,1,0.99984,0.99975,1,1,1,0.99984,0.99969]]
+    else:
+        z = [[0.99976,0.99926,0.99865,0.99812,0.9922,0.954,0.961,0.9717,0.977,0.9829,0.809,0.847,0.879,0.9168,0.9423,0.871,0.913,0.9385,0.9519,0.9642,0.487,0.613,0.6985,0.7719,0.8212],
+             [1,1,1,1,0.9968,0.9697,0.9733,0.9817,0.9874,0.9897,0.914,0.905,0.933,0.9484,0.9616,0.9683,0.9685,0.978,0.9789,0.9839,0.809,0.817,0.8722,0.899,0.9261],
+             [1,1,1,1,0.99961,1,1,0.9994,0.99974,0.99989,0.992,0.9951,0.9975,0.9981,0.9982,1,0.9987,0.9985,0.9991,0.9993,1,0.9976,1,0.9996,0.99968]]
 
     fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(12,5))
 
@@ -151,66 +159,23 @@ def plot_precision_maps():
 
     plt.setp(axes, xticks=x, xticklabels=masses, yticks=y, yticklabels=angles)
 
-    z = [0.99976,0.99926,0.99865,0.99812,0.9922,0.954,0.961,0.9717,0.977,0.9829,0.809,0.847,0.879,0.9168,0.9423,0.871,0.913,0.9385,0.9519,0.9642,0.487,0.613,0.6985,0.7719,0.8212]
-    z = np.reshape(z, (5, 5))
-    c = axes[0].pcolor(z, cmap='Reds_r')
+    c = axes[0].pcolor(np.reshape(z[0], (5, 5)), cmap='Reds_r')
     fig.colorbar(c, ax=axes[0], pad=0.01)
     axes[0].set_title('0.5 - 0.08 [$M_{\odot}$]')
     axes[0].set_ylabel("angle [$^\circ$]", fontsize=14)
 
-    z = [1,1,1,1,0.9968,0.9697,0.9733,0.9817,0.9874,0.9897,0.914,0.905,0.933,0.9484,0.9616,0.9683,0.9685,0.978,0.9789,0.9839,0.809,0.817,0.8722,0.899,0.9261]
-    z = np.reshape(z, (5, 5))
-    c = axes[1].pcolor(z, cmap='Oranges_r')
+    c = axes[1].pcolor(np.reshape(z[1], (5, 5)), cmap='Oranges_r')
     fig.colorbar(c, ax=axes[1], pad=0.01)
     axes[1].set_title('2 - 0.5 [$M_{\odot}$]')
     axes[1].set_xlabel("cluster mass [$M_{\odot}$]", fontsize=14)
 
-    z = [1,1,1,1,0.99961,1,1,0.9994,0.99974,0.99989,0.992,0.9951,0.9975,0.9981,0.9982,1,0.9987,0.9985,0.9991,0.9993,1,0.9976,1,0.9996,0.99968]
-    z = np.reshape(z, (5, 5))
-    c = axes[2].pcolor(z, cmap='Blues_r')
+    c = axes[2].pcolor(np.reshape(z[2], (5, 5)), cmap='Blues_r')
     fig.colorbar(c, ax=axes[2], pad=0.01)
     axes[2].set_title('100 - 2 [$M_{\odot}$]')
 
     fig.tight_layout()
 
     plt.show()
-
-def RoundToSigFigs( x, sigfigs ):
-
-    #temporarily suppres floating point errors
-    errhanddict = np.geterr()
-    np.seterr(all="ignore")
-
-    matrixflag = False
-    if isinstance(x, np.matrix): #Convert matrices to arrays
-        matrixflag = True
-        x = np.asarray(x)
-
-    xsgn = np.sign(x)
-    absx = xsgn * x
-    mantissas, binaryExponents = np.frexp( absx )
-
-    decimalExponents = 3.010299956639811952137388947244930267681898814621085413104274611e-1 * binaryExponents
-    omags = np.floor(decimalExponents)
-
-    mantissas *= 10.0**(decimalExponents - omags)
-
-    if type(mantissas) is float or isinstance(mantissas, np.floating):
-        if mantissas < 1.0:
-            mantissas *= 10.0
-            omags -= 1.0
-        
-    else: #elif np.all(np.isreal( mantissas )):
-        fixmsk = mantissas < 1.0, 
-        mantissas[fixmsk] *= 10.0
-        omags[fixmsk] -= 1.0
-
-    result = xsgn * np.around( mantissas, decimals=sigfigs - 1 ) * 10.0**omags
-    if matrixflag:
-        result = np.matrix(result, copy=False)
-
-    np.seterr(**errhanddict)
-    return result
 
 def F1_error(mass_range):
     df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx','extinction', usecols = 'A:AG')
@@ -234,27 +199,6 @@ def F1_error(mass_range):
             F1_round = np.round(F1.n,digits)
             format_string = '{:.'+str(digits)+'f}'
             print(format_string.format(F1_round))
-
-def Vel2D_error():
-    df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx','extinction', usecols = 'A:AV')
-
-    masses = [640] #df['Mass'].unique()
-    angles = df['Angle'].unique()
-    rows = ['avgVel2DCluster']#'avgVel2DCluster','avgVel2DFS','disp2DCluster','disp2DFS']
-
-    def output_mean_error(row,mass,angle):
-        raw_data = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))[row]
-        mean_error = ufloat(raw_data.mean(), raw_data.std())
-        digits = np.abs(int(np.log10(abs(mean_error.s))-2))
-        mean = np.round(mean_error.n,digits)
-        error = np.round(mean_error.s,digits)
-        format_string = '{:.'+str(digits)+'f}'
-        print(format_string.format(mean),',',format_string.format(error))
-
-    for angle in angles:
-        for mass in masses:
-            for row in rows:
-                output_mean_error(row,mass,angle)
 
 
 def plot_avg_2D_vel():
@@ -355,11 +299,14 @@ def plot_clustering_map():
 
 def main():
     #db = Database()
-    #plot_precision_maps()
+    plot_precision_maps(True)
     #plot_f1_maps()
 
+    #ErrorAnalysis.Vel2D_error()
+    #ErrorAnalysis.Precision_error('> 2',True)
+
     #Vel2D_error()
-    plot_avg_2D_vel()
+    #plot_avg_2D_vel()
     #F1_error('> 2')
 
     #print(len(observed_points))

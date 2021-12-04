@@ -29,6 +29,9 @@
     <Compile Include="database.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ErrorAnalysis.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main.py">
       <SubType>Code</SubType>
     </Compile>

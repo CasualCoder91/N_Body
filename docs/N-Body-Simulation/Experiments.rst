@@ -59,6 +59,12 @@ Results
 
     Precision for different mass bins, angles and cluster masses
 
+.. _fig-25_precision_sim:
+.. figure:: Images/25_precision_sim.svg
+    :align: center
+
+    Precision using accurate velocities
+
 .. _fig-25_F1:
 .. figure:: Images/25_F1.svg
     :align: center

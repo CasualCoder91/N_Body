@@ -68,8 +68,10 @@ void calc_dispersion()
 			Database db = Database(Constants::database_path);
 
 			//std::cout << "andgle: " << degree << " mass: " << mass << std::endl;
-			db.print_analysis_dt_velocity_2D();
+			//db.print_analysis_dt_velocity_2D();
 			for (int simulation_id = 1; simulation_id < 11; ++simulation_id) {
+
+				db.print_clustering_info(simulation_id);
 
 				//Analysis analysis = Analysis(simulation_id, &db);
 				//std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulation_id, 0, false, true);
