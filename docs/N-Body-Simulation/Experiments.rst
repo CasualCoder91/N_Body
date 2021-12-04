@@ -71,6 +71,14 @@ Results
 
     F1 score for different mass bins, angles and cluster masses
 
+.. _fig-25_n_stars:
+.. figure:: Images/25_n_stars.svg
+    :align: center
+
+    Number of simulated/detected cluster and field stars at :math:`10^\circ` depending on the cluster masses
+
+
+
 As is apparent in :numref:`fig-25_precision` the precision, with one exception, is corelated with the angle.
 Curiously for the same cluster mass the precision is lower at :math:`10^\circ` than at :math:`5^\circ`.
 
@@ -84,4 +92,4 @@ Curiously for the same cluster mass the precision is lower at :math:`10^\circ` t
 
 five different FOV angles (180°,25,10, 5, 0  ) and cluster masses (0.64, 1.6, 4.0, 10, 25)
 
-ToDo: Continue here (25 observations)
+ToDo: Continue here (25 observations), Add Data for plots to Appendix!

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib as mpl
+import pandas as pd
 
 from database import Database
 from point import Point
@@ -177,29 +178,72 @@ def plot_precision_maps(simulated=False):
 
     plt.show()
 
-def F1_error(mass_range):
-    df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx','extinction', usecols = 'A:AG')
 
+def plot_number_hist():
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ## the data
+    df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx','PlotData', usecols = 'A:BJ')
     masses = df['Mass'].unique()
-    angles = df['Angle'].unique()
+    columns = ['SNCS Tot','SNFS Tot','MNCS Tot','MNFS Tot']
 
-    for angle in angles:
-        for mass in masses:
-            UPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['UP '+mass_range]
-            UP = ufloat(UPdf.mean(), UPdf.std())
-            CFPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFP '+mass_range]
-            CFP = ufloat(CFPdf.mean(), CFPdf.std())
-            CTPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CTP '+mass_range]
-            CTP = ufloat(CTPdf.mean(), CTPdf.std())
-            CFNdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFN '+mass_range]
-            CFN = ufloat(CFNdf.mean(), CFNdf.std())
-            F1 = CTP/(CTP+0.5*(CFP+UP+CFN))
-            #print(uncertainty.s)
-            digits = np.abs(int(np.log10(abs(F1.s))-2))
-            F1_round = np.round(F1.n,digits)
-            format_string = '{:.'+str(digits)+'f}'
-            print(format_string.format(F1_round))
+    #mass_ranges = ['Tot','> 2','2 - 0.5','0.5 - 0.08']
+    mass_range = '0.5 - 0.08'
 
+    query = 'Angle==10'
+    SNCSTotdf = df.query(query)['SNCS '+mass_range]
+    SNCSTotdferr = df.query(query)['SNCS '+mass_range+' Err']
+    SNFSotdf = df.query(query)['SNFS '+mass_range]
+    SNFSTotdferr = df.query(query)['SNFS '+mass_range+' Err']
+    MNCSTotdf = df.query(query)['MNCS '+mass_range]
+    MNCSTotdferr = df.query(query)['MNCS '+mass_range+' Err']
+    MNFSTotdf = df.query(query)['MNFS '+mass_range]
+    MNFSTotdferr = df.query(query)['MNFS '+mass_range+' Err']
+
+    N = len(masses)
+
+    ## necessary variables
+    ind = np.arange(N)                # the x locations for the groups
+    width = 0.35                      # the width of the bars
+
+    ## the bars
+    rects1 = ax.bar(ind, SNCSTotdf, width, alpha=0.5,
+                    color='black',
+                    yerr=SNCSTotdferr,
+                    error_kw=dict(elinewidth=2,ecolor='red'))
+
+    rects2 = ax.bar(ind+width, SNFSotdf, width, alpha=0.5,
+                        color='red',
+                        yerr=SNFSTotdferr,
+                        error_kw=dict(elinewidth=2,ecolor='black'))
+
+    rects3 = ax.bar(ind, MNCSTotdf, width, alpha=0.5,
+                    color='black',
+                    yerr=MNCSTotdferr,
+                    error_kw=dict(elinewidth=2,ecolor='red'))
+
+    rects4 = ax.bar(ind+width, MNFSTotdf, width, alpha=0.5,
+                        color='red',
+                        yerr=MNFSTotdferr,
+                        error_kw=dict(elinewidth=2,ecolor='black'))
+
+
+
+    # axes and labels
+    ax.set_xlim(-width,len(ind)+width)
+    #ax.set_ylim(0,45)
+    ax.set_ylabel('#Stars')
+    #ax.set_title('Amount of stars by clustersize')
+    xTickMarks = masses
+    ax.set_xticks(ind+width/2)
+    xtickNames = ax.set_xticklabels(xTickMarks)
+    plt.setp(xtickNames, rotation=45, fontsize=10)
+
+    ## add a legend
+    ax.legend( (rects1[0], rects2[0]), ('CS', 'FS') )
+
+    plt.show()
 
 def plot_avg_2D_vel():
     #640
@@ -298,16 +342,22 @@ def plot_clustering_map():
     plt.show();
 
 def main():
+
+    plot_number_hist()
+
     #db = Database()
-    plot_precision_maps(True)
+    #plot_precision_maps(True)
     #plot_f1_maps()
 
     #ErrorAnalysis.Vel2D_error()
-    #ErrorAnalysis.Precision_error('> 2',True)
+    #ErrorAnalysis.Precision_error('0.5 - 0.08',False)
 
     #Vel2D_error()
     #plot_avg_2D_vel()
-    #F1_error('> 2')
+
+    #mass_ranges = ['Tot','> 2','2 - 0.5','0.5 - 0.08']
+
+    #ErrorAnalysis.F1_error('0.5 - 0.08')
 
     #print(len(observed_points))
     #print(len(simulated_points))

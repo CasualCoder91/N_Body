@@ -4,28 +4,36 @@ from uncertainties import ufloat
 
 import config
 
-df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx','extinction', usecols = 'A:AV')
+df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx','extinction', usecols = 'A:BM')
 
-def output_mean_error(row, mass, angle):
-    raw_data = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))[row]
-    mean_error = ufloat(raw_data.mean(), raw_data.std())
-    digits = np.abs(int(np.log10(abs(mean_error.s))-2))
-    mean = np.round(mean_error.n,digits)
-    error = np.round(mean_error.s,digits)
+
+def output_mean_error(x,new_line=True):
+
+    if x.s == 0:
+        digits = 10
+    else:
+        digits = np.abs(int(np.log10(abs(x.s))-2))
+
+    mean = np.round(x.n,digits)
+    error = np.round(x.s,digits)
     format_string = '{:.'+str(digits)+'f}'
-    print(format_string.format(mean),',',format_string.format(error))
-
+    if(new_line):
+        print(format_string.format(mean),format_string.format(error))
+    else:
+        print(format_string.format(mean),format_string.format(error), end =" ")
 
 def Vel2D_error():
     
-    masses = [640] #df['Mass'].unique()
+    masses = df['Mass'].unique()
     angles = df['Angle'].unique()
-    rows = ['avgVel2DCluster']#'avgVel2DCluster','avgVel2DFS','disp2DCluster','disp2DFS']
+    rows = ['avgVel2DFS']#'avgVel2DCluster','avgVel2DFS','disp2DCluster','disp2DFS']
 
     for angle in angles:
         for mass in masses:
             for row in rows:
-                output_mean_error(row,mass,angle)
+                raw_data = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))[row]
+                mean_error = ufloat(raw_data.mean(), raw_data.std())
+                output_mean_error(mean_error)
 
 
 def Precision_error(mass_range,simulated=False):
@@ -51,15 +59,39 @@ def Precision_error(mass_range,simulated=False):
                 FP = ufloat(CFPdf.mean(), CFPdf.std()) + ufloat(UPdf.mean(), UPdf.std())
 
             P = TP/(TP+FP)
-            #print(uncertainty.s)
-            if P.s == 0:
-                digits = 10
-            else:
-                digits = np.abs(int(np.log10(abs(P.s))-2))
-
-            mean = np.round(P.n,digits)
-            error = np.round(P.s,digits)
-            format_string = '{:.'+str(digits)+'f}'
-            print(format_string.format(mean),',',format_string.format(error))
+            output_mean_error(P)
 
     return
+
+def F1_error(mass_range):
+
+    masses = df['Mass'].unique()
+    angles = df['Angle'].unique()
+
+    for angle in angles:
+        for mass in masses:
+            UPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['UP '+mass_range]
+            UP = ufloat(UPdf.mean(), UPdf.std())
+            CFPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFP '+mass_range]
+            CFP = ufloat(CFPdf.mean(), CFPdf.std())
+            CTPdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CTP '+mass_range]
+            CTP = ufloat(CTPdf.mean(), CTPdf.std())
+            CFNdf = df.query('Mass=='+str(mass)+'&'+'Angle=='+str(angle))['CFN '+mass_range]
+            CFN = ufloat(CFNdf.mean(), CFNdf.std())
+            F1 = CTP/(CTP+0.5*(CFP+UP+CFN))
+            output_mean_error(F1)
+
+def column_group_error(group):
+    masses = df['Mass'].unique()
+    angles = df['Angle'].unique()
+
+    mass_ranges = ['Tot','> 2','2 - 0.5','0.5 - 0.08']
+
+    for angle in angles:
+        for mass in masses:
+            query = 'Mass=='+str(mass)+'&'+'Angle=='+str(angle)
+            for mass_range in mass_ranges:
+                cdf = df.query(query)[group+mass_range]
+                c = ufloat(cdf.mean(), cdf.std())
+                output_mean_error(c,False)
+            print('')
