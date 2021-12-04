@@ -179,6 +179,51 @@ def plot_precision_maps(simulated=False):
     plt.show()
 
 
+def plot_velocity_hist():
+
+    x = 2
+    y = 3
+
+    config.simulation_id=2
+    db = Database()
+
+    fig, axes = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(10,5))
+
+    axes[0].set_xlim(0.0016,0.0026)
+    axes[0].set_ylim(-0.0002,0.0006)
+
+    axes[1].set_xlim(0.0016,0.0026)
+    axes[1].set_ylim(-0.0002,0.0006)
+
+    #data
+    db.connect(config.output_base_path + r"\Database\Default_0_640_ext.db")
+    cluster = db.select_observed_cluster_stars(0)
+    cluster_arr = np.vstack(cluster[:]).astype(float)
+
+    fs = db.select_observed_field_stars(0)
+    fs_arr = np.vstack(fs[:]).astype(float)
+
+    axes[0].scatter(fs_arr[:,x],fs_arr[:,y], marker='o', alpha=0.5, label='FS')
+    axes[0].scatter(cluster_arr[:,x],cluster_arr[:,y], marker='x', alpha=0.6, label='CS')
+
+    db.connect(config.output_base_path + r"\Database\Default_0_10000_ext.db")
+
+    cluster = db.select_observed_cluster_stars(0)
+    cluster_arr = np.vstack(cluster[:]).astype(float)
+
+    fs = db.select_observed_field_stars(0)
+    fs_arr = np.vstack(fs[:]).astype(float)
+
+    axes[1].scatter(fs_arr[:,x],fs_arr[:,y], marker='o', alpha=0.5, label='FS')
+    axes[1].scatter(cluster_arr[:,x],cluster_arr[:,y], marker='x', alpha=0.6, label='CS')
+
+
+    #plt.hist(cluster_arr[:,i], density=True, bins=100, alpha=0.5, label='CS')
+    #plt.hist(fs_arr[:,i], density=True, bins=100, alpha=0.5, label='FS')
+
+    plt.legend(loc='upper left')
+    plt.show()
+
 def plot_number_hist():
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -343,7 +388,9 @@ def plot_clustering_map():
 
 def main():
 
-    plot_number_hist()
+    #plot_number_hist()
+
+    plot_velocity_hist()
 
     #db = Database()
     #plot_precision_maps(True)

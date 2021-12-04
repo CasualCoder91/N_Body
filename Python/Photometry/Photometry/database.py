@@ -173,6 +173,27 @@ class Database:
             array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
         return array
 
+    def select_fs(self, timestep, observed = True):
+        cur = self.conn.cursor()
+
+        sql = """SELECT star.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, star.isCluster, star.magnitude, star.idCluster 
+		    FROM star 
+		    LEFT JOIN position on position.id_star = star.id 
+		    LEFT JOIN velocity on velocity.id_star = star.id AND position.timestep = velocity.timestep 
+		    WHERE star.id_simulation = ?1 AND position.timestep = ?2"""
+        if(observed):
+            sql+= " AND star.idCluster = -1 AND star.isObserved = 1"
+        else:
+            sql+= " AND star.isCluster = 0 AND star.isObserved = 0"
+        cur.execute(sql, (config.simulation_id,timestep))
+        result = cur.fetchall()
+        array = np.ndarray((len(result),),dtype=object)
+        for i, line in enumerate(result):
+            array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
+        return array
+
+
+
     def select_false_negative(self):
         cur = self.conn.cursor()
         cur.execute("""select obs.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, obs.isCluster, obs.magnitude, obs.idCluster
@@ -203,6 +224,24 @@ class Database:
         for i, line in enumerate(result):
             array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
         return array
+
+    def select_observed_field_stars(self, timestep):
+        cur = self.conn.cursor()
+        cur.execute("""select obs.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, obs.isCluster, obs.magnitude, obs.idCluster
+            from star sim 
+            inner join star obs on obs.fkStar=sim.id
+            LEFT join position on position.id_star=obs.id
+            LEFT JOIN velocity on velocity.id_star = obs.id AND position.timestep = velocity.timestep 
+            where sim.id_simulation = ?1
+            AND
+            sim.isCluster=0 
+            AND position.timestep = ?2""", (config.simulation_id,timestep))
+        result = cur.fetchall()
+        array = np.ndarray((len(result),),dtype=object)
+        for i, line in enumerate(result):
+            array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
+        return array
+
 
     def select_distace(self):
         cur = self.conn.cursor()
