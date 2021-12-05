@@ -95,3 +95,7 @@ def column_group_error(group):
                 c = ufloat(cdf.mean(), cdf.std())
                 output_mean_error(c,False)
             print('')
+
+def remove_outliers(array,max_deviations = 3):
+    mu, sigma = np.mean(array, axis=0), np.std(array, axis=0, ddof=1)
+    return array[np.all(np.abs((array - mu) / sigma) < max_deviations, axis=1)]

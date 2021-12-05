@@ -78,8 +78,7 @@ Results
     Number of simulated/detected cluster and field stars at :math:`10^\circ` depending on the cluster masses
 
 
-
-As is apparent in :numref:`fig-25_precision` the precision, with one exception, is corelated with the angle.
+As is apparent in :numref:`fig-25_precision` the precision, with one exception, is correlated with the angle.
 Curiously for the same cluster mass the precision is lower at :math:`10^\circ` than at :math:`5^\circ`.
 
 .. _fig-25_avg_vel_640:
@@ -87,6 +86,21 @@ Curiously for the same cluster mass the precision is lower at :math:`10^\circ` t
     :align: center
 
     Average cluster and field star velocity at different angles
+
+:numref:`fig-25_avg_vel_640` provides the explanation. At :math:`10^\circ` the average field star velocity is closer to the average cluster star velocity than at any other angle.
+
+The bigger the cluster mass the higher the cluster star velocity density, which implies the second correlation - precision with cluster mass - presented in :numref:`fig-25_precision`.
+
+.. _fig-25_vel_scatter:
+.. figure:: Images/25_vel_scatter.svg
+    :align: center
+
+    2D HTP velocity of simulated clusters
+
+:numref:`fig-25_vel_scatter` displays examples for the 2D HTP velocity space of two simulated clusters near the GC.
+
+The :math:`0.64 [kM_{\odot}]` only has 1143 stars inside the circle while :math:`10 [kM_{\odot}]` has 3158.
+In both cases statisticly the same amount of field stars fall within that area, leading to a higher ratio of FPs and therefore a lower precission for the lower mass cluster.
 
 
 

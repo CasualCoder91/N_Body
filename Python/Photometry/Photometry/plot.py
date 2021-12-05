@@ -181,47 +181,88 @@ def plot_precision_maps(simulated=False):
 
 def plot_velocity_hist():
 
-    x = 2
-    y = 3
-
     config.simulation_id=2
     db = Database()
 
-    fig, axes = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(10,5))
+    fig, axes = plt.subplots(1, 2, figsize=(10,5))
 
-    axes[0].set_xlim(0.0016,0.0026)
-    axes[0].set_ylim(-0.0002,0.0006)
-
-    axes[1].set_xlim(0.0016,0.0026)
-    axes[1].set_ylim(-0.0002,0.0006)
+    scalefactor = 0.030866666667*2.419e+6
 
     #data
     db.connect(config.output_base_path + r"\Database\Default_0_640_ext.db")
-    cluster = db.select_observed_cluster_stars(0)
-    cluster_arr = np.vstack(cluster[:]).astype(float)
+    cluster = db.select_cluster(0,False)
+    cluster_arr = np.vstack(cluster[:]).astype(float)[:,2:4]*scalefactor
+    cluster_arr = ErrorAnalysis.remove_outliers(cluster_arr)
+    fs = db.select_fs(0,False)
+    fs_arr = np.vstack(fs[:]).astype(float)[:,2:4]*scalefactor
 
-    fs = db.select_observed_field_stars(0)
-    fs_arr = np.vstack(fs[:]).astype(float)
+    axes[0].scatter(fs_arr[:,0],fs_arr[:,1], marker='o', alpha=0.5, label='FS')
+    axes[0].scatter(cluster_arr[:,0],cluster_arr[:,1], marker='x', alpha=0.6, label='CS')
 
-    axes[0].scatter(fs_arr[:,x],fs_arr[:,y], marker='o', alpha=0.5, label='FS')
-    axes[0].scatter(cluster_arr[:,x],cluster_arr[:,y], marker='x', alpha=0.6, label='CS')
+
+ #   axes[0].hist2d(cluster_arr[:, 0], 
+ #          cluster_arr[:, 1],
+ #          bins = 100, 
+ #          cmap = "RdYlGn_r",
+ #          norm = mpl.colors.LogNorm())
+
+    cluster_mean = np.mean(cluster_arr, axis=0)
+    cluster_std = np.std(cluster_arr, axis=0)
+    dx = np.max(cluster_std)*4
+
+    axes[0].set_xlim(cluster_mean[0]-dx,cluster_mean[0]+dx)
+    axes[0].set_ylim(cluster_mean[1]-dx,cluster_mean[1]+dx)
+    print(axes[0].get_xlim())
+    print(axes[1].get_xlim())
+
+    axes[1].set_xlim(axes[0].get_xlim())
+    axes[1].set_ylim(axes[0].get_ylim())
+
+    from matplotlib.patches import Circle
+    radius = np.max(cluster_std)*2
+    circle = Circle(cluster_mean, radius=radius, color='r', fill=False)
+    norm = np.linalg.norm(cluster_arr-cluster_mean,axis=1)
+    print('points inside circle: ', len(norm[norm < radius]))
+
+
+    circle2 = Circle(cluster_mean, radius=radius, color='r', fill=False)
+
+    axes[0].add_patch(circle)
+    axes[1].add_patch(circle2)
 
     db.connect(config.output_base_path + r"\Database\Default_0_10000_ext.db")
 
-    cluster = db.select_observed_cluster_stars(0)
-    cluster_arr = np.vstack(cluster[:]).astype(float)
+    cluster = db.select_cluster(0, False)
+    cluster_arr = np.vstack(cluster[:]).astype(float)[:,2:4]*scalefactor
+    norm = np.linalg.norm(cluster_arr-cluster_mean,axis=1)
+    print('points inside circle: ', len(norm[norm < radius]))
 
-    fs = db.select_observed_field_stars(0)
-    fs_arr = np.vstack(fs[:]).astype(float)
 
-    axes[1].scatter(fs_arr[:,x],fs_arr[:,y], marker='o', alpha=0.5, label='FS')
-    axes[1].scatter(cluster_arr[:,x],cluster_arr[:,y], marker='x', alpha=0.6, label='CS')
+    fs = db.select_fs(0, False)
+    fs_arr = np.vstack(fs[:]).astype(float)[:,2:4]*scalefactor
+
+    axes[1].scatter(fs_arr[:,0],fs_arr[:,1], marker='o', alpha=0.5, label='FS')
+    axes[1].scatter(cluster_arr[:,0],cluster_arr[:,1], marker='x', alpha=0.6, label='CS')
+
+ #   axes[1].hist2d(cluster_arr[:, 0], 
+ #          cluster_arr[:, 1],
+ #          bins = 5000, 
+ #          cmap = "RdYlGn_r",
+ #          norm = mpl.colors.LogNorm(),
+ #          alpha = 0.5)
+
+    axes[1].set_xlim(axes[0].get_xlim())
+    axes[1].set_ylim(axes[0].get_ylim())
+    axes[1].set_title('10 kM[$_{\odot}$]')
 
 
     #plt.hist(cluster_arr[:,i], density=True, bins=100, alpha=0.5, label='CS')
     #plt.hist(fs_arr[:,i], density=True, bins=100, alpha=0.5, label='FS')
+    axes[0].set_xlabel('v_asc [km/s]', fontsize=16)
+    axes[0].set_ylabel('v_dec [km/s]', fontsize=16)
+    axes[0].set_title('0.64 kM[$_{\odot}$]')
+    axes[0].legend(loc="upper left")
 
-    plt.legend(loc='upper left')
     plt.show()
 
 def plot_number_hist():
