@@ -253,14 +253,14 @@ def plot_velocity_hist():
 
     axes[1].set_xlim(axes[0].get_xlim())
     axes[1].set_ylim(axes[0].get_ylim())
-    axes[1].set_title('10 kM[$_{\odot}$]')
+    axes[1].set_title('10 [kM$_{\odot}$]')
 
 
     #plt.hist(cluster_arr[:,i], density=True, bins=100, alpha=0.5, label='CS')
     #plt.hist(fs_arr[:,i], density=True, bins=100, alpha=0.5, label='FS')
     axes[0].set_xlabel('v_asc [km/s]', fontsize=16)
     axes[0].set_ylabel('v_dec [km/s]', fontsize=16)
-    axes[0].set_title('0.64 kM[$_{\odot}$]')
+    axes[0].set_title('0.64 [kM$_{\odot}$]')
     axes[0].legend(loc="upper left")
 
     plt.show()
