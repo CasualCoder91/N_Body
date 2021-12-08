@@ -35,12 +35,15 @@ The following parameters remained unchanged between the simulations.
   | The height of the COV or line of sight distance reaching behind the GC when looking towards it.
 * | Cluster distance: :math:`8 \textup{[kpc]}`
   | The distance between the observer and the cluster. When looking straight at the GC the distance between the cluster and the GC is :math:`300 \textup{[pc]}` 
-* | View point: :math:`\begin{bmatrix}8300 & 0 & 27\end{bmatrix}^{T}_{GCA} \textup{[kpc]}`
+  | The mean cluster velocity is set to the circular velocity at this location.
+* | View point: :math:`\begin{bmatrix}8300 & 0 & 27\end{bmatrix}^{T}_{GCA} \textup{[pc]}`
   | The position of the observer in GCA.
 * | Timestep: :math:`28 \textup{[day]}`
   | Amount of time between the two recorded snapshots. The time per integration is :math:`7 \textup{[day]}`. Therefor snapshots are taken every 4 integrations.
 
-**Cluster specific parameters (McLuster)**
+**Cluster specific parameters**
+
+McLuster
 
 * (P) Profile: 0 Plummer density profile
 * | (R) Radius: -1
@@ -50,8 +53,15 @@ The following parameters remained unchanged between the simulations.
 * (f) IMF: 1 Kroupa ranging from 0.08 Msun to 100 Msun
 * (C) Output: 3 The resulting mass, position and velocity for each star is written into a file.
 
-Results
-^^^^^^^
+Results and Interpretation
+--------------------------
+
+.. _fig-25_n_stars:
+.. figure:: Images/25_n_stars.svg
+    :align: center
+
+    Number of simulated/detected cluster and field stars at :math:`10^\circ` depending on the cluster masses
+
 
 .. _fig-25_precision:
 .. figure:: Images/25_precision.svg
@@ -71,14 +81,8 @@ Results
 
     F1 score for different mass bins, angles and cluster masses
 
-.. _fig-25_n_stars:
-.. figure:: Images/25_n_stars.svg
-    :align: center
 
-    Number of simulated/detected cluster and field stars at :math:`10^\circ` depending on the cluster masses
-
-
-As is apparent in :numref:`fig-25_precision` the precision, with one exception, is correlated with the angle.
+As is apparent in :numref:`fig-25_precision` and :numref:`fig-25_precision_sim` the precision, with one exception, is correlated with the angle.
 Curiously for the same cluster mass the precision is lower at :math:`10^\circ` than at :math:`5^\circ`.
 
 .. _fig-25_avg_vel_640:
@@ -87,7 +91,8 @@ Curiously for the same cluster mass the precision is lower at :math:`10^\circ` t
 
     Average cluster and field star velocity at different angles
 
-:numref:`fig-25_avg_vel_640` provides the explanation. At :math:`10^\circ` the average field star velocity is closer to the average cluster star velocity than at any other angle.
+:numref:`fig-25_avg_vel_640` provides the explanation for this outlier. 
+At :math:`10^\circ` the average field star velocity is closer to the average cluster star velocity than at any other angle, making it harder to differentiate between cluster and noise.
 
 The bigger the cluster mass the higher the cluster star velocity density, which implies the second correlation - precision with cluster mass - presented in :numref:`fig-25_precision`.
 

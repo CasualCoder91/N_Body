@@ -275,17 +275,17 @@ def plot_number_hist():
     columns = ['SNCS Tot','SNFS Tot','MNCS Tot','MNFS Tot']
 
     #mass_ranges = ['Tot','> 2','2 - 0.5','0.5 - 0.08']
-    mass_range = '0.5 - 0.08'
+    mass_range = 'Tot'
 
     query = 'Angle==10'
-    SNCSTotdf = df.query(query)['SNCS '+mass_range]
-    SNCSTotdferr = df.query(query)['SNCS '+mass_range+' Err']
-    SNFSotdf = df.query(query)['SNFS '+mass_range]
-    SNFSTotdferr = df.query(query)['SNFS '+mass_range+' Err']
-    MNCSTotdf = df.query(query)['MNCS '+mass_range]
-    MNCSTotdferr = df.query(query)['MNCS '+mass_range+' Err']
-    MNFSTotdf = df.query(query)['MNFS '+mass_range]
-    MNFSTotdferr = df.query(query)['MNFS '+mass_range+' Err']
+    SNCSTotdf = df.query(query)['SNCS '+mass_range]/1000
+    SNCSTotdferr = df.query(query)['SNCS '+mass_range+' Err']/1000
+    SNFSotdf = df.query(query)['SNFS '+mass_range]/1000
+    SNFSTotdferr = df.query(query)['SNFS '+mass_range+' Err']/1000
+    MNCSTotdf = df.query(query)['MNCS '+mass_range]/1000
+    MNCSTotdferr = df.query(query)['MNCS '+mass_range+' Err']/1000
+    MNFSTotdf = df.query(query)['MNFS '+mass_range]/1000
+    MNFSTotdferr = df.query(query)['MNFS '+mass_range+' Err']/1000
 
     N = len(masses)
 
@@ -295,39 +295,39 @@ def plot_number_hist():
 
     ## the bars
     rects1 = ax.bar(ind, SNCSTotdf, width, alpha=0.5,
-                    color='black',
+                    color='blue',
                     yerr=SNCSTotdferr,
                     error_kw=dict(elinewidth=2,ecolor='red'))
 
-    rects2 = ax.bar(ind+width, SNFSotdf, width, alpha=0.5,
-                        color='red',
-                        yerr=SNFSTotdferr,
-                        error_kw=dict(elinewidth=2,ecolor='black'))
-
-    rects3 = ax.bar(ind, MNCSTotdf, width, alpha=0.5,
-                    color='black',
+    rects2 = ax.bar(ind, MNCSTotdf, width, alpha=1,
+                    color='blue',
                     yerr=MNCSTotdferr,
                     error_kw=dict(elinewidth=2,ecolor='red'))
 
-    rects4 = ax.bar(ind+width, MNFSTotdf, width, alpha=0.5,
-                        color='red',
-                        yerr=MNFSTotdferr,
-                        error_kw=dict(elinewidth=2,ecolor='black'))
+    rects3 = ax.bar(ind+width, SNFSotdf, width, alpha=0.5,
+                    color='black',
+                    yerr=SNFSTotdferr,
+                    error_kw=dict(elinewidth=2,ecolor='red'))
+
+    rects4 = ax.bar(ind+width, MNFSTotdf, width, alpha=1,
+                    color='black',
+                    yerr=MNFSTotdferr,
+                    error_kw=dict(elinewidth=2,ecolor='red'))
 
 
 
     # axes and labels
-    ax.set_xlim(-width,len(ind)+width)
-    #ax.set_ylim(0,45)
-    ax.set_ylabel('#Stars')
+    ax.set_xlim(-width,len(ind)+width*2)
+    ax.set_xlabel('cluster mass [kM$_{\odot}$]')
+    ax.set_ylabel('#Stars * $10^3$')
     #ax.set_title('Amount of stars by clustersize')
-    xTickMarks = masses
+    xTickMarks = masses/1000
     ax.set_xticks(ind+width/2)
     xtickNames = ax.set_xticklabels(xTickMarks)
-    plt.setp(xtickNames, rotation=45, fontsize=10)
+    plt.setp(xtickNames, rotation=0, fontsize=10)
 
     ## add a legend
-    ax.legend( (rects1[0], rects2[0]), ('CS', 'FS') )
+    ax.legend( (rects1[0], rects2[0], rects3[0], rects4[0]), ('SCS','OCS', 'SFS','OFS') )
 
     plt.show()
 
@@ -429,9 +429,8 @@ def plot_clustering_map():
 
 def main():
 
-    #plot_number_hist()
-
-    plot_velocity_hist()
+    plot_number_hist()
+    #plot_velocity_hist()
 
     #db = Database()
     #plot_precision_maps(True)
