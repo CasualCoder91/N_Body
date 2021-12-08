@@ -186,7 +186,7 @@ def plot_velocity_hist():
 
     fig, axes = plt.subplots(1, 2, figsize=(10,5))
 
-    scalefactor = 0.030866666667*2.419e+6
+    scalefactor = 28
 
     #data
     db.connect(config.output_base_path + r"\Database\Default_0_640_ext.db")
@@ -258,8 +258,8 @@ def plot_velocity_hist():
 
     #plt.hist(cluster_arr[:,i], density=True, bins=100, alpha=0.5, label='CS')
     #plt.hist(fs_arr[:,i], density=True, bins=100, alpha=0.5, label='FS')
-    axes[0].set_xlabel('v_asc [km/s]', fontsize=16)
-    axes[0].set_ylabel('v_dec [km/s]', fontsize=16)
+    axes[0].set_xlabel('v_asc [arcsec/day]', fontsize=16)
+    axes[0].set_ylabel('v_dec [arcsec/day]', fontsize=16)
     axes[0].set_title('0.64 [kM$_{\odot}$]')
     axes[0].legend(loc="upper left")
 
@@ -278,14 +278,14 @@ def plot_number_hist():
     mass_range = 'Tot'
 
     query = 'Angle==10'
-    SNCSTotdf = df.query(query)['SNCS '+mass_range]/1000
-    SNCSTotdferr = df.query(query)['SNCS '+mass_range+' Err']/1000
-    SNFSotdf = df.query(query)['SNFS '+mass_range]/1000
-    SNFSTotdferr = df.query(query)['SNFS '+mass_range+' Err']/1000
-    MNCSTotdf = df.query(query)['MNCS '+mass_range]/1000
-    MNCSTotdferr = df.query(query)['MNCS '+mass_range+' Err']/1000
-    MNFSTotdf = df.query(query)['MNFS '+mass_range]/1000
-    MNFSTotdferr = df.query(query)['MNFS '+mass_range+' Err']/1000
+    SNCSTotdf = df.query(query)['SNCS '+mass_range]
+    SNCSTotdferr = df.query(query)['SNCS '+mass_range+' Err']
+    SNFSotdf = df.query(query)['SNFS '+mass_range]
+    SNFSTotdferr = df.query(query)['SNFS '+mass_range+' Err']
+    MNCSTotdf = df.query(query)['MNCS '+mass_range]
+    MNCSTotdferr = df.query(query)['MNCS '+mass_range+' Err']
+    MNFSTotdf = df.query(query)['MNFS '+mass_range]
+    MNFSTotdferr = df.query(query)['MNFS '+mass_range+' Err']
 
     print(SNCSTotdf)
     print(MNCSTotdf)
@@ -322,7 +322,8 @@ def plot_number_hist():
     # axes and labels
     ax.set_xlim(-width,len(ind)+width*2)
     ax.set_xlabel('cluster mass [kM$_{\odot}$]')
-    ax.set_ylabel('#Stars * $10^3$')
+    ax.set_ylabel('#Stars')
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
     #ax.set_title('Amount of stars by clustersize')
     xTickMarks = masses/1000
     ax.set_xticks(ind+width/2)
@@ -336,16 +337,22 @@ def plot_number_hist():
 
 def plot_avg_2D_vel():
     #640
-    disp_2D_cluster = [0.00310743,0.00316207,0.0029074,0.0026192,0.0021763]
-    disp_2D_cluster_error = [0.00000084,0.00000076,0.0000027,0.0000066,0.0000090]
-    avg_vel_2D_cluster = [0.00310743,0.00316207,0.0029074,0.0026192,0.0021763]
-    avg_vel_2D_cluster_error = [0.00000084,0.00000076,0.0000027,0.0000066,0.0000090]
-    avg_vel_2D_fs = [0.00826,0.002124,0.003193,0.005075,0.0036446]
-    avg_vel_2D_fs_error = [0.00022,0.000015,0.000014,0.000014,0.0000056]
+
+    scale_factor = 28 #dt in days
+
+    disp_2D_cluster = np.array([0.00310743,0.00316207,0.0029074,0.0026192,0.0021763]) * scale_factor
+    disp_2D_cluster_error = np.array([0.00000084,0.00000076,0.0000027,0.0000066,0.0000090]) * scale_factor
+    avg_vel_2D_cluster = np.array([0.00310743,0.00316207,0.0029074,0.0026192,0.0021763]) * scale_factor
+    avg_vel_2D_cluster_error = np.array([0.00000084,0.00000076,0.0000027,0.0000066,0.0000090]) * scale_factor
+    avg_vel_2D_fs = np.array([0.00826,0.002124,0.003193,0.005075,0.0036446]) * scale_factor
+    avg_vel_2D_fs_error = np.array([0.00022,0.000015,0.000014,0.000014,0.0000056]) * scale_factor
+
+
 
     x = [180,25,10,5,0]
     a = np.arange(min(x),max(x),np.abs((x[0]-x[-1])/len(x)))
     plt.xticks(a,x)
+    plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
     plt.scatter(a,avg_vel_2D_cluster,label='cluster stars')
 
@@ -356,7 +363,8 @@ def plot_avg_2D_vel():
     plt.errorbar(a, avg_vel_2D_cluster, yerr = avg_vel_2D_cluster_error,fmt='o',ecolor = 'cyan')
 
     plt.xlabel('angle [$^\circ$]', fontsize=16)
-    plt.ylabel('velocity [arcsec/dt]', fontsize=16)
+
+    plt.ylabel('velocity [arcsec/day]', fontsize=16)
 
     plt.legend()
 
@@ -432,7 +440,8 @@ def plot_clustering_map():
 
 def main():
 
-    plot_number_hist()
+    #plot_number_hist()
+    plot_avg_2D_vel()
     #plot_velocity_hist()
 
     #db = Database()
@@ -443,7 +452,7 @@ def main():
     #ErrorAnalysis.Precision_error('0.5 - 0.08',False)
 
     #Vel2D_error()
-    #plot_avg_2D_vel()
+    
 
     #mass_ranges = ['Tot','> 2','2 - 0.5','0.5 - 0.08']
 

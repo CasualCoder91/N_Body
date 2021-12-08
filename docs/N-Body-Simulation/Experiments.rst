@@ -62,12 +62,12 @@ Results and Interpretation
 
     Number of simulated/detected cluster and field stars at :math:`10^\circ` depending on the cluster masses
 
-Depending on the total cluster mass the amount of simulated CS (SCS) ranges from :math:`1.3` to :math:`40.4` while the amount of mapped CS (MCS) lies between :math:`1.0` and :math:`16.4.`.
+Depending on the total cluster mass the amount of simulated CS (SCS) ranges from :math:`1.3e3` to :math:`40.4e3` while the amount of mapped CS (MCS) lies between :math:`1.0e3` and :math:`16.4e3`.
 The decrease in detectability of CS is due to increasing CS density and has no direct impact on the clustering performance.
-The difference between observed stars and mapped stars is negligible, in fact the amount of non mapped stars decreases with increasing number of SCS.
+The difference between observed stars (OS) and mapped stars (MS) is negligible, in fact the amount of non mapped stars decreases with increasing number of SCS.
 
 While the number of simulated FS (SFS) remains constant, the number of mapped FS (MFS) decreases with increasing number of CS because bright CS hide FS.
-This inverse relationship does impact the clustering performance to some degree, less MFS means less potenital FPs.
+This inverse relationship does impact the clustering performance to some degree, less MFS means less potenital FPs as well as TNs, the latter are not relevant for Precision and F1 score.
 
 .. _fig-25_precision:
 .. figure:: Images/25_precision.svg
@@ -81,6 +81,10 @@ This inverse relationship does impact the clustering performance to some degree,
 
     Precision using accurate velocities
 
+:numref:`fig-25_precision` displays the precision using the velocity of OS and :numref:`fig-25_precision_sim` for the velocity of SS.
+The only relevant difference between simulated and observed HTP proper motion is the the accuracy of position and consequently of velocity.
+While both figures show the same relationships, the drop in overall performance due to inaccuracies introduced during observation and source detection are painfully apparent.
+
 .. _fig-25_F1:
 .. figure:: Images/25_F1.svg
     :align: center
@@ -88,7 +92,7 @@ This inverse relationship does impact the clustering performance to some degree,
     F1 score for different mass bins, angles and cluster masses
 
 
-As is apparent in :numref:`fig-25_precision` and :numref:`fig-25_precision_sim` the precision, with one exception, is correlated with the angle.
+As is visible in :numref:`fig-25_precision` and :numref:`fig-25_precision_sim` the precision, with one exception, is correlated with the angle.
 Curiously for the same cluster mass the precision is lower at :math:`10^\circ` than at :math:`5^\circ`.
 
 .. _fig-25_avg_vel_640:
