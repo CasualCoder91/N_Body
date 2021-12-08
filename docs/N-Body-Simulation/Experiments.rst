@@ -12,14 +12,15 @@ Parameter optimization
     Precision depending on DBSCAN parameters
 
 The quality of the cluster analysis with DBSCAN depends on the choice for its parameters.
-:numref:`fig-DBSCAN` depicts the precision for a :math:`1 kM_\odot` cluster :math:`300 \textup{[pc]}` from the GC.
+:numref:`fig-DBSCAN` depicts the precision for a :math:`1 [kM_\odot]` cluster :math:`300 \textup{[pc]}` from the GC.
 Decreasing :math:`\epsilon` leads to a higher precission untill it is too small, at which point multiple clusters are detected.
 Based on this observation :math:`\epsilon` was set to :math:`1.1*10^{-5}` and nPoints to 200 for all simulations.
 
 Setup
 -----
 
-A total of 25 simulations with varying focus and cluster mass were carried out and in order to study the effects of these parameters on the cluster detection performance.
+A total of 25 simulations with varying focus and cluster mass were carried out in order to study the effects of these parameters on the cluster detection performance.
+The focus was set to :math:`l=0^{\circ}` and :math:`b \in \left \{0,5,10,25,180 \right \}[^\circ]` HGP and the cluster mass :math:`\in \left \{0.64, 1.6, 4.0, 10, 25 \right \} [\textup{kM}_\odot]`.
 Each simulation was repeated 10 times for error estimation.
 
 Parameters
