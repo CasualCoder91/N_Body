@@ -62,6 +62,12 @@ Results and Interpretation
 
     Number of simulated/detected cluster and field stars at :math:`10^\circ` depending on the cluster masses
 
+Depending on the total cluster mass the amount of simulated CS (SCS) ranges from :math:`1.3` to :math:`40.4` while the amount of mapped CS (MCS) lies between :math:`1.0` and :math:`16.4.`.
+The decrease in detectability of CS is due to increasing CS density and has no direct impact on the clustering performance.
+The difference between observed stars and mapped stars is negligible, in fact the amount of non mapped stars decreases with increasing number of SCS.
+
+While the number of simulated FS (SFS) remains constant, the number of mapped FS (MFS) decreases with increasing number of CS because bright CS hide FS.
+This inverse relationship does impact the clustering performance to some degree, less MFS means less potenital FPs.
 
 .. _fig-25_precision:
 .. figure:: Images/25_precision.svg

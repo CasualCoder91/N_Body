@@ -287,6 +287,9 @@ def plot_number_hist():
     MNFSTotdf = df.query(query)['MNFS '+mass_range]/1000
     MNFSTotdferr = df.query(query)['MNFS '+mass_range+' Err']/1000
 
+    print(SNCSTotdf)
+    print(MNCSTotdf)
+
     N = len(masses)
 
     ## necessary variables
@@ -327,7 +330,7 @@ def plot_number_hist():
     plt.setp(xtickNames, rotation=0, fontsize=10)
 
     ## add a legend
-    ax.legend( (rects1[0], rects2[0], rects3[0], rects4[0]), ('SCS','OCS', 'SFS','OFS') )
+    ax.legend( (rects1[0], rects2[0], rects3[0], rects4[0]), ('SCS','MCS', 'SFS','MFS') )
 
     plt.show()
 
