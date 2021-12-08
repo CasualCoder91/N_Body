@@ -254,13 +254,16 @@ def plot_velocity_hist():
     axes[1].set_xlim(axes[0].get_xlim())
     axes[1].set_ylim(axes[0].get_ylim())
     axes[1].set_title('10 [kM$_{\odot}$]')
-
+    axes[1].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+    axes[1].ticklabel_format(axis="x", style="sci", scilimits=(0,0))
 
     #plt.hist(cluster_arr[:,i], density=True, bins=100, alpha=0.5, label='CS')
     #plt.hist(fs_arr[:,i], density=True, bins=100, alpha=0.5, label='FS')
     axes[0].set_xlabel('v_asc [arcsec/day]', fontsize=16)
     axes[0].set_ylabel('v_dec [arcsec/day]', fontsize=16)
     axes[0].set_title('0.64 [kM$_{\odot}$]')
+    axes[0].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+    axes[0].ticklabel_format(axis="x", style="sci", scilimits=(0,0))
     axes[0].legend(loc="upper left")
 
     plt.show()
@@ -441,8 +444,8 @@ def plot_clustering_map():
 def main():
 
     #plot_number_hist()
-    plot_avg_2D_vel()
-    #plot_velocity_hist()
+    #plot_avg_2D_vel()
+    plot_velocity_hist()
 
     #db = Database()
     #plot_precision_maps(True)
