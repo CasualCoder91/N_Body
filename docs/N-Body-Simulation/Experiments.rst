@@ -115,11 +115,6 @@ The bigger the cluster mass the higher the cluster star velocity density, which 
 
 :numref:`fig-25_vel_scatter` displays examples for the 2D HTP velocity space of two simulated clusters near the GC.
 
-The :math:`0.64 [kM_{\odot}]` only has 1143 stars inside the circle while :math:`10 [kM_{\odot}]` has 3158.
+In this example the :math:`0.64 [kM_{\odot}]` cluster only has 1143 stars inside the circle while :math:`10 [kM_{\odot}]` has 3158.
 In both cases statisticly the same amount of field stars fall within that area, leading to a higher ratio of FPs and therefore a lower precission for the lower mass cluster.
 
-
-
-five different FOV angles (180°,25,10, 5, 0  ) and cluster masses (0.64, 1.6, 4.0, 10, 25)
-
-ToDo: Continue here (25 observations), Add Data for plots to Appendix!
