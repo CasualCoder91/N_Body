@@ -10,5 +10,5 @@ That is not to say it won’t be possible. Many improvements and additions could
 
 #. A more accurate bulge model, for instance :cite:`Wang2012`
 #. Additional snapshots to recover temporarily hidden stars and get a more accurate velocity estimation.
-#. A sofisticated method for extracting positional data like point spread function fitting.
+#. A sophisticated method for extracting positional data like point spread function fitting.
 #. Accurately determine the ideal time step size.
