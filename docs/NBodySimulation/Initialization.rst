@@ -687,7 +687,7 @@ This is achieved by expressing cylinder in spherical coordinates and integrating
 As neither of these integrals have a analytical solution this calculation is computation intensive.
 Therefor a lookup table has been implemented in witch discrete :math:`r` and corresponding bulge dispersion are stored.
 
-.. figure:: Images/velocityDispersionBulge.svg
+.. figure:: Images/velocity_dispersion_bulge.*
     :align: center
 
     Velocity dispersion of bulge stars
