@@ -76,8 +76,8 @@ The circular velocity :math:`v_{c}` is defined via
 with in the presented case total potential being
 
 .. math::
-   :label: total_potential
    \Phi \left ( R,z \right ) = \Phi_{bh} \left ( R,z \right )+\Phi_{disk} \left ( R,z \right )+\Phi_{bulge} \left ( R,z \right )+\Phi_{halo} \left ( R,z \right )
+   :label: total_potential
 
 therefor
 
