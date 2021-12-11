@@ -353,6 +353,7 @@ Using the momenta in cylindrical coordinates :eq:`conjugate_momenta` the Hamilto
 
 .. math::
     H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\phi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
+   :label: hamilton_1
 
 using Hamilton's equations gives
 
@@ -360,10 +361,15 @@ using Hamilton's equations gives
     \dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\phi^2}{R^3}-\frac{\partial \Phi }{\partial R} \\
     \dot{p}_{\phi} = -\frac{\partial H}{\partial \phi} = -\frac{\partial \Phi }{\partial \phi} = 0 \\
     \dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}
-   :label: hamilton_equations
+   :label: hamilton_2
 
-Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\phi}`, the second equation above signifies that, in the case of an axisymmetric potential,
-the z component of the angular momentum is conserved.
+Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus 
+
+.. math::
+    L_z = R^2\dot{\phi}
+   :label: angular_momentum
+
+, the second equation above signifies that, in the case of an axisymmetric potential, the z component of the angular momentum is conserved.
 
 The phase space distribution function (DF)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -439,7 +445,7 @@ Since the galactic potential :eq:`total_potential` is axisymmetric, it is conven
    :label: jeans_equations_1
 
 It is assumed that the galaxy is statistically in a steady state (:cite:`Binney_2013`) ie :math:`\frac{\partial f}{\partial t}=0`.
-Due to this assumption and taking :eq:`hamilton_equations` into account :eq:`jeans_equations_1` simplifies to
+Due to this assumption and taking :eq:`hamilton_2` into account :eq:`jeans_equations_1` simplifies to
 
 .. math::
     p_R\frac{\partial f}{\partial R}
@@ -464,7 +470,7 @@ Such orbits can be approximated by circular orbits with additional retrograde el
 
 The derivation of this approximation starts with Hamilton's equations for an axisymmetric potential.
 
-Rearranging equation (?) and using the constant :math:`L_z` gives
+Rearranging :eq:`hamilton_1` and using :eq:`angular_momentum` gives
 
 .. math::
     H = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\frac{mL_z^2}{2R^2}+\Phi\left(R,z\right)
