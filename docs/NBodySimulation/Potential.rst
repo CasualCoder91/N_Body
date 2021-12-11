@@ -104,7 +104,7 @@ The circular velocity can be used for fitting the model parameters :cite:`Bajkov
 :numref:`fig-potential_circular_velocity` displays the velocity for the chosen model and its components.
 
 .. _fig-potential_circular_velocity:
-.. figure:: Images/potential_circular_velocity.pdf
+.. figure:: Images/potential_circular_velocity.*
     :align: center
 
     Galactic rotation curve for the chosen MW model
