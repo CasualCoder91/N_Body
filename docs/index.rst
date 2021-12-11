@@ -18,21 +18,20 @@ Simulating stellar motions for open clusters in the Milky Way
    Project_Overview/Tasks
    Project_Overview/MilkyWayClusters
 
-   N-Body-Simulation/Abstract
-   N-Body-Simulation/Acknowledgement
-   N-Body-Simulation/Introduction
-   N-Body-Simulation/Potential
-   N-Body-Simulation/Initialization
-   N-Body-Simulation/Integration
-   N-Body-Simulation/CoordinateSystems
-   N-Body-Simulation/Database
-   N-Body-Simulation/MockObservations
-   N-Body-Simulation/DataReduction
-   N-Body-Simulation/Clustering
-   N-Body-Simulation/Experiments
-   N-Body-Simulation/Conclusions
-   N-Body-Simulation/Appendix
-   N-Body-Simulation/Code
+   NBodySimulation/Abstract
+   NBodySimulation/Acknowledgement
+   NBodySimulation/Introduction
+   NBodySimulation/Potential
+   NBodySimulation/Initialization
+   NBodySimulation/Integration
+   NBodySimulation/CoordinateSystems
+   NBodySimulation/Database
+   NBodySimulation/MockObservations
+   NBodySimulation/DataReduction
+   NBodySimulation/Clustering
+   NBodySimulation/Experiments
+   NBodySimulation/Conclusions
+   NBodySimulation/Appendix
 
 
 Indices and tables
