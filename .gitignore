@@ -379,3 +379,4 @@ build/*
 /ELT
 /MICADO
 /MICADO_Sci
+/docs/_build
