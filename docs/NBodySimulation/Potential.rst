@@ -44,6 +44,8 @@ Parameters for bulge and disk taken from :cite:`Price_Whelan_2014` and the radiu
 .. (rs: https://arxiv.org/pdf/1412.3451.pdf)
    (others: https://iopscience.iop.org/article/10.1088/0004-637X/714/1/229)
 
+.. _tbl_parameters:
+
 .. csv-table:: Parameters
    :header: "Parameter", "Value", "Unit"
    :widths: 20, 20, 10
@@ -62,6 +64,9 @@ Parameters for bulge and disk taken from :cite:`Price_Whelan_2014` and the radiu
    v_{c}\left ( R_{0},z=0 \right ) = 220\left [ \frac{km}{s} \right ]
 
    R_{0} = 8 \left [ kpc \right ]
+
+Circular Velocity
+-----------------
 
 The circular velocity :math:`v_{c}` is defined via
 
@@ -92,10 +97,8 @@ therefor
    \frac{G M_{bulge} R}{\sqrt{R^2+z^2} \left(a_{bulge}+\sqrt{R^2+z^2}\right)^2}+
    \frac{4 \pi G \rho _{s} R r_{s}^3 \log \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}{\left(R^2+z^2\right)^{3/2}}-\frac{4\pi G\rho_{s} R {r_{s}}^2}{\left(R^2+z^2\right) \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)} \right )
 
-plugging in all the parameters (and :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]`) results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
+Inserting the parameters given in :numref:`tbl_parameters` and setting :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]` results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
 
-Circular Velocity
------------------
 
 .. plot:: pyplots/potentialCircularVelocity.py
 
