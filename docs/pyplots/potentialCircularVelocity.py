@@ -18,7 +18,7 @@ def potentialCircularVelocity(dataPath='',showPlot=True,arguments=[]):
     ax.plot(dataHalo[:,0]*0.001, dataHalo[:,1], label='halo')
     plt.xlabel('distance [kpc]')
     plt.ylabel('circular velocity [km/s]')
-    plt.title('Milky Way Potential: Circular Velocity ')
+    #plt.title('Milky Way Potential: Circular Velocity ')
     ax.legend()
     if showPlot:
         plt.show()

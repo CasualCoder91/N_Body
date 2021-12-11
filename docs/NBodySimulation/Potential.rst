@@ -99,8 +99,13 @@ therefor
 
 Inserting the parameters given in :numref:`tbl_parameters` and setting :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]` results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
 
+The circular velocity can be used for fitting the model parameters. :numref:`fig-potential_circular_velocity` displays the velocity for the chosen model and its components.
 
-.. plot:: pyplots/potentialCircularVelocity.py
+.. _fig-potential_circular_velocity:
+.. figure:: Images/potential_circular_velocity.svg
+    :align: center
+
+    Galactic rotation curve for the chosen MW model
 
 Angular Velocity
 ----------------
