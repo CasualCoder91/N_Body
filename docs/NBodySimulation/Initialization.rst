@@ -50,11 +50,11 @@ Initial Mass Function (IMF)
 
 The IMF describes the initial mass distribution of stars, that is, how many stars have which mass in some set of stars at the start. 
 It is subject of debate wether the IMF of star clusters is universal :cite:`Bastian2010` and the present day mass function (PDMF) usually differs from the IMF.
-Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF and the PDMF of Arches. Hence, the IMF is deemed a adequate estimate for the PDMF of a generic YMSC.
+Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF :cite:`Salpeter1955` and the PDMF of Arches. Hence, the IMF is deemed a adequate estimate for the PDMF of a generic YMSC.
 Sampling routines for the following two IMFs have been implemented by the author.
  
-Salpeter IMF :cite:`Salpeter1955`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Salpeter IMF 
+^^^^^^^^^^^^
 
 .. math::
     p(m)=\frac{dN}{dm}=A*m^{-\alpha }
@@ -156,7 +156,7 @@ Per transformation the tip of the cone is displaced from the origin to the view 
 Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
 
 .. _fig-cone:
-.. figure:: Images/cone/cone.svg
+.. figure:: Images/cone/cone.pdf
     :align: center
 
     Transformation of the cone of vision

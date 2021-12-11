@@ -20,6 +20,7 @@ def potentialCircularVelocity(dataPath='',showPlot=True,arguments=[]):
     plt.ylabel('circular velocity [km/s]')
     #plt.title('Milky Way Potential: Circular Velocity ')
     ax.legend()
+    plt.savefig('potential_circular_velocity.pdf') 
     if showPlot:
         plt.show()
 

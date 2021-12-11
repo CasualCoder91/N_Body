@@ -42,7 +42,7 @@ numfig = True #https://www.sphinx-doc.org/en/master/usage/configuration.html#con
 
 # tikz Configuration
 tikz_proc_suite = 'GhostScript'
-tikz_tikzlibraries = 'tikz-3dplot'
+#tikz_tikzlibraries = 'tikz-3dplot'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
