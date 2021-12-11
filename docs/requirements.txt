@@ -2,5 +2,5 @@ docutils
 breathe
 Sphinx
 matplotlib
-sphinxcontrib-bibtex
+sphinxcontrib-bibtex > 2.0.0
 sphinxcontrib.tikz
