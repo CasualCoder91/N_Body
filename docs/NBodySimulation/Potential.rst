@@ -2,18 +2,10 @@
 Galactic Potential
 ==================
 
-ToDo: Intro
+Modelling the gravitational potential of the Milky Way has been a ever evolving topic in recent decades, :cite:`Barros2016` provides a brief history.
+Here the potential is used to approximate the force on the simulated stars and to initialize field stars.
 
-.. https://iopscience.iop.org/article/10.1088/0004-637X/794/1/4
-   https://academic.oup.com/mnras/article/487/3/4025/5511782
-   (MWPotential2014) https://arxiv.org/pdf/1412.3451.pdf
-   (more on dark halo) https://www.researchgate.net/publication/316334286_Mass_Distribution_and_Gravitational_Potential_of_the_Milky_Way
-   (another galactic potential) http://www.astro.utu.fi/~cflynn/galdyn/lecture4.html
-   (halo from here if needed: https://iopscience.iop.org/article/10.1088/0004-637X/794/1/4)
-   (Measurements of circular velocity) https://arxiv.org/pdf/1810.09466.pdf
-   (circular velocity, using derivation) https://www.researchgate.net/publication/316680117_GalRotpy_an_educational_tool_to_understand_and_parametrize_the_rotation_curve_and_gravitational_potential_of_disk-like_galaxies
-
-The potential consists of four parts: black hole, bulge, disc and the dark matter halo.
+The model of choice consists of four parts: black hole, bulge, disc and the dark matter halo.
 
 The **black hole** is represented by a Keplerian potential:
 
@@ -40,7 +32,7 @@ For the **bulge** the Hernquist potential :cite:`1990ApJ..356..359H` is used
 
 :math:`a` is the scale-length of the spheroid potential
 
-and NFW potential is used for the **dark matter halo** potential
+and NFW potential :cite:`Navarro1996` is used for the **dark matter halo** potential
 
 .. math::
     \Phi_{halo}\left ( r \right ) = \frac{-4\pi G\rho _{s}r_{s}^{3}\ln\left ( 1+\frac{r}{r_{s}}\right )}{r}
