@@ -146,7 +146,7 @@ The Plummer profile has been implemented here as descriped in :cite:`Aarseth1974
 Field Stars (FS)
 ----------------
 
-Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potenital described in "Galactic Potential (?)".
+Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potenital described in :ref:`galactic_potential-label`.
 
 The cone of vision (COV) is defined by the angle of view :math:`\alpha`, the view distance :math:`h` (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
@@ -210,6 +210,7 @@ The transformation matrix :math:`\mathbf{T}` is the product of :math:`\mathbf{R}
     -2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & t_{z}\\
     0  & 0 & 0 & 1
     \end{bmatrix}
+   :label: transformation_matrix
 
 The total mass :math:`M` of disc and bulge stars is obtained by integrating the respective density over the COV. 
 
@@ -276,7 +277,7 @@ or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
 Positions
 ---------
 
-The positions of the field stars within the cone of vision are generated in two steps of rejection sampling followed by the transformation (?).
+The positions of the field stars within the cone of vision are generated in two steps of rejection sampling followed by the transformation :eq:`transformation_matrix`.
 
 In the first step trial positions are drawn from a uniform distribution within a cuboid containing the cone.
 The boundaries of the cuboid are given by
@@ -301,7 +302,7 @@ The second step consists of rejection sampling the density distribution.
 The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
 If this test variable is smaller than the density at the trial position generated in step two, the trial position is accepted and rejected otherwise.
 
-Finally the accepted position is transformed via the transformation matrix (?).
+Finally the accepted position is transformed via the transformation matrix :eq:`transformation_matrix`.
 
 .. plot:: pyplots/potentialPositions.py
 
@@ -327,11 +328,12 @@ derivation by time gives the velocity
 
 .. math::
     \vec{v} = \dot{R}\hat{e}_R+R\dot{\phi}\hat{e}_\phi+\dot{z}\hat{e}_z
+   :label: cylindrical_velocity
 
 Lagrangian with axisymmetric potential
 **************************************
 
-Using (?) the Lagrangian reads
+Using :eq:`cylindrical_velocity` the Lagrangian reads
 
 .. math::
     L =\frac{m}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,z\right)
@@ -342,11 +344,12 @@ and using the Euler–Lagrange equation gives the conjugate momenta
     p_{R} = \frac{\partial L}{\partial \dot{R}} = m\dot{R} = mv_R\\
     p_{\phi} = \frac{\partial L}{\partial \dot{\phi}} = mR^2\dot{\phi} =mRv_\phi\\
     p_{z} = \frac{\partial L}{\partial \dot{z}} = m\dot{z} =mv_z\\
+   :label: conjugate_momenta
 
 Hamiltonian with axisymmetric potential
 ***************************************
 
-Using the momenta in cylindrical coordinates (?) the Hamiltonian with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
+Using the momenta in cylindrical coordinates :eq:`conjugate_momenta` the Hamiltonian with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
 
 .. math::
     H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\phi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
@@ -377,7 +380,7 @@ The conservation of probability in phase space is, similarly to the continuity e
 
 with :math:`\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})`.
 
-The right summand can be changed as follows, using Hamilton equations (?)
+The right summand can be changed as follows, using Hamilton equations
 
 .. math::
     \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i)
@@ -398,6 +401,7 @@ And therefor
     \frac{\partial f }{\partial t} + \sum_{i=1}^{3} \left (
     \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
     - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right) = 0
+   :label: collisionless_boltzmann_equation
 
 which is the collisionless Boltzmann Equation (CBE).
 
@@ -416,7 +420,7 @@ Todo: Continue here (showing = 0 for 2/3 directions)
 Jeans equations
 ^^^^^^^^^^^^^^^
 
-Using Einstein notation for :math:`i=1,2,3` the collisionless Boltzmann Equation (?) is given by (:cite:`Binney_2011` p. 277):
+Using Einstein notation for :math:`i=1,2,3` the CBE :eq:`collisionless_boltzmann_equation` is given by (:cite:`Binney_2011` p. 277):
 
 .. math::
     \frac{\partial f}{\partial t} + \frac{\partial f}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial f}{\partial p_i}\frac{\partial H}{\partial q_i} = 0
@@ -696,5 +700,3 @@ In the figure above results are compared with observations (:cite:`Kunder_2012`)
 The other parameters are given in table (?). The radial velocity dispersion heavily depends on the scale parameter of the bulge potential.
 With the current choice, the dispersion at small :math:`r` is lower than realistic. This issue could be solved by adding an additional potential with smaller scale radius.
 A multi component bulge model is for instance suggested by :cite:`Robin_2012`.
-
-.. bibliography:: bibtex.bib

@@ -1,3 +1,5 @@
+.. _galactic_potential-label:
+
 ==================
 Galactic Potential
 ==================
