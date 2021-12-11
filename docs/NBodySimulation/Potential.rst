@@ -46,7 +46,7 @@ Parameters for bulge and disk taken from :cite:`Price_Whelan_2014` and the radiu
 
 .. _tbl_parameters:
 
-.. csv-table:: Parameters
+.. csv-table:: MW model parameters
    :header: "Parameter", "Value", "Unit"
    :widths: 20, 20, 10
 
@@ -76,6 +76,7 @@ The circular velocity :math:`v_{c}` is defined via
 with in the presented case total potential being
 
 .. math::
+   :label: total_potential
    \Phi \left ( R,z \right ) = \Phi_{bh} \left ( R,z \right )+\Phi_{disk} \left ( R,z \right )+\Phi_{bulge} \left ( R,z \right )+\Phi_{halo} \left ( R,z \right )
 
 therefor
@@ -99,7 +100,8 @@ therefor
 
 Inserting the parameters given in :numref:`tbl_parameters` and setting :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]` results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
 
-The circular velocity can be used for fitting the model parameters. :numref:`fig-potential_circular_velocity` displays the velocity for the chosen model and its components.
+The circular velocity can be used for fitting the model parameters :cite:`Bajkova2017`.
+:numref:`fig-potential_circular_velocity` displays the velocity for the chosen model and its components.
 
 .. _fig-potential_circular_velocity:
 .. figure:: Images/potential_circular_velocity.svg
@@ -110,9 +112,14 @@ The circular velocity can be used for fitting the model parameters. :numref:`fig
 Angular Velocity
 ----------------
 
+The angluar velocity is required for initializing disc star velocities and can be obtained from the potential:
+
 .. math::
     \Omega ^{2}\left ( R \right ) = \frac{1}{R}\frac{\partial \Phi \left ( R,0 \right )}{\partial r}
 
+For the total potential :eq:`total_potential` this derivation jields: 
+
+.. math::
     \Omega ^{2}\left ( R \right ) = \frac{G}{R} \left\{-\frac{M_{bulge}}{(a_{bulge}+R)^2}+\frac{2 M_{disk} R^3}{\left[\left(a_{disk}+b_{disk}\right)^2+R^4\right]^{1.5}}+\frac{M_{bh}}{R^2}-\frac{4 \pi  p_{s} r_{s}^3}{R^2+R r_{s}}+\frac{4 \pi  p_{s} r_{s}^3 \ln \left(\frac{R+r_{s}}{r_{s}}\right)}{R^2}\right\}
 
 Mass Distribution
@@ -137,13 +144,3 @@ The SMD is defined by
 
 .. plot:: pyplots/potentialSurfaceDensity.py
 
-"Junk"
-
-Halo potential given by (https://iopscience.iop.org/article/10.1088/0004-637X/714/1/229)
-
-.. math::
-    \Phi_{halo}\left ( x,y,z \right ) = v_{halo}^{2}*\ln\left ( C_{1}*x^{2}+C_{2}*y^{2}+C_{3}*x*y +\left (\frac{z}{q_{z}}  \right )^{2}+r_{halo}^{2}\right )
-
-    \Phi_{halo}\left ( r \right ) = \frac{1}{2}v_{halo}^{2}\ln\left ( r^{2}+r_{halo}^{2}\right )
-
-.. bibliography:: bibtex.bib
