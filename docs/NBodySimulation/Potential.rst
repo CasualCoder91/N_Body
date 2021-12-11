@@ -135,10 +135,6 @@ The SMD is defined by
 .. math::
     \Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( r \right )\mathrm{d}z
 
-.. doxygenfunction:: Potential::surfaceDensityDisk
-
-.. doxygenfunction:: Potential::surfaceDensityBulge
-
 .. plot:: pyplots/potentialSurfaceDensity.py
 
 "Junk"
