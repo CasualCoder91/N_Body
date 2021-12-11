@@ -81,7 +81,7 @@ with in the presented case total potential being
    \Phi \left ( R,z \right ) = \Phi_{bh} \left ( R,z \right )+\Phi_{disk} \left ( R,z \right )+\Phi_{bulge} \left ( R,z \right )+\Phi_{halo} \left ( R,z \right )
    :label: total_potential
 
-therefor
+therefore
 
 .. math::
    v_{c}^{2} = v_{c,bh}^{2}+v_{c,disk}^{2}+v_{c,bulge}^{2}+v_{c,halo}^{2}
@@ -93,12 +93,6 @@ therefor
    v_{c,bulge}^{2} = \frac{G M_{bulge} R^2}{\sqrt{R^2+z^2} \left(a_{bulge}+\sqrt{R^2+z^2}\right)^2}
 
    v_{c,halo}^{2} = \frac{4 \pi G \rho _{s} R^2 r_{s}^3 \log \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}{\left(R^2+z^2\right)^{3/2}}-\frac{4\pi G\rho_{s} R^2 {r_{s}}^2}{\left(R^2+z^2\right) \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}
-
-.. math::
-   v_{c}^{2}=R\left ( \frac{G M_{bh} R}{\left(R^2+z^2\right)^{3/2}}+
-   \frac{GM_{disk}R}{\left(\left(a_{disk}+\sqrt{b_{disk}^2+z^2}\right)^2+R^2\right)^{3/2}}+
-   \frac{G M_{bulge} R}{\sqrt{R^2+z^2} \left(a_{bulge}+\sqrt{R^2+z^2}\right)^2}+
-   \frac{4 \pi G \rho _{s} R r_{s}^3 \log \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}{\left(R^2+z^2\right)^{3/2}}-\frac{4\pi G\rho_{s} R {r_{s}}^2}{\left(R^2+z^2\right) \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)} \right )
 
 Inserting the parameters given in :numref:`tbl_parameters` and setting :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]` results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
 

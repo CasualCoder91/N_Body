@@ -360,6 +360,7 @@ using Hamilton's equations gives
     \dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\phi^2}{R^3}-\frac{\partial \Phi }{\partial R} \\
     \dot{p}_{\phi} = -\frac{\partial H}{\partial \phi} = -\frac{\partial \Phi }{\partial \phi} = 0 \\
     \dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}
+   :label: hamilton_equations
 
 Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus :math:`L_z = R^2\dot{\phi}`, the second equation above signifies that, in the case of an axisymmetric potential,
 the z component of the angular momentum is conserved.
@@ -425,7 +426,7 @@ Using Einstein notation for :math:`i=1,2,3` the CBE :eq:`collisionless_boltzmann
 .. math::
     \frac{\partial f}{\partial t} + \frac{\partial f}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial f}{\partial p_i}\frac{\partial H}{\partial q_i} = 0
 
-Since the galactic potential (?) is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
+Since the galactic potential :eq:`total_potential` is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
 
 .. math::
     \frac{\partial f}{\partial t}
@@ -435,9 +436,10 @@ Since the galactic potential (?) is axisymmetric, it is convenient to express th
     - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
     - \frac{\partial \Phi}{\partial \phi}\frac{\partial f}{\partial p_\phi}
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
+   :label: jeans_equations_1
 
 It is assumed that the galaxy is statistically in a steady state (:cite:`Binney_2013`) ie :math:`\frac{\partial f}{\partial t}=0`.
-Due to this assumption and taking (?) into account (?) simplifies to
+Due to this assumption and taking :eq:`hamilton_equations` into account :eq:`jeans_equations_1` simplifies to
 
 .. math::
     p_R\frac{\partial f}{\partial R}
@@ -445,8 +447,9 @@ Due to this assumption and taking (?) into account (?) simplifies to
     + p_z\frac{\partial f}{\partial z}
     - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
+   :label: jeans_equations_2
 
-Multiplying equation (?) by :math:`p_R` and integrating over all momenta leads to (todo: derive?)
+Multiplying equation :eq:`jeans_equations_2` by :math:`p_R` and integrating over all momenta leads to (todo: derive?)
 
 .. math::
     \frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +
