@@ -303,11 +303,6 @@ If this test variable is smaller than the density at the trial position generate
 
 Finally the accepted position is transformed via the transformation matrix (?).
 
-
-.. doxygenfunction:: InitialConditions::sampleDiskPositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
-
-.. doxygenfunction:: InitialConditions::sampleBulgePositions(std::vector<Star*> stars, Vec3D coneBoundaryMin, Vec3D coneBoundaryMax, double coneR, double distance, Matrix *transformationMatrix)
-
 .. plot:: pyplots/potentialPositions.py
 
 Velocities

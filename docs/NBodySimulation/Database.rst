@@ -16,11 +16,3 @@ Entity Relationship Diagram
 ---------------------------
 
 .. image:: Images/ERD.svg
-
-Database Interface
-------------------
-
-Interactions with the database are handled by the Database class
-
-.. doxygenclass:: Database
-   :members:
