@@ -37,6 +37,7 @@ extensions = [
 ]
 needs_sphinx = '1.4.3'
 bibtex_bibfiles = ['bibtex.bib']
+bibtex_default_style = 'plain'
 numfig = True #https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-numfig
 
 # tikz Configuration
