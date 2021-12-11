@@ -15,4 +15,4 @@ Observed stars contain no information about their mass or GCA phase space coordi
 Entity Relationship Diagram
 ---------------------------
 
-.. image:: Images/ERD.svg
+.. image:: Images/ERD.*

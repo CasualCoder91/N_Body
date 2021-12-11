@@ -6,7 +6,7 @@ Parameter optimization
 ----------------------
 
 .. _fig-DBSCAN:
-.. figure:: Images/DBSCAN_parameter_space.svg
+.. figure:: Images/DBSCAN_parameter_space.*
     :align: center
 
     Precision depending on DBSCAN parameters
@@ -58,7 +58,7 @@ Results and Interpretation
 --------------------------
 
 .. _fig-25_n_stars:
-.. figure:: Images/25_n_stars.svg
+.. figure:: Images/25_n_stars.*
     :align: center
 
     Number of simulated/detected cluster and field stars at :math:`10^\circ` depending on the cluster masses
@@ -71,13 +71,13 @@ While the number of simulated FS (SFS) remains constant, the number of mapped FS
 This inverse relationship does impact the clustering performance to some degree, less MFS means less potenital FPs as well as TNs, the latter are not relevant for Precision and F1 score.
 
 .. _fig-25_precision:
-.. figure:: Images/25_precision.svg
+.. figure:: Images/25_precision.*
     :align: center
 
     Precision for different mass bins, angles and cluster masses
 
 .. _fig-25_precision_sim:
-.. figure:: Images/25_precision_sim.svg
+.. figure:: Images/25_precision_sim.*
     :align: center
 
     Precision using accurate velocities
@@ -87,7 +87,7 @@ The only relevant difference between simulated and observed HTP proper motion is
 While both figures show the same relationships, the drop in overall performance due to inaccuracies introduced during observation and source detection are painfully apparent.
 
 .. _fig-25_F1:
-.. figure:: Images/25_F1.svg
+.. figure:: Images/25_F1.*
     :align: center
 
     F1 score for different mass bins, angles and cluster masses
@@ -97,7 +97,7 @@ As is visible in :numref:`fig-25_precision` and :numref:`fig-25_precision_sim` t
 Curiously for the same cluster mass the precision is lower at :math:`10^\circ` than at :math:`5^\circ`.
 
 .. _fig-25_avg_vel_640:
-.. figure:: Images/25_avg_vel_640.svg
+.. figure:: Images/25_avg_vel_640.*
     :align: center
 
     Average cluster and field star velocity at different angles
@@ -108,7 +108,7 @@ At :math:`10^\circ` the average field star velocity is closer to the average clu
 The bigger the cluster mass the higher the cluster star velocity density, which implies the second correlation - precision with cluster mass - presented in :numref:`fig-25_precision`.
 
 .. _fig-25_vel_scatter:
-.. figure:: Images/25_vel_scatter.svg
+.. figure:: Images/25_vel_scatter.*
     :align: center
 
     2D HTP velocity of simulated clusters
