@@ -156,7 +156,7 @@ Per transformation the tip of the cone is displaced from the origin to the view 
 Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
 
 .. _fig-cone:
-.. figure:: Images/cone/cone.pdf
+.. figure:: Images/cone/cone.*
     :align: center
 
     Transformation of the cone of vision
