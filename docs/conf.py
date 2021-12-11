@@ -37,7 +37,7 @@ extensions = [
     'sphinxcontrib.tikz'
 ]
 needs_sphinx = '1.4.3'
-bibtex_bibfiles = ['/N-Body_Simulation/bibtex.bib']
+bibtex_bibfiles = ['/N-Body-Simulation/bibtex.bib']
 numfig = True #https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-numfig
 
 # tikz Configuration
