@@ -6,12 +6,12 @@ Sampling distribution functions
 -------------------------------
 
 Space, velocity and mass distributions are sampled during various steps of the initialization using the following two methods.
-For further destails and alternative methods see :cite:`Devroye1986`.
+For further details and alternative methods see :cite:`Devroye1986`.
 
 Rejection sampling
 ^^^^^^^^^^^^^^^^^^
 
-A proposed distribution function :math:`g(x)` is sampled and each resultin sample accepted with a probability of :math:`\frac{f(x)}{Cg(x)}`.
+A proposed distribution function :math:`g(x)` is sampled and each resulting sample accepted with a probability of :math:`\frac{f(x)}{Cg(x)}`.
 :math:`C` is a constant ensuring :math:`f(x)\leqslant Cg(x) \forall x` and :math:`f(x)` the target distribution.
 
 If :math:`g(x)` is the pdf of a uniform distribution with :math:`x \in \left [ a,b \right ]`
@@ -30,7 +30,7 @@ here u is a uniform distribution :math:`U(0,Cg(x)) = U(0,m)`. While :math:`Cg(x)
 Inverse transform sampling 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If the cumulative probability function (cpf) of the probability distribution :math:`f(y)` is continous and its inverse obtainable, this method can be utilized and is more efficient than rejection sampling.
+If the cumulative probability function (cpf) of the probability distribution :math:`f(y)` is continuous and its inverse obtainable, this method can be utilized and is more efficient than rejection sampling.
 The cpf describes the probability that the random variable is smaller or equal to x
 
 .. math::
@@ -41,7 +41,7 @@ The inverse :math:`F^{-1}(y)` may be calculated via :math:`F(F^{-1}(y)) = y`. Wi
 Cluster
 -------
 
-A cluster can be characteristed via a number of parameters, namely its density profile, metalicity, binary fraction and initial mass function (IMF).
+A cluster can be characterised via a number of parameters, namely its density profile, metallicity, binary fraction and initial mass function (IMF).
 The following sections cover methods implemented by the author. Alternatively cluster stars can be generated using the open source code McLuster :cite:`Kuepper2011` which supports more density profiles and all other parameters mentioned above. 
 The generated file can then be imported by setting the appropriate parameters.
 
@@ -49,8 +49,8 @@ Initial Mass Function (IMF)
 ---------------------------
 
 The IMF describes the initial mass distribution of stars, that is, how many stars have which mass in some set of stars at the start. 
-It is subject of debate wether the IMF of star clusters is universal :cite:`Bastian2010` and the present day mass function (PDMF) usually differs from the IMF.
-Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF :cite:`Salpeter1955` and the PDMF of Arches. Hence, the IMF is deemed a adequate estimate for the PDMF of a generic YMSC.
+It is subject of debate whether the IMF of star clusters is universal :cite:`Bastian2010` and the present day mass function (PDMF) usually differs from the IMF.
+Figure 13 in :cite:`Espinoza2009` depicts the Salpeter IMF :cite:`Salpeter1955` and the PDMF of Arches. Hence, the IMF is deemed an adequate estimate for the PDMF of a generic YMSC.
 Sampling routines for the following two IMFs have been implemented by the author.
  
 Salpeter IMF 
@@ -65,13 +65,14 @@ To do so one must integrate the IMF over the mass and normalize it, yielding the
 
 .. math::
     P(m)=\int_{m_{min}}^{m}A*m^{-\alpha } dm = \frac{A}{-\alpha +1}\left ( m^{-\alpha +1} -m_{min}^{-\alpha +1}\right )
+    :label: salpeter_ncdf_1
 
 A is defined by normalization:
 
 .. math::
     P({m_{max}})\equiv 1\rightarrow A=\frac{-\alpha +1}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1} }
 
-With this () becomes:
+With this :eq:`salpeter_ncdf_1` becomes:
 
 .. math::
     P(m)=\frac{m^{-\alpha +1} -m_{min}^{-\alpha +1}}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1}}
@@ -428,7 +429,7 @@ Mean velocities are given by the first moment:
 .. math::
     \overline{v_i}(\vec{x}) \equiv \frac{1}{\nu(\vec{x})}\int v_i f(\vec{x},\vec{v})d^3\vec{v}
 
-Todo: Continue here (showing = 0 for 2/3 directions)
+Todo(?): Continue here (showing = 0 for 2/3 directions)
 
 Jeans equations
 ^^^^^^^^^^^^^^^
@@ -645,6 +646,7 @@ In the epicyclic approximation, azimuthal and radial dispersion have the followi
 
 .. math::
     \frac{\sigma_{v_{\phi}}^2}{\sigma_{v_{R}}^2} = \frac{\kappa^2}{4\Omega^2}
+    :label: azimuthal_velocity_dispersion
 
 With this relation :eq:`disk_velocity_step_2` can be written as
 
@@ -683,10 +685,11 @@ With this and under the assumption that the retrograde elliptical orbit is align
 .. math::
     \overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
     \left (1 - \frac{\kappa^2}{4\Omega^2} -\frac{R}{a } \right )
+    :label: disk_velocity_step_4
 
 The velocity components can be sampled from Gaussian distributions. Dispersions are obtained by first evaluating the epicyclic frequency :eq:`epicyclic_frequency` and the surface mass density :eq:`surface_mass_density`,
-followed by the radial velocity dispersion :eq:`radial_velocity_dispersion_1` with constant factor :eq:`radial_velocity_dispersion_constant`, the vertical :eq:`vertical_velocity_dispersion` and the azimuthal velocity dispersion (?).
-As noted before, the mean velocity in :math:`R` and :math:`z` is zero. For :math:`\phi` the mean velocity is calculated from (?), where the circular velocity :math`v_c` is given by (?).
+followed by the radial velocity dispersion :eq:`radial_velocity_dispersion_1` with constant factor :eq:`radial_velocity_dispersion_constant`, the vertical :eq:`vertical_velocity_dispersion` and the azimuthal velocity dispersion :eq:`azimuthal_velocity_dispersion`.
+As noted before, the mean velocity in :math:`R` and :math:`z` is zero. For :math:`\phi` the mean velocity is calculated from :eq:`disk_velocity_step_4`, where the circular velocity :math:`v_c` is given by :eq:`circular_velocity`.
 
 
 Bulge
@@ -696,13 +699,14 @@ For spherically symmetric distribution functions, such as, with the present appr
 
 .. math::
     \frac{\partial (\rho \sigma_r^2)}{\partial r} + 2\frac{\beta\sigma_r^2}{r} + \rho\frac{\partial \Phi}{\partial r} = 0
+    :label: bulge_velocity_1
 
 were :math:`\beta` is an indicator for anisotropy in radial and tangential direction.
 
 .. math::
     \beta = 1 - \frac{\sigma^2_\phi}{\sigma^2_r}
 
-If the distribution is isotropic, as assumed here, :math:`\beta=0` and (?) simplifies to
+If the distribution is isotropic, as assumed here, :math:`\beta=0` and :eq:`bulge_velocity_1` simplifies to
 
 .. math::
     \frac{\partial (\rho \sigma_r^2)}{\partial r} +  \rho\frac{\partial \Phi}{\partial r} = 0
@@ -712,22 +716,23 @@ and the radial dispersion can be calculated by integration
 .. math::
     \sigma_r^2 = \frac{1}{\rho}\int_{r}^{\infty}\rho \frac{\partial \Phi}{\partial r}\textup{dr}
 
-However, :math:`\Phi` is the composite potential consisting of bulge, disc and halo and therefor not spherically symmetric. As suggested in :cite:`Hernquist_1993` contribution by the disc to the bulge dispersion may be accounted for by spherically averaging the disc potential.
+However, :math:`\Phi` is the composite potential consisting of bulge, disc and halo and therefore not spherically symmetric. As suggested in :cite:`Hernquist_1993`, contribution by the disc to the bulge dispersion may be accounted for by spherically averaging the disc potential.
 This is achieved by expressing cylinder in spherical coordinates and integrating over the relevant angle
 
 .. math::
     \sigma_{r,disk}^2 = \frac{1}{\rho}\int_{r}^{\infty}
     \frac{\rho }{2\pi}  \int_0^{2\pi} \frac{\partial \Phi\left ( r\sin(\theta ),r\cos(\theta ) \right )}{\partial r} \textup{d}\theta \textup{dr} \\
 
-As neither of these integrals have a analytical solution this calculation is computation intensive.
-Therefor a lookup table has been implemented in witch discrete :math:`r` and corresponding bulge dispersion are stored.
+As neither of these integrals have a analytical solution, this calculation is computationally intensive.
+Therefore a lookup table has been implemented in which discrete :math:`r` and corresponding bulge dispersion are stored.
 
 .. figure:: Images/velocity_dispersion_bulge.*
     :align: center
+    :figwidth: 5cm
 
     Velocity dispersion of bulge stars
 
-In the figure above results are compared with observations (:cite:`Kunder_2012`). These results were generated using a view distance of 7.5kpc.
-The other parameters are given in table (?). The radial velocity dispersion heavily depends on the scale parameter of the bulge potential.
+In the figure above results are compared with observations from :cite:`Kunder_2012`. These results were generated using a view distance of 7.5kpc.
+The other parameters are given in :numref:`tbl_parameters`. The radial velocity dispersion heavily depends on the scale parameter of the bulge potential.
 With the current choice, the dispersion at small :math:`r` is lower than realistic. This issue could be solved by adding an additional potential with smaller scale radius.
-A multi component bulge model is for instance suggested by :cite:`Robin_2012`.
+A multi component bulge model has been suggested for instance by :cite:`Robin_2012`.
