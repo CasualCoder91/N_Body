@@ -16,7 +16,7 @@ The **black hole** is represented by a Keplerian potential:
 
 with :math:`r` being the spherical radius.
 
-The **disk** can be modeled via a Miyamoto Nagai potential :cite:`1975PASJ..27..533M`
+The **disk** can be modelled via a Miyamoto Nagai potential :cite:`1975PASJ..27..533M`
 
 .. math::
     \Phi_{disk}\left ( R,z \right ) = -\frac{G*M_{disk}}{\sqrt{R^{2+\left ( a_{disk}+\sqrt{z^{2}+b_{disk}^{2}} \right )^{2}}}}
@@ -109,12 +109,12 @@ The circular velocity can be used for fitting the model parameters :cite:`Bajkov
 Angular Velocity
 ----------------
 
-The angluar velocity is required for initializing disc star velocities and can be obtained from the potential:
+The angular velocity is required for initializing disc star velocities and can be obtained from the potential:
 
 .. math::
     \Omega ^{2}\left ( R \right ) = \frac{1}{R}\frac{\partial \Phi \left ( R,0 \right )}{\partial r}
 
-For the total potential :eq:`total_potential` this derivation jields: 
+For the total potential :eq:`total_potential` this derivation yields: 
 
 .. math::
     \Omega ^{2}\left ( R \right ) = \frac{G}{R} \left\{-\frac{M_{bulge}}{(a_{bulge}+R)^2}+\frac{2 M_{disk} R^3}{\left[\left(a_{disk}+b_{disk}\right)^2+R^4\right]^{1.5}}+\frac{M_{bh}}{R^2}-\frac{4 \pi  p_{s} r_{s}^3}{R^2+R r_{s}}+\frac{4 \pi  p_{s} r_{s}^3 \ln \left(\frac{R+r_{s}}{r_{s}}\right)}{R^2}\right\}
