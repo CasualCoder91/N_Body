@@ -70,7 +70,7 @@ Since the velocity, :math:`v(t)` changes over time, it's value at the midpoint b
 .. math::
    x_{n+1} = x_{n} + hv_{n+0.5}\\
    v_{n+1.5} = v_{n+0.5} + \frac{h}{m}F(x_{n+1})
-    :label: leapfrog_algorithm
+   :label: leapfrog_algorithm
 
 which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the same time, :eq:`leapfrog_algorithm` can be split into two halve steps.
 
@@ -137,5 +137,3 @@ with :math:`s` the side length of the cube and :math:`\theta_{max}` a set thresh
 In the special case :math:`\theta_{max}=0`, BH becomes a direct-sum algorithm. :math:`\theta_{max}=0.5` is a commonly chosen value.
 
 doto?: explain smoothing
-
-.. bibliography:: bibtex.bib
