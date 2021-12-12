@@ -451,7 +451,7 @@ Since the galactic potential :eq:`total_potential` is axisymmetric, it is conven
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
    :label: jeans_equations_1
 
-It is assumed that the galaxy is statistically in a steady state (:cite:`Binney_2013`) ie :math:`\frac{\partial f}{\partial t}=0`.
+It is assumed that the galaxy is statistically in a steady state (:cite:`Binney_2013`) i.e. :math:`\frac{\partial f}{\partial t}=0`.
 Due to this assumption and taking :eq:`hamilton_2_2` into account :eq:`jeans_equations_1` simplifies to
 
 .. math::
