@@ -74,6 +74,7 @@ The circular velocity :math:`v_{c}` is defined via
 
 .. math::
    v_{c}\left ( R,z \right ) = \sqrt{R\frac{\partial \Phi \left (R,z  \right )}{\partial R}   }
+   :label: circular_velocity
 
 with in the presented case total potential being
 
@@ -137,6 +138,7 @@ The SMD is defined by
 
 .. math::
     \Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( r \right )\mathrm{d}z
+   :label: surface_mass_density
 
 .. plot:: pyplots/potentialSurfaceDensity.py
 

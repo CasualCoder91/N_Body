@@ -333,35 +333,41 @@ derivation by time gives the velocity
 Lagrangian with axisymmetric potential
 **************************************
 
-Using :eq:`cylindrical_velocity` the Lagrangian reads
+Using :eq:`cylindrical_velocity` the Lagrangian per unit mass reads
 
 .. math::
-    L =\frac{m}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,z\right)
+    L =\frac{1}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,z\right)
 
 and using the Euler–Lagrange equation gives the conjugate momenta
 
 .. math::
-    p_{R} = \frac{\partial L}{\partial \dot{R}} = m\dot{R} = mv_R\\
-    p_{\phi} = \frac{\partial L}{\partial \dot{\phi}} = mR^2\dot{\phi} =mRv_\phi\\
-    p_{z} = \frac{\partial L}{\partial \dot{z}} = m\dot{z} =mv_z\\
+    p_{R} = \frac{\partial L}{\partial \dot{R}} = \dot{R} \\
+    p_{\phi} = \frac{\partial L}{\partial \dot{\phi}} = R^2\dot{\phi} \\
+    p_{z} = \frac{\partial L}{\partial \dot{z}} = \dot{z} \\
    :label: conjugate_momenta
 
 Hamiltonian with axisymmetric potential
 ***************************************
 
-Using the momenta in cylindrical coordinates :eq:`conjugate_momenta` the Hamiltonian with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
+Using the momenta in cylindrical coordinates :eq:`conjugate_momenta` the Hamiltonian per unit mass with an axisymmetric potential reads (:cite:`Binney_2011` p. 278)
 
 .. math::
-    H = \frac{1}{2m}\left( p_{R}^2+\frac{p_\phi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
+    H = \frac{1}{2}\left( p_{R}^2+\frac{p_\phi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)
    :label: hamilton_1
 
 using Hamilton's equations gives
 
 .. math::
-    \dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\phi^2}{R^3}-\frac{\partial \Phi }{\partial R} \\
-    \dot{p}_{\phi} = -\frac{\partial H}{\partial \phi} = -\frac{\partial \Phi }{\partial \phi} = 0 \\
+    \dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\phi^2}{R^3}-\frac{\partial \Phi }{\partial R}
+   :label: hamilton_2_1
+
+.. math::
+    \dot{p}_{\phi} = -\frac{\partial H}{\partial \phi} = -\frac{\partial \Phi }{\partial \phi} = 0
+   :label: hamilton_2_2
+
+.. math::
     \dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}
-   :label: hamilton_2
+   :label: hamilton_2_3
 
 Since :math:`\vec{L} = \vec{p} \times \vec{\dot{p}}` and thus 
 
@@ -445,7 +451,7 @@ Since the galactic potential :eq:`total_potential` is axisymmetric, it is conven
    :label: jeans_equations_1
 
 It is assumed that the galaxy is statistically in a steady state (:cite:`Binney_2013`) ie :math:`\frac{\partial f}{\partial t}=0`.
-Due to this assumption and taking :eq:`hamilton_2` into account :eq:`jeans_equations_1` simplifies to
+Due to this assumption and taking :eq:`hamilton_2_2` into account :eq:`jeans_equations_1` simplifies to
 
 .. math::
     p_R\frac{\partial f}{\partial R}
@@ -460,6 +466,7 @@ Multiplying equation :eq:`jeans_equations_2` by :math:`p_R` and integrating over
 .. math::
     \frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +
     \nu \left ( \frac{\overline{v_R^2}-\overline{v_\phi^2}}{R} + \frac{\partial\Phi}{\partial R}\right ) = 0
+   :label: jeans_equations_3
 
 
 The Epicyclic Approximation
@@ -473,33 +480,37 @@ The derivation of this approximation starts with Hamilton's equations for an axi
 Rearranging :eq:`hamilton_1` and using :eq:`angular_momentum` gives
 
 .. math::
-    H = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\frac{mL_z^2}{2R^2}+\Phi\left(R,z\right)
+    H = \frac{1}{2}\left( p_{R}^2+p_z^2 \right)+\frac{L_z^2}{2R^2}+\Phi\left(R,z\right)
 
 With the effective potential given by
 
 .. math::
-    \Phi_{\textup{eff}}\left(R,z\right) = \frac{mL_z^2}{2R^2}+\Phi\left(R,z\right)
+    \Phi_{\textup{eff}}\left(R,z\right) = \frac{L_z^2}{2R^2}+\Phi\left(R,z\right)
 
 leads to
 
 .. math::
-    H_{\textup{eff}} = \frac{1}{2m}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)
+    H_{\textup{eff}} = \frac{1}{2}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)
 
 Here :math:`\frac{1}{2m}\left( p_{R}^2+p_z^2 \right)` is the kinetic energy in the :math:`\left( R,z \right)` plane or meridional plane.
 The angular momentum term in the effective potential is not a real potential energy even though sometimes called centrifugal potential.
 It really is the angular kinetic energy. The given definition of :math:`\Phi_{\textup{eff}}` is only valid because :math:`L_z` is conserved.
 
-with this (?) and (?) can be written as
+Using :math:`\Phi_{\textup{eff}}` :eq:`hamilton_2_1` and :eq:`hamilton_2_3` can be written as
 
 .. math::
-    \dot{p}_{R} = -\frac{\partial \Phi_{\textup{eff}} }{\partial R} \\
+    \dot{p}_{R} = -\frac{\partial \Phi_{\textup{eff}} }{\partial R}
+   :label: hamilton_eff_1
+
+.. math::
     \dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z}
+   :label: hamilton_eff_2
 
 These equations describe harmonic oscillations in the effective potential.
 The minimum of effective potential is the minimum of the real potential energy, together with a contribution from the angular kinetic energy.
 
 .. math::
-    \frac{\partial \Phi_{\textup{eff}} }{\partial R} = \frac{\partial \Phi }{\partial R} - \frac{mL_z^2}{2R^3} =0 \\
+    \frac{\partial \Phi_{\textup{eff}} }{\partial R} = \frac{\partial \Phi }{\partial R} - \frac{L_z^2}{R^3} =0 \\
     \frac{\partial \Phi_{\textup{eff}} }{\partial z} = 0
 
 The first condition states that the attractive force (:math:`-\frac{\partial \Phi_{\textup{eff}} }{\partial R}`) has to balance the “centrifugal force”.
@@ -507,7 +518,7 @@ This is the condition for circular orbits with angular momentum :math:`L_z`.
 The second condition is clearly satisfied in the equatorial plane (:math:`z=0`).
 The coordinates of this guiding center are defined as :math:`(R_g,\phi_g,z_g)`.
 
-In preparation for a Taylor series expansion about the guiding center :math:`x` is defined as
+In preparation for a Taylor series expansion about the guiding center, :math:`x` is defined as
 
 .. math::
     x \equiv R - R_g
@@ -527,37 +538,43 @@ The first order terms are zero (since :math:`\Phi_{\textup{eff}}` is minimized a
 
 In the epicyclic approximation :math:`\mathcal{O}(xz^2)` and higher order terms are neglected.
 
-With this approximation (?) and (?) become
+With this approximation :eq:`hamilton_eff_1` and :eq:`hamilton_eff_2` become
 
 .. math::
     \dot{p}_{x} = -\frac{\partial \Phi_{\textup{eff}} }{\partial x} \approx
     -\frac{\partial^2 \Phi_{\textup{eff}} }{\partial R^2}\bigg|_{(R_g,0)}x \equiv
-    -\kappa^2x   \\
+    -\kappa^2x
+   :label: hamilton_eff_approx
+
     \dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z} \approx
     -\frac{\partial^2 \Phi_{\textup{eff}} }{\partial z^2}\bigg|_{(R_g,0)}z \equiv
     -\nu^2z   \\
 
 where the epicyclic frequency :math:`\kappa` is the frequency of small radial and the vertical frequency :math:`\nu` the frequency of small vertical oscillations.
 
-with potential :math:`\Phi\left(R,z\right)` (?) can be written as
+With potential :math:`\Phi\left(R,z\right)` :eq:`hamilton_eff_approx` can be written as
 
 .. math::
-    \kappa^2 = \frac{\partial^2\Phi}{\partial R^2}\bigg|_{(R_g,0)} + \frac{3L_z}{R_g^4}
+    \kappa^2 = \frac{\partial^2\Phi}{\partial R^2}\bigg|_{(R_g,0)} + \frac{3L_z^3}{R_g^4}
+    :label: kappa_squared
 
-The circular angular frequency (see eq. (?) with :math:`\Omega = \dot{\phi}`) is given by
+The combination of :eq:`conjugate_momenta` with :eq:`hamilton_2_1`, given :math:`\dot{p}_{R}=0` and by definition :math:`\Omega = \dot{\phi}`, results in the circular angular frequency
 
 .. math::
     \Omega^2 = \frac{1}{R} \frac{\partial \Phi }{\partial R}\bigg|_{(R_g,0)} = \frac{L_z^2}{R^4}
+    :label: circular_angular_frequency
 
-The derivative of (?) leads to
+The derivative of :eq:`circular_angular_frequency` is
 
 .. math::
     \frac{\partial^2\Phi}{\partial R^2} = \Omega^2 + R \frac{d\Omega^2}{dR}
+    :label: circular_angular_frequency_2
 
-Inserting equation (?) and (?) into (?) yields
+Inserting :eq:`circular_angular_frequency` and :eq:`circular_angular_frequency_2` into :eq:`kappa_squared` yields
 
 .. math::
     \kappa^2(R_g) = \left ( R\frac{d\Omega^2}{dR} + 4\Omega^2 \right )\bigg|_{R=R_g}
+    :label: epicyclic_frequency
 
 The variance is generally given as the mean of squares minus the square of means.
 In the epicyclic approximation the mean velocity in :math:`R` and :math:`z` is zero and therefor
@@ -566,6 +583,7 @@ In the epicyclic approximation the mean velocity in :math:`R` and :math:`z` is z
     \sigma_{v_{\phi}}^2 = \overline{v_\phi^2} - \overline{v_\phi}^2 \\
     \sigma_{v_{R}}^2 = \overline{v_R^2} \\
     \sigma_{v_{z}}^2 = \overline{v_z^2}
+    :label: epicyclic_variance
 
 Disk
 ^^^^
@@ -576,10 +594,11 @@ For a flat rotation curve the radial velocity dispersion exponentially decreases
 
 .. math::
     \sigma_{v_{R}} \propto e^{-\frac{R}{h}}
+    :label: radial_velocity_dispersion_1
 
 where :math:`h` in the case of the Miyamoto Nagai potential is the radial scale length :math:`a`.
 
-Relation (...) still requires a constant factor :math:`k`, which can be determined by means of the Toomre parameter :math:`Q` at some distance :math:`R_{ref}`
+The relation :eq:`radial_velocity_dispersion_1` still requires a constant factor :math:`k`, which can be determined by means of the Toomre parameter :math:`Q` at some distance :math:`R_{ref}`.
 
 :math:`Q` is the ratio between the actual and minimum velocity dispersion :math:`\sigma_{v_{R,min}}` :cite:`Toomre_1964` (p. 1234)
 
@@ -587,7 +606,7 @@ Relation (...) still requires a constant factor :math:`k`, which can be determin
     \sigma_{v_{R,min}} = \frac{3.36G\Sigma}{\kappa} \\
     Q \equiv \frac{\sigma_{v_{R}}}{\sigma_{v_{R,min}}} = \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }
 
-where :math:`\kappa` denotes the epicyclic frequency (eq. (?)).
+where :math:`\kappa` denotes the epicyclic frequency :eq:`epicyclic_frequency`.
 
 In the solar neighborhood :math:`Q_{\ast} = 2.7 \pm 0.4` and :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
 
@@ -595,37 +614,39 @@ The constant :math:`k` can therefor be approximated via
 
 .. math::
     k \cong Q \sigma_{v_{R,min}}e^{\frac{R}{h}}
+    :label: radial_velocity_dispersion_constant
 
 Under the approximation of isothermal sheets (introduced in :cite:`Kruit_1981`), the vertical velocity dispersion only depends on the surface density :cite:`Kruit_1988`
 
 .. math::
     \sigma_{v_{z}} = \pi G \Sigma \left ( R \right )z_{0}
+    :label: vertical_velocity_dispersion
 
 with :math:`z_{0}` being the vertical scale length :math:`b` when using the Miyamoto Nagai potential.
 
-The first moments of the collisionless Boltzmann equation (CBE) for cylindrically symmetric systems are given by
-
-Combining the equation for the circular velocity (?) and the first moment equation of the CBE for :math:`v_R` and multiplication by :math:`\frac{R}{\nu}` results in
+Combining the equation for the circular velocity :eq:`circular_velocity` and Jeans equation :eq:`jeans_equations_3` and multiplication by :math:`\frac{R}{\nu}` results in
 
 .. math::
     \frac{R}{\nu} \frac{\partial \nu \overline{v_R^2}}{\partial R}
     + \frac{R}{\nu} \frac{\partial \nu \overline{v_Rv_z}}{\partial z}
     + \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0
+    :label: disk_velocity_step_1
 
-For a razor thin disc the spatial density :math:`\nu` can be replaced with the surface density :math:`\Sigma` (:cite:`Hernquist_1993`),
-which does not depend on :math:`z`. With this and by using relations (?), (?) simplifies to
+For a razor thin disc the spatial density :math:`\nu` can be replaced with the surface density :math:`\Sigma` :cite:`Hernquist_1993`,
+which does not depend on :math:`z`. With this and by using relations :eq:`epicyclic_variance`, :eq:`disk_velocity_step_1` simplifies to
 
 .. math::
     \frac{R}{\Sigma} \frac{\partial \nu \sigma_{v_{R}}^2}{\partial R}
     + R \frac{\partial \overline{v_Rv_z}}{\partial z}
     + \sigma_{v_{R}}^2 -\sigma_{v_{\phi}}^2  - \overline{v_\phi}^2 + v_c^2 = 0
+    :label: disk_velocity_step_2
 
 In the epicyclic approximation, azimuthal and radial dispersion have the following relation (:cite:`Binney_2011` p. 170)
 
 .. math::
     \frac{\sigma_{v_{\phi}}^2}{\sigma_{v_{R}}^2} = \frac{\kappa^2}{4\Omega^2}
 
-With this relation (?) can be written as
+With this relation :eq:`disk_velocity_step_2` can be written as
 
 .. math::
     \frac{R}{\Sigma} \frac{\partial  \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
@@ -643,9 +664,10 @@ rearrangements lead to
     \frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
     + \frac{R}{\sigma_{v_{R}}^2} \frac{\partial \overline{v_Rv_z}}{\partial z}
     \right )
+    :label: disk_velocity_step_3
 
 Due to the exponential dependency of the surface mass density (:cite:`Binney_2011` p. 325)
-and the radial dispersion :math:`\sigma_{v_{R}}` (?) on :math:`R`, the derivation after :math:`R` summand can be solved as follows
+and the radial dispersion :math:`\sigma_{v_{R}}` :eq:`radial_velocity_dispersion_1` on :math:`R`, the derivation after :math:`R` summand can be solved as follows
 
 .. math::
     \frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R} =
@@ -656,14 +678,14 @@ and the radial dispersion :math:`\sigma_{v_{R}}` (?) on :math:`R`, the derivatio
     - \frac{R\sigma_{v_{R}}^2\Sigma}{a}
     \right ) = - 2 \frac{R}{a}
 
-With this and under the assumption that the retrograde elliptical orbit is aligned with the coordinate axes (?) becomes
+With this and under the assumption that the retrograde elliptical orbit is aligned with the coordinate axes :eq:`disk_velocity_step_3` becomes
 
 .. math::
     \overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
     \left (1 - \frac{\kappa^2}{4\Omega^2} -\frac{R}{a } \right )
 
-The velocity components can be sampled from Gaussian distributions. Dispersions are obtained by first evaluating the epicyclic frequency (?) and the surface mass density (?),
-followed by the radial velocity dispersion (?) with constant factor (?), the vertical (?) and the azimuthal velocity dispersion (?).
+The velocity components can be sampled from Gaussian distributions. Dispersions are obtained by first evaluating the epicyclic frequency :eq:`epicyclic_frequency` and the surface mass density :eq:`surface_mass_density`,
+followed by the radial velocity dispersion :eq:`radial_velocity_dispersion_1` with constant factor :eq:`radial_velocity_dispersion_constant`, the vertical :eq:`vertical_velocity_dispersion` and the azimuthal velocity dispersion (?).
 As noted before, the mean velocity in :math:`R` and :math:`z` is zero. For :math:`\phi` the mean velocity is calculated from (?), where the circular velocity :math`v_c` is given by (?).
 
 
