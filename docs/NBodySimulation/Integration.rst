@@ -70,8 +70,9 @@ Since the velocity, :math:`v(t)` changes over time, it's value at the midpoint b
 .. math::
    x_{n+1} = x_{n} + hv_{n+0.5}\\
    v_{n+1.5} = v_{n+0.5} + \frac{h}{m}F(x_{n+1})
+    :label: leapfrog_algorithm
 
-which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the same time, (?) can be split into two halve steps.
+which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the same time, :eq:`leapfrog_algorithm` can be split into two halve steps.
 
 .. math::
    v_{n+0.5} = v_{n} + \frac{h}{2m}F(x_{n})
@@ -79,8 +80,6 @@ which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the sam
    v_{n+1} = v_{n+0.5} + \frac{h}{2m}F(x_{n+1})
 
 :math:`F(x)` does not have to be calculated twice, because :math:`F(x_{n+1})` can be used as :math:`F(x_{n})` in the next timestep.
-
-symplectic
 
 Barnes-Hut Algorithm (BH)
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -93,7 +92,7 @@ have to be taken into account.
 
 Calculating this force for all stars requires :math:`O(n^2)` operations.
 However, the simulated clusters consist of :math:`\sim 10^4 - 10^5` stars.
-While the resulting amount of calculations is possible, it is not feasible for a typical desktop computer.
+While the resulting number of calculations is possible, it is not feasible for a typical desktop computer.
 Therefor, the Barnes-Hut algorithm (BH) has been implemented which is of order :math:`O(n\log(n))`.
 
 The gist of the BH is to approximate a set of stars by their total mass and center of mass (com) if the distance between them
@@ -115,12 +114,12 @@ contained within the cube, two points defining the volume of the cube, one point
 as well as links (pointers) to each child node and to the parent node.
 If a child pointer is null, it does not exist jet.
 
-Stars are added recursively starting at the root node. If the current node is already a internal node, the star is passed
+Stars are added recursively starting at the root node. If the current node is already an internal node, the star is passed
 to the appropriate child. Mass and com of the internal node are updated.
 The appropriate child is determined by comparing the position of the star with the center of the node.
 If the considered node is a external node but already contains a star,
 both the newly added and already present star are passed down to the appropriate child or children.
-Consequently the current node becomes a internal node.
+Consequently, the current node becomes a internal node.
 Since both stars can lie in the same octant, this can lead to additional recursions until the stars are assigned to different child nodes.
 If the current node is external and does not yet contain a star, the star is added to the node and the recursion ends.
 
@@ -137,6 +136,6 @@ Whether or not :math:`d` is big enough, is determined by the quotient :math:`\th
 with :math:`s` the side length of the cube and :math:`\theta_{max}` a set threshold value.
 In the special case :math:`\theta_{max}=0`, BH becomes a direct-sum algorithm. :math:`\theta_{max}=0.5` is a commonly chosen value.
 
-doto: explain smoothing
+doto?: explain smoothing
 
 .. bibliography:: bibtex.bib
