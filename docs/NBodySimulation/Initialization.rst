@@ -141,13 +141,13 @@ Density Profile
 ---------------
 
 Different density profiles (King :cite:`King1972`, Plummer :cite:`Plummer1911` and Elson, Fall & Freeman :cite:`Elson1987`) have been used (:cite:`Harfst2010`, :cite:`Walker2016`, :cite:`Grudić2018`) to simulate YMCs.
-The Plummer profile has been implemented here as descriped in :cite:`Aarseth1974`.
+The Plummer profile has been implemented here as described in :cite:`Aarseth1974`.
 
 
 Field Stars (FS)
 ----------------
 
-Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potenital described in :ref:`galactic_potential-label`.
+Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potential described in :ref:`galactic_potential-label`.
 
 The cone of vision (COV) is defined by the angle of view :math:`\alpha`, the view distance :math:`h` (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
@@ -164,7 +164,7 @@ Consequently, the transformation consists of both translation and rotation illus
 
 Rotation and translation are both isometric transformations meaning area and volume of the cone are preserved :cite:`Gentle_2007` (p.175).
 
-A unit quaterion :math:`\textbf{q}` is used in order to construct the rotation matrix. With rotation axis :math:`\vec{b}` and angle :math:`\beta` the quaternion is given by
+A unit quaternion :math:`\textbf{q}` is used in order to construct the rotation matrix. With rotation axis :math:`\vec{b}` and angle :math:`\beta` the quaternion is given by
 
 .. math::
     \textbf{q} = \left ( \textup{cos}\left (\frac{\beta}{2}\right ), \vec{b}\textup{ sin}\left ( \frac{\beta}{2} \right )\right )
@@ -182,7 +182,7 @@ The angle :math:`\beta` between the vectors of interest can be calculated as fol
     =\textup{atan2}\left ( \frac{\textup{sin}\left ( \beta \right )}{\textup{cos}\left ( \beta \right )} \right )
     =\textup{atan2}\left ( \frac{\left \| \vec{z}\times\vec{l} \right \|}{\vec{z}\cdot \vec{l}} \right )
 
-Next, quarterion is converted to the rotation matrix :cite:`Lee_1991`. Using the homogeneous notation :cite:`Vince_2006` (p. 57) the matrix becomes:
+Next, quaternion is converted to the rotation matrix :cite:`Lee_1991`. Using the homogeneous notation :cite:`Vince_2006` (p. 57) the matrix becomes:
 
 .. math::
     \mathbf{R}=\begin{bmatrix}
