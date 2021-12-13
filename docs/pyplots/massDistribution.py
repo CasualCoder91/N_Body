@@ -20,9 +20,9 @@ def massDistribution(dataPath='',showPlot=True,arguments=[]):
 
     fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.set_size_inches(9.5, 5)
-    fig.text(0.5, 0.04, 'x [kpc]', ha='center')
-    fig.text(0.04, 0.5, 'y [kpc]', va='center', rotation='vertical')
-    fig.suptitle('Mass distribution at z = 1.0 [kpc]', fontsize=14)
+    fig.text(0.5, 0.04, '$x_{GCA}$ [kpc]', ha='center')
+    fig.text(0.04, 0.5, '$y_{GCA}$ [kpc]', va='center', rotation='vertical')
+    #fig.suptitle('Mass distribution at z = 1.0 [kpc]', fontsize=14)
 
     ax1.title.set_text('Disk')
     pcm = ax1.imshow(z+10, extent=(np.amin(x), np.amax(x), np.amin(y), np.amax(y)),

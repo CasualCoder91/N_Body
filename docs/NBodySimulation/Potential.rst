@@ -127,9 +127,11 @@ GSL implementation of Monte Carlo Integration is used. For further details refer
 
 .. _documentation: https://www.gnu.org/software/gsl/doc/html/montecarlo.html
 
-Example at z=1pc
+.. _fig-potential_mass_distribution:
+.. figure:: Images/potential_mass_distribution.*
+    :align: center
 
-.. plot:: pyplots/massDistribution.py
+    Mass distribution at :math:`z_{GCA} = 1.0` [kpc]
 
 Surface Mass Density (SMD)
 --------------------------
