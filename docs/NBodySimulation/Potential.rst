@@ -133,14 +133,18 @@ GSL implementation of Monte Carlo Integration is used. For further details refer
 
     Mass distribution at :math:`z_{GCA} = 1.0` [kpc]
 
-Surface Mass Density (SMD)
---------------------------
+Surface Mass Density
+--------------------
 
-The SMD is defined by
+The surface mass density (SMD) is used to estimate the vertical velocity dispersion :eq:`vertical_velocity_dispersion` and is defined by
 
 .. math::
-    \Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( r \right )\mathrm{d}z
+    \Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( R,z \right )\mathrm{d}z
    :label: surface_mass_density
 
-.. plot:: pyplots/potentialSurfaceDensity.py
+.. _fig-potential_surface_density:
+.. figure:: Images/potential_surface_density.*
+    :align: center
+
+    The surface mass density of the disc and bulge
 

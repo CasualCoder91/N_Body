@@ -10,10 +10,11 @@ def initialConditionsMassBulge(dataPath='', showPlot=True, count = 10000):
     # histogram on linear scale
     plt.subplots_adjust(hspace = 0.4)
     plt.subplot(211)
-    plt.title('10e3 Stars sampled from Bulge MF')
+    #plt.title('10e3 Stars sampled from Bulge MF')
     plt.xlabel('mass [$M_{\odot}$]')
     plt.ylabel('Count')
     hist, bins, _ = plt.hist(x, bins=200)
+    plt.ticklabel_format(axis='y',style='sci', scilimits=(0,0))
 
     # histogram on log scale.
     # Use non-equal bin sizes, such that they look equal on log scale.

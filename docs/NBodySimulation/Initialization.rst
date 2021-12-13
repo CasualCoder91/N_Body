@@ -84,7 +84,11 @@ Since Salpeter is a power-law distribution function, the inverse of the NCPF can
 
 where x is a random number in range [0,1]
 
-.. plot:: pyplots/initialConditionsMassSalpeter.py
+.. _fig-initial_conditions_mass_salpeter:
+.. figure:: Images/initial_conditions_mass_salpeter.*
+    :align: center
+
+    :math:`10^3` stars sampled from the Salpeter IMF
 
 
 Broken Power Law (BPL)
@@ -245,7 +249,11 @@ For :math:`m>0.7` a Salpeter slope :eq:`salpeter` with parameters :math:`A=7.1*1
 Samples are drawn until the sum of all samples :math:`M_s = \sum_{i=1}^n m_i` is larger than the total mass :math:`M`. 
 If :math:`\sum_{i=1}^{n-1} m_i +\frac{m_n}{2} > M` the last sample is removed.
 
-.. plot:: pyplots/initialConditionsMassBulge.py
+.. _fig-initial_conditions_mass_bulge:
+.. figure:: Images/initial_conditions_mass_bulge.*
+    :align: center
+
+    :math:`10^3` stars sampled from the bulge MF
 
 Disk Stellar Mass Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -273,7 +281,11 @@ or depending on :math:`m` rather than :math:`\mathrm{log}(m)`
 .. math::
     \xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}
 
-.. plot:: pyplots/initialConditionsMassDisk.py
+.. _fig-initial_conditions_mass_disk:
+.. figure:: Images/initial_conditions_mass_disk.*
+    :align: center
+
+    Stars with total mass of :math:`10^3 M_{\odot}` sampled from disk PDMF
 
 Positions
 ---------
@@ -305,7 +317,11 @@ If this test variable is smaller than the density at the trial position generate
 
 Finally the accepted position is transformed via the transformation matrix :eq:`transformation_matrix`.
 
-.. plot:: pyplots/potentialPositions.py
+.. _fig-initial_conditions_positions:
+.. figure:: Images/initial_conditions_positions.*
+    :align: center
+
+    Spatial distribution of a sample of disc and bulge stars
 
 Velocities
 ----------
@@ -429,7 +445,7 @@ Mean velocities are given by the first moment:
 .. math::
     \overline{v_i}(\vec{x}) \equiv \frac{1}{\nu(\vec{x})}\int v_i f(\vec{x},\vec{v})d^3\vec{v}
 
-Todo?: Continue here (showing = 0 for 2/3 directions)
+Todo(?): Continue here (showing = 0 for 2/3 directions)
 
 Jeans equations
 ^^^^^^^^^^^^^^^
@@ -462,7 +478,7 @@ Due to this assumption and taking :eq:`hamilton_2_2` into account :eq:`jeans_equ
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
    :label: jeans_equations_2
 
-Multiplying equation :eq:`jeans_equations_2` by :math:`p_R` and integrating over all momenta leads to (todo?: derive)
+Multiplying equation :eq:`jeans_equations_2` by :math:`p_R` and integrating over all momenta leads to (todo: derive?)
 
 .. math::
     \frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +
@@ -728,7 +744,6 @@ Therefore a lookup table has been implemented in which discrete :math:`r` and co
 
 .. figure:: Images/velocity_dispersion_bulge.*
     :align: center
-    :figwidth: 5cm
 
     Velocity dispersion of bulge stars
 
