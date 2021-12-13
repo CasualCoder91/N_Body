@@ -15,9 +15,11 @@ Background
 ^^^^^^^^^^
 
 Testing FITS files generated with no input sources still yield some amount of detected sources.
-For parameters used during (???) 125 sources were detected from an empty background.
+With the :ref:`25_parameters-label` used for the 25 simulations, 125 sources were detected from an empty background.
 The FITS files contain a raster of 64 images, sometimes overlapping and sometimes separated by one pixel due to rounding.
 This leads to wrong detections at the corners. However, this effect only explains a fraction of the detections.
+
+.. _masking_bright_stars-label:
 
 Masking bright stars
 ^^^^^^^^^^^^^^^^^^^^
@@ -42,10 +44,10 @@ ToDo?: Add 3 images "without mask" "drawn mask" "after mask"
 
 The DAOStarFinder method is called twice:
 
-#. To find the bright stars and generate the mask. The resulting table contains one row for each source. 
-This table is sorted by the flux column in descending order and iterated from top to bottom until the current entry has :math:`F_i < 100`.
-Elements of the mask - a 2D boolean array with the same size as the image - are updated.
-All elements inside the box with side length :eq:`side_length` are set to true and the current table entry stored in a new table if located outside a masked area.
+#. | To find the bright stars and generate the mask. The resulting table contains one row for each source. 
+   | This table is sorted by the flux column in descending order and iterated from top to bottom until the current entry has :math:`F_i < 100`.
+   | Elements of the mask - a 2D boolean array with the same size as the image - are updated.
+   | All elements inside the box with side length :eq:`side_length` are set to true and the current table entry stored in a new table if located outside a masked area.
 #. passing the mask parameter generated in the previous step and returning sources outside the masked areas.
 
 Both the bright sources recorded after the first and the faint sources returned from second call are stored in the database.

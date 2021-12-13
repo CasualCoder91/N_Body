@@ -429,7 +429,7 @@ Mean velocities are given by the first moment:
 .. math::
     \overline{v_i}(\vec{x}) \equiv \frac{1}{\nu(\vec{x})}\int v_i f(\vec{x},\vec{v})d^3\vec{v}
 
-Todo(?): Continue here (showing = 0 for 2/3 directions)
+Todo?: Continue here (showing = 0 for 2/3 directions)
 
 Jeans equations
 ^^^^^^^^^^^^^^^
@@ -462,7 +462,7 @@ Due to this assumption and taking :eq:`hamilton_2_2` into account :eq:`jeans_equ
     - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0
    :label: jeans_equations_2
 
-Multiplying equation :eq:`jeans_equations_2` by :math:`p_R` and integrating over all momenta leads to (todo: derive?)
+Multiplying equation :eq:`jeans_equations_2` by :math:`p_R` and integrating over all momenta leads to (todo?: derive)
 
 .. math::
     \frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +

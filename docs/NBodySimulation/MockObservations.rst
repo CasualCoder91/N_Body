@@ -4,11 +4,12 @@ Mock Observations
 
 Images of stars are generated using ScopeSim :cite:`Leschinski2020` with the MICADO_Sci instrument, the ELT telescope and the Armazones location package.
 Parameters differing from default values are
-1. SIM.sub_pixel.flag - Initial tests indicated the neccesity of integrating sub pixel shifts
-2. DET.width and DET.height - Width and height of the detector plane in pix are set ensuring the image contains the whole COV. The pixelscale scale (arcsec/pixel) the ELT is 0.004
-3. OBS.dit - The exposure time is adjusted to one hour.
-4. scao_const_psf.convolve_mode = "same" ??? what does this do.
-5. scao_const_psf.rotational_blur_angle - to reflect the rotation of the point spread function (PSF) occuring during one hour, this angle is set to 15 degrees. However, with the approach discussed in section (?) this will has little to no impact on the results.
+
+#. SIM.sub_pixel.flag - Initial tests indicated the neccesity of integrating sub pixel shifts
+#. DET.width and DET.height - Width and height of the detector plane in pix are set ensuring the image contains the whole COV. The pixelscale scale (arcsec/pixel) the ELT is 0.004
+#. OBS.dit - The exposure time is adjusted to one hour.
+#. scao_const_psf.convolve_mode = "same" ??? what does this do.
+#. scao_const_psf.rotational_blur_angle - to reflect the rotation of the point spread function (PSF) occuring during one hour, this angle is set to 15 degrees. However, with the approach discussed in :ref:`masking_bright_stars-label` this will has little to no impact on the results.
 
 For each simulation two images, one for :math:`t=0` and one for math:`t=dt`, are stored as FITS files.
 

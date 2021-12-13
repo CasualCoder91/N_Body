@@ -23,6 +23,8 @@ A total of 25 simulations with varying focus and cluster mass were carried out i
 The focus was set to :math:`l=0^{\circ}` and :math:`b \in \left \{0,5,10,25,180 \right \}[^\circ]` HGP and the cluster mass :math:`\in \left \{0.64, 1.6, 4.0, 10, 25 \right \} [\textup{kM}_\odot]`.
 Each simulation was repeated 10 times for error estimation.
 
+.. _25_parameters-label:
+
 Parameters
 ^^^^^^^^^^
 
@@ -42,9 +44,7 @@ The following parameters remained unchanged between the simulations.
 * | Timestep: :math:`28 \textup{[day]}`
   | Amount of time between the two recorded snapshots. The time per integration is :math:`7 \textup{[day]}`. Therefor snapshots are taken every 4 integrations.
 
-**Cluster specific parameters**
-
-McLuster
+**Cluster specific parameters (McLuster)**
 
 * (P) Profile: 0 Plummer density profile
 * | (R) Radius: -1
