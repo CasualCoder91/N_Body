@@ -1,7 +1,9 @@
+import os # for relative paths
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib as mpl
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
 import pandas as pd
 
 from database import Database
@@ -374,6 +376,72 @@ def plot_avg_2D_vel():
     plt.show()
 
 
+def plot_title_img():
+    # Create main container
+    fig = plt.figure()
+    ax = plt.subplot(111) #whole path
+
+    config.database_path = os.path.join(config.output_base_path,r"Database\Default_0_10000_ext.db")
+    db = Database()
+
+    simulated_points = db.select_points(0, False)
+    sp_arr = np.vstack(simulated_points[:]).astype(float)
+    sp_cluster = sp_arr[sp_arr[:,4] > -1]
+    #plt.scatter(sp_cluster[:,2], sp_cluster[:,3], s=1, c='g', marker="s", label='simulated_cluster')
+    sp_fs = sp_arr[sp_arr[:,4] == -1]
+    #plt.scatter(sp_fs[:,2], sp_fs[:,3], s=1, c='blue', marker="s", label='simulated_fs')
+
+    #plt.legend(loc='upper left')
+    ax.scatter(sp_cluster[:,2], sp_cluster[:,3], s = 5, c = 'g')
+    ax.scatter(sp_fs[:,2], sp_fs[:,3], s = 5, c = 'blue')
+
+    # Create zoom-out plot
+    rect_x = 0.002145
+    rect_y = 0.0001765
+    rect_width = 0.00049
+    rect_height = 0.000587
+    #rect = mpl.patches.Rectangle((rect_x, rect_y), rect_width, rect_height, linewidth=1, edgecolor='r', facecolor='none')
+    # Add the patch to the Axes
+    #plt.gca().add_patch(rect)
+    plt.xlim(-0.019, 0.019)
+    plt.ylim(-0.017, 0.017)
+    plt.xlabel('v_asc [arcsec/dt]', fontsize=16)
+    plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
+    plt.ticklabel_format(axis='x',style='sci', scilimits=(0,0))
+    plt.ticklabel_format(axis='y',style='sci', scilimits=(0,0))
+
+    # Create zoom-in plot
+    axins = zoomed_inset_axes(ax,25,loc='lower right', 
+                              axes_kwargs={"facecolor" : "lightgray"})
+
+    #axins.plot(random_walk)
+
+    #x1,x2,y1,y2 = 1000,2000, -60,-15
+    axins.set_xlim(rect_x-rect_width/2, rect_x+rect_width/2)
+    axins.set_ylim(rect_y-rect_height/2, rect_y+rect_height/2)
+
+    #ax_new = fig.add_axes([0.6, 0.6, 0.4, 0.4]) # the position of zoom-out plot compare to the ratio of zoom-in plot 
+    #axins.axis('off')
+    axins.get_xaxis().set_visible(False)
+    axins.get_yaxis().set_visible(False)
+    #ax_new.spines['bottom'].set_visible(True)
+    #ax_new.spines['left'].set_visible(True)
+    #plt.xlim(rect_x-rect_width/2, rect_x+rect_width/2)
+   # plt.ylim(rect_y-rect_height/2, rect_y+rect_height/2)
+    axins.scatter(sp_cluster[:,2], sp_cluster[:,3], s = 1, c = 'g')
+    axins.scatter(sp_fs[:,2], sp_fs[:,3], s = 1, c = 'blue')
+
+
+    pp,p1,p2 = mark_inset(ax,axins,loc1=1,loc2=3)
+    pp.set_fill(True)
+    pp.set_facecolor("lightgray")
+    pp.set_edgecolor("k")
+
+
+    # Save figure with nice margin
+    #plt.savefig('zoom.png', dpi = 300, bbox_inches = 'tight', pad_inches = .1)
+    plt.show()
+
 def plot_f1_maps():
 
     fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(12,5))
@@ -445,7 +513,9 @@ def main():
 
     #plot_number_hist()
     #plot_avg_2D_vel()
-    plot_velocity_hist()
+    #plot_velocity_hist()
+
+    plot_title_img()
 
     #db = Database()
     #plot_precision_maps(True)
