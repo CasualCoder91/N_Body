@@ -97,7 +97,7 @@ Heliocentric Equatorial Polar (HEQ)
 -----------------------------------
 
 The following positions and the transformation between HGP and HEQ are described in :cite:`Carroll2007` (p 1044-1047) ,
-the transformation between different epochs in :cite:`nla.cat-vn3719611`(p 95-105) . The latter is dated.
+the transformation between different epochs in :cite:`nla.cat-vn3719611` (p 95-105) . The latter is dated.
 The international celestial reference system (ICRS) should be preferred if highest possible accuracy is of concern.
 
 HEQ, like HGP, is a spherical coordinate system having the same origins for position and velocity.
