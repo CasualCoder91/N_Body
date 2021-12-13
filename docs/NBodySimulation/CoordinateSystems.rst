@@ -15,8 +15,6 @@ GCA is a right-handed coordinate system with the galactic center in its origin.
 The projection of :math:`\hat{e}_x` onto the galactic equator (or midplane) points to the initial location of the sun and
 :math:`\hat{e}_z` towards the galactic north pole. Therefor, the direction of galactic rotation at the location of the sun is the negative z axis.
 
-Units: positions [pc], velocities [km/s]
-
 Galactocentric Polar (GCP)
 --------------------------------
 
@@ -30,7 +28,7 @@ Position and velocity transformation between the two systems goes as follows.
     \dot{\rho} =  \frac{x\dot{x}+y\dot{y}+z\dot{z}}{\sqrt{x^2+y^2+z^2}}\\
     \dot{\theta} = \frac{\dot{x}y-x\dot{y}}{x^2+y^2} \\
     \dot{\varphi} = \frac{z(x\dot{x}+y\dot{y})-\dot{z}(x^2+y^2)}{(x^2+y^2+z^2)\sqrt{x^2+y^2}}
-
+    :label: GCA_to_GCP
 
 Local Standard of Rest (LSR)
 ----------------------------
@@ -93,7 +91,7 @@ The galactic longitude :math:`l` is the angular distance in the galactic midplan
 The galactic latitude :math:`b` denotes the angle below and above the galactic midplane ranging from :math:`-90^{\circ}` to :math:`90^{\circ}`.
 and :math:`r` the radial distance.
 
-The transformation from HCA to HGP is identical to the transformation from GCA to GCP (?) with :math:`l \equiv \varphi`, :math:`b \equiv \theta` and :math:`\rho \equiv r`
+The transformation from HCA to HGP is identical to the transformation from GCA to GCP :eq:`GCA_to_GCP` with :math:`l \equiv \varphi`, :math:`b \equiv \theta` and :math:`\rho \equiv r`
 
 Heliocentric Equatorial Polar (HEQ)
 -----------------------------------
@@ -143,7 +141,7 @@ With these basis vectors the change of basis matrix is
     M = \left [\hat{e}_x,\hat{e}_y,\hat{e}_z\right ]
 
 The full transformation from HCA to HEQ consists of the two steps: the multiplication with :math:`M` followed by
-the transformation from cartesian to spherical as given in section (?) GCP.
+the transformation from cartesian to spherical as given in :eq:`GCA_to_GCP`.
 
 For the transformation between HGP and HEQ the direction of the north celestial pole (NCP) is required .
 NCP is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`.
@@ -204,5 +202,5 @@ With increasing absolute value of :math:`b` the circles around the unit sphere d
 
 While there may be a solution for this issue, a different transformation was devised.
 Positions can be transformed from HCA to HTP by aligning :math:`\hat{v}_{los}` with the x axis `\hat{x}`
-using a rotation matrix generated as descibed in (?) with the rotation axis defined by :math:`[1,0,0]_{HCA}` and :math:`\hat{v}_{los,HCA}` 
+using a rotation matrix generated as descibed in :eq:`transformation_matrix` with the rotation axis defined by :math:`[1,0,0]_{HCA}` and :math:`\hat{v}_{los,HCA}` 
 Subsequent transformation from cartesian to polar coordinates as described in the section GCP above completes the transformation.
