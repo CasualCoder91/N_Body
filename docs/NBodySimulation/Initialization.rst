@@ -42,7 +42,7 @@ Cluster
 -------
 
 A cluster can be characterised via a number of parameters, namely its density profile, metallicity, binary fraction and initial mass function (IMF).
-The following sections cover methods implemented by the author. Alternatively cluster stars can be generated using the open source code McLuster :cite:`Kuepper2011` which supports more density profiles and all other parameters mentioned above. 
+The following sections cover methods implemented by the author. Alternatively, cluster stars can be generated using the open source code McLuster :cite:`Kuepper2011` which supports more density profiles and all other parameters mentioned above. 
 The generated file can then be imported by setting the appropriate parameters.
 
 Initial Mass Function (IMF)
@@ -151,7 +151,7 @@ The Plummer profile has been implemented here as described in :cite:`Aarseth1974
 Field Stars (FS)
 ----------------
 
-Any stars which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potential described in :ref:`galactic_potential-label`.
+Any stars which do not belong to the simulated cluster is a FS and sampled from the disc and bulge potential described in :ref:`galactic_potential-label`.
 
 The cone of vision (COV) is defined by the angle of view :math:`\alpha`, the view distance :math:`h` (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
@@ -315,7 +315,7 @@ The second step consists of rejection sampling the density distribution.
 The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
 If this test variable is smaller than the density at the trial position generated in step two, the trial position is accepted and rejected otherwise.
 
-Finally the accepted position is transformed via the transformation matrix :eq:`transformation_matrix`.
+Finally, the accepted position is transformed via the transformation matrix :eq:`transformation_matrix`.
 
 .. _fig-initial_conditions_positions:
 .. figure:: Images/initial_conditions_positions.*
@@ -399,7 +399,7 @@ The phase space distribution function (DF)
 
 A galaxy can be viewed as a number of stars in phase space.
 The phase space is a six dimensional space spanned by position :math:`\vec{q}` and momentum :math:`\vec{p}`.
-One point in phase space can therefor be described by a six dimensional vector :math:`\vec{w}=(\vec{q},\vec{p})`,
+One point in phase space can therefore be described by a six dimensional vector :math:`\vec{w}=(\vec{q},\vec{p})`,
 the state of a whole galaxy as a DF :math:`f(\vec{q},\vec{p},t)`.
 :math:`f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}` is the probability that some specific star is inside the 6D cuboid defined by :math:`d^3\vec{q}d^3\vec{p}` at time :math:`t`.
 
@@ -425,7 +425,7 @@ The right summand can be changed as follows, using Hamilton equations
     \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
     - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right)
 
-And therefor
+And therefore
 
 .. math::
     \frac{\partial f }{\partial t} + \sum_{i=1}^{3} \left (
