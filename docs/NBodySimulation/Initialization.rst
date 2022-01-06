@@ -24,7 +24,7 @@ and :math:`m` the maximum of :math:`f(x)` within :math:`\left [ a,b \right ]` th
 .. math::
     u \leq f(x)
 
-here u is a uniform distribution :math:`U(0,Cg(x)) = U(0,m)`. While :math:`Cg(x)` has to be larger than :math:`f(x)` the area between them should be as small as possible to ensure a decent acceptance fraction.
+here :math:`u` is a uniform distribution :math:`U(0,Cg(x)) = U(0,m)`. While :math:`Cg(x)` has to be larger than :math:`f(x)` the area between them should be as small as possible to ensure a decent acceptance fraction.
 
 
 Inverse transform sampling 
@@ -77,12 +77,12 @@ With this :eq:`salpeter_ncdf_1` becomes:
 .. math::
     P(m)=\frac{m^{-\alpha +1} -m_{min}^{-\alpha +1}}{m_{max}^{-\alpha +1} -m_{min}^{-\alpha +1}}
 
-Since Salpeter is a power-law distribution function, the inverse of the NCPF can calculated analytically. After some simplifications the final result reads
+Since Salpeter is a power-law distribution function, the inverse of the NCPF can be calculated analytically. After some simplifications the final result reads
 
 .. math::
     m_{rand} = m_{min}*\left [ 1+x*\left ( \left ( \frac{m_{max}}{m_{min}} -1\right )^{-\alpha +1} \right ) \right ]^{\frac{1}{-\alpha +1}}
 
-where x is a random number in range [0,1]
+where :math:`x` is a random number in range [0,1]
 
 .. _fig-initial_conditions_mass_salpeter:
 .. figure:: Images/initial_conditions_mass_salpeter.*
@@ -138,7 +138,7 @@ Inverting the NCDF leads to
        \ \left \{ \left [ \sum_{i=1}^{n-2} y- \frac{A*k_{i}}{1- \alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\right ]  \frac{1-\alpha_{n-1}}{A*k_{i}} + m_{n-1}^{1-\alpha_{n-1}} \right \}^{\frac{1}{1-\alpha_{n-1}}} &\quad\text{if }\sum_{i=1}^{n-2}\frac{A*k_{i}}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )\leqslant y< \sum_{i=1}^{n-1}\frac{A*k_{i}}{1-\alpha_{i}}\left ( m_{i+1}^{1-\alpha_{i}}-m_{i}^{1-\alpha_{i}} \right )=1\\
      \end{cases}
 
-where y is a random number in range [0,1]
+where :math:`y` is a random number in range [0,1]
 
 
 Density Profile
@@ -151,7 +151,7 @@ The Plummer profile has been implemented here as described in :cite:`Aarseth1974
 Field Stars (FS)
 ----------------
 
-Any stars which do not belong to the simulated cluster is a FS and sampled from the disc and bulge potential described in :ref:`galactic_potential-label`.
+Any star which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potential described in :ref:`galactic_potential-label`.
 
 The cone of vision (COV) is defined by the angle of view :math:`\alpha`, the view distance :math:`h` (height of the cone), the view point :math:`vP` (location of the observer) and the focus :math:`F` (a point along the line of sight).
 
@@ -309,7 +309,7 @@ The conditions for acceptance are:
     \sqrt{x^{2}+y^{2}}\leq R \\
     z\geq h*\frac{\sqrt{x^{2}+y^{2}}}{R} \\
 
-This method ensures that the positions are indeed homogeneously distributed which is essential for the second step.
+This method ensures that the positions are indeed homogeneously distributed, which is essential for the second step.
 
 The second step consists of rejection sampling the density distribution.
 The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
@@ -329,7 +329,7 @@ Velocities
 Particle Kinematics in Cylindrical Coordinates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In terms of cartesian unit vectors, cylindrical unit vectors are given by
+In terms of Cartesian unit vectors, cylindrical unit vectors are given by
 
 .. math::
     \hat{e}_R = \hat{e}_x\cos(\phi) + \hat{e}_y\sin(\phi) \\
@@ -533,14 +533,14 @@ The minimum of effective potential is the minimum of the real potential energy, 
 The first condition states that the attractive force (:math:`-\frac{\partial \Phi_{\textup{eff}} }{\partial R}`) has to balance the “centrifugal force”.
 This is the condition for circular orbits with angular momentum :math:`L_z`.
 The second condition is clearly satisfied in the equatorial plane (:math:`z=0`).
-The coordinates of this guiding center are defined as :math:`(R_g,\phi_g,z_g)`.
+The coordinates of this guiding centre are defined as :math:`(R_g,\phi_g,z_g)`.
 
-In preparation for a Taylor series expansion about the guiding center, :math:`x` is defined as
+In preparation for a Taylor series expansion about the guiding centre, :math:`x` is defined as
 
 .. math::
     x \equiv R - R_g
 
-If :math:`R = R_g` then :math:`x=0` and therefor the guiding center is at :math:`(x,z) = (0,0)`.
+If :math:`R = R_g` then :math:`x=0` and therefor the guiding centre is at :math:`(x,z) = (0,0)`.
 
 .. math::
     \Phi_{\textup{eff}} = \Phi_{\textup{eff}}(R_g,0) +
@@ -551,7 +551,7 @@ If :math:`R = R_g` then :math:`x=0` and therefor the guiding center is at :math:
     \frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial x\partial z}\bigg|_{(R_g,0)}xz +
     \mathcal{O}(xz^2)
 
-The first order terms are zero (since :math:`\Phi_{\textup{eff}}` is minimized at the guiding center) and so is the :math:`xz`, the later due to symmetric about :math:`z=0`.
+The first order terms are zero (since :math:`\Phi_{\textup{eff}}` is minimized at the guiding centre) and so is the :math:`xz`, the later due to symmetric about :math:`z=0`.
 
 In the epicyclic approximation :math:`\mathcal{O}(xz^2)` and higher order terms are neglected.
 
@@ -605,7 +605,7 @@ In the epicyclic approximation the mean velocity in :math:`R` and :math:`z` is z
 Disk
 ^^^^
 
-The velocity distribution of stars in the milky way disk is approximated with the help of Jeans equations as well as relations and constraints based on observations.
+The velocity distribution of stars in the Milky Way disk is approximated with the help of Jeans equations as well as relations and constraints based on observations.
 
 For a flat rotation curve the radial velocity dispersion exponentially decreases with increasing radius :cite:`Kruit_1981` (p. 114)
 
@@ -627,7 +627,7 @@ where :math:`\kappa` denotes the epicyclic frequency :eq:`epicyclic_frequency`.
 
 In the solar neighborhood :math:`Q_{\ast} = 2.7 \pm 0.4` and :math:`\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]` :cite:`Binney_2011` (p. 497)
 
-The constant :math:`k` can therefor be approximated via
+The constant :math:`k` can therefore be approximated via
 
 .. math::
     k \cong Q \sigma_{v_{R,min}}e^{\frac{R}{h}}
@@ -717,7 +717,7 @@ For spherically symmetric distribution functions, such as, with the present appr
     \frac{\partial (\rho \sigma_r^2)}{\partial r} + 2\frac{\beta\sigma_r^2}{r} + \rho\frac{\partial \Phi}{\partial r} = 0
     :label: bulge_velocity_1
 
-were :math:`\beta` is an indicator for anisotropy in radial and tangential direction.
+where :math:`\beta` is an indicator for anisotropy in radial and tangential direction.
 
 .. math::
     \beta = 1 - \frac{\sigma^2_\phi}{\sigma^2_r}
@@ -733,13 +733,13 @@ and the radial dispersion can be calculated by integration
     \sigma_r^2 = \frac{1}{\rho}\int_{r}^{\infty}\rho \frac{\partial \Phi}{\partial r}\textup{dr}
 
 However, :math:`\Phi` is the composite potential consisting of bulge, disc and halo and therefore not spherically symmetric. As suggested in :cite:`Hernquist_1993`, contribution by the disc to the bulge dispersion may be accounted for by spherically averaging the disc potential.
-This is achieved by expressing cylinder in spherical coordinates and integrating over the relevant angle
+This is achieved by expressing the cylinder in spherical coordinates and integrating over the relevant angle
 
 .. math::
     \sigma_{r,disk}^2 = \frac{1}{\rho}\int_{r}^{\infty}
     \frac{\rho }{2\pi}  \int_0^{2\pi} \frac{\partial \Phi\left ( r\sin(\theta ),r\cos(\theta ) \right )}{\partial r} \textup{d}\theta \textup{dr} \\
 
-As neither of these integrals have a analytical solution, this calculation is computationally intensive.
+As neither of these integrals have an analytical solution, this calculation is computationally intensive.
 Therefore a lookup table has been implemented in which discrete :math:`r` and corresponding bulge dispersion are stored.
 
 .. figure:: Images/velocity_dispersion_bulge.*
