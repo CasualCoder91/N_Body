@@ -5,7 +5,7 @@ Integration
 Numerical integration is needed during initialization and simulation.
 Various options for time integration have been implemented.
 The GNU Scientific Library (:cite:`galassi_2018`, GSL) is used for integrations performed during initialization.
-The relevant functions are all based on QAG or QAGI, which have ben ported from the Fortran library QUADPACK :cite:`1983Q:as` to C in GLS.
+The relevant functions are all based on QAG or QAGI, which have been ported from the Fortran library QUADPACK :cite:`1983Q:as` to C in GLS.
 The decision trees given on page 79-80 in :cite:`1983Q:as` help with the decision on when and how to use the respective methods.
 
 Quadrature, Adaptive, General-purpose (QAG)
@@ -19,11 +19,11 @@ Quadrature sums are defined as
    Q_n[a,b] \equiv \sum_i^nw_if(x_i) \cong \int_a^bw(x)f(x)\textup{d}x
 
 where :math:`w_i` are weights, :math:`x_i` nodes, :math:`w(x)` a weight function.
-The highest possible degree of precision is 2n-1. With this maximum precision :math:`Q_n` is exact for polynomials of degree smaller or equal to 2n-1.
+The highest possible degree of precision is 2n-1. With this maximum precision :math:`Q_n` is exact for polynomials of a degree smaller or equal to 2n-1.
 
 Using classical Gaussian quadrature formulae, error estimation, by increasing n to n+1, requires n+1 evaluations of :math:`f(x)` in addition to n evaluations from
 calculation of the original sum, since the respective nodes have no common points. By doing so, the degree of precision is only increased from 2n-1 to 2n+1.
-Therefor, the error estimation obtained by subtracting the two sums could be unreliable.
+Therefore, the error estimation obtained by subtracting the two sums could be unreliable.
 
 Adding n+1 points to the Gauss-Legendre formula - here :math:`w(x)=1` and the nodes are zeros of the Legendre polynomial -
 Kronrod introduced the option of increasing the precision to 3n+1, again requiring n+1 additional evaluations of :math:`f(x)` (:cite:`Notaris_2016`).
@@ -32,12 +32,12 @@ Kronrod introduced the option of increasing the precision to 3n+1, again requiri
    Q_n^K[a,b] \equiv \sum_i^nw_if(x_i) + \sum_j^{n+1}w_j^*f(x_j^*) \cong \int_{-1}^1f(x)\textup{d}x
 
 QAG makes use of this option, bisecting the interval with the largest local absolute error estimate in each step.
-This division is repeated until either the absolute or relative global error estimate are smaller than required by the caller.
+This division is repeated until either the absolute or relative global error estimate is smaller than required by the caller.
 
 Quadrature, Adaptive, General-purpose, Infinite interval (QAGI)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In case of a semi infinite interval :math:`(a,\pm \infty)`, the integration variable is transformed
+In case of a semi-infinite interval :math:`(a,\pm \infty)`, the integration variable is transformed
 
 .. math::
    x = a\pm\frac{1-t}{t}
@@ -47,7 +47,7 @@ leading to
 .. math::
    \int_a^{\pm \infty}f(x)\textup{d}x = \pm \int_0^1 f \left(a\pm\frac{1-t}{t}\right)t^{-2}\textup{d}t
 
-For a infinite interval
+For an infinite interval
 
 .. math::
    \int_{-\infty}^{\infty}f(x)\textup{d}x =
@@ -64,7 +64,7 @@ For cluster members the acceleration is a combination of the force resulting fro
 and from the milky way potential. The acceleration of field stars solely comes from the milky way potential.
 In each time step both velocity and acceleration of each star is evaluated.
 
-Since the velocity, :math:`v(t)` changes over time, it's value at the midpoint between the current (:math:`t_n`) and the next timestep :math:`t_{n+1}` is intuitively a better approximation than
+Since the velocity, :math:`v(t)` changes over time, its value at the midpoint between the current (:math:`t_n`) and the next timestep :math:`t_{n+1}` is intuitively a better approximation than
 :math:`v(t_n)` or :math:`v(t_{n+1})`. The same holds true for the acceleration. This leads to :cite:`feynman_1965`
 
 .. math::
@@ -72,7 +72,7 @@ Since the velocity, :math:`v(t)` changes over time, it's value at the midpoint b
    v_{n+1.5} = v_{n+0.5} + \frac{h}{m}F(x_{n+1})
    :label: leapfrog_algorithm
 
-which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the same time, :eq:`leapfrog_algorithm` can be split into two halve steps.
+which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the same time, :eq:`leapfrog_algorithm` can be split into two half steps.
 
 .. math::
    v_{n+0.5} = v_{n} + \frac{h}{2m}F(x_{n})
@@ -84,7 +84,7 @@ which is the Leapfrog algorithm. If one needs :math:`x` and :math:`v` at the sam
 Barnes-Hut Algorithm (BH)
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When determining the gravitational force acting on a star which belonging to a cluster, the positions of all other stars in that cluster
+When determining the gravitational force acting on a star belonging to a cluster, the positions of all other stars in that cluster
 have to be taken into account.
 
 .. math::
@@ -93,7 +93,7 @@ have to be taken into account.
 Calculating this force for all stars requires :math:`O(n^2)` operations.
 However, the simulated clusters consist of :math:`\sim 10^4 - 10^5` stars.
 While the resulting number of calculations is possible, it is not feasible for a typical desktop computer.
-Therefor, the Barnes-Hut algorithm (BH) has been implemented which is of order :math:`O(n\log(n))`.
+Therefore, the Barnes-Hut algorithm (BH) has been implemented which is of order :math:`O(n\log(n))`.
 
 The gist of the BH is to approximate a set of stars by their total mass and center of mass (com) if the distance between them
 and the star, for which the force is to be calculated, is large enough.
@@ -110,16 +110,17 @@ These nodes split the space represented by their parent node into eight cubes.
 External nodes are nodes without any children. Each external node contains at most one star.
 Internal nodes have at least one child. They represent stars stored in their child nodes by storing their total mass and com.
 The root node contains the whole space occupied by the cluster. Each node stores the following information: total mass, amount and center of mass of stars
-contained within the cube, two points defining the volume of the cube, one point at the center of the cube, since cpu time is more valuable than ram,
-as well as links (pointers) to each child node and to the parent node.
-If a child pointer is null, it does not exist jet.
+contained within the cube, two points defining the volume of the cube, one point at the center of the cube as well as links (pointers) to each child node and to the parent node.
+If a child pointer is null, it does not exist yet.
+The seemingly redundant point at the center of the cube is used to evaluate the child node of a star within the cube.
+The two points defining the volume could be used instead but that approach would require additional FLOPS.
 
 Stars are added recursively starting at the root node. If the current node is already an internal node, the star is passed
 to the appropriate child. Mass and com of the internal node are updated.
 The appropriate child is determined by comparing the position of the star with the center of the node.
-If the considered node is a external node but already contains a star,
+If the considered node is an external node but already contains a star,
 both the newly added and already present star are passed down to the appropriate child or children.
-Consequently, the current node becomes a internal node.
+Consequently, the current node becomes an internal node.
 Since both stars can lie in the same octant, this can lead to additional recursions until the stars are assigned to different child nodes.
 If the current node is external and does not yet contain a star, the star is added to the node and the recursion ends.
 
@@ -134,6 +135,6 @@ Whether or not :math:`d` is big enough, is determined by the quotient :math:`\th
    \theta = \frac{s}{d} < \theta_{max}
 
 with :math:`s` the side length of the cube and :math:`\theta_{max}` a set threshold value.
-In the special case :math:`\theta_{max}=0`, BH becomes a direct-sum algorithm. :math:`\theta_{max}=0.5` is a commonly chosen value.
+In the special case of :math:`\theta_{max}=0`, BH becomes a direct-sum algorithm. :math:`\theta_{max}=0.5` is a commonly chosen value.
 
-doto?: explain smoothing
+todo?: explain smoothing
