@@ -4,7 +4,7 @@
 Galactic Potential
 ==================
 
-Modelling the gravitational potential of the Milky Way has been a ever evolving topic in recent decades, :cite:`Barros2016` provides a brief history.
+Modelling the gravitational potential of the Milky Way has been an ever evolving topic in recent decades. :cite:`Barros2016` provides a brief history.
 Here the potential is used to approximate the force on the simulated stars and to initialize field stars.
 
 The model of choice consists of four parts: black hole, bulge, disc and the dark matter halo.
@@ -23,7 +23,7 @@ The **disk** can be modelled via a Miyamoto Nagai potential :cite:`1975PASJ..27.
 
     \rho_{disk}(R,z)=\frac{b_{disk}^{2}M_{disk}}{4\pi}\frac{a_{disk}R^{2}+\left[a_{disk}+3(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2}}{\left \{ R^{2}+\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2} \right \}^{\frac{5}{2}}\left(z^{2}+b_{disk}^{2}\right)^{\frac{3}{2}}}
 
-with :math:`R` the cylindrical radius and with :math:`z` the distance to the reference plane.
+with :math:`R` being the cylindrical radius and with :math:`z` being the distance to the reference plane.
 
 For the **bulge** the Hernquist potential :cite:`1990ApJ..356..359H` is used
 
@@ -32,9 +32,9 @@ For the **bulge** the Hernquist potential :cite:`1990ApJ..356..359H` is used
 
     \rho_{bulge}(r)= \frac{M_{bulge}}{2\pi }\frac{a_{bulge}}{r}\frac{1}{\left ( r+a_{bulge} \right )^{3}}
 
-:math:`a` is the scale-length of the spheroid potential
+:math:`a` being the scale-length of the spheroid potential
 
-and NFW potential :cite:`Navarro1996` is used for the **dark matter halo** potential
+and the NFW potential :cite:`Navarro1996` is used for the **dark matter halo** potential
 
 .. math::
     \Phi_{halo}\left ( r \right ) = \frac{-4\pi G\rho _{s}r_{s}^{3}\ln\left ( 1+\frac{r}{r_{s}}\right )}{r}
@@ -76,7 +76,7 @@ The circular velocity :math:`v_{c}` is defined via
    v_{c}\left ( R,z \right ) = \sqrt{R\frac{\partial \Phi \left (R,z  \right )}{\partial R}   }
    :label: circular_velocity
 
-with in the presented case total potential being
+with the total potential being in the presented case
 
 .. math::
    \Phi \left ( R,z \right ) = \Phi_{bh} \left ( R,z \right )+\Phi_{disk} \left ( R,z \right )+\Phi_{bulge} \left ( R,z \right )+\Phi_{halo} \left ( R,z \right )
@@ -97,7 +97,7 @@ therefore
 
 Inserting the parameters given in :numref:`tbl_parameters` and setting :math:`G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]` results in :math:`\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]`
 
-The circular velocity can be used for fitting the model parameters :cite:`Bajkova2017`.
+the circular velocity can be used for fitting the model parameters :cite:`Bajkova2017`.
 :numref:`fig-potential_circular_velocity` displays the velocity for the chosen model and its components.
 
 .. _fig-potential_circular_velocity:
