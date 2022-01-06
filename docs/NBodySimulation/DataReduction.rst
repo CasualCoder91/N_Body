@@ -11,6 +11,8 @@ Due to hardware and time constraints, options such as Image Segmentation were no
 Detecting Stars
 ---------------
 
+.. _background-label:
+
 Background
 ^^^^^^^^^^
 
