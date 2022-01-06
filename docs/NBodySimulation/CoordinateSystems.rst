@@ -6,14 +6,14 @@ In the simulation, locations and velocities of stars are stored in galactocentri
 However, the observer/scopesim expect heliocentric equatorial polar coordinates.
 Moreover, observational data is usually given in heliocentric galactic polar coordinates.
 This data is used for initial cluster positions in the simulation and to compare results.
-The implementation of transformations is therefor inevitable. The code has been adapted from GalPot (:cite:`McMillan_2016`).
+The implementation of transformations is therefore inevitable. The code has been adapted from GalPot (:cite:`McMillan_2016`).
 
 Galactocentric Cartesian (GCA)
 ------------------------------
 
 GCA is a right-handed coordinate system with the galactic center in its origin.
 The projection of :math:`\hat{e}_x` onto the galactic equator (or midplane) points to the initial location of the sun and
-:math:`\hat{e}_z` towards the galactic north pole. Therefor, the direction of galactic rotation at the location of the sun is the negative z axis.
+:math:`\hat{e}_z` towards the galactic north pole. Therefore, the direction of galactic rotation at the location of the sun is the negative z axis.
 
 Galactocentric Polar (GCP)
 --------------------------------
@@ -96,12 +96,12 @@ The transformation from HCA to HGP is identical to the transformation from GCA t
 Heliocentric Equatorial Polar (HEQ)
 -----------------------------------
 
-The following positions and the transformation between HGP and HEQ are described in :cite:`Carroll2007` (p 1044-1047) ,
+The following positions and the transformation between HGP and HEQ are described in :cite:`Carroll2007` (p 1044-1047),
 the transformation between different epochs in :cite:`nla.cat-vn3719611` (p 95-105) . The latter is dated.
 The international celestial reference system (ICRS) should be preferred if highest possible accuracy is of concern.
 
 HEQ, like HGP, is a spherical coordinate system having the same origins for position and velocity.
-However, angles are given in and normal to the celestial equator which is not parallel to the galactic midplane.
+However, angles are given in, and normal to, the celestial equator which is not parallel to the galactic midplane.
 The right ascension (:math:`a`) is the angular distance in the equator with :math:`a=0^{\circ}` towards the northward equinox.
 The equinox is the intersection of the ecliptic - the plane in which the earth orbits the sun - and the celestial equator.
 The declination (:math:`d`) is the angular distance above or below in the equator.
@@ -141,9 +141,9 @@ With these basis vectors the change of basis matrix is
     M = \left [\hat{e}_x,\hat{e}_y,\hat{e}_z\right ]
 
 The full transformation from HCA to HEQ consists of the two steps: the multiplication with :math:`M` followed by
-the transformation from cartesian to spherical as given in :eq:`GCA_to_GCP`.
+the transformation from Cartesian to spherical as given in :eq:`GCA_to_GCP`.
 
-For the transformation between HGP and HEQ the direction of the north celestial pole (NCP) is required .
+For the transformation between HGP and HEQ the direction of the north celestial pole (NCP) is required.
 NCP is perpendicular to the celestial equator, hence :math:`d_{NGP} = 90^{\circ}`.
 In HGP at :math:`\epsilon_0`, NCP is
 
@@ -184,23 +184,23 @@ With these three rotations, a precession matrix :math:`P` as well as its inverse
 where :math:`cz = \cos(z)`, :math:`sz = \sin(z)`, :math:`c\theta = \cos(\theta)`, :math:`s\theta = \sin(\theta)`,
 :math:`c\xi = \cos(\xi)` and :math:`s\xi = \sin(\xi)`.
 
-Before multiplication with :math:`P`, the target vector has to be expressed in cartesian coordinates.
+Before multiplication with :math:`P`, the target vector has to be expressed in Cartesian coordinates.
 
 Heliocentric Telescope Polar (HTP)
 -----------------------------------
 
-This coordinate system aims to describe positions as they are observerd with a telescope.
+This coordinate system aims to describe positions as they are observed with a telescope.
 As with HEQ the right ascension :math:`a` describes the angular distance in and the declination :math:`d` the angular distance below and above the midplane.
-The origin, however is defined by the line of sight vector, that is :math:`\hat{v}_{los} = [r,a,d] = [1,0,0]_{HTP}`
-Hence one image, taken with a teleskope, is a circle in the :math:`ad`-plane.
+The origin, however is defined by the line of sight vector, that is :math:`\hat{v}_{los} = [r,a,d] = [1,0,0]_{HTP}`.
+Hence one image, taken with a telescope, is a circle in the :math:`ad`-plane.
 
 It may seem as if the transformation from HGP to HTP and vice versa simply consists of a shift by :math:`\hat{v}_{los}` in HGP basis.
 However for any line of sight vector with :math:`b\neq0`, the result would be an ellipse rather than a circle.
 Casually speaking, the cone of vision in any spherical coordinate system is a circle when projected onto the unit sphere.
 While this circle always covers the same range in :math:`b`, the range in :math:`l` depends on the distance (:math:`b`) between the circle and the midplane.
-With increasing absolute value of :math:`b` the circles around the unit sphere descibed by :math:`l` decrease in size.
+With increasing absolute value of :math:`b` the circles around the unit sphere described by :math:`l` decrease in size.
 
 While there may be a solution for this issue, a different transformation was devised.
 Positions can be transformed from HCA to HTP by aligning :math:`\hat{v}_{los}` with the x axis `\hat{x}`
-using a rotation matrix generated as descibed in :eq:`transformation_matrix` with the rotation axis defined by :math:`[1,0,0]_{HCA}` and :math:`\hat{v}_{los,HCA}` 
-Subsequent transformation from cartesian to polar coordinates as described in the section GCP above completes the transformation.
+using a rotation matrix generated as described in :eq:`transformation_matrix` with the rotation axis defined by :math:`[1,0,0]_{HCA}` and :math:`\hat{v}_{los,HCA}` 
+Subsequent transformation from Cartesian to polar coordinates as described in the section GCP above completes the transformation.
