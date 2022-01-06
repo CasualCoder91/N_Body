@@ -5,7 +5,7 @@ Introduction
 The Extremely Large Telescope (ELT) is currently under construction. 
 This first next generation 40m class telescope will have the resolution and sensitivity needed to study the motions of individual stars in the galactic centre (GC).
 These position and motions can be used to detect star clusters using some type of clustering algorithm and consequently estimate their Initial Mass Function (IMF).
-Whether the IMF of star clusters is universal is subject of discussion :cite:`Bastian2010` at this time.
+Whether the IMF of star clusters is universal is the subject of discussion :cite:`Bastian2010` at this time.
 The study of Young Massive Clusters (YMCs) :cite:`Zwart2010` near the GC will hopefully give more insight into this hotly debated topic.
 YMCs are tightly grouped clusters of stars, generally containing >10000 members. 
 All original members are still present, the IMF is well sampled in all mass regimes. These facts combine to give a good picture of the end product of a star formation event.
