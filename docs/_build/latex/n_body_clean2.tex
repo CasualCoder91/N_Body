@@ -122,7 +122,7 @@ Snapshots are taken at different timesteps and fed to ScopeSim {[}\hyperlink{cit
 With the help of Photutils {[}\hyperlink{cite.NBodySimulation/Appendix:id54}{8}{]} positions are extracted and the DBSCAN algorithm used to detect cluster and field stars.
 Finally, the reliability of the results can be determined by comparing its results with the initially simulated stars.
 
-\chapter{Modeling The Milky Way Galaxy}
+\part{Modeling The Milky Way Galaxy}
 	\highLight[{[RGB]{232,209,82}}]{
 	The first mayor goal is to create and store data which will be observable by the ELT. This data consists of field stars and cluster stars at consecutive points in time.
 	A field stars is any star belonging to the milky way which is not of interest for the observation. Still, the amount, mass and velocity of these stars should be reasonably realistic.
@@ -136,12 +136,12 @@ Finally, the reliability of the results can be determined by comparing its resul
 	The circular velocity at the cluster location is derived from the galactic potential and added to each cluster star.
 	After this initialization is complete, the simulation is run for a set amount of timesteps storing all relevant data into a database.}
 
-	\section{Required Methods}
-		\subsection{Sampling distribution functions}
+	\chapter{Required Methods}
+		\section{Sampling distribution functions}
 			\label{\detokenize{NBodySimulation/Initialization:sampling-distribution-functions}}
 			Space, velocity and mass distributions are sampled during various steps of the initialization using the following two methods.
 			For further details and alternative methods see {[}\hyperlink{cite.NBodySimulation/Appendix:id43}{11}{]}.
-				\subsubsection{Rejection sampling}
+				\subsection{Rejection sampling}
 					\label{\detokenize{NBodySimulation/Initialization:rejection-sampling}}
 					\sphinxAtStartPar
 					A proposed distribution function \(g(x)\) is sampled and each resulting sample accepted with a probability of \(\frac{f(x)}{Cg(x)}\).
@@ -160,7 +160,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 					\sphinxAtStartPar
 					here \(u\) is a uniform distribution \(U(0,Cg(x)) = U(0,m)\). While \(Cg(x)\) has to be larger than \(f(x)\) the area between them should be as small as possible to ensure a decent acceptance fraction.
 				
-				\subsubsection{Inverse transform sampling}
+				\subsection{Inverse transform sampling}
 					\label{\detokenize{NBodySimulation/Initialization:inverse-transform-sampling}}
 					\sphinxAtStartPar
 					If the cumulative probability function (cpf) of the probability distribution \(f(y)\) is continuous and its inverse obtainable, this method can be utilized and is more efficient than rejection sampling.
@@ -171,7 +171,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 					\sphinxAtStartPar
 					The inverse \(F^{-1}(y)\) may be calculated via \(F(F^{-1}(y)) = y\). With \(y\) drawn from a uniform distribution the results of \(F^{-1}(y)\) have the desired probability distribution \(f(y)\).
 
-		\subsection{Integration techniques}
+		\section{Integration techniques}
 			\label{\detokenize{NBodySimulation/Integration:integration}}\label{\detokenize{NBodySimulation/Integration::doc}}
 			\sphinxAtStartPar
 			Numerical integration is needed during initialization and simulation.
@@ -181,7 +181,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 			The decision trees given on page 79\sphinxhyphen{}80 in {[}\hyperlink{cite.NBodySimulation/Appendix:id25}{52}{]} help with the decision on when and how to use the respective methods.
 			
 			
-			\subsubsection{Quadrature, Adaptive, General\sphinxhyphen{}purpose (QAG)}
+			\subsection{Quadrature, Adaptive, General\sphinxhyphen{}purpose (QAG)}
 				\label{\detokenize{NBodySimulation/Integration:quadrature-adaptive-general-purpose-qag}}
 				\sphinxAtStartPar
 				This algorithm makes use of adaptive Gauss\sphinxhyphen{}Kronrod quadrature to estimate the definite integral of a given function.
@@ -211,7 +211,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				This division is repeated until either the absolute or relative global error estimate is smaller than required by the caller.
 			
 			
-			\subsubsection{Quadrature, Adaptive, General\sphinxhyphen{}purpose, Infinite interval (QAGI)}
+			\subsection{Quadrature, Adaptive, General\sphinxhyphen{}purpose, Infinite interval (QAGI)}
 				\label{\detokenize{NBodySimulation/Integration:quadrature-adaptive-general-purpose-infinite-interval-qagi}}
 				\sphinxAtStartPar
 				In case of a semi\sphinxhyphen{}infinite interval \((a,\pm \infty)\), the integration variable is transformed
@@ -235,7 +235,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				QAGS, in addition to the adaptive bisection (see QAG), makes use of the Wynn \(\epsilon\)\sphinxhyphen{}algorithm to accelerate the convergence.
 			
 			
-			\subsubsection{Velocity Verlet Algorithm}
+			\subsection{Velocity Verlet Algorithm}
 				\label{\detokenize{NBodySimulation/Integration:velocity-verlet-algorithm}}
 				\sphinxAtStartPar
 				For cluster members the acceleration is a combination of the force resulting from the presence of all other cluster stars (see Barens Huts Algorithm)
@@ -260,7 +260,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				\(F(x)\) does not have to be calculated twice, because \(F(x_{n+1})\) can be used as \(F(x_{n})\) in the next timestep.
 			
 			
-			\subsubsection{Barnes\sphinxhyphen{}Hut Algorithm (BH)}
+			\subsection{Barnes\sphinxhyphen{}Hut Algorithm (BH)}
 				\label{\detokenize{NBodySimulation/Integration:barnes-hut-algorithm-bh}}
 				\sphinxAtStartPar
 				When determining the gravitational force acting on a star belonging to a cluster, the positions of all other stars in that cluster
@@ -322,7 +322,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				In the special case of \(\theta_{max}=0\), BH becomes a direct\sphinxhyphen{}sum algorithm. \(\theta_{max}=0.5\) is a commonly chosen value.
 				
 
-	\section{Star clusters}
+	\chapter{Star clusters}
 		\label{\detokenize{NBodySimulation/Initialization:cluster}}
 		\sphinxAtStartPar
 		A cluster can be characterised via a number of parameters, namely its density profile, metallicity, binary fraction and initial mass function (IMF).
@@ -330,7 +330,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 		The generated file can then be imported by setting the appropriate parameters. Consequently McLuster has been used for all experiments presented here.
 		
 		
-		\subsection{Initial Mass Function (IMF)}
+		\section{Initial Mass Function (IMF)}
 			\label{\detokenize{NBodySimulation/Initialization:initial-mass-function-imf}}
 			\sphinxAtStartPar
 			The IMF describes the initial mass distribution of stars, that is, how many stars have which mass in some set of stars at the start.
@@ -339,7 +339,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 			Sampling routines for the following two IMFs have been implemented by the author.
 		
 		
-			\subsubsection{Salpeter IMF}
+			\subsection{Salpeter IMF}
 				\label{\detokenize{NBodySimulation/Initialization:salpeter-imf}}\begin{equation}\label{equation:NBodySimulation/Initialization:salpeter}
 				\begin{split}p(m)=\frac{dN}{dm}=A*m^{-\alpha }\end{split}
 				\end{equation}
@@ -375,7 +375,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				\caption{\(10^3\) stars sampled from the Salpeter IMF. This figure has been generated to test the implementation of the sampling algorithm.}\label{\detokenize{NBodySimulation/Initialization:id41}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-mass-salpeter}}\end{figure}
 		
 		
-			\subsubsection{Broken Power Law (BPL)}
+			\subsection{Broken Power Law (BPL)}
 				\label{\detokenize{NBodySimulation/Initialization:broken-power-law-bpl}}
 				\sphinxAtStartPar
 				The BPL IMF has the benefit of being highly adaptable. It can be utilized to approximate any other IMF.
@@ -427,7 +427,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				where \(y\) is a random number in range {[}0,1{]}
 		
 		
-		\subsection{Density Profile}
+		\section{Density Profile}
 			\label{\detokenize{NBodySimulation/Initialization:density-profile}}
 			\sphinxAtStartPar
 			Different density profiles (King {[}\hyperlink{cite.NBodySimulation/Appendix:id40}{46}{]}, Plummer {[}\hyperlink{cite.NBodySimulation/Appendix:id41}{53}{]} and Elson, Fall \& Freeman {[}\hyperlink{cite.NBodySimulation/Appendix:id42}{41}{]}) have been used ({[}\hyperlink{cite.NBodySimulation/Appendix:id36}{17}{]}, {[}\hyperlink{cite.NBodySimulation/Appendix:id37}{35}{]}, {[}\hyperlink{cite.NBodySimulation/Appendix:id38}{16}{]}) to simulate YMCs.
@@ -436,9 +436,9 @@ Finally, the reliability of the results can be determined by comparing its resul
 			In a second step the positions are offset to the desired location given as input parameter and the the circular velocity at that target location is added to the velocity of each star.}
 
 
-	\section{Star clusters}
+	\chapter{The Milky Way model}
 
-		\subsection{Galactic Potential}
+		\section{Galactic Potential}
 			\label{\detokenize{NBodySimulation/Potential:galactic-potential}}\label{\detokenize{NBodySimulation/Potential:galactic-potential-label}}\label{\detokenize{NBodySimulation/Potential::doc}}
 			\sphinxAtStartPar
 			Modelling the gravitational potential of the Milky Way has been an ever evolving topic in recent decades. {[}\hyperlink{cite.NBodySimulation/Appendix:id58}{39}{]} provides a brief history.
@@ -585,7 +585,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 			R_{0} = 8 \left [ kpc \right ]\\
 			\end{aligned}\end{align*}
 			
-			\subsubsection{Circular Velocity}
+			\subsection{Circular Velocity}
 				\label{\detokenize{NBodySimulation/Potential:circular-velocity}}
 				\sphinxAtStartPar
 				The circular velocity \(v_{c}\) is defined via
@@ -621,7 +621,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				\caption{Galactic rotation curve for the chosen MW model}\label{\detokenize{NBodySimulation/Potential:id9}}\label{\detokenize{NBodySimulation/Potential:fig-potential-circular-velocity}}\end{figure}
 			
 			
-			\subsubsection{Angular Velocity}
+			\subsection{Angular Velocity}
 				\label{\detokenize{NBodySimulation/Potential:angular-velocity}}
 				\sphinxAtStartPar
 				The angular velocity is required for initializing disc star velocities and can be obtained from the potential:
@@ -634,7 +634,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				\begin{split}\Omega ^{2}\left ( R \right ) = \frac{G}{R} \left\{-\frac{M_{bulge}}{(a_{bulge}+R)^2}+\frac{2 M_{disk} R^3}{\left[\left(a_{disk}+b_{disk}\right)^2+R^4\right]^{1.5}}+\frac{M_{bh}}{R^2}-\frac{4 \pi  p_{s} r_{s}^3}{R^2+R r_{s}}+\frac{4 \pi  p_{s} r_{s}^3 \ln \left(\frac{R+r_{s}}{r_{s}}\right)}{R^2}\right\}\end{split}
 				\end{equation*}
 			
-			\subsubsection{Mass Distribution}
+			\subsection{Mass Distribution}
 				\label{\detokenize{NBodySimulation/Potential:mass-distribution}}
 				\sphinxAtStartPar
 				The mass inside a volume is calculated by numerical integration of the density.
@@ -648,7 +648,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				\caption{Mass distribution at \(z_{GCA} = 1.0\) {[}kpc{]}}\label{\detokenize{NBodySimulation/Potential:id10}}\label{\detokenize{NBodySimulation/Potential:fig-potential-mass-distribution}}\end{figure}
 			
 			
-			\subsubsection{Surface Mass Density}
+			\subsection{Surface Mass Density}
 				\label{\detokenize{NBodySimulation/Potential:surface-mass-density}}
 				\sphinxAtStartPar
 				The surface mass density (SMD) is used to estimate the vertical velocity dispersion \eqref{equation:NBodySimulation/Initialization:vertical_velocity_dispersion} and is defined by
@@ -663,617 +663,632 @@ Finally, the reliability of the results can be determined by comparing its resul
 				\caption{The surface mass density of the disc and bulge}\label{\detokenize{NBodySimulation/Potential:id11}}\label{\detokenize{NBodySimulation/Potential:fig-potential-surface-density}}\end{figure}
 
 
-\chapter{Initialization}
-\label{\detokenize{NBodySimulation/Initialization:initialization}}\label{\detokenize{NBodySimulation/Initialization::doc}}
+		\section{Field Stars (FS)}
+			\label{\detokenize{NBodySimulation/Initialization:field-stars-fs}}
+			\sphinxAtStartPar
+			Any star which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potential described in {\hyperref[\detokenize{NBodySimulation/Potential:galactic-potential-label}]{\sphinxcrossref{\DUrole{std,std-ref}{Galactic Potential}}}}.
+			
+			\sphinxAtStartPar
+			The cone of vision (COV) is defined by the angle of view \(\alpha\), the view distance \(h\) (height of the cone), the view point \(vP\) (location of the observer) and the focus \(F\) (a point along the line of sight).
+			
+			\sphinxAtStartPar
+			The COV is constructed by transforming a right circular cone, where the vertex is at the origin and the circular base normal to the z axis.
+			
+			\sphinxAtStartPar
+			Per transformation the tip of the cone is displaced from the origin to the view point \(vP\) and its axis is rotated to align with the line of sight \(l\).
+			Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
+			
+			\begin{figure}[htbp]
+			\centering
+			\capstart
+			
+			\noindent\sphinxincludegraphics{{cone}.pdf}
+			\caption{Transformation of the cone of vision}\label{\detokenize{NBodySimulation/Initialization:id42}}\label{\detokenize{NBodySimulation/Initialization:fig-cone}}\end{figure}
+			
+			\sphinxAtStartPar
+			Rotation and translation are both isometric transformations meaning area and volume of the cone are preserved {[}\hyperlink{cite.NBodySimulation/Appendix:id9}{15}{]} (p.175).
+			
+			\sphinxAtStartPar
+			A unit quaternion \(\textbf{q}\) is used in order to construct the rotation matrix. With rotation axis \(\vec{b}\) and angle \(\beta\) the quaternion is given by
+			\begin{equation*}
+			\begin{split}\textbf{q} = \left ( \textup{cos}\left (\frac{\beta}{2}\right ), \vec{b}\textup{ sin}\left ( \frac{\beta}{2} \right )\right )\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			The rotation axis \(\vec{b}\) is the normalized cross product of the original (\(\vec{z}\)) and target (\(l\)) cone axis
+			\begin{equation*}
+			\begin{split}\vec{b}=\frac{\vec{z}\times\vec{l}}{\left \| \vec{z}\times\vec{l} \right \|}\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			The angle \(\beta\) between the vectors of interest can be calculated as follows
+			\begin{equation*}
+			\begin{split}\beta
+			=\textup{atan2}\left ( \textup{tan}\left ( \beta \right ) \right )
+			=\textup{atan2}\left ( \frac{\textup{sin}\left ( \beta \right )}{\textup{cos}\left ( \beta \right )} \right )
+			=\textup{atan2}\left ( \frac{\left \| \vec{z}\times\vec{l} \right \|}{\vec{z}\cdot \vec{l}} \right )\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			Next, quaternion is converted to the rotation matrix {[}\hyperlink{cite.NBodySimulation/Appendix:id7}{21}{]}. Using the homogeneous notation {[}\hyperlink{cite.NBodySimulation/Appendix:id8}{34}{]} (p. 57) the matrix becomes:
+			\begin{equation*}
+			\begin{split}\mathbf{R}=\begin{bmatrix}
+			q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{4}+2q_{2}q_{3} & 2q_{1}q_{3}+2q_{2}q_{4} & 0\\
+			2q_{1}q_{4}+2q_{2}q_{3} & q_{1}^{2}-q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{2}+2q_{3}q_{4} & 0\\
+			-2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & 0\\
+			0  & 0 & 0 & 1
+			\end{bmatrix}\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			The translation matrix for the translation vector \(\vec{t}\) reads {[}\hyperlink{cite.NBodySimulation/Appendix:id8}{34}{]} (p. 66):
+			\begin{equation*}
+			\begin{split}\mathbf{T_{translation}}=\begin{bmatrix}
+			1 & 0 & 0 & t_{x}\\
+			0 & 1 & 0 & t_{y}\\
+			0 & 0 & 1 & t_{z}\\
+			0  & 0 & 0 & 1
+			\end{bmatrix}\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			The transformation matrix \(\mathbf{T}\) is the product of \(\mathbf{R}\) and \(\mathbf{T_{translation}}\)
+			\begin{equation}\label{equation:NBodySimulation/Initialization:transformation_matrix}
+			\begin{split}\mathbf{T}=\begin{bmatrix}
+			 q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{4}+2q_{2}q_{3} & 2q_{1}q_{3}+2q_{2}q_{4} & t_{x}\\
+			 2q_{1}q_{4}+2q_{2}q_{3} & q_{1}^{2}-q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{2}+2q_{3}q_{4} & t_{y}\\
+			 -2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & t_{z}\\
+			 0  & 0 & 0 & 1
+			 \end{bmatrix}\end{split}
+			\end{equation}
+			\sphinxAtStartPar
+			The total mass \(M\) of disc and bulge stars is obtained by integrating the respective density over the COV.
+			
+			\sphinxAtStartPar
+			For a right circular cone
+			\begin{equation*}
+			\begin{split}\tan\left (\frac{\alpha }{2}  \right ) = \frac{R}{h}\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			and on its surface
+			\begin{equation*}
+			\begin{split}\tan\left (\frac{\alpha }{2}  \right ) = \frac{r}{z} \\
+			z = \frac{h}{R}r\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			where \(R\) is the base radius of the cone and \(r = \sqrt{x^2+y^2}\). Hence \(\frac{h}{R}r\leq z\leq h\). Both \(x\) and \(y\) are bound by the base radius.
+			Choosing \(\left | x \right | \leq R\) implies \(\left | y \right | \leq \sqrt{R^2-x^2}\).
+			\begin{equation*}
+			\begin{split}M = \int_{-R}^{R}\int_{-\sqrt{R^2-x^2}}^{\sqrt{R^2-x^2}}\int_{\frac{h}{R}r}^{h} \rho \left ( \mathbf{T}*\begin{pmatrix}x\\ y\\ z\end{pmatrix} \right ) dzdydx\end{split}
+			\end{equation*}
+			
+			\subsection{Bulge Stellar Mass Function}
+				\label{\detokenize{NBodySimulation/Initialization:bulge-stellar-mass-function}}
+				\sphinxAtStartPar
+				By rejection sampling the following function, given by {[}\hyperlink{cite.NBodySimulation/Appendix:id2}{40}{]}, the mass of bulge stars is determined.
+				
+				\sphinxAtStartPar
+				For \(m<0.7\) the log\sphinxhyphen{}normal distribution equation \eqref{equation:NBodySimulation/Initialization:lognormal} is used. Parameters are \(A=3.6*10^{-4}\), \(m_{c}=0.22\) and \(\sigma=0.33\).
+				For \(m>0.7\) a Salpeter slope \eqref{equation:NBodySimulation/Initialization:salpeter} with parameters \(A=7.1*10^{-5}\) and \(x=1.3\) is chosen.
+				
+				\sphinxAtStartPar
+				Samples are drawn until the sum of all samples \(M_s = \sum_{i=1}^n m_i\) is larger than the total mass \(M\).
+				If \(\sum_{i=1}^{n-1} m_i +\frac{m_n}{2} > M\) the last sample is removed.
+				
+				\begin{figure}[htbp]
+				\centering
+				\capstart
+				
+				\noindent\sphinxincludegraphics{{initial_conditions_mass_bulge}.pdf}
+				\caption{\(10^3\) stars sampled from the bulge MF}\label{\detokenize{NBodySimulation/Initialization:id43}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-mass-bulge}}\end{figure}
+			
+			
+			\subsection{Disk Stellar Mass Function}
+				\label{\detokenize{NBodySimulation/Initialization:disk-stellar-mass-function}}
+				\sphinxAtStartPar
+				Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by {[}\hyperlink{cite.NBodySimulation/Appendix:id2}{40}{]}.
+				
+				\sphinxAtStartPar
+				For \(m<1\) the PDMF reads
+				\begin{equation}\label{equation:NBodySimulation/Initialization:lognormal}
+				\begin{split}\xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]\end{split}
+				\end{equation}
+				\sphinxAtStartPar
+				or equivalently (this version is sampled)
+				\begin{equation*}
+				\begin{split}\xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)}*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]\end{split}
+				\end{equation*}
+				\sphinxAtStartPar
+				For \(m>1\) the PDMF has the form
+				\begin{equation*}
+				\begin{split}\xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A m^{-x}\end{split}
+				\end{equation*}
+				\sphinxAtStartPar
+				or depending on \(m\) rather than \(\mathrm{log}(m)\)
+				\begin{equation*}
+				\begin{split}\xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}\end{split}
+				\end{equation*}
+				\begin{figure}[htbp]
+				\centering
+				\capstart
+				
+				\noindent\sphinxincludegraphics{{initial_conditions_mass_disk}.pdf}
+				\caption{Stars with total mass of \(10^3 M_{\odot}\) sampled from disk PDMF}\label{\detokenize{NBodySimulation/Initialization:id44}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-mass-disk}}\end{figure}
+			
+			
+			\subsection{Positions}
+				\label{\detokenize{NBodySimulation/Initialization:positions}}
+				\sphinxAtStartPar
+				The positions of the field stars within the cone of vision are generated in two steps of rejection sampling followed by the transformation \eqref{equation:NBodySimulation/Initialization:transformation_matrix}.
+				
+				\sphinxAtStartPar
+				In the first step trial positions are drawn from a uniform distribution within a cuboid containing the cone.
+				The boundaries of the cuboid are given by
+				\begin{equation*}
+				\begin{split}|x|\leq R \\
+				|y|\leq R \\
+				0\leq z\leq h\end{split}
+				\end{equation*}
+				\sphinxAtStartPar
+				where \(R=h*\textup{tan}\left ( \frac{\alpha}{2} \right )\) is the base radius of the cone.
+				
+				\sphinxAtStartPar
+				These trial positions are rejected in case they lie outside the boundaries of the cone.
+				The conditions for acceptance are:
+				\begin{equation*}
+				\begin{split}\sqrt{x^{2}+y^{2}}\leq R \\
+				z\geq h*\frac{\sqrt{x^{2}+y^{2}}}{R} \\\end{split}
+				\end{equation*}
+				\sphinxAtStartPar
+				This method ensures that the positions are indeed homogeneously distributed, which is essential for the second step.
+				
+				\sphinxAtStartPar
+				The second step consists of rejection sampling the density distribution.
+				The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
+				If this test variable is smaller than the density at the trial position generated in step two, the trial position is accepted and rejected otherwise.
+				
+				\sphinxAtStartPar
+				Finally, the accepted position is transformed via the transformation matrix \eqref{equation:NBodySimulation/Initialization:transformation_matrix}.
+				
+				\begin{figure}[htbp]
+				\centering
+				\capstart
+				
+				\noindent\sphinxincludegraphics{{initial_conditions_positions}.pdf}
+				\caption{Spatial distribution of a sample of disc and bulge stars}\label{\detokenize{NBodySimulation/Initialization:id45}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-positions}}\end{figure}
+			
+			
+			\subsection{Velocities}
+				\label{\detokenize{NBodySimulation/Initialization:velocities}}
+				
+				\subsubsection{Particle Kinematics in Cylindrical Coordinates}
+					\label{\detokenize{NBodySimulation/Initialization:particle-kinematics-in-cylindrical-coordinates}}
+					\sphinxAtStartPar
+					In terms of Cartesian unit vectors, cylindrical unit vectors are given by
+					\begin{equation*}
+					\begin{split}\hat{e}_R = \hat{e}_x\cos(\phi) + \hat{e}_y\sin(\phi) \\
+					\hat{e}_\phi = -\hat{e}_x\sin(\phi) + \hat{e}_y\cos(\phi)\\
+					\hat{e}_z = \hat{e}_z\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					Since \(\hat{e}_R\) depends on \(\phi\), position vectors have the form
+					\begin{equation*}
+					\begin{split}\vec{q} = R\hat{e}_R+z\hat{e}_z\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					derivation by time gives the velocity
+					\begin{equation}\label{equation:NBodySimulation/Initialization:cylindrical_velocity}
+					\begin{split}\vec{v} = \dot{R}\hat{e}_R+R\dot{\phi}\hat{e}_\phi+\dot{z}\hat{e}_z\end{split}
+					\end{equation}
+				
+				\subsubsection{Lagrangian with axisymmetric potential}
+					\label{\detokenize{NBodySimulation/Initialization:lagrangian-with-axisymmetric-potential}}
+					\sphinxAtStartPar
+					Using \eqref{equation:NBodySimulation/Initialization:cylindrical_velocity} the Lagrangian per unit mass reads
+					\begin{equation*}
+					\begin{split}L =\frac{1}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,z\right)\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					and using the Euler\textendash{}Lagrange equation gives the conjugate momenta
+					\begin{equation}\label{equation:NBodySimulation/Initialization:conjugate_momenta}
+					\begin{split}p_{R} = \frac{\partial L}{\partial \dot{R}} = \dot{R} \\
+					 p_{\phi} = \frac{\partial L}{\partial \dot{\phi}} = R^2\dot{\phi} \\
+					 p_{z} = \frac{\partial L}{\partial \dot{z}} = \dot{z} \\\end{split}
+					\end{equation}
+				
+				\subsubsection{Hamiltonian with axisymmetric potential}
+					\label{\detokenize{NBodySimulation/Initialization:hamiltonian-with-axisymmetric-potential}}
+					\sphinxAtStartPar
+					Using the momenta in cylindrical coordinates \eqref{equation:NBodySimulation/Initialization:conjugate_momenta} the Hamiltonian per unit mass with an axisymmetric potential reads ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 278)
+					\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_1}
+					\begin{split}H = \frac{1}{2}\left( p_{R}^2+\frac{p_\phi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					using Hamilton’s equations gives
+					\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_2_1}
+					\begin{split}\dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\phi^2}{R^3}-\frac{\partial \Phi }{\partial R}\end{split}
+					\end{equation}\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_2_2}
+					\begin{split}\dot{p}_{\phi} = -\frac{\partial H}{\partial \phi} = -\frac{\partial \Phi }{\partial \phi} = 0\end{split}
+					\end{equation}\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_2_3}
+					\begin{split}\dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					Since \(\vec{L} = \vec{p} \times \vec{\dot{p}}\) and thus
+					\begin{equation}\label{equation:NBodySimulation/Initialization:angular_momentum}
+					\begin{split}L_z = R^2\dot{\phi}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					, the second equation above signifies that, in the case of an axisymmetric potential, the z component of the angular momentum is conserved.
+				
+				
+				\subsubsection{The phase space distribution function (DF)}
+					\label{\detokenize{NBodySimulation/Initialization:the-phase-space-distribution-function-df}}
+					\sphinxAtStartPar
+					A galaxy can be viewed as a number of stars in phase space.
+					The phase space is a six dimensional space spanned by position \(\vec{q}\) and momentum \(\vec{p}\).
+					One point in phase space can therefore be described by a six dimensional vector \(\vec{w}=(\vec{q},\vec{p})\),
+					the state of a whole galaxy as a DF \(f(\vec{q},\vec{p},t)\).
+					\(f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}\) is the probability that some specific star is inside the 6D cuboid defined by \(d^3\vec{q}d^3\vec{p}\) at time \(t\).
+					
+					\sphinxAtStartPar
+					The conservation of probability in phase space is, similarly to the continuity equation in fluid dynamics, given by
+					\begin{equation*}
+					\begin{split}\frac{\partial f }{\partial t} + \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i) = 0\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					with \(\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})\).
+					
+					\sphinxAtStartPar
+					The right summand can be changed as follows, using Hamilton equations
+					\begin{equation*}
+					\begin{split}\sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i)
+					= \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \dot{q}_i\right) + \frac{\partial}{\partial p_i}\left(f\dot{p}_i\right) \right ) \\
+					= \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \frac{\partial H}{\partial p_i}\right) - \frac{\partial}{\partial p_i}\left(f \frac{\partial H}{\partial q_i} \right) \right) \\
+					= \sum_{i=1}^{3} \left (
+					\frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
+					+ f  \frac{\partial^2 H}{\partial q_i \partial p_i}
+					- \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i}
+					- f \frac{\partial ^2 H}{\partial p_i \partial q_i} \right)  \\
+					= \sum_{i=1}^{3} \left (
+					\frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
+					- \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right)\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					And therefore
+					\begin{equation}\label{equation:NBodySimulation/Initialization:collisionless_boltzmann_equation}
+					\begin{split}\frac{\partial f }{\partial t} + \sum_{i=1}^{3} \left (
+					 \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
+					 - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right) = 0\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					which is the collisionless Boltzmann Equation (CBE).
+					
+					\sphinxAtStartPar
+					The zeroth moment of the DF is the number density:
+					\begin{equation*}
+					\begin{split}\nu(\vec{x}) \equiv \int f(\vec{x},\vec{v})d^3\vec{v}\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					Mean velocities are given by the first moment:
+					\begin{equation*}
+					\begin{split}\overline{v_i}(\vec{x}) \equiv \frac{1}{\nu(\vec{x})}\int v_i f(\vec{x},\vec{v})d^3\vec{v}\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					Todo(?): Continue here (showing = 0 for 2/3 directions)
+				
+				
+				\subsubsection{Jeans equations}
+					\label{\detokenize{NBodySimulation/Initialization:jeans-equations}}
+					\sphinxAtStartPar
+					Using Einstein notation for \(i=1,2,3\) the CBE \eqref{equation:NBodySimulation/Initialization:collisionless_boltzmann_equation} is given by ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 277):
+					\begin{equation*}
+					\begin{split}\frac{\partial f}{\partial t} + \frac{\partial f}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial f}{\partial p_i}\frac{\partial H}{\partial q_i} = 0\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					Since the galactic potential \eqref{equation:NBodySimulation/Potential:total_potential} is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
+					\begin{equation}\label{equation:NBodySimulation/Initialization:jeans_equations_1}
+					\begin{split}\frac{\partial f}{\partial t}
+					 + p_R\frac{\partial f}{\partial R}
+					 + \frac{p_\phi}{R^2}\frac{\partial f}{\partial \phi}
+					 + p_z\frac{\partial f}{\partial z}
+					 - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
+					 - \frac{\partial \Phi}{\partial \phi}\frac{\partial f}{\partial p_\phi}
+					 - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					It is assumed that the galaxy is statistically in a steady state ({[}\hyperlink{cite.NBodySimulation/Appendix:id18}{4}{]}) i.e. \(\frac{\partial f}{\partial t}=0\).
+					Due to this assumption and taking \eqref{equation:NBodySimulation/Initialization:hamilton_2_2} into account \eqref{equation:NBodySimulation/Initialization:jeans_equations_1} simplifies to
+					\begin{equation}\label{equation:NBodySimulation/Initialization:jeans_equations_2}
+					\begin{split}p_R\frac{\partial f}{\partial R}
+					 + \frac{p_\phi}{R^2}\frac{\partial f}{\partial \phi}
+					 + p_z\frac{\partial f}{\partial z}
+					 - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
+					 - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					Multiplying equation \eqref{equation:NBodySimulation/Initialization:jeans_equations_2} by \(p_R\) and integrating over all momenta leads to (todo: derive?)
+					\begin{equation}\label{equation:NBodySimulation/Initialization:jeans_equations_3}
+					\begin{split}\frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +
+					 \nu \left ( \frac{\overline{v_R^2}-\overline{v_\phi^2}}{R} + \frac{\partial\Phi}{\partial R}\right ) = 0\end{split}
+					\end{equation}
+				
+				\subsubsection{The Epicyclic Approximation}
+					\label{\detokenize{NBodySimulation/Initialization:the-epicyclic-approximation}}
+					\sphinxAtStartPar
+					Individual stars in the disk are on nearly circular orbits.
+					Such orbits can be approximated by circular orbits with additional retrograde elliptical orbits around the guiding center.
+					
+					\sphinxAtStartPar
+					The derivation of this approximation starts with Hamilton’s equations for an axisymmetric potential.
+					
+					\sphinxAtStartPar
+					Rearranging \eqref{equation:NBodySimulation/Initialization:hamilton_1} and using \eqref{equation:NBodySimulation/Initialization:angular_momentum} gives
+					\begin{equation*}
+					\begin{split}H = \frac{1}{2}\left( p_{R}^2+p_z^2 \right)+\frac{L_z^2}{2R^2}+\Phi\left(R,z\right)\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					With the effective potential given by
+					\begin{equation*}
+					\begin{split}\Phi_{\textup{eff}}\left(R,z\right) = \frac{L_z^2}{2R^2}+\Phi\left(R,z\right)\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					leads to
+					\begin{equation*}
+					\begin{split}H_{\textup{eff}} = \frac{1}{2}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					Here \(\frac{1}{2m}\left( p_{R}^2+p_z^2 \right)\) is the kinetic energy in the \(\left( R,z \right)\) plane or meridional plane.
+					The angular momentum term in the effective potential is not a real potential energy even though sometimes called centrifugal potential.
+					It really is the angular kinetic energy. The given definition of \(\Phi_{\textup{eff}}\) is only valid because \(L_z\) is conserved.
+					
+					\sphinxAtStartPar
+					Using \(\Phi_{\textup{eff}}\) \eqref{equation:NBodySimulation/Initialization:hamilton_2_1} and \eqref{equation:NBodySimulation/Initialization:hamilton_2_3} can be written as
+					\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_eff_1}
+					\begin{split}\dot{p}_{R} = -\frac{\partial \Phi_{\textup{eff}} }{\partial R}\end{split}
+					\end{equation}\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_eff_2}
+					\begin{split}\dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					These equations describe harmonic oscillations in the effective potential.
+					The minimum of effective potential is the minimum of the real potential energy, together with a contribution from the angular kinetic energy.
+					\begin{equation*}
+					\begin{split}\frac{\partial \Phi_{\textup{eff}} }{\partial R} = \frac{\partial \Phi }{\partial R} - \frac{L_z^2}{R^3} =0 \\
+					\frac{\partial \Phi_{\textup{eff}} }{\partial z} = 0\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					The first condition states that the attractive force (\(-\frac{\partial \Phi_{\textup{eff}} }{\partial R}\)) has to balance the “centrifugal force”.
+					This is the condition for circular orbits with angular momentum \(L_z\).
+					The second condition is clearly satisfied in the equatorial plane (\(z=0\)).
+					The coordinates of this guiding centre are defined as \((R_g,\phi_g,z_g)\).
+					
+					\sphinxAtStartPar
+					In preparation for a Taylor series expansion about the guiding centre, \(x\) is defined as
+					\begin{equation*}
+					\begin{split}x \equiv R - R_g\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					If \(R = R_g\) then \(x=0\) and therefor the guiding centre is at \((x,z) = (0,0)\).
+					\begin{equation*}
+					\begin{split}\Phi_{\textup{eff}} = \Phi_{\textup{eff}}(R_g,0) +
+					\frac{\partial \Phi_{\textup{eff}} }{\partial R}\bigg|_{(R_g,0)}x +
+					\frac{\partial \Phi_{\textup{eff}} }{\partial z}\bigg|_{(R_g,0)}z +
+					\frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial R^2}\bigg|_{(R_g,0)}x^2 +
+					\frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial z^2}\bigg|_{(R_g,0)}z^2 +
+					\frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial x\partial z}\bigg|_{(R_g,0)}xz +
+					\mathcal{O}(xz^2)\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					The first order terms are zero (since \(\Phi_{\textup{eff}}\) is minimized at the guiding centre) and so is the \(xz\), the later due to symmetric about \(z=0\).
+					
+					\sphinxAtStartPar
+					In the epicyclic approximation \(\mathcal{O}(xz^2)\) and higher order terms are neglected.
+					
+					\sphinxAtStartPar
+					With this approximation \eqref{equation:NBodySimulation/Initialization:hamilton_eff_1} and \eqref{equation:NBodySimulation/Initialization:hamilton_eff_2} become
+					\begin{align}\label{equation:NBodySimulation/Initialization:hamilton_eff_approx}\!\begin{aligned}
+					\dot{p}_{x} = -\frac{\partial \Phi_{\textup{eff}} }{\partial x} \approx
+					 -\frac{\partial^2 \Phi_{\textup{eff}} }{\partial R^2}\bigg|_{(R_g,0)}x \equiv
+					 -\kappa^2x\\
+					\dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z} \approx
+					 -\frac{\partial^2 \Phi_{\textup{eff}} }{\partial z^2}\bigg|_{(R_g,0)}z \equiv
+					 -\nu^2z   \\\\
+					\end{aligned}\end{align}
+					\sphinxAtStartPar
+					where the epicyclic frequency \(\kappa\) is the frequency of small radial and the vertical frequency \(\nu\) the frequency of small vertical oscillations.
+					
+					\sphinxAtStartPar
+					With potential \(\Phi\left(R,z\right)\) \eqref{equation:NBodySimulation/Initialization:hamilton_eff_approx} can be written as
+					\begin{equation}\label{equation:NBodySimulation/Initialization:kappa_squared}
+					\begin{split}\kappa^2 = \frac{\partial^2\Phi}{\partial R^2}\bigg|_{(R_g,0)} + \frac{3L_z^3}{R_g^4}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					The combination of \eqref{equation:NBodySimulation/Initialization:conjugate_momenta} with \eqref{equation:NBodySimulation/Initialization:hamilton_2_1}, given \(\dot{p}_{R}=0\) and by definition \(\Omega = \dot{\phi}\), results in the circular angular frequency
+					\begin{equation}\label{equation:NBodySimulation/Initialization:circular_angular_frequency}
+					\begin{split}\Omega^2 = \frac{1}{R} \frac{\partial \Phi }{\partial R}\bigg|_{(R_g,0)} = \frac{L_z^2}{R^4}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					The derivative of \eqref{equation:NBodySimulation/Initialization:circular_angular_frequency} is
+					\begin{equation}\label{equation:NBodySimulation/Initialization:circular_angular_frequency_2}
+					\begin{split}\frac{\partial^2\Phi}{\partial R^2} = \Omega^2 + R \frac{d\Omega^2}{dR}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					Inserting \eqref{equation:NBodySimulation/Initialization:circular_angular_frequency} and \eqref{equation:NBodySimulation/Initialization:circular_angular_frequency_2} into \eqref{equation:NBodySimulation/Initialization:kappa_squared} yields
+					\begin{equation}\label{equation:NBodySimulation/Initialization:epicyclic_frequency}
+					\begin{split}\kappa^2(R_g) = \left ( R\frac{d\Omega^2}{dR} + 4\Omega^2 \right )\bigg|_{R=R_g}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					The variance is generally given as the mean of squares minus the square of means.
+					In the epicyclic approximation the mean velocity in \(R\) and \(z\) is zero and therefor
+					\begin{equation}\label{equation:NBodySimulation/Initialization:epicyclic_variance}
+					\begin{split}\sigma_{v_{\phi}}^2 = \overline{v_\phi^2} - \overline{v_\phi}^2 \\
+					\sigma_{v_{R}}^2 = \overline{v_R^2} \\
+					\sigma_{v_{z}}^2 = \overline{v_z^2}\end{split}
+					\end{equation}
+				
+				\subsubsection{Disk}
+					\label{\detokenize{NBodySimulation/Initialization:disk}}
+					\sphinxAtStartPar
+					The velocity distribution of stars in the Milky Way disk is approximated with the help of Jeans equations as well as relations and constraints based on observations.
+					
+					\sphinxAtStartPar
+					For a flat rotation curve the radial velocity dispersion exponentially decreases with increasing radius {[}\hyperlink{cite.NBodySimulation/Appendix:id14}{59}{]} (p. 114)
+					\begin{equation}\label{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1}
+					\begin{split}\sigma_{v_{R}} \propto e^{-\frac{R}{h}}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					where \(h\) in the case of the Miyamoto Nagai potential is the radial scale length \(a\).
+					
+					\sphinxAtStartPar
+					The relation \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1} still requires a constant factor \(k\), which can be determined by means of the Toomre parameter \(Q\) at some distance \(R_{ref}\).
+					
+					\sphinxAtStartPar
+					\(Q\) is the ratio between the actual and minimum velocity dispersion \(\sigma_{v_{R,min}}\) {[}\hyperlink{cite.NBodySimulation/Appendix:id16}{57}{]} (p. 1234)
+					\begin{equation*}
+					\begin{split}\sigma_{v_{R,min}} = \frac{3.36G\Sigma}{\kappa} \\
+					Q \equiv \frac{\sigma_{v_{R}}}{\sigma_{v_{R,min}}} = \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					where \(\kappa\) denotes the epicyclic frequency \eqref{equation:NBodySimulation/Initialization:epicyclic_frequency}.
+					
+					\sphinxAtStartPar
+					In the solar neighborhood \(Q_{\ast} = 2.7 \pm 0.4\) and \(\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]\) {[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} (p. 497)
+					
+					\sphinxAtStartPar
+					The constant \(k\) can therefore be approximated via
+					\begin{equation}\label{equation:NBodySimulation/Initialization:radial_velocity_dispersion_constant}
+					\begin{split}k \cong Q \sigma_{v_{R,min}}e^{\frac{R}{h}}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					Under the approximation of isothermal sheets (introduced in {[}\hyperlink{cite.NBodySimulation/Appendix:id14}{59}{]}), the vertical velocity dispersion only depends on the surface density {[}\hyperlink{cite.NBodySimulation/Appendix:id15}{58}{]}
+					\begin{equation}\label{equation:NBodySimulation/Initialization:vertical_velocity_dispersion}
+					\begin{split}\sigma_{v_{z}} = \pi G \Sigma \left ( R \right )z_{0}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					with \(z_{0}\) being the vertical scale length \(b\) when using the Miyamoto Nagai potential.
+					
+					\sphinxAtStartPar
+					Combining the equation for the circular velocity \eqref{equation:NBodySimulation/Potential:circular_velocity} and Jeans equation \eqref{equation:NBodySimulation/Initialization:jeans_equations_3} and multiplication by \(\frac{R}{\nu}\) results in
+					\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_1}
+					\begin{split}\frac{R}{\nu} \frac{\partial \nu \overline{v_R^2}}{\partial R}
+					+ \frac{R}{\nu} \frac{\partial \nu \overline{v_Rv_z}}{\partial z}
+					+ \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					For a razor thin disc the spatial density \(\nu\) can be replaced with the surface density \(\Sigma\) {[}\hyperlink{cite.NBodySimulation/Appendix:id19}{45}{]},
+					which does not depend on \(z\). With this and by using relations \eqref{equation:NBodySimulation/Initialization:epicyclic_variance}, \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_1} simplifies to
+					\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_2}
+					\begin{split}\frac{R}{\Sigma} \frac{\partial \nu \sigma_{v_{R}}^2}{\partial R}
+					+ R \frac{\partial \overline{v_Rv_z}}{\partial z}
+					+ \sigma_{v_{R}}^2 -\sigma_{v_{\phi}}^2  - \overline{v_\phi}^2 + v_c^2 = 0\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					In the epicyclic approximation, azimuthal and radial dispersion have the following relation ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 170)
+					\begin{equation}\label{equation:NBodySimulation/Initialization:azimuthal_velocity_dispersion}
+					\begin{split}\frac{\sigma_{v_{\phi}}^2}{\sigma_{v_{R}}^2} = \frac{\kappa^2}{4\Omega^2}\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					With this relation \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_2} can be written as
+					\begin{equation*}
+					\begin{split}\frac{R}{\Sigma} \frac{\partial  \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
+					+ R \frac{\partial \overline{v_Rv_z}}{\partial z}
+					+ \sigma_{v_{R}}^2
+					- \sigma_{v_{R}}^2 \frac{\kappa^2}{4\Omega^2}
+					- \overline{v_\phi}^2 + v_c^2 = 0\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					rearrangements lead to
+					\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_3}
+					\begin{split}\overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
+					\left (
+					1 - \frac{\kappa^2}{4\Omega^2} +
+					\frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
+					+ \frac{R}{\sigma_{v_{R}}^2} \frac{\partial \overline{v_Rv_z}}{\partial z}
+					\right )\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					Due to the exponential dependency of the surface mass density ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 325)
+					and the radial dispersion \(\sigma_{v_{R}}\) \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1} on \(R\), the derivation after \(R\) summand can be solved as follows
+					\begin{equation*}
+					\begin{split}\frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R} =
+					\frac{1}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial R }{\partial \ln(R)}\frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R} =
+					\frac{1}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial \ln(R)} =
+					\frac{1}{\Sigma \sigma_{v_{R}}^2 }
+					\left ( - \frac{R\Sigma\sigma_{v_{R}}^2}{a}
+					- \frac{R\sigma_{v_{R}}^2\Sigma}{a}
+					\right ) = - 2 \frac{R}{a}\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					With this and under the assumption that the retrograde elliptical orbit is aligned with the coordinate axes \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_3} becomes
+					\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_4}
+					\begin{split}\overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
+					\left (1 - \frac{\kappa^2}{4\Omega^2} -\frac{R}{a } \right )\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					The velocity components can be sampled from Gaussian distributions. Dispersions are obtained by first evaluating the epicyclic frequency \eqref{equation:NBodySimulation/Initialization:epicyclic_frequency} and the surface mass density \eqref{equation:NBodySimulation/Potential:surface_mass_density},
+					followed by the radial velocity dispersion \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1} with constant factor \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_constant}, the vertical \eqref{equation:NBodySimulation/Initialization:vertical_velocity_dispersion} and the azimuthal velocity dispersion \eqref{equation:NBodySimulation/Initialization:azimuthal_velocity_dispersion}.
+					As noted before, the mean velocity in \(R\) and \(z\) is zero. For \(\phi\) the mean velocity is calculated from \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_4}, where the circular velocity \(v_c\) is given by \eqref{equation:NBodySimulation/Potential:circular_velocity}.
+					
+				
+				\subsubsection{Bulge}
+					\label{\detokenize{NBodySimulation/Initialization:bulge}}
+					\sphinxAtStartPar
+					For spherically symmetric distribution functions, such as, with the present approximation, the bulge, the spherically symmetric Jeans equation can be used {[}\hyperlink{cite.NBodySimulation/Appendix:id20}{37}{]}
+					\begin{equation}\label{equation:NBodySimulation/Initialization:bulge_velocity_1}
+					\begin{split}\frac{\partial (\rho \sigma_r^2)}{\partial r} + 2\frac{\beta\sigma_r^2}{r} + \rho\frac{\partial \Phi}{\partial r} = 0\end{split}
+					\end{equation}
+					\sphinxAtStartPar
+					where \(\beta\) is an indicator for anisotropy in radial and tangential direction.
+					\begin{equation*}
+					\begin{split}\beta = 1 - \frac{\sigma^2_\phi}{\sigma^2_r}\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					If the distribution is isotropic, as assumed here, \(\beta=0\) and \eqref{equation:NBodySimulation/Initialization:bulge_velocity_1} simplifies to
+					\begin{equation*}
+					\begin{split}\frac{\partial (\rho \sigma_r^2)}{\partial r} +  \rho\frac{\partial \Phi}{\partial r} = 0\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					and the radial dispersion can be calculated by integration
+					\begin{equation*}
+					\begin{split}\sigma_r^2 = \frac{1}{\rho}\int_{r}^{\infty}\rho \frac{\partial \Phi}{\partial r}\textup{dr}\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					However, \(\Phi\) is the composite potential consisting of bulge, disc and halo and therefore not spherically symmetric. As suggested in {[}\hyperlink{cite.NBodySimulation/Appendix:id19}{45}{]}, contribution by the disc to the bulge dispersion may be accounted for by spherically averaging the disc potential.
+					This is achieved by expressing the cylinder in spherical coordinates and integrating over the relevant angle
+					\begin{equation*}
+					\begin{split}\sigma_{r,disk}^2 = \frac{1}{\rho}\int_{r}^{\infty}
+					\frac{\rho }{2\pi}  \int_0^{2\pi} \frac{\partial \Phi\left ( r\sin(\theta ),r\cos(\theta ) \right )}{\partial r} \textup{d}\theta \textup{dr} \\\end{split}
+					\end{equation*}
+					\sphinxAtStartPar
+					As neither of these integrals have an analytical solution, this calculation is computationally intensive.
+					Therefore a lookup table has been implemented in which discrete \(r\) and corresponding bulge dispersion are stored.
+					
+					\begin{figure}[htbp]
+					\centering
+					\capstart
+					
+					\noindent\sphinxincludegraphics{{velocity_dispersion_bulge}.pdf}
+					\caption{Velocity dispersion of bulge stars}\label{\detokenize{NBodySimulation/Initialization:id46}}\end{figure}
+					
+					\sphinxAtStartPar
+					In the figure above results are compared with observations from {[}\hyperlink{cite.NBodySimulation/Appendix:id21}{20}{]}. These results were generated using a view distance of 7.5kpc.
+					The other parameters are given in \hyperref[\detokenize{NBodySimulation/Potential:tbl-parameters}]{Table \ref{\detokenize{NBodySimulation/Potential:tbl-parameters}}}. The radial velocity dispersion heavily depends on the scale parameter of the bulge potential.
+					With the current choice, the dispersion at small \(r\) is lower than realistic. This issue could be solved by adding an additional potential with smaller scale radius.
+					A multi component bulge model has been suggested for instance by {[}\hyperlink{cite.NBodySimulation/Appendix:id22}{31}{]}.
 
+	\chapter{Database}
+		\label{\detokenize{NBodySimulation/Database:database}}\label{\detokenize{NBodySimulation/Database::doc}}
+		\sphinxAtStartPar
+		A SQLite Database is used to store simulations including all relevant parameters, stars with their respective positions and velocities as well as data resulting from analysis.
+		SQLite supports both C++ and python. And is therefore used in most data related parts of the project. Generated data can be loaded and plotted directly from the database.
+		Previously performed simulations can be loaded from the database in order to carry out analysis like energy vs time or average star velocity vs time.
+		
+		\sphinxAtStartPar
+		Due to bad performance, no foreign key constraints where set for position.id\_star and velocity.id\_star.
+		A multi\sphinxhyphen{}column index is used to improve the execution time of queries containing both velocity.timestep and velocity.id\_star.
+		NULL values are avoided where possible. However, at many stages during execution, some information is unknown, but creating entries is still required.
+		Observed stars contain no information about their mass or GCA phase space coordinates, some cannot be mapped to simulated stars, etc.
+		
+		
+		\section{Entity Relationship Diagram}
+		\label{\detokenize{NBodySimulation/Database:entity-relationship-diagram}}
+		\noindent\sphinxincludegraphics{{ERD}.pdf}
 
-\section{Field Stars (FS)}
-\label{\detokenize{NBodySimulation/Initialization:field-stars-fs}}
-\sphinxAtStartPar
-Any star which does not belong to the simulated cluster is a FS and sampled from the disc and bulge potential described in {\hyperref[\detokenize{NBodySimulation/Potential:galactic-potential-label}]{\sphinxcrossref{\DUrole{std,std-ref}{Galactic Potential}}}}.
-
-\sphinxAtStartPar
-The cone of vision (COV) is defined by the angle of view \(\alpha\), the view distance \(h\) (height of the cone), the view point \(vP\) (location of the observer) and the focus \(F\) (a point along the line of sight).
-
-\sphinxAtStartPar
-The COV is constructed by transforming a right circular cone, where the vertex is at the origin and the circular base normal to the z axis.
-
-\sphinxAtStartPar
-Per transformation the tip of the cone is displaced from the origin to the view point \(vP\) and its axis is rotated to align with the line of sight \(l\).
-Consequently, the transformation consists of both translation and rotation illustrated in the following figure.
-
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{cone}.pdf}
-\caption{Transformation of the cone of vision}\label{\detokenize{NBodySimulation/Initialization:id42}}\label{\detokenize{NBodySimulation/Initialization:fig-cone}}\end{figure}
-
-\sphinxAtStartPar
-Rotation and translation are both isometric transformations meaning area and volume of the cone are preserved {[}\hyperlink{cite.NBodySimulation/Appendix:id9}{15}{]} (p.175).
-
-\sphinxAtStartPar
-A unit quaternion \(\textbf{q}\) is used in order to construct the rotation matrix. With rotation axis \(\vec{b}\) and angle \(\beta\) the quaternion is given by
-\begin{equation*}
-\begin{split}\textbf{q} = \left ( \textup{cos}\left (\frac{\beta}{2}\right ), \vec{b}\textup{ sin}\left ( \frac{\beta}{2} \right )\right )\end{split}
-\end{equation*}
-\sphinxAtStartPar
-The rotation axis \(\vec{b}\) is the normalized cross product of the original (\(\vec{z}\)) and target (\(l\)) cone axis
-\begin{equation*}
-\begin{split}\vec{b}=\frac{\vec{z}\times\vec{l}}{\left \| \vec{z}\times\vec{l} \right \|}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-The angle \(\beta\) between the vectors of interest can be calculated as follows
-\begin{equation*}
-\begin{split}\beta
-=\textup{atan2}\left ( \textup{tan}\left ( \beta \right ) \right )
-=\textup{atan2}\left ( \frac{\textup{sin}\left ( \beta \right )}{\textup{cos}\left ( \beta \right )} \right )
-=\textup{atan2}\left ( \frac{\left \| \vec{z}\times\vec{l} \right \|}{\vec{z}\cdot \vec{l}} \right )\end{split}
-\end{equation*}
-\sphinxAtStartPar
-Next, quaternion is converted to the rotation matrix {[}\hyperlink{cite.NBodySimulation/Appendix:id7}{21}{]}. Using the homogeneous notation {[}\hyperlink{cite.NBodySimulation/Appendix:id8}{34}{]} (p. 57) the matrix becomes:
-\begin{equation*}
-\begin{split}\mathbf{R}=\begin{bmatrix}
-q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{4}+2q_{2}q_{3} & 2q_{1}q_{3}+2q_{2}q_{4} & 0\\
-2q_{1}q_{4}+2q_{2}q_{3} & q_{1}^{2}-q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{2}+2q_{3}q_{4} & 0\\
--2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & 0\\
-0  & 0 & 0 & 1
-\end{bmatrix}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-The translation matrix for the translation vector \(\vec{t}\) reads {[}\hyperlink{cite.NBodySimulation/Appendix:id8}{34}{]} (p. 66):
-\begin{equation*}
-\begin{split}\mathbf{T_{translation}}=\begin{bmatrix}
-1 & 0 & 0 & t_{x}\\
-0 & 1 & 0 & t_{y}\\
-0 & 0 & 1 & t_{z}\\
-0  & 0 & 0 & 1
-\end{bmatrix}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-The transformation matrix \(\mathbf{T}\) is the product of \(\mathbf{R}\) and \(\mathbf{T_{translation}}\)
-\begin{equation}\label{equation:NBodySimulation/Initialization:transformation_matrix}
-\begin{split}\mathbf{T}=\begin{bmatrix}
- q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{4}+2q_{2}q_{3} & 2q_{1}q_{3}+2q_{2}q_{4} & t_{x}\\
- 2q_{1}q_{4}+2q_{2}q_{3} & q_{1}^{2}-q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & -2q_{1}q_{2}+2q_{3}q_{4} & t_{y}\\
- -2q_{1}q_{3}+2q_{2}q_{4} & 2q_{1}q_{2}+2q_{3}q_{4} & q_{1}^{2}-q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & t_{z}\\
- 0  & 0 & 0 & 1
- \end{bmatrix}\end{split}
-\end{equation}
-\sphinxAtStartPar
-The total mass \(M\) of disc and bulge stars is obtained by integrating the respective density over the COV.
-
-\sphinxAtStartPar
-For a right circular cone
-\begin{equation*}
-\begin{split}\tan\left (\frac{\alpha }{2}  \right ) = \frac{R}{h}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-and on its surface
-\begin{equation*}
-\begin{split}\tan\left (\frac{\alpha }{2}  \right ) = \frac{r}{z} \\
-z = \frac{h}{R}r\end{split}
-\end{equation*}
-\sphinxAtStartPar
-where \(R\) is the base radius of the cone and \(r = \sqrt{x^2+y^2}\). Hence \(\frac{h}{R}r\leq z\leq h\). Both \(x\) and \(y\) are bound by the base radius.
-Choosing \(\left | x \right | \leq R\) implies \(\left | y \right | \leq \sqrt{R^2-x^2}\).
-\begin{equation*}
-\begin{split}M = \int_{-R}^{R}\int_{-\sqrt{R^2-x^2}}^{\sqrt{R^2-x^2}}\int_{\frac{h}{R}r}^{h} \rho \left ( \mathbf{T}*\begin{pmatrix}x\\ y\\ z\end{pmatrix} \right ) dzdydx\end{split}
-\end{equation*}
-
-\subsection{Bulge Stellar Mass Function}
-\label{\detokenize{NBodySimulation/Initialization:bulge-stellar-mass-function}}
-\sphinxAtStartPar
-By rejection sampling the following function, given by {[}\hyperlink{cite.NBodySimulation/Appendix:id2}{40}{]}, the mass of bulge stars is determined.
-
-\sphinxAtStartPar
-For \(m<0.7\) the log\sphinxhyphen{}normal distribution equation \eqref{equation:NBodySimulation/Initialization:lognormal} is used. Parameters are \(A=3.6*10^{-4}\), \(m_{c}=0.22\) and \(\sigma=0.33\).
-For \(m>0.7\) a Salpeter slope \eqref{equation:NBodySimulation/Initialization:salpeter} with parameters \(A=7.1*10^{-5}\) and \(x=1.3\) is chosen.
-
-\sphinxAtStartPar
-Samples are drawn until the sum of all samples \(M_s = \sum_{i=1}^n m_i\) is larger than the total mass \(M\).
-If \(\sum_{i=1}^{n-1} m_i +\frac{m_n}{2} > M\) the last sample is removed.
-
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{initial_conditions_mass_bulge}.pdf}
-\caption{\(10^3\) stars sampled from the bulge MF}\label{\detokenize{NBodySimulation/Initialization:id43}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-mass-bulge}}\end{figure}
-
-
-\subsection{Disk Stellar Mass Function}
-\label{\detokenize{NBodySimulation/Initialization:disk-stellar-mass-function}}
-\sphinxAtStartPar
-Stars belonging to the disk are given a mass by rejection sampling the PDMF as given by {[}\hyperlink{cite.NBodySimulation/Appendix:id2}{40}{]}.
-
-\sphinxAtStartPar
-For \(m<1\) the PDMF reads
-\begin{equation}\label{equation:NBodySimulation/Initialization:lognormal}
-\begin{split}\xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]\end{split}
-\end{equation}
-\sphinxAtStartPar
-or equivalently (this version is sampled)
-\begin{equation*}
-\begin{split}\xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)}*\mathrm{exp}[ \frac{-( \mathrm{log}(m) -\mathrm{log}( m_{c} ))^{2} }{2 \sigma^{2}}]\end{split}
-\end{equation*}
-\sphinxAtStartPar
-For \(m>1\) the PDMF has the form
-\begin{equation*}
-\begin{split}\xi\left(\mathrm{log}(m)\right) = \frac{\mathrm{dN}}{\mathrm{dlog}(m))} = A m^{-x}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-or depending on \(m\) rather than \(\mathrm{log}(m)\)
-\begin{equation*}
-\begin{split}\xi\left(m\right) = \frac{\mathrm{dN}}{\mathrm{dm}} = \frac{A}{m\mathrm{ln}(10)} m^{-x}\end{split}
-\end{equation*}
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{initial_conditions_mass_disk}.pdf}
-\caption{Stars with total mass of \(10^3 M_{\odot}\) sampled from disk PDMF}\label{\detokenize{NBodySimulation/Initialization:id44}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-mass-disk}}\end{figure}
-
-
-\section{Positions}
-\label{\detokenize{NBodySimulation/Initialization:positions}}
-\sphinxAtStartPar
-The positions of the field stars within the cone of vision are generated in two steps of rejection sampling followed by the transformation \eqref{equation:NBodySimulation/Initialization:transformation_matrix}.
-
-\sphinxAtStartPar
-In the first step trial positions are drawn from a uniform distribution within a cuboid containing the cone.
-The boundaries of the cuboid are given by
-\begin{equation*}
-\begin{split}|x|\leq R \\
-|y|\leq R \\
-0\leq z\leq h\end{split}
-\end{equation*}
-\sphinxAtStartPar
-where \(R=h*\textup{tan}\left ( \frac{\alpha}{2} \right )\) is the base radius of the cone.
-
-\sphinxAtStartPar
-These trial positions are rejected in case they lie outside the boundaries of the cone.
-The conditions for acceptance are:
-\begin{equation*}
-\begin{split}\sqrt{x^{2}+y^{2}}\leq R \\
-z\geq h*\frac{\sqrt{x^{2}+y^{2}}}{R} \\\end{split}
-\end{equation*}
-\sphinxAtStartPar
-This method ensures that the positions are indeed homogeneously distributed, which is essential for the second step.
-
-\sphinxAtStartPar
-The second step consists of rejection sampling the density distribution.
-The test variable is drawn from a uniform distribution ranging from the smallest to the largest possible density within the cone volume.
-If this test variable is smaller than the density at the trial position generated in step two, the trial position is accepted and rejected otherwise.
-
-\sphinxAtStartPar
-Finally, the accepted position is transformed via the transformation matrix \eqref{equation:NBodySimulation/Initialization:transformation_matrix}.
-
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{initial_conditions_positions}.pdf}
-\caption{Spatial distribution of a sample of disc and bulge stars}\label{\detokenize{NBodySimulation/Initialization:id45}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-positions}}\end{figure}
-
-
-\section{Velocities}
-\label{\detokenize{NBodySimulation/Initialization:velocities}}
-
-\subsection{Particle Kinematics in Cylindrical Coordinates}
-\label{\detokenize{NBodySimulation/Initialization:particle-kinematics-in-cylindrical-coordinates}}
-\sphinxAtStartPar
-In terms of Cartesian unit vectors, cylindrical unit vectors are given by
-\begin{equation*}
-\begin{split}\hat{e}_R = \hat{e}_x\cos(\phi) + \hat{e}_y\sin(\phi) \\
-\hat{e}_\phi = -\hat{e}_x\sin(\phi) + \hat{e}_y\cos(\phi)\\
-\hat{e}_z = \hat{e}_z\end{split}
-\end{equation*}
-\sphinxAtStartPar
-Since \(\hat{e}_R\) depends on \(\phi\), position vectors have the form
-\begin{equation*}
-\begin{split}\vec{q} = R\hat{e}_R+z\hat{e}_z\end{split}
-\end{equation*}
-\sphinxAtStartPar
-derivation by time gives the velocity
-\begin{equation}\label{equation:NBodySimulation/Initialization:cylindrical_velocity}
-\begin{split}\vec{v} = \dot{R}\hat{e}_R+R\dot{\phi}\hat{e}_\phi+\dot{z}\hat{e}_z\end{split}
-\end{equation}
-
-\subsubsection{Lagrangian with axisymmetric potential}
-\label{\detokenize{NBodySimulation/Initialization:lagrangian-with-axisymmetric-potential}}
-\sphinxAtStartPar
-Using \eqref{equation:NBodySimulation/Initialization:cylindrical_velocity} the Lagrangian per unit mass reads
-\begin{equation*}
-\begin{split}L =\frac{1}{2}\left( \dot{R}^2+R^2\dot{\phi}^2+\dot{z}^2 \right)+\Phi\left(R,z\right)\end{split}
-\end{equation*}
-\sphinxAtStartPar
-and using the Euler\textendash{}Lagrange equation gives the conjugate momenta
-\begin{equation}\label{equation:NBodySimulation/Initialization:conjugate_momenta}
-\begin{split}p_{R} = \frac{\partial L}{\partial \dot{R}} = \dot{R} \\
- p_{\phi} = \frac{\partial L}{\partial \dot{\phi}} = R^2\dot{\phi} \\
- p_{z} = \frac{\partial L}{\partial \dot{z}} = \dot{z} \\\end{split}
-\end{equation}
-
-\subsubsection{Hamiltonian with axisymmetric potential}
-\label{\detokenize{NBodySimulation/Initialization:hamiltonian-with-axisymmetric-potential}}
-\sphinxAtStartPar
-Using the momenta in cylindrical coordinates \eqref{equation:NBodySimulation/Initialization:conjugate_momenta} the Hamiltonian per unit mass with an axisymmetric potential reads ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 278)
-\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_1}
-\begin{split}H = \frac{1}{2}\left( p_{R}^2+\frac{p_\phi^2}{R^2}+p_z^2 \right)+\Phi\left(R,z\right)\end{split}
-\end{equation}
-\sphinxAtStartPar
-using Hamilton’s equations gives
-\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_2_1}
-\begin{split}\dot{p}_{R} = -\frac{\partial H}{\partial R} = \frac{p_\phi^2}{R^3}-\frac{\partial \Phi }{\partial R}\end{split}
-\end{equation}\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_2_2}
-\begin{split}\dot{p}_{\phi} = -\frac{\partial H}{\partial \phi} = -\frac{\partial \Phi }{\partial \phi} = 0\end{split}
-\end{equation}\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_2_3}
-\begin{split}\dot{p}_{z} = -\frac{\partial H}{\partial z} = -\frac{\partial \Phi }{\partial z}\end{split}
-\end{equation}
-\sphinxAtStartPar
-Since \(\vec{L} = \vec{p} \times \vec{\dot{p}}\) and thus
-\begin{equation}\label{equation:NBodySimulation/Initialization:angular_momentum}
-\begin{split}L_z = R^2\dot{\phi}\end{split}
-\end{equation}
-\sphinxAtStartPar
-, the second equation above signifies that, in the case of an axisymmetric potential, the z component of the angular momentum is conserved.
-
-
-\subsection{The phase space distribution function (DF)}
-\label{\detokenize{NBodySimulation/Initialization:the-phase-space-distribution-function-df}}
-\sphinxAtStartPar
-A galaxy can be viewed as a number of stars in phase space.
-The phase space is a six dimensional space spanned by position \(\vec{q}\) and momentum \(\vec{p}\).
-One point in phase space can therefore be described by a six dimensional vector \(\vec{w}=(\vec{q},\vec{p})\),
-the state of a whole galaxy as a DF \(f(\vec{q},\vec{p},t)\).
-\(f(\vec{q},\vec{p},t)d^3\vec{q}d^3\vec{p}\) is the probability that some specific star is inside the 6D cuboid defined by \(d^3\vec{q}d^3\vec{p}\) at time \(t\).
-
-\sphinxAtStartPar
-The conservation of probability in phase space is, similarly to the continuity equation in fluid dynamics, given by
-\begin{equation*}
-\begin{split}\frac{\partial f }{\partial t} + \sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i) = 0\end{split}
-\end{equation*}
-\sphinxAtStartPar
-with \(\dot{\vec{w}} = (\dot{\vec{q}},\dot{\vec{p}})\).
-
-\sphinxAtStartPar
-The right summand can be changed as follows, using Hamilton equations
-\begin{equation*}
-\begin{split}\sum_{i=1}^{6} \frac{\partial}{\partial w_i}(f\dot{w}_i)
-= \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \dot{q}_i\right) + \frac{\partial}{\partial p_i}\left(f\dot{p}_i\right) \right ) \\
-= \sum_{i=1}^{3} \left ( \frac{\partial}{\partial q_i}\left(f \frac{\partial H}{\partial p_i}\right) - \frac{\partial}{\partial p_i}\left(f \frac{\partial H}{\partial q_i} \right) \right) \\
-= \sum_{i=1}^{3} \left (
-\frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
-+ f  \frac{\partial^2 H}{\partial q_i \partial p_i}
-- \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i}
-- f \frac{\partial ^2 H}{\partial p_i \partial q_i} \right)  \\
-= \sum_{i=1}^{3} \left (
-\frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
-- \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right)\end{split}
-\end{equation*}
-\sphinxAtStartPar
-And therefore
-\begin{equation}\label{equation:NBodySimulation/Initialization:collisionless_boltzmann_equation}
-\begin{split}\frac{\partial f }{\partial t} + \sum_{i=1}^{3} \left (
- \frac{\partial f}{\partial q_i} \frac{\partial H}{\partial p_i}
- - \frac{\partial f}{\partial p_i}  \frac{\partial H}{\partial q_i} \right) = 0\end{split}
-\end{equation}
-\sphinxAtStartPar
-which is the collisionless Boltzmann Equation (CBE).
-
-\sphinxAtStartPar
-The zeroth moment of the DF is the number density:
-\begin{equation*}
-\begin{split}\nu(\vec{x}) \equiv \int f(\vec{x},\vec{v})d^3\vec{v}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-Mean velocities are given by the first moment:
-\begin{equation*}
-\begin{split}\overline{v_i}(\vec{x}) \equiv \frac{1}{\nu(\vec{x})}\int v_i f(\vec{x},\vec{v})d^3\vec{v}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-Todo(?): Continue here (showing = 0 for 2/3 directions)
-
-
-\subsection{Jeans equations}
-\label{\detokenize{NBodySimulation/Initialization:jeans-equations}}
-\sphinxAtStartPar
-Using Einstein notation for \(i=1,2,3\) the CBE \eqref{equation:NBodySimulation/Initialization:collisionless_boltzmann_equation} is given by ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 277):
-\begin{equation*}
-\begin{split}\frac{\partial f}{\partial t} + \frac{\partial f}{\partial q_i}\frac{\partial H}{\partial p_i} - \frac{\partial f}{\partial p_i}\frac{\partial H}{\partial q_i} = 0\end{split}
-\end{equation*}
-\sphinxAtStartPar
-Since the galactic potential \eqref{equation:NBodySimulation/Potential:total_potential} is axisymmetric, it is convenient to express this equation in cylindrical coordinates.
-\begin{equation}\label{equation:NBodySimulation/Initialization:jeans_equations_1}
-\begin{split}\frac{\partial f}{\partial t}
- + p_R\frac{\partial f}{\partial R}
- + \frac{p_\phi}{R^2}\frac{\partial f}{\partial \phi}
- + p_z\frac{\partial f}{\partial z}
- - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
- - \frac{\partial \Phi}{\partial \phi}\frac{\partial f}{\partial p_\phi}
- - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0\end{split}
-\end{equation}
-\sphinxAtStartPar
-It is assumed that the galaxy is statistically in a steady state ({[}\hyperlink{cite.NBodySimulation/Appendix:id18}{4}{]}) i.e. \(\frac{\partial f}{\partial t}=0\).
-Due to this assumption and taking \eqref{equation:NBodySimulation/Initialization:hamilton_2_2} into account \eqref{equation:NBodySimulation/Initialization:jeans_equations_1} simplifies to
-\begin{equation}\label{equation:NBodySimulation/Initialization:jeans_equations_2}
-\begin{split}p_R\frac{\partial f}{\partial R}
- + \frac{p_\phi}{R^2}\frac{\partial f}{\partial \phi}
- + p_z\frac{\partial f}{\partial z}
- - \left(\frac{\partial \Phi}{\partial R}-\frac{p_\phi^2}{R^3}\right)\frac{\partial f}{\partial p_R}
- - \frac{\partial \Phi}{\partial z}\frac{\partial f}{\partial p_z} = 0\end{split}
-\end{equation}
-\sphinxAtStartPar
-Multiplying equation \eqref{equation:NBodySimulation/Initialization:jeans_equations_2} by \(p_R\) and integrating over all momenta leads to (todo: derive?)
-\begin{equation}\label{equation:NBodySimulation/Initialization:jeans_equations_3}
-\begin{split}\frac{\partial \nu \overline{v_R^2}}{\partial R}+\frac{\partial \nu \overline{v_Rv_z}}{\partial z} +
- \nu \left ( \frac{\overline{v_R^2}-\overline{v_\phi^2}}{R} + \frac{\partial\Phi}{\partial R}\right ) = 0\end{split}
-\end{equation}
-
-\subsection{The Epicyclic Approximation}
-\label{\detokenize{NBodySimulation/Initialization:the-epicyclic-approximation}}
-\sphinxAtStartPar
-Individual stars in the disk are on nearly circular orbits.
-Such orbits can be approximated by circular orbits with additional retrograde elliptical orbits around the guiding center.
-
-\sphinxAtStartPar
-The derivation of this approximation starts with Hamilton’s equations for an axisymmetric potential.
-
-\sphinxAtStartPar
-Rearranging \eqref{equation:NBodySimulation/Initialization:hamilton_1} and using \eqref{equation:NBodySimulation/Initialization:angular_momentum} gives
-\begin{equation*}
-\begin{split}H = \frac{1}{2}\left( p_{R}^2+p_z^2 \right)+\frac{L_z^2}{2R^2}+\Phi\left(R,z\right)\end{split}
-\end{equation*}
-\sphinxAtStartPar
-With the effective potential given by
-\begin{equation*}
-\begin{split}\Phi_{\textup{eff}}\left(R,z\right) = \frac{L_z^2}{2R^2}+\Phi\left(R,z\right)\end{split}
-\end{equation*}
-\sphinxAtStartPar
-leads to
-\begin{equation*}
-\begin{split}H_{\textup{eff}} = \frac{1}{2}\left( p_{R}^2+p_z^2 \right)+\Phi_{\textup{eff}}\left(R,z\right)\end{split}
-\end{equation*}
-\sphinxAtStartPar
-Here \(\frac{1}{2m}\left( p_{R}^2+p_z^2 \right)\) is the kinetic energy in the \(\left( R,z \right)\) plane or meridional plane.
-The angular momentum term in the effective potential is not a real potential energy even though sometimes called centrifugal potential.
-It really is the angular kinetic energy. The given definition of \(\Phi_{\textup{eff}}\) is only valid because \(L_z\) is conserved.
-
-\sphinxAtStartPar
-Using \(\Phi_{\textup{eff}}\) \eqref{equation:NBodySimulation/Initialization:hamilton_2_1} and \eqref{equation:NBodySimulation/Initialization:hamilton_2_3} can be written as
-\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_eff_1}
-\begin{split}\dot{p}_{R} = -\frac{\partial \Phi_{\textup{eff}} }{\partial R}\end{split}
-\end{equation}\begin{equation}\label{equation:NBodySimulation/Initialization:hamilton_eff_2}
-\begin{split}\dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z}\end{split}
-\end{equation}
-\sphinxAtStartPar
-These equations describe harmonic oscillations in the effective potential.
-The minimum of effective potential is the minimum of the real potential energy, together with a contribution from the angular kinetic energy.
-\begin{equation*}
-\begin{split}\frac{\partial \Phi_{\textup{eff}} }{\partial R} = \frac{\partial \Phi }{\partial R} - \frac{L_z^2}{R^3} =0 \\
-\frac{\partial \Phi_{\textup{eff}} }{\partial z} = 0\end{split}
-\end{equation*}
-\sphinxAtStartPar
-The first condition states that the attractive force (\(-\frac{\partial \Phi_{\textup{eff}} }{\partial R}\)) has to balance the “centrifugal force”.
-This is the condition for circular orbits with angular momentum \(L_z\).
-The second condition is clearly satisfied in the equatorial plane (\(z=0\)).
-The coordinates of this guiding centre are defined as \((R_g,\phi_g,z_g)\).
-
-\sphinxAtStartPar
-In preparation for a Taylor series expansion about the guiding centre, \(x\) is defined as
-\begin{equation*}
-\begin{split}x \equiv R - R_g\end{split}
-\end{equation*}
-\sphinxAtStartPar
-If \(R = R_g\) then \(x=0\) and therefor the guiding centre is at \((x,z) = (0,0)\).
-\begin{equation*}
-\begin{split}\Phi_{\textup{eff}} = \Phi_{\textup{eff}}(R_g,0) +
-\frac{\partial \Phi_{\textup{eff}} }{\partial R}\bigg|_{(R_g,0)}x +
-\frac{\partial \Phi_{\textup{eff}} }{\partial z}\bigg|_{(R_g,0)}z +
-\frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial R^2}\bigg|_{(R_g,0)}x^2 +
-\frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial z^2}\bigg|_{(R_g,0)}z^2 +
-\frac{1}{2}\frac{\partial^2 \Phi_{\textup{eff}} }{\partial x\partial z}\bigg|_{(R_g,0)}xz +
-\mathcal{O}(xz^2)\end{split}
-\end{equation*}
-\sphinxAtStartPar
-The first order terms are zero (since \(\Phi_{\textup{eff}}\) is minimized at the guiding centre) and so is the \(xz\), the later due to symmetric about \(z=0\).
-
-\sphinxAtStartPar
-In the epicyclic approximation \(\mathcal{O}(xz^2)\) and higher order terms are neglected.
-
-\sphinxAtStartPar
-With this approximation \eqref{equation:NBodySimulation/Initialization:hamilton_eff_1} and \eqref{equation:NBodySimulation/Initialization:hamilton_eff_2} become
-\begin{align}\label{equation:NBodySimulation/Initialization:hamilton_eff_approx}\!\begin{aligned}
-\dot{p}_{x} = -\frac{\partial \Phi_{\textup{eff}} }{\partial x} \approx
- -\frac{\partial^2 \Phi_{\textup{eff}} }{\partial R^2}\bigg|_{(R_g,0)}x \equiv
- -\kappa^2x\\
-\dot{p}_{z} = -\frac{\partial \Phi_{\textup{eff}} }{\partial z} \approx
- -\frac{\partial^2 \Phi_{\textup{eff}} }{\partial z^2}\bigg|_{(R_g,0)}z \equiv
- -\nu^2z   \\\\
-\end{aligned}\end{align}
-\sphinxAtStartPar
-where the epicyclic frequency \(\kappa\) is the frequency of small radial and the vertical frequency \(\nu\) the frequency of small vertical oscillations.
-
-\sphinxAtStartPar
-With potential \(\Phi\left(R,z\right)\) \eqref{equation:NBodySimulation/Initialization:hamilton_eff_approx} can be written as
-\begin{equation}\label{equation:NBodySimulation/Initialization:kappa_squared}
-\begin{split}\kappa^2 = \frac{\partial^2\Phi}{\partial R^2}\bigg|_{(R_g,0)} + \frac{3L_z^3}{R_g^4}\end{split}
-\end{equation}
-\sphinxAtStartPar
-The combination of \eqref{equation:NBodySimulation/Initialization:conjugate_momenta} with \eqref{equation:NBodySimulation/Initialization:hamilton_2_1}, given \(\dot{p}_{R}=0\) and by definition \(\Omega = \dot{\phi}\), results in the circular angular frequency
-\begin{equation}\label{equation:NBodySimulation/Initialization:circular_angular_frequency}
-\begin{split}\Omega^2 = \frac{1}{R} \frac{\partial \Phi }{\partial R}\bigg|_{(R_g,0)} = \frac{L_z^2}{R^4}\end{split}
-\end{equation}
-\sphinxAtStartPar
-The derivative of \eqref{equation:NBodySimulation/Initialization:circular_angular_frequency} is
-\begin{equation}\label{equation:NBodySimulation/Initialization:circular_angular_frequency_2}
-\begin{split}\frac{\partial^2\Phi}{\partial R^2} = \Omega^2 + R \frac{d\Omega^2}{dR}\end{split}
-\end{equation}
-\sphinxAtStartPar
-Inserting \eqref{equation:NBodySimulation/Initialization:circular_angular_frequency} and \eqref{equation:NBodySimulation/Initialization:circular_angular_frequency_2} into \eqref{equation:NBodySimulation/Initialization:kappa_squared} yields
-\begin{equation}\label{equation:NBodySimulation/Initialization:epicyclic_frequency}
-\begin{split}\kappa^2(R_g) = \left ( R\frac{d\Omega^2}{dR} + 4\Omega^2 \right )\bigg|_{R=R_g}\end{split}
-\end{equation}
-\sphinxAtStartPar
-The variance is generally given as the mean of squares minus the square of means.
-In the epicyclic approximation the mean velocity in \(R\) and \(z\) is zero and therefor
-\begin{equation}\label{equation:NBodySimulation/Initialization:epicyclic_variance}
-\begin{split}\sigma_{v_{\phi}}^2 = \overline{v_\phi^2} - \overline{v_\phi}^2 \\
-\sigma_{v_{R}}^2 = \overline{v_R^2} \\
-\sigma_{v_{z}}^2 = \overline{v_z^2}\end{split}
-\end{equation}
-
-\subsection{Disk}
-\label{\detokenize{NBodySimulation/Initialization:disk}}
-\sphinxAtStartPar
-The velocity distribution of stars in the Milky Way disk is approximated with the help of Jeans equations as well as relations and constraints based on observations.
-
-\sphinxAtStartPar
-For a flat rotation curve the radial velocity dispersion exponentially decreases with increasing radius {[}\hyperlink{cite.NBodySimulation/Appendix:id14}{59}{]} (p. 114)
-\begin{equation}\label{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1}
-\begin{split}\sigma_{v_{R}} \propto e^{-\frac{R}{h}}\end{split}
-\end{equation}
-\sphinxAtStartPar
-where \(h\) in the case of the Miyamoto Nagai potential is the radial scale length \(a\).
-
-\sphinxAtStartPar
-The relation \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1} still requires a constant factor \(k\), which can be determined by means of the Toomre parameter \(Q\) at some distance \(R_{ref}\).
-
-\sphinxAtStartPar
-\(Q\) is the ratio between the actual and minimum velocity dispersion \(\sigma_{v_{R,min}}\) {[}\hyperlink{cite.NBodySimulation/Appendix:id16}{57}{]} (p. 1234)
-\begin{equation*}
-\begin{split}\sigma_{v_{R,min}} = \frac{3.36G\Sigma}{\kappa} \\
-Q \equiv \frac{\sigma_{v_{R}}}{\sigma_{v_{R,min}}} = \frac{\kappa \sigma_{v_{R}}}{3.36G\Sigma }\end{split}
-\end{equation*}
-\sphinxAtStartPar
-where \(\kappa\) denotes the epicyclic frequency \eqref{equation:NBodySimulation/Initialization:epicyclic_frequency}.
-
-\sphinxAtStartPar
-In the solar neighborhood \(Q_{\ast} = 2.7 \pm 0.4\) and \(\sigma_{v_{R}} = (38 \pm 2) \left [ \frac{km}{s} \right ]\) {[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} (p. 497)
-
-\sphinxAtStartPar
-The constant \(k\) can therefore be approximated via
-\begin{equation}\label{equation:NBodySimulation/Initialization:radial_velocity_dispersion_constant}
-\begin{split}k \cong Q \sigma_{v_{R,min}}e^{\frac{R}{h}}\end{split}
-\end{equation}
-\sphinxAtStartPar
-Under the approximation of isothermal sheets (introduced in {[}\hyperlink{cite.NBodySimulation/Appendix:id14}{59}{]}), the vertical velocity dispersion only depends on the surface density {[}\hyperlink{cite.NBodySimulation/Appendix:id15}{58}{]}
-\begin{equation}\label{equation:NBodySimulation/Initialization:vertical_velocity_dispersion}
-\begin{split}\sigma_{v_{z}} = \pi G \Sigma \left ( R \right )z_{0}\end{split}
-\end{equation}
-\sphinxAtStartPar
-with \(z_{0}\) being the vertical scale length \(b\) when using the Miyamoto Nagai potential.
-
-\sphinxAtStartPar
-Combining the equation for the circular velocity \eqref{equation:NBodySimulation/Potential:circular_velocity} and Jeans equation \eqref{equation:NBodySimulation/Initialization:jeans_equations_3} and multiplication by \(\frac{R}{\nu}\) results in
-\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_1}
-\begin{split}\frac{R}{\nu} \frac{\partial \nu \overline{v_R^2}}{\partial R}
-+ \frac{R}{\nu} \frac{\partial \nu \overline{v_Rv_z}}{\partial z}
-+ \overline{v_R^2}-\overline{v_\phi^2} + v_c^2 = 0\end{split}
-\end{equation}
-\sphinxAtStartPar
-For a razor thin disc the spatial density \(\nu\) can be replaced with the surface density \(\Sigma\) {[}\hyperlink{cite.NBodySimulation/Appendix:id19}{45}{]},
-which does not depend on \(z\). With this and by using relations \eqref{equation:NBodySimulation/Initialization:epicyclic_variance}, \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_1} simplifies to
-\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_2}
-\begin{split}\frac{R}{\Sigma} \frac{\partial \nu \sigma_{v_{R}}^2}{\partial R}
-+ R \frac{\partial \overline{v_Rv_z}}{\partial z}
-+ \sigma_{v_{R}}^2 -\sigma_{v_{\phi}}^2  - \overline{v_\phi}^2 + v_c^2 = 0\end{split}
-\end{equation}
-\sphinxAtStartPar
-In the epicyclic approximation, azimuthal and radial dispersion have the following relation ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 170)
-\begin{equation}\label{equation:NBodySimulation/Initialization:azimuthal_velocity_dispersion}
-\begin{split}\frac{\sigma_{v_{\phi}}^2}{\sigma_{v_{R}}^2} = \frac{\kappa^2}{4\Omega^2}\end{split}
-\end{equation}
-\sphinxAtStartPar
-With this relation \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_2} can be written as
-\begin{equation*}
-\begin{split}\frac{R}{\Sigma} \frac{\partial  \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
-+ R \frac{\partial \overline{v_Rv_z}}{\partial z}
-+ \sigma_{v_{R}}^2
-- \sigma_{v_{R}}^2 \frac{\kappa^2}{4\Omega^2}
-- \overline{v_\phi}^2 + v_c^2 = 0\end{split}
-\end{equation*}
-\sphinxAtStartPar
-rearrangements lead to
-\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_3}
-\begin{split}\overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
-\left (
-1 - \frac{\kappa^2}{4\Omega^2} +
-\frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R}
-+ \frac{R}{\sigma_{v_{R}}^2} \frac{\partial \overline{v_Rv_z}}{\partial z}
-\right )\end{split}
-\end{equation}
-\sphinxAtStartPar
-Due to the exponential dependency of the surface mass density ({[}\hyperlink{cite.NBodySimulation/Appendix:id17}{6}{]} p. 325)
-and the radial dispersion \(\sigma_{v_{R}}\) \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1} on \(R\), the derivation after \(R\) summand can be solved as follows
-\begin{equation*}
-\begin{split}\frac{R}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R} =
-\frac{1}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial R }{\partial \ln(R)}\frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial R} =
-\frac{1}{\Sigma \sigma_{v_{R}}^2 } \frac{\partial \left ( \Sigma \sigma_{v_{R}}^2 \right ) }{\partial \ln(R)} =
-\frac{1}{\Sigma \sigma_{v_{R}}^2 }
-\left ( - \frac{R\Sigma\sigma_{v_{R}}^2}{a}
-- \frac{R\sigma_{v_{R}}^2\Sigma}{a}
-\right ) = - 2 \frac{R}{a}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-With this and under the assumption that the retrograde elliptical orbit is aligned with the coordinate axes \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_3} becomes
-\begin{equation}\label{equation:NBodySimulation/Initialization:disk_velocity_step_4}
-\begin{split}\overline{v_\phi}^2 - v_c^2 = \sigma_{v_{R}}^2
-\left (1 - \frac{\kappa^2}{4\Omega^2} -\frac{R}{a } \right )\end{split}
-\end{equation}
-\sphinxAtStartPar
-The velocity components can be sampled from Gaussian distributions. Dispersions are obtained by first evaluating the epicyclic frequency \eqref{equation:NBodySimulation/Initialization:epicyclic_frequency} and the surface mass density \eqref{equation:NBodySimulation/Potential:surface_mass_density},
-followed by the radial velocity dispersion \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_1} with constant factor \eqref{equation:NBodySimulation/Initialization:radial_velocity_dispersion_constant}, the vertical \eqref{equation:NBodySimulation/Initialization:vertical_velocity_dispersion} and the azimuthal velocity dispersion \eqref{equation:NBodySimulation/Initialization:azimuthal_velocity_dispersion}.
-As noted before, the mean velocity in \(R\) and \(z\) is zero. For \(\phi\) the mean velocity is calculated from \eqref{equation:NBodySimulation/Initialization:disk_velocity_step_4}, where the circular velocity \(v_c\) is given by \eqref{equation:NBodySimulation/Potential:circular_velocity}.
-
-
-\subsection{Bulge}
-\label{\detokenize{NBodySimulation/Initialization:bulge}}
-\sphinxAtStartPar
-For spherically symmetric distribution functions, such as, with the present approximation, the bulge, the spherically symmetric Jeans equation can be used {[}\hyperlink{cite.NBodySimulation/Appendix:id20}{37}{]}
-\begin{equation}\label{equation:NBodySimulation/Initialization:bulge_velocity_1}
-\begin{split}\frac{\partial (\rho \sigma_r^2)}{\partial r} + 2\frac{\beta\sigma_r^2}{r} + \rho\frac{\partial \Phi}{\partial r} = 0\end{split}
-\end{equation}
-\sphinxAtStartPar
-where \(\beta\) is an indicator for anisotropy in radial and tangential direction.
-\begin{equation*}
-\begin{split}\beta = 1 - \frac{\sigma^2_\phi}{\sigma^2_r}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-If the distribution is isotropic, as assumed here, \(\beta=0\) and \eqref{equation:NBodySimulation/Initialization:bulge_velocity_1} simplifies to
-\begin{equation*}
-\begin{split}\frac{\partial (\rho \sigma_r^2)}{\partial r} +  \rho\frac{\partial \Phi}{\partial r} = 0\end{split}
-\end{equation*}
-\sphinxAtStartPar
-and the radial dispersion can be calculated by integration
-\begin{equation*}
-\begin{split}\sigma_r^2 = \frac{1}{\rho}\int_{r}^{\infty}\rho \frac{\partial \Phi}{\partial r}\textup{dr}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-However, \(\Phi\) is the composite potential consisting of bulge, disc and halo and therefore not spherically symmetric. As suggested in {[}\hyperlink{cite.NBodySimulation/Appendix:id19}{45}{]}, contribution by the disc to the bulge dispersion may be accounted for by spherically averaging the disc potential.
-This is achieved by expressing the cylinder in spherical coordinates and integrating over the relevant angle
-\begin{equation*}
-\begin{split}\sigma_{r,disk}^2 = \frac{1}{\rho}\int_{r}^{\infty}
-\frac{\rho }{2\pi}  \int_0^{2\pi} \frac{\partial \Phi\left ( r\sin(\theta ),r\cos(\theta ) \right )}{\partial r} \textup{d}\theta \textup{dr} \\\end{split}
-\end{equation*}
-\sphinxAtStartPar
-As neither of these integrals have an analytical solution, this calculation is computationally intensive.
-Therefore a lookup table has been implemented in which discrete \(r\) and corresponding bulge dispersion are stored.
-
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{velocity_dispersion_bulge}.pdf}
-\caption{Velocity dispersion of bulge stars}\label{\detokenize{NBodySimulation/Initialization:id46}}\end{figure}
-
-\sphinxAtStartPar
-In the figure above results are compared with observations from {[}\hyperlink{cite.NBodySimulation/Appendix:id21}{20}{]}. These results were generated using a view distance of 7.5kpc.
-The other parameters are given in \hyperref[\detokenize{NBodySimulation/Potential:tbl-parameters}]{Table \ref{\detokenize{NBodySimulation/Potential:tbl-parameters}}}. The radial velocity dispersion heavily depends on the scale parameter of the bulge potential.
-With the current choice, the dispersion at small \(r\) is lower than realistic. This issue could be solved by adding an additional potential with smaller scale radius.
-A multi component bulge model has been suggested for instance by {[}\hyperlink{cite.NBodySimulation/Appendix:id22}{31}{]}.
-
+\part{Observing The Milky Way Galaxy}
 
 \chapter{Coordinate Systems}
 \label{\detokenize{NBodySimulation/CoordinateSystems:coordinate-systems}}\label{\detokenize{NBodySimulation/CoordinateSystems::doc}}
@@ -1492,25 +1507,6 @@ While there may be a solution for this issue, a different transformation was dev
 Positions can be transformed from HCA to HTP by aligning \(\hat{v}_{los}\) with the x axis \sphinxtitleref{hat\{x\}}
 using a rotation matrix generated as described in \eqref{equation:NBodySimulation/Initialization:transformation_matrix} with the rotation axis defined by \([1,0,0]_{HCA}\) and \(\hat{v}_{los,HCA}\)
 Subsequent transformation from Cartesian to polar coordinates as described in the section GCP above completes the transformation.
-
-
-\chapter{Database}
-\label{\detokenize{NBodySimulation/Database:database}}\label{\detokenize{NBodySimulation/Database::doc}}
-\sphinxAtStartPar
-A SQLite Database is used to store simulations including all relevant parameters, stars with their respective positions and velocities as well as data resulting from analysis.
-SQLite supports both C++ and python. And is therefore used in most data related parts of the project. Generated data can be loaded and plotted directly from the database.
-Previously performed simulations can be loaded from the database in order to carry out analysis like energy vs time or average star velocity vs time.
-
-\sphinxAtStartPar
-Due to bad performance, no foreign key constraints where set for position.id\_star and velocity.id\_star.
-A multi\sphinxhyphen{}column index is used to improve the execution time of queries containing both velocity.timestep and velocity.id\_star.
-NULL values are avoided where possible. However, at many stages during execution, some information is unknown, but creating entries is still required.
-Observed stars contain no information about their mass or GCA phase space coordinates, some cannot be mapped to simulated stars, etc.
-
-
-\section{Entity Relationship Diagram}
-\label{\detokenize{NBodySimulation/Database:entity-relationship-diagram}}
-\noindent\sphinxincludegraphics{{ERD}.pdf}
 
 
 \chapter{Mock Observations}
