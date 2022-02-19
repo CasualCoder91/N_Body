@@ -327,7 +327,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 		\sphinxAtStartPar
 		A cluster can be characterised via a number of parameters, namely its density profile, metallicity, binary fraction and initial mass function (IMF).
 		The following sections cover methods implemented by the author. Alternatively, cluster stars can be generated using the open source code McLuster {[}\hyperlink{cite.NBodySimulation/Appendix:id35}{47}{]} which supports more density profiles and all other parameters mentioned above.
-		The generated file can then be imported by setting the appropriate parameters.
+		The generated file can then be imported by setting the appropriate parameters. Consequently McLuster has been used for all experiments presented here.
 		
 		
 		\subsection{Initial Mass Function (IMF)}
@@ -372,7 +372,7 @@ Finally, the reliability of the results can be determined by comparing its resul
 				\capstart
 				
 				\noindent\sphinxincludegraphics{{initial_conditions_mass_salpeter}.pdf}
-				\caption{\(10^3\) stars sampled from the Salpeter IMF}\label{\detokenize{NBodySimulation/Initialization:id41}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-mass-salpeter}}\end{figure}
+				\caption{\(10^3\) stars sampled from the Salpeter IMF. This figure has been generated to test the implementation of the sampling algorithm.}\label{\detokenize{NBodySimulation/Initialization:id41}}\label{\detokenize{NBodySimulation/Initialization:fig-initial-conditions-mass-salpeter}}\end{figure}
 		
 		
 			\subsubsection{Broken Power Law (BPL)}
@@ -431,236 +431,236 @@ Finally, the reliability of the results can be determined by comparing its resul
 			\label{\detokenize{NBodySimulation/Initialization:density-profile}}
 			\sphinxAtStartPar
 			Different density profiles (King {[}\hyperlink{cite.NBodySimulation/Appendix:id40}{46}{]}, Plummer {[}\hyperlink{cite.NBodySimulation/Appendix:id41}{53}{]} and Elson, Fall \& Freeman {[}\hyperlink{cite.NBodySimulation/Appendix:id42}{41}{]}) have been used ({[}\hyperlink{cite.NBodySimulation/Appendix:id36}{17}{]}, {[}\hyperlink{cite.NBodySimulation/Appendix:id37}{35}{]}, {[}\hyperlink{cite.NBodySimulation/Appendix:id38}{16}{]}) to simulate YMCs.
-			The Plummer profile has been implemented here as described in {[}\hyperlink{cite.NBodySimulation/Appendix:id39}{38}{]}.
+			The Plummer profile has been implemented here as described in {[}\hyperlink{cite.NBodySimulation/Appendix:id39}{38}{]} \highLight[{[RGB]{232,209,82}}]{generating positions and velocities.
+			At this stage the position and velocity of the center of mass is zero.
+			In a second step the positions are offset to the desired location given as input parameter and the the circular velocity at that target location is added to the velocity of each star.}
 
 
+	\section{Star clusters}
 
-
-
-
-\chapter{Galactic Potential}
-\label{\detokenize{NBodySimulation/Potential:galactic-potential}}\label{\detokenize{NBodySimulation/Potential:galactic-potential-label}}\label{\detokenize{NBodySimulation/Potential::doc}}
-\sphinxAtStartPar
-Modelling the gravitational potential of the Milky Way has been an ever evolving topic in recent decades. {[}\hyperlink{cite.NBodySimulation/Appendix:id58}{39}{]} provides a brief history.
-Here the potential is used to approximate the force on the simulated stars and to initialize field stars.
-
-\sphinxAtStartPar
-The model of choice consists of four parts: black hole, bulge, disc and the dark matter halo.
-
-\sphinxAtStartPar
-The \sphinxstylestrong{black hole} is represented by a Keplerian potential:
-\begin{equation*}
-\begin{split}\Phi_{bh}\left ( r \right ) = -\frac{G*M_{bh}}{r}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-with \(r\) being the spherical radius.
-
-\sphinxAtStartPar
-The \sphinxstylestrong{disk} can be modelled via a Miyamoto Nagai potential {[}\hyperlink{cite.NBodySimulation/Appendix:id3}{49}{]}
-\begin{align*}\!\begin{aligned}
-\Phi_{disk}\left ( R,z \right ) = -\frac{G*M_{disk}}{\sqrt{R^{2+\left ( a_{disk}+\sqrt{z^{2}+b_{disk}^{2}} \right )^{2}}}}\\
-\rho_{disk}(R,z)=\frac{b_{disk}^{2}M_{disk}}{4\pi}\frac{a_{disk}R^{2}+\left[a_{disk}+3(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2}}{\left \{ R^{2}+\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2} \right \}^{\frac{5}{2}}\left(z^{2}+b_{disk}^{2}\right)^{\frac{3}{2}}}\\
-\end{aligned}\end{align*}
-\sphinxAtStartPar
-with \(R\) being the cylindrical radius and with \(z\) being the distance to the reference plane.
-
-\sphinxAtStartPar
-For the \sphinxstylestrong{bulge} the Hernquist potential {[}\hyperlink{cite.NBodySimulation/Appendix:id6}{44}{]} is used
-\begin{align*}\!\begin{aligned}
-\Phi_{bulge}\left ( r \right ) = -\frac{G*M_{bulge}}{\left ( r+a_{bulge} \right )}\\
-\rho_{bulge}(r)= \frac{M_{bulge}}{2\pi }\frac{a_{bulge}}{r}\frac{1}{\left ( r+a_{bulge} \right )^{3}}\\
-\end{aligned}\end{align*}
-\sphinxAtStartPar
-\(a\) being the scale\sphinxhyphen{}length of the spheroid potential
-
-\sphinxAtStartPar
-and the NFW potential {[}\hyperlink{cite.NBodySimulation/Appendix:id59}{26}{]} is used for the \sphinxstylestrong{dark matter halo} potential
-\begin{equation*}
-\begin{split}\Phi_{halo}\left ( r \right ) = \frac{-4\pi G\rho _{s}r_{s}^{3}\ln\left ( 1+\frac{r}{r_{s}}\right )}{r}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-where \(\rho _{s}\) is the characteristic density and \(r_{s}\) the scale length.
-
-\sphinxAtStartPar
-Parameters for bulge and disk taken from {[}\hyperlink{cite.NBodySimulation/Appendix:id4}{30}{]} and the radius \(r_{s}\) for the halo from {[}\hyperlink{cite.NBodySimulation/Appendix:id5}{7}{]}:
-
-
-\begin{savenotes}\sphinxattablestart
-\centering
-\sphinxcapstartof{table}
-\sphinxthecaptionisattop
-\sphinxcaption{MW model parameters}\label{\detokenize{NBodySimulation/Potential:id8}}\label{\detokenize{NBodySimulation/Potential:tbl-parameters}}
-\sphinxaftertopcaption
-\begin{tabular}[t]{|\X{20}{50}|\X{20}{50}|\X{10}{50}|}
-\hline
-\sphinxstyletheadfamily 
-\sphinxAtStartPar
-Parameter
-&\sphinxstyletheadfamily 
-\sphinxAtStartPar
-Value
-&\sphinxstyletheadfamily 
-\sphinxAtStartPar
-Unit
-\\
-\hline
-\sphinxAtStartPar
-\(M_{bh}\)
-&
-\sphinxAtStartPar
-\(4*10^{6}\)
-&
-\sphinxAtStartPar
-\(M_\odot\)
-\\
-\hline
-\sphinxAtStartPar
-\(M_{disk}\)
-&
-\sphinxAtStartPar
-\(10^{11}\)
-&
-\sphinxAtStartPar
-\(M_\odot\)
-\\
-\hline
-\sphinxAtStartPar
-\(a_{disk}\)
-&
-\sphinxAtStartPar
-\(6.5\)
-&
-\sphinxAtStartPar
-\(kpc\)
-\\
-\hline
-\sphinxAtStartPar
-\(b_{disk}\)
-&
-\sphinxAtStartPar
-\(0.26\)
-&
-\sphinxAtStartPar
-\(kpc\)
-\\
-\hline
-\sphinxAtStartPar
-\(M_{bulge}\)
-&
-\sphinxAtStartPar
-\(3.4*10^{10}\)
-&
-\sphinxAtStartPar
-\(M_\odot\)
-\\
-\hline
-\sphinxAtStartPar
-\(a_{bulge}\)
-&
-\sphinxAtStartPar
-\(0.70\)
-&
-\sphinxAtStartPar
-\(kpc\)
-\\
-\hline
-\sphinxAtStartPar
-\(r_{s}\)
-&
-\sphinxAtStartPar
-\(16\)
-&
-\sphinxAtStartPar
-\(kpc\)
-\\
-\hline
-\end{tabular}
-\par
-\sphinxattableend\end{savenotes}
-
-\sphinxAtStartPar
-\(\rho _{s}\) can be determined by imposing
-\begin{align*}\!\begin{aligned}
-v_{c}\left ( R_{0},z=0 \right ) = 220\left [ \frac{km}{s} \right ]\\
-R_{0} = 8 \left [ kpc \right ]\\
-\end{aligned}\end{align*}
-
-\section{Circular Velocity}
-\label{\detokenize{NBodySimulation/Potential:circular-velocity}}
-\sphinxAtStartPar
-The circular velocity \(v_{c}\) is defined via
-\begin{equation}\label{equation:NBodySimulation/Potential:circular_velocity}
-\begin{split}v_{c}\left ( R,z \right ) = \sqrt{R\frac{\partial \Phi \left (R,z  \right )}{\partial R}   }\end{split}
-\end{equation}
-\sphinxAtStartPar
-with the total potential being in the presented case
-\begin{equation}\label{equation:NBodySimulation/Potential:total_potential}
-\begin{split}\Phi \left ( R,z \right ) = \Phi_{bh} \left ( R,z \right )+\Phi_{disk} \left ( R,z \right )+\Phi_{bulge} \left ( R,z \right )+\Phi_{halo} \left ( R,z \right )\end{split}
-\end{equation}
-\sphinxAtStartPar
-therefore
-\begin{align*}\!\begin{aligned}
-v_{c}^{2} = v_{c,bh}^{2}+v_{c,disk}^{2}+v_{c,bulge}^{2}+v_{c,halo}^{2}\\
-v_{c,bh}^{2} = \frac{G M_{bh} R^2}{\left(R^2+z^2\right)^{3/2}}\\
-v_{c,disk}^{2} = \frac{GM_{disk}R^2}{\left(\left(a_{disk}+\sqrt{b_{disk}^2+z^2}\right)^2+R^2\right)^{3/2}}\\
-v_{c,bulge}^{2} = \frac{G M_{bulge} R^2}{\sqrt{R^2+z^2} \left(a_{bulge}+\sqrt{R^2+z^2}\right)^2}\\
-v_{c,halo}^{2} = \frac{4 \pi G \rho _{s} R^2 r_{s}^3 \log \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}{\left(R^2+z^2\right)^{3/2}}-\frac{4\pi G\rho_{s} R^2 {r_{s}}^2}{\left(R^2+z^2\right) \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}\\
-\end{aligned}\end{align*}
-\sphinxAtStartPar
-Inserting the parameters given in \hyperref[\detokenize{NBodySimulation/Potential:tbl-parameters}]{Table \ref{\detokenize{NBodySimulation/Potential:tbl-parameters}}} and setting \(G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]\) results in \(\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]\)
-
-\sphinxAtStartPar
-the circular velocity can be used for fitting the model parameters {[}\hyperlink{cite.NBodySimulation/Appendix:id60}{1}{]}.
-\hyperref[\detokenize{NBodySimulation/Potential:fig-potential-circular-velocity}]{Fig.\@ \ref{\detokenize{NBodySimulation/Potential:fig-potential-circular-velocity}}} displays the velocity for the chosen model and its components.
-
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{potential_circular_velocity}.pdf}
-\caption{Galactic rotation curve for the chosen MW model}\label{\detokenize{NBodySimulation/Potential:id9}}\label{\detokenize{NBodySimulation/Potential:fig-potential-circular-velocity}}\end{figure}
-
-
-\section{Angular Velocity}
-\label{\detokenize{NBodySimulation/Potential:angular-velocity}}
-\sphinxAtStartPar
-The angular velocity is required for initializing disc star velocities and can be obtained from the potential:
-\begin{equation*}
-\begin{split}\Omega ^{2}\left ( R \right ) = \frac{1}{R}\frac{\partial \Phi \left ( R,0 \right )}{\partial r}\end{split}
-\end{equation*}
-\sphinxAtStartPar
-For the total potential \eqref{equation:NBodySimulation/Potential:total_potential} this derivation yields:
-\begin{equation*}
-\begin{split}\Omega ^{2}\left ( R \right ) = \frac{G}{R} \left\{-\frac{M_{bulge}}{(a_{bulge}+R)^2}+\frac{2 M_{disk} R^3}{\left[\left(a_{disk}+b_{disk}\right)^2+R^4\right]^{1.5}}+\frac{M_{bh}}{R^2}-\frac{4 \pi  p_{s} r_{s}^3}{R^2+R r_{s}}+\frac{4 \pi  p_{s} r_{s}^3 \ln \left(\frac{R+r_{s}}{r_{s}}\right)}{R^2}\right\}\end{split}
-\end{equation*}
-
-\section{Mass Distribution}
-\label{\detokenize{NBodySimulation/Potential:mass-distribution}}
-\sphinxAtStartPar
-The mass inside a volume is calculated by numerical integration of the density.
-GSL implementation of Monte Carlo Integration is used. For further details refer to the GSL \sphinxhref{https://www.gnu.org/software/gsl/doc/html/montecarlo.html}{documentation}.
-
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{potential_mass_distribution}.pdf}
-\caption{Mass distribution at \(z_{GCA} = 1.0\) {[}kpc{]}}\label{\detokenize{NBodySimulation/Potential:id10}}\label{\detokenize{NBodySimulation/Potential:fig-potential-mass-distribution}}\end{figure}
-
-
-\section{Surface Mass Density}
-\label{\detokenize{NBodySimulation/Potential:surface-mass-density}}
-\sphinxAtStartPar
-The surface mass density (SMD) is used to estimate the vertical velocity dispersion \eqref{equation:NBodySimulation/Initialization:vertical_velocity_dispersion} and is defined by
-\begin{equation}\label{equation:NBodySimulation/Potential:surface_mass_density}
-\begin{split}\Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( R,z \right )\mathrm{d}z\end{split}
-\end{equation}
-\begin{figure}[htbp]
-\centering
-\capstart
-
-\noindent\sphinxincludegraphics{{potential_surface_density}.pdf}
-\caption{The surface mass density of the disc and bulge}\label{\detokenize{NBodySimulation/Potential:id11}}\label{\detokenize{NBodySimulation/Potential:fig-potential-surface-density}}\end{figure}
+		\subsection{Galactic Potential}
+			\label{\detokenize{NBodySimulation/Potential:galactic-potential}}\label{\detokenize{NBodySimulation/Potential:galactic-potential-label}}\label{\detokenize{NBodySimulation/Potential::doc}}
+			\sphinxAtStartPar
+			Modelling the gravitational potential of the Milky Way has been an ever evolving topic in recent decades. {[}\hyperlink{cite.NBodySimulation/Appendix:id58}{39}{]} provides a brief history.
+			Here the potential is used to approximate the force on the simulated stars and to initialize field stars.
+			
+			\sphinxAtStartPar
+			The model of choice consists of four parts: black hole, bulge, disc and the dark matter halo.
+			
+			\sphinxAtStartPar
+			The \sphinxstylestrong{black hole} is represented by a Keplerian potential:
+			\begin{equation*}
+			\begin{split}\Phi_{bh}\left ( r \right ) = -\frac{G*M_{bh}}{r}\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			with \(r\) being the spherical radius.
+			
+			\sphinxAtStartPar
+			The \sphinxstylestrong{disk} can be modelled via a Miyamoto Nagai potential {[}\hyperlink{cite.NBodySimulation/Appendix:id3}{49}{]}
+			\begin{align*}\!\begin{aligned}
+			\Phi_{disk}\left ( R,z \right ) = -\frac{G*M_{disk}}{\sqrt{R^{2+\left ( a_{disk}+\sqrt{z^{2}+b_{disk}^{2}} \right )^{2}}}}\\
+			\rho_{disk}(R,z)=\frac{b_{disk}^{2}M_{disk}}{4\pi}\frac{a_{disk}R^{2}+\left[a_{disk}+3(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2}}{\left \{ R^{2}+\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2} \right \}^{\frac{5}{2}}\left(z^{2}+b_{disk}^{2}\right)^{\frac{3}{2}}}\\
+			\end{aligned}\end{align*}
+			\sphinxAtStartPar
+			with \(R\) being the cylindrical radius and with \(z\) being the distance to the reference plane.
+			
+			\sphinxAtStartPar
+			For the \sphinxstylestrong{bulge} the Hernquist potential {[}\hyperlink{cite.NBodySimulation/Appendix:id6}{44}{]} is used
+			\begin{align*}\!\begin{aligned}
+			\Phi_{bulge}\left ( r \right ) = -\frac{G*M_{bulge}}{\left ( r+a_{bulge} \right )}\\
+			\rho_{bulge}(r)= \frac{M_{bulge}}{2\pi }\frac{a_{bulge}}{r}\frac{1}{\left ( r+a_{bulge} \right )^{3}}\\
+			\end{aligned}\end{align*}
+			\sphinxAtStartPar
+			\(a\) being the scale\sphinxhyphen{}length of the spheroid potential
+			
+			\sphinxAtStartPar
+			and the NFW potential {[}\hyperlink{cite.NBodySimulation/Appendix:id59}{26}{]} is used for the \sphinxstylestrong{dark matter halo} potential
+			\begin{equation*}
+			\begin{split}\Phi_{halo}\left ( r \right ) = \frac{-4\pi G\rho _{s}r_{s}^{3}\ln\left ( 1+\frac{r}{r_{s}}\right )}{r}\end{split}
+			\end{equation*}
+			\sphinxAtStartPar
+			where \(\rho _{s}\) is the characteristic density and \(r_{s}\) the scale length.
+			
+			\sphinxAtStartPar
+			Parameters for bulge and disk taken from {[}\hyperlink{cite.NBodySimulation/Appendix:id4}{30}{]} and the radius \(r_{s}\) for the halo from {[}\hyperlink{cite.NBodySimulation/Appendix:id5}{7}{]}:
+			
+			
+			\begin{savenotes}\sphinxattablestart
+			\centering
+			\sphinxcapstartof{table}
+			\sphinxthecaptionisattop
+			\sphinxcaption{MW model parameters}\label{\detokenize{NBodySimulation/Potential:id8}}\label{\detokenize{NBodySimulation/Potential:tbl-parameters}}
+			\sphinxaftertopcaption
+			\begin{tabular}[t]{|\X{20}{50}|\X{20}{50}|\X{10}{50}|}
+			\hline
+			\sphinxstyletheadfamily 
+			\sphinxAtStartPar
+			Parameter
+			&\sphinxstyletheadfamily 
+			\sphinxAtStartPar
+			Value
+			&\sphinxstyletheadfamily 
+			\sphinxAtStartPar
+			Unit
+			\\
+			\hline
+			\sphinxAtStartPar
+			\(M_{bh}\)
+			&
+			\sphinxAtStartPar
+			\(4*10^{6}\)
+			&
+			\sphinxAtStartPar
+			\(M_\odot\)
+			\\
+			\hline
+			\sphinxAtStartPar
+			\(M_{disk}\)
+			&
+			\sphinxAtStartPar
+			\(10^{11}\)
+			&
+			\sphinxAtStartPar
+			\(M_\odot\)
+			\\
+			\hline
+			\sphinxAtStartPar
+			\(a_{disk}\)
+			&
+			\sphinxAtStartPar
+			\(6.5\)
+			&
+			\sphinxAtStartPar
+			\(kpc\)
+			\\
+			\hline
+			\sphinxAtStartPar
+			\(b_{disk}\)
+			&
+			\sphinxAtStartPar
+			\(0.26\)
+			&
+			\sphinxAtStartPar
+			\(kpc\)
+			\\
+			\hline
+			\sphinxAtStartPar
+			\(M_{bulge}\)
+			&
+			\sphinxAtStartPar
+			\(3.4*10^{10}\)
+			&
+			\sphinxAtStartPar
+			\(M_\odot\)
+			\\
+			\hline
+			\sphinxAtStartPar
+			\(a_{bulge}\)
+			&
+			\sphinxAtStartPar
+			\(0.70\)
+			&
+			\sphinxAtStartPar
+			\(kpc\)
+			\\
+			\hline
+			\sphinxAtStartPar
+			\(r_{s}\)
+			&
+			\sphinxAtStartPar
+			\(16\)
+			&
+			\sphinxAtStartPar
+			\(kpc\)
+			\\
+			\hline
+			\end{tabular}
+			\par
+			\sphinxattableend\end{savenotes}
+			
+			\sphinxAtStartPar
+			\(\rho _{s}\) can be determined by imposing
+			\begin{align*}\!\begin{aligned}
+			v_{c}\left ( R_{0},z=0 \right ) = 220\left [ \frac{km}{s} \right ]\\
+			R_{0} = 8 \left [ kpc \right ]\\
+			\end{aligned}\end{align*}
+			
+			\subsubsection{Circular Velocity}
+				\label{\detokenize{NBodySimulation/Potential:circular-velocity}}
+				\sphinxAtStartPar
+				The circular velocity \(v_{c}\) is defined via
+				\begin{equation}\label{equation:NBodySimulation/Potential:circular_velocity}
+				\begin{split}v_{c}\left ( R,z \right ) = \sqrt{R\frac{\partial \Phi \left (R,z  \right )}{\partial R}   }\end{split}
+				\end{equation}
+				\sphinxAtStartPar
+				with the total potential being in the presented case
+				\begin{equation}\label{equation:NBodySimulation/Potential:total_potential}
+				\begin{split}\Phi \left ( R,z \right ) = \Phi_{bh} \left ( R,z \right )+\Phi_{disk} \left ( R,z \right )+\Phi_{bulge} \left ( R,z \right )+\Phi_{halo} \left ( R,z \right )\end{split}
+				\end{equation}
+				\sphinxAtStartPar
+				therefore
+				\begin{align*}\!\begin{aligned}
+				v_{c}^{2} = v_{c,bh}^{2}+v_{c,disk}^{2}+v_{c,bulge}^{2}+v_{c,halo}^{2}\\
+				v_{c,bh}^{2} = \frac{G M_{bh} R^2}{\left(R^2+z^2\right)^{3/2}}\\
+				v_{c,disk}^{2} = \frac{GM_{disk}R^2}{\left(\left(a_{disk}+\sqrt{b_{disk}^2+z^2}\right)^2+R^2\right)^{3/2}}\\
+				v_{c,bulge}^{2} = \frac{G M_{bulge} R^2}{\sqrt{R^2+z^2} \left(a_{bulge}+\sqrt{R^2+z^2}\right)^2}\\
+				v_{c,halo}^{2} = \frac{4 \pi G \rho _{s} R^2 r_{s}^3 \log \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}{\left(R^2+z^2\right)^{3/2}}-\frac{4\pi G\rho_{s} R^2 {r_{s}}^2}{\left(R^2+z^2\right) \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}\\
+				\end{aligned}\end{align*}
+				\sphinxAtStartPar
+				Inserting the parameters given in \hyperref[\detokenize{NBodySimulation/Potential:tbl-parameters}]{Table \ref{\detokenize{NBodySimulation/Potential:tbl-parameters}}} and setting \(G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]\) results in \(\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]\)
+				
+				\sphinxAtStartPar
+				the circular velocity can be used for fitting the model parameters {[}\hyperlink{cite.NBodySimulation/Appendix:id60}{1}{]}.
+				\hyperref[\detokenize{NBodySimulation/Potential:fig-potential-circular-velocity}]{Fig.\@ \ref{\detokenize{NBodySimulation/Potential:fig-potential-circular-velocity}}} displays the velocity for the chosen model and its components.
+				
+				\begin{figure}[htbp]
+				\centering
+				\capstart
+				
+				\noindent\sphinxincludegraphics{{potential_circular_velocity}.pdf}
+				\caption{Galactic rotation curve for the chosen MW model}\label{\detokenize{NBodySimulation/Potential:id9}}\label{\detokenize{NBodySimulation/Potential:fig-potential-circular-velocity}}\end{figure}
+			
+			
+			\subsubsection{Angular Velocity}
+				\label{\detokenize{NBodySimulation/Potential:angular-velocity}}
+				\sphinxAtStartPar
+				The angular velocity is required for initializing disc star velocities and can be obtained from the potential:
+				\begin{equation*}
+				\begin{split}\Omega ^{2}\left ( R \right ) = \frac{1}{R}\frac{\partial \Phi \left ( R,0 \right )}{\partial r}\end{split}
+				\end{equation*}
+				\sphinxAtStartPar
+				For the total potential \eqref{equation:NBodySimulation/Potential:total_potential} this derivation yields:
+				\begin{equation*}
+				\begin{split}\Omega ^{2}\left ( R \right ) = \frac{G}{R} \left\{-\frac{M_{bulge}}{(a_{bulge}+R)^2}+\frac{2 M_{disk} R^3}{\left[\left(a_{disk}+b_{disk}\right)^2+R^4\right]^{1.5}}+\frac{M_{bh}}{R^2}-\frac{4 \pi  p_{s} r_{s}^3}{R^2+R r_{s}}+\frac{4 \pi  p_{s} r_{s}^3 \ln \left(\frac{R+r_{s}}{r_{s}}\right)}{R^2}\right\}\end{split}
+				\end{equation*}
+			
+			\subsubsection{Mass Distribution}
+				\label{\detokenize{NBodySimulation/Potential:mass-distribution}}
+				\sphinxAtStartPar
+				The mass inside a volume is calculated by numerical integration of the density.
+				GSL implementation of Monte Carlo Integration is used. For further details refer to the GSL \sphinxhref{https://www.gnu.org/software/gsl/doc/html/montecarlo.html}{documentation}.
+				
+				\begin{figure}[htbp]
+				\centering
+				\capstart
+				
+				\noindent\sphinxincludegraphics{{potential_mass_distribution}.pdf}
+				\caption{Mass distribution at \(z_{GCA} = 1.0\) {[}kpc{]}}\label{\detokenize{NBodySimulation/Potential:id10}}\label{\detokenize{NBodySimulation/Potential:fig-potential-mass-distribution}}\end{figure}
+			
+			
+			\subsubsection{Surface Mass Density}
+				\label{\detokenize{NBodySimulation/Potential:surface-mass-density}}
+				\sphinxAtStartPar
+				The surface mass density (SMD) is used to estimate the vertical velocity dispersion \eqref{equation:NBodySimulation/Initialization:vertical_velocity_dispersion} and is defined by
+				\begin{equation}\label{equation:NBodySimulation/Potential:surface_mass_density}
+				\begin{split}\Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( R,z \right )\mathrm{d}z\end{split}
+				\end{equation}
+				\begin{figure}[htbp]
+				\centering
+				\capstart
+				
+				\noindent\sphinxincludegraphics{{potential_surface_density}.pdf}
+				\caption{The surface mass density of the disc and bulge}\label{\detokenize{NBodySimulation/Potential:id11}}\label{\detokenize{NBodySimulation/Potential:fig-potential-surface-density}}\end{figure}
 
 
 \chapter{Initialization}
