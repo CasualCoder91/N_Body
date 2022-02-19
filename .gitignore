@@ -379,4 +379,7 @@ build/*
 /ELT
 /MICADO
 /MICADO_Sci
-/docs/_build
+!/docs/_build/
+/docs/_build/*
+!/docs/_build/latex/
+

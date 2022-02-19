@@ -1,0 +1,91 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}The IMF of YMCs in the GC using the ELT and astrometry}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Goals}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Background}{3}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}IMF: Initial Mass Function}{3}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}YMC: Young Massive Clusters}{3}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}GC: Galactic Centre}{5}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}ELT: The Extremely Large Telescope}{5}{subsection.1.2.4}%
+\contentsline {subsection}{\numberline {1.2.5}Astrometry: Detectable movements of stars over time}{5}{subsection.1.2.5}%
+\contentsline {chapter}{\numberline {2}Tasks}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Observations}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Data Reduction}{8}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Analysis}{8}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Notes}{8}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}What we need to simulate observations}{8}{subsection.2.4.1}%
+\contentsline {chapter}{\numberline {3}Initial conditions for Milky Way Clusters}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}List of cluster properties from Piskunov+07}{11}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Mass}{11}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Size}{11}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Age}{11}{subsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.1.4}Distance}{11}{subsection.3.1.4}%
+\contentsline {section}{\numberline {3.2}Possible starter clusters}{11}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}NGC 2244}{12}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}NGC 6611}{12}{subsection.3.2.2}%
+\contentsline {chapter}{\numberline {4}Abstract}{13}{chapter.4}%
+\contentsline {chapter}{\numberline {5}Acknowledgement}{15}{chapter.5}%
+\contentsline {chapter}{\numberline {6}Introduction}{17}{chapter.6}%
+\contentsline {chapter}{\numberline {7}Galactic Potential}{19}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Circular Velocity}{20}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Angular Velocity}{22}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Mass Distribution}{22}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Surface Mass Density}{22}{section.7.4}%
+\contentsline {chapter}{\numberline {8}Initialization}{25}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Sampling distribution functions}{25}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}Rejection sampling}{25}{subsection.8.1.1}%
+\contentsline {subsection}{\numberline {8.1.2}Inverse transform sampling}{25}{subsection.8.1.2}%
+\contentsline {section}{\numberline {8.2}Cluster}{26}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Initial Mass Function (IMF)}{26}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}Salpeter IMF}{26}{subsection.8.3.1}%
+\contentsline {subsection}{\numberline {8.3.2}Broken Power Law (BPL)}{26}{subsection.8.3.2}%
+\contentsline {section}{\numberline {8.4}Density Profile}{28}{section.8.4}%
+\contentsline {section}{\numberline {8.5}Field Stars (FS)}{28}{section.8.5}%
+\contentsline {subsection}{\numberline {8.5.1}Bulge Stellar Mass Function}{30}{subsection.8.5.1}%
+\contentsline {subsection}{\numberline {8.5.2}Disk Stellar Mass Function}{30}{subsection.8.5.2}%
+\contentsline {section}{\numberline {8.6}Positions}{33}{section.8.6}%
+\contentsline {section}{\numberline {8.7}Velocities}{33}{section.8.7}%
+\contentsline {subsection}{\numberline {8.7.1}Particle Kinematics in Cylindrical Coordinates}{33}{subsection.8.7.1}%
+\contentsline {subsubsection}{Lagrangian with axisymmetric potential}{33}{subsubsection*.3}%
+\contentsline {subsubsection}{Hamiltonian with axisymmetric potential}{35}{subsubsection*.4}%
+\contentsline {subsection}{\numberline {8.7.2}The phase space distribution function (DF)}{35}{subsection.8.7.2}%
+\contentsline {subsection}{\numberline {8.7.3}Jeans equations}{36}{subsection.8.7.3}%
+\contentsline {subsection}{\numberline {8.7.4}The Epicyclic Approximation}{37}{subsection.8.7.4}%
+\contentsline {subsection}{\numberline {8.7.5}Disk}{38}{subsection.8.7.5}%
+\contentsline {subsection}{\numberline {8.7.6}Bulge}{40}{subsection.8.7.6}%
+\contentsline {chapter}{\numberline {9}Integration}{43}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Quadrature, Adaptive, General\sphinxhyphen {}purpose (QAG)}{43}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Quadrature, Adaptive, General\sphinxhyphen {}purpose, Infinite interval (QAGI)}{44}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Velocity Verlet Algorithm}{44}{section.9.3}%
+\contentsline {section}{\numberline {9.4}Barnes\sphinxhyphen {}Hut Algorithm (BH)}{44}{section.9.4}%
+\contentsline {chapter}{\numberline {10}Coordinate Systems}{47}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Galactocentric Cartesian (GCA)}{47}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Galactocentric Polar (GCP)}{47}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Local Standard of Rest (LSR)}{48}{section.10.3}%
+\contentsline {section}{\numberline {10.4}Heliocentric Cartesian (HCA)}{48}{section.10.4}%
+\contentsline {section}{\numberline {10.5}Heliocentric Galactic Polar (HGP)}{49}{section.10.5}%
+\contentsline {section}{\numberline {10.6}Heliocentric Equatorial Polar (HEQ)}{49}{section.10.6}%
+\contentsline {section}{\numberline {10.7}Heliocentric Telescope Polar (HTP)}{50}{section.10.7}%
+\contentsline {chapter}{\numberline {11}Database}{51}{chapter.11}%
+\contentsline {section}{\numberline {11.1}Entity Relationship Diagram}{52}{section.11.1}%
+\contentsline {chapter}{\numberline {12}Mock Observations}{53}{chapter.12}%
+\contentsline {section}{\numberline {12.1}Creating Source Objects}{53}{section.12.1}%
+\contentsline {chapter}{\numberline {13}Data Reduction}{55}{chapter.13}%
+\contentsline {section}{\numberline {13.1}Detecting Stars}{55}{section.13.1}%
+\contentsline {subsection}{\numberline {13.1.1}Background}{55}{subsection.13.1.1}%
+\contentsline {subsection}{\numberline {13.1.2}Masking bright stars}{55}{subsection.13.1.2}%
+\contentsline {chapter}{\numberline {14}Cluster analysis}{57}{chapter.14}%
+\contentsline {section}{\numberline {14.1}Velocity approximation}{57}{section.14.1}%
+\contentsline {section}{\numberline {14.2}DBSCAN}{58}{section.14.2}%
+\contentsline {section}{\numberline {14.3}Performance}{58}{section.14.3}%
+\contentsline {subsection}{\numberline {14.3.1}Accuracy}{59}{subsection.14.3.1}%
+\contentsline {subsection}{\numberline {14.3.2}Precision and Recall}{59}{subsection.14.3.2}%
+\contentsline {subsection}{\numberline {14.3.3}F1 Score}{59}{subsection.14.3.3}%
+\contentsline {chapter}{\numberline {15}Experiments}{61}{chapter.15}%
+\contentsline {section}{\numberline {15.1}Parameter optimization}{61}{section.15.1}%
+\contentsline {section}{\numberline {15.2}Setup}{61}{section.15.2}%
+\contentsline {subsection}{\numberline {15.2.1}Parameters}{62}{subsection.15.2.1}%
+\contentsline {section}{\numberline {15.3}Results and Interpretation}{62}{section.15.3}%
+\contentsline {chapter}{\numberline {16}Conclusions}{67}{chapter.16}%
+\contentsline {chapter}{\numberline {17}Appendix}{69}{chapter.17}%
+\contentsline {chapter}{\numberline {18}Indices and tables}{77}{chapter.18}%
+\contentsline {chapter}{Bibliography}{79}{chapter*.5}%
