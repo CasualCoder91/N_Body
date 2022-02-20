@@ -509,13 +509,54 @@ def plot_clustering_map():
     #fig.savefig(config.output_base_path+'\\Clustering\\'+title+'.png', dpi=100)
     plt.show();
 
+def plot_fits():
+    from astropy.visualization import astropy_mpl_style
+    plt.style.use(astropy_mpl_style)
+    from astropy.utils.data import get_pkg_data_filename
+    from astropy.io import fits
+    from matplotlib.colors import LogNorm
+    from matplotlib.patches import Rectangle
+    image_file = get_pkg_data_filename(r'scopesim_t0.fits')
+    image_data = fits.getdata(image_file, ext=0)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 6), tight_layout = True)
+
+    #ax1 = fig.add_subplot(1, 3, 1)
+    ax1.set_title('Full Image')
+    ax1.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+    ax1.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+    ax1.imshow(image_data, norm=LogNorm(), cmap='viridis', origin='lower')
+    ax1.add_patch(Rectangle((6800,6800),700,700, facecolor="none", ec='k', lw=2))
+
+    #ax2 = fig.add_subplot(1, 3, 2)
+    ax2.set_title('21x Zoom')
+    ax2.set_xlim(6800,7500)
+    ax2.set_ylim(6800,7500)
+    ax2.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+    ax2.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+    ax2.imshow(image_data, norm=LogNorm(), cmap='viridis', origin='lower')
+    ax2.add_patch(Rectangle((6826,7203),233,233, facecolor="none", ec='k', lw=2))
+
+    #ax3 = fig.add_subplot(1, 3, 3)
+    ax3.set_title('64x Zoom')
+    ax3.set_xlim(6826, 6826 + 233)
+    ax3.set_ylim(7203, 7203 + 233)
+    ax3.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+    ax3.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+    im = ax3.imshow(image_data, norm=LogNorm(), cmap='viridis' , origin='lower')
+
+    fig.supxlabel('x$_{HTP}$ [px]')
+    fig.supylabel('y$_{HTP}$ [px]')
+    plt.show()
+
 def main():
+
+    plot_fits()
 
     #plot_number_hist()
     #plot_avg_2D_vel()
     #plot_velocity_hist()
 
-    plot_title_img()
+    #plot_title_img()
 
     #db = Database()
     #plot_precision_maps(True)

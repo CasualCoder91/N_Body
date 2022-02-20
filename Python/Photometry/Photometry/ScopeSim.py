@@ -93,6 +93,7 @@ def make_fits(data,timestep=0,save_file=True,save_img=False,n_pixel=config.n_pix
     if save_img:
         fig = plt.figure(figsize=(n_pixel/960, n_pixel/960), dpi=96)
         plt.imshow(opt.image_planes[0].image, norm=LogNorm())
+        plt.show()
         fig.savefig(config.output_path + "/scopesim_t"+str(timestep)+".png",dpi=960)
 
 
@@ -125,6 +126,9 @@ def background():
 
 
 if __name__ == '__main__':
-    background()
+    #background()
     #ss_all()
     #print(sim.__file__)
+    db = Database()
+    data = db.select_2d_stars(0)
+    make_fits(data, 0, True, True, config.n_pixel)
