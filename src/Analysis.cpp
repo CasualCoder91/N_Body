@@ -275,6 +275,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 	int errorCounter = 0;
 	int error_couter_cluster = 0;
 	int n_novelocity = 0;
+	int total_couter = 0;
 	for (size_t point_t1_index = 0; point_t1_index < resultingNeighbors.n_cols; point_t1_index++) {
 		for (size_t point_t0_index = 0; point_t0_index < resultingNeighbors.n_rows; point_t0_index++) {
 			if (abs(1 - points_t1[point_t1_index].magnitude / points_t0[resultingNeighbors(point_t0_index,point_t1_index)].magnitude) < Constants::eps_magnitude ) {
@@ -303,8 +304,9 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 				n_novelocity++;
 			}
 		}
+		total_couter++;
 	}
-	std::cout << "#Wrong stars picked for velocity estimation: " << errorCounter << std::endl;
+	std::cout << "#Wrong stars picked for velocity estimation: " << (double)errorCounter/(double)total_couter*100 << std::endl;
 	std::cout << "#no match found: " << n_novelocity << std::endl;
 	if (!observed) {
 		std::cout << " - #Wrong cluster stars: " << error_couter_cluster << std::endl;
@@ -312,7 +314,7 @@ void Analysis::generateHTPVelocity(int observed, bool force_correct_selection)
 	else {
 		//database->delete_stars(id, stars_to_delete);
 	}
-	database->update_points(points_t0, 0);
+	//database->update_points(points_t0, 0);
 	return;
 
 

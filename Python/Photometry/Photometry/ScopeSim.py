@@ -129,6 +129,13 @@ if __name__ == '__main__':
     #background()
     #ss_all()
     #print(sim.__file__)
-    db = Database()
-    data = db.select_2d_stars(0)
-    make_fits(data, 0, True, True, config.n_pixel)
+    #db = Database()
+    #data = db.select_2d_stars(0)
+    #make_fits(data, 0, True, True, config.n_pixel)
+    pickles = pyckles.SpectralLibrary("pickles", return_style="synphot")
+    print(pickles)
+    spec_lib = pyckles.SpectralLibrary("pickles")
+    available_spectra = spec_lib.available_spectra
+    for x in range(len(available_spectra)):
+        print(available_spectra[x])
+    #print(spec_lib.available_spectra)

@@ -141,6 +141,8 @@ public:
 
 	void print_clustering_info(int simulation_id);
 
+	void print_simulated_cluster_info(int simulation_id);
+
 	double confidence_score(int simulation_id);
 
 	void set_mapped_star_mass();

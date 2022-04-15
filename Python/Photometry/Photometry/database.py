@@ -192,7 +192,19 @@ class Database:
             array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
         return array
 
-
+    def select_3d_stars(self, timestep, cluster = True):
+        cur = self.conn.cursor()
+        sql = """SELECT position.x, position.y, position.z, star.mass
+           FROM star
+           INNER JOIN position on position.id_star = star.id
+           where star.id_simulation = ?1
+           and position.timestep = ?2
+           and isCluster = ?3
+           and isObserved = 0
+           LIMIT 16900"""
+        cur.execute(sql, (config.simulation_id,timestep,cluster))
+        rows = np.array(cur.fetchall())
+        return rows
 
     def select_false_negative(self):
         cur = self.conn.cursor()

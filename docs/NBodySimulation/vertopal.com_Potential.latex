@@ -1,0 +1,197 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Galactic Potential},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Galactic Potential}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+Modelling the gravitational potential of the Milky Way has been an ever
+evolving topic in recent decades. \texttt{Barros2016} provides a brief
+history. Here the potential is used to approximate the force on the
+simulated stars and to initialize field stars.
+
+The model of choice consists of four parts: black hole, bulge, disc and
+the dark matter halo.
+
+The \textbf{black hole} is represented by a Keplerian potential:
+
+\[\Phi_{bh}\left ( r \right ) = -\frac{G*M_{bh}}{r}\]
+
+with \(r\) being the spherical radius.
+
+The \textbf{disk} can be modelled via a Miyamoto Nagai potential
+\texttt{1975PASJ..27..533M}
+
+\[\Phi_{disk}\left ( R,z \right ) = -\frac{G*M_{disk}}{\sqrt{R^{2+\left ( a_{disk}+\sqrt{z^{2}+b_{disk}^{2}} \right )^{2}}}}\]\[\rho_{disk}(R,z)=\frac{b_{disk}^{2}M_{disk}}{4\pi}\frac{a_{disk}R^{2}+\left[a_{disk}+3(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2}}{\left \{ R^{2}+\left[a_{disk}+(z^{2}+b_{disk}^{2})^{\frac{1}{2}}\right]^{2} \right \}^{\frac{5}{2}}\left(z^{2}+b_{disk}^{2}\right)^{\frac{3}{2}}}\]
+
+with \(R\) being the cylindrical radius and with \(z\) being the
+distance to the reference plane.
+
+For the \textbf{bulge} the Hernquist potential
+\texttt{1990ApJ..356..359H} is used
+
+\[\Phi_{bulge}\left ( r \right ) = -\frac{G*M_{bulge}}{\left ( r+a_{bulge} \right )}\]\[\rho_{bulge}(r)= \frac{M_{bulge}}{2\pi }\frac{a_{bulge}}{r}\frac{1}{\left ( r+a_{bulge} \right )^{3}}\]
+
+\(a\) being the scale-length of the spheroid potential
+
+and the NFW potential \texttt{Navarro1996} is used for the \textbf{dark
+matter halo} potential
+
+\[\Phi_{halo}\left ( r \right ) = \frac{-4\pi G\rho _{s}r_{s}^{3}\ln\left ( 1+\frac{r}{r_{s}}\right )}{r}\]
+
+where \(\rho _{s}\) is the characteristic density and \(r_{s}\) the
+scale length.
+
+Parameters for bulge and disk taken from \texttt{Price\_Whelan\_2014}
+and the radius \(r_{s}\) for the halo from \texttt{Bovy\_2015}:
+
+\hypertarget{tbl_parameters}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.40}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.40}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.20}}@{}}
+\caption{MW model parameters}\tabularnewline
+\toprule
+Parameter & Value & Unit \\
+\midrule
+\endfirsthead
+\toprule
+Parameter & Value & Unit \\
+\midrule
+\endhead
+\(M_{bh}\) & \(4*10^{6}\) & \(M_\odot\) \\
+\(M_{disk}\) & \(10^{11}\) & \(M_\odot\) \\
+\(a_{disk}\) & \(6.5\) & \(kpc\) \\
+\(b_{disk}\) & \(0.26\) & \(kpc\) \\
+\(M_{bulge}\) & \(3.4*10^{10}\) & \(M_\odot\) \\
+\(a_{bulge}\) & \(0.70\) & \(kpc\) \\
+\(r_{s}\) & \(16\) & \(kpc\) \\
+\bottomrule
+\end{longtable}
+
+\(\rho _{s}\) can be determined by imposing
+
+\[v_{c}\left ( R_{0},z=0 \right ) = 220\left [ \frac{km}{s} \right ]\]\[R_{0} = 8 \left [ kpc \right ]\]
+
+\hypertarget{circular-velocity}{%
+\section{Circular Velocity}\label{circular-velocity}}
+
+The circular velocity \(v_{c}\) is defined via
+
+\[v_{c}\left ( R,z \right ) = \sqrt{R\frac{\partial \Phi \left (R,z  \right )}{\partial R}   }\]
+
+with the total potential being in the presented case
+
+\[\Phi \left ( R,z \right ) = \Phi_{bh} \left ( R,z \right )+\Phi_{disk} \left ( R,z \right )+\Phi_{bulge} \left ( R,z \right )+\Phi_{halo} \left ( R,z \right )\]
+
+therefore
+
+\[v_{c}^{2} = v_{c,bh}^{2}+v_{c,disk}^{2}+v_{c,bulge}^{2}+v_{c,halo}^{2}\]\[v_{c,bh}^{2} = \frac{G M_{bh} R^2}{\left(R^2+z^2\right)^{3/2}}\]\[v_{c,disk}^{2} = \frac{GM_{disk}R^2}{\left(\left(a_{disk}+\sqrt{b_{disk}^2+z^2}\right)^2+R^2\right)^{3/2}}\]\[v_{c,bulge}^{2} = \frac{G M_{bulge} R^2}{\sqrt{R^2+z^2} \left(a_{bulge}+\sqrt{R^2+z^2}\right)^2}\]\[v_{c,halo}^{2} = \frac{4 \pi G \rho _{s} R^2 r_{s}^3 \log \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}{\left(R^2+z^2\right)^{3/2}}-\frac{4\pi G\rho_{s} R^2 {r_{s}}^2}{\left(R^2+z^2\right) \left(\frac{\sqrt{R^2+z^2}}{r_{s}}+1\right)}\]
+
+Inserting the parameters given in \texttt{tbl\_parameters} and setting
+\(G\approx 4.302*10^{-6}\left [ \frac{kpc}{M_\odot}\frac{km^{2}}{s^{2}} \right ]\)
+results in
+\(\rho_{s}\approx 4.5*10^{6} \left [ \frac{M_\odot}{kpc^{3}} \right ]\)
+
+the circular velocity can be used for fitting the model parameters
+\texttt{Bajkova2017}. \texttt{fig-potential\_circular\_velocity}
+displays the velocity for the chosen model and its components.
+
+\begin{quote}
+Galactic rotation curve for the chosen MW model
+\end{quote}
+
+\hypertarget{angular-velocity}{%
+\section{Angular Velocity}\label{angular-velocity}}
+
+The angular velocity is required for initializing disc star velocities
+and can be obtained from the potential:
+
+\[\Omega ^{2}\left ( R \right ) = \frac{1}{R}\frac{\partial \Phi \left ( R,0 \right )}{\partial r}\]
+
+For the total potential \texttt{total\_potential} this derivation
+yields:
+
+\[\Omega ^{2}\left ( R \right ) = \frac{G}{R} \left\{-\frac{M_{bulge}}{(a_{bulge}+R)^2}+\frac{2 M_{disk} R^3}{\left[\left(a_{disk}+b_{disk}\right)^2+R^4\right]^{1.5}}+\frac{M_{bh}}{R^2}-\frac{4 \pi  p_{s} r_{s}^3}{R^2+R r_{s}}+\frac{4 \pi  p_{s} r_{s}^3 \ln \left(\frac{R+r_{s}}{r_{s}}\right)}{R^2}\right\}\]
+
+\hypertarget{mass-distribution}{%
+\section{Mass Distribution}\label{mass-distribution}}
+
+The mass inside a volume is calculated by numerical integration of the
+density. GSL implementation of Monte Carlo Integration is used. For
+further details refer to the GSL
+\href{https://www.gnu.org/software/gsl/doc/html/montecarlo.html}{documentation}.
+
+\begin{quote}
+Mass distribution at \(z_{GCA} = 1.0\) {[}kpc{]}
+\end{quote}
+
+\hypertarget{surface-mass-density}{%
+\section{Surface Mass Density}\label{surface-mass-density}}
+
+The surface mass density (SMD) is used to estimate the vertical velocity
+dispersion \texttt{vertical\_velocity\_dispersion} and is defined by
+
+\[\Sigma \left ( R \right )=2\int_{0}^{\infty}\rho \left ( R,z \right )\mathrm{d}z\]\[The surface mass density of the disc and bulge\]
+
+\end{document}

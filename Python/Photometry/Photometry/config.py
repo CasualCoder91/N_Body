@@ -9,7 +9,7 @@ exposure_time = 3600 #[s]
 #paths
 output_base_path = os.path.join(os.path.abspath(__file__ + r"\..\..\..\.."), r"Output")
 output_path = os.path.join(output_base_path, "Simulation" + str(simulation_id))
-database_path = os.path.join(output_base_path,r"Database\Default_0_10000_ext.db")
+database_path = os.path.join(output_base_path,r"Database\Default_180_10000_ext.db")#os.path.join(output_base_path,r"Database\Default.db")#os.path.join(output_base_path,r"Database\Default_0_10000_ext.db")
 fits_path = os.path.join(output_base_path, "Simulation" + str(simulation_id)+r"\scopesim_t"+str(timestep)+".fits")
 
 #images

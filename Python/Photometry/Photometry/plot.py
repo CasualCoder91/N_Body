@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib as mpl
+import matplotlib.cm as cm
+from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, mark_inset
 import pandas as pd
 
@@ -71,9 +73,142 @@ def plot_magnitude_hist():
     plt.legend(loc='upper left')
     plt.show()
 
+def plot_3d_fs():
+    from matplotlib.colors import LogNorm
+    from scipy.interpolate import interpn
+    from matplotlib.colors import Normalize 
+    config.database_path = os.path.join(config.output_base_path,r"Database\Cone_at_GC.db")
+    db = Database()
+    test = db.select_3d_stars(0, False)
+
+    x = test[:,0]
+    y = test[:,1]
+    z = test[:,2]
+    sort = True
+    bins = 20
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1, 2, 1, projection='3d')
+    fig.set_size_inches(9.5, 5)
+
+    ax1.scatter(x, y, z, c='r', s=0.1)
+    ax1.set_zlabel('z$_{GCA}$ [pc]', rotation = 0)
+    ax1.set_ylabel('y$_{GCA}$ [pc]', rotation = 0)
+    ax1.set_xlabel('x$_{GCA}$ [pc]', rotation = 0)
+    #plt.setp(ax1, xticks=[298,299,300,301,302],yticks=[-2,-1,0,1,2],zticks=[25,26,27,28,29])
+    #ax1.set_xlim(298,302)
+    #ax1.set_ylim(-2,2)
+    #ax1.set_zlim(25,29)
+
+    ax2 = fig.add_subplot(1, 2, 2)
+    #ax2.set_xlim(299,301)
+    #ax2.set_ylim(-1,1)
+
+    data , x_e, y_e = np.histogram2d( x, y, bins = bins, density = True )
+    z = interpn( ( 0.5*(x_e[1:] + x_e[:-1]) , 0.5*(y_e[1:]+y_e[:-1]) ) , data , np.vstack([x,y]).T , method = "splinef2d", bounds_error = False)
+
+    #To be sure to plot all data
+    z[np.where(np.isnan(z))] = 0.0
+
+    # Sort the points by density, so that the densest points are plotted last
+    if sort :
+        idx = z.argsort()
+        x, y, z = x[idx], y[idx], z[idx]
+
+    ax2.scatter( x, y, c=z)
+    ax2.set_ylabel('y$_{GCA}$ [pc]')
+    ax2.set_xlabel('x$_{GCA}$ [pc]', rotation = 0)
+    norm = Normalize(vmin = np.min(z), vmax = np.max(z))
+    #cbar = fig.colorbar(cm.ScalarMappable(norm = norm), ax=ax2)
+    #cbar.ax.set_ylabel('Density')
+
+
+    #ax.title.set_text('Bulge')
+    #pcm = ax.imshow(z+10, extent=(np.amin(x), np.amax(x), np.amin(y), np.amax(y)),
+    #        cmap=cm.hot, norm=LogNorm())
+    #divider = make_axes_locatable(ax2)
+    #cax = divider.append_axes('right', size='5%', pad=0.05)
+    #cbar = fig.colorbar(pcm,cax=cax,ax=ax2)
+    #cbar.ax.set_title('[$M_{\odot}$]')
+
+    #ax.grid(b = True, color ='grey',
+    #    linestyle ='-.', linewidth = 0.3,
+    #    alpha = 0.2)
+
+    #ax.scatter(test[:,0], test[:,1],test[:,2], s=1, c='r', marker="s", label='observed_cluster')
+    fig.tight_layout(pad=3.0)
+    plt.show()
+
+def plot_3d_cluster():
+    from matplotlib.colors import LogNorm
+    from scipy.interpolate import interpn
+    from matplotlib.colors import Normalize 
+    config.database_path = os.path.join(config.output_base_path,r"Database\Default.db")#os.path.join(output_base_path,r"Database\Default_0_10000_ext.db")
+    db = Database()
+    test = db.select_3d_stars(0)
+
+    x = test[:,0]
+    y = test[:,1]
+    z = test[:,2]
+    sort = True
+    bins = 20
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1, 2, 1, projection='3d')
+    fig.set_size_inches(9.5, 5)
+
+    ax1.scatter(x, y, z, c='r', s=0.1)
+    ax1.set_zlabel('z$_{GCA}$ [pc]', rotation = 0)
+    ax1.set_ylabel('y$_{GCA}$ [pc]', rotation = 0)
+    ax1.set_xlabel('x$_{GCA}$ [pc]', rotation = 0)
+    ax1.set_xlim(298,302)
+    plt.setp(ax1, xticks=[298,299,300,301,302],yticks=[-2,-1,0,1,2],zticks=[25,26,27,28,29])
+    #ax1.set_xticks(298,299,300,301,302)
+    ax1.set_ylim(-2,2)
+    ax1.set_zlim(25,29)
+
+    ax2 = fig.add_subplot(1, 2, 2)
+    ax2.set_xlim(299,301)
+    ax2.set_ylim(-1,1)
+    ax2.set_xticks([299,299.5,300,300.5,301])
+
+    data , x_e, y_e = np.histogram2d( x, y, bins = bins, density = True )
+    z = interpn( ( 0.5*(x_e[1:] + x_e[:-1]) , 0.5*(y_e[1:]+y_e[:-1]) ) , data , np.vstack([x,y]).T , method = "splinef2d", bounds_error = False)
+
+    #To be sure to plot all data
+    z[np.where(np.isnan(z))] = 0.0
+
+    # Sort the points by density, so that the densest points are plotted last
+    if sort :
+        idx = z.argsort()
+        x, y, z = x[idx], y[idx], z[idx]
+
+    ax2.scatter( x, y, c=z)
+    ax2.set_ylabel('y$_{GCA}$ [pc]')
+    ax2.set_xlabel('x$_{GCA}$ [pc]', rotation = 0)
+    norm = Normalize(vmin = np.min(z), vmax = np.max(z))
+    #cbar = fig.colorbar(cm.ScalarMappable(norm = norm), ax=ax2)
+    #cbar.ax.set_ylabel('Density')
+
+
+    #ax.title.set_text('Bulge')
+    #pcm = ax.imshow(z+10, extent=(np.amin(x), np.amax(x), np.amin(y), np.amax(y)),
+    #        cmap=cm.hot, norm=LogNorm())
+    #divider = make_axes_locatable(ax2)
+    #cax = divider.append_axes('right', size='5%', pad=0.05)
+    #cbar = fig.colorbar(pcm,cax=cax,ax=ax2)
+    #cbar.ax.set_title('[$M_{\odot}$]')
+
+    #ax.grid(b = True, color ='grey',
+    #    linestyle ='-.', linewidth = 0.3,
+    #    alpha = 0.2)
+
+    #ax.scatter(test[:,0], test[:,1],test[:,2], s=1, c='r', marker="s", label='observed_cluster')
+    fig.tight_layout(pad=3.0)
+    plt.show()
+
 
 def plot_points_velocity(b_observed_points=True,b_simulated_points=True,b_false_negative=False):
-
     db = Database()
     fig = plt.figure()
     fig.set_size_inches(9,9)
@@ -144,6 +279,8 @@ def plot_map(z,title,cmap):
 
 def plot_precision_maps(simulated=False):
 
+    plt.rcParams.update({'font.size': 14})
+
     if simulated:
         z = [[1,1,1,1,0.998,0.9943,0.9931,0.9947,0.99523,0.99591,0.9689,0.9749,0.9751,0.9801,0.98332,0.9878,0.9909,0.9912,0.99224,0.9931,0.893,0.916,0.9239,0.9405,0.9475],
              [1,1,1,1,0.99847,0.9946,0.9931,0.995,0.99663,0.99654,0.978,0.9742,0.9787,0.9841,0.9861,0.9925,0.9918,0.9926,0.9943,0.99459,0.933,0.9399,0.9508,0.9636,0.968],
@@ -160,7 +297,7 @@ def plot_precision_maps(simulated=False):
     angles = np.array([180,25,10,5,0])
     y = [a+0.5 for a in range(len(angles))]
 
-    plt.setp(axes, xticks=x, xticklabels=masses, yticks=y, yticklabels=angles)
+    plt.setp(axes, xticks=x, xticklabels=masses*0.001, yticks=y, yticklabels=angles)
 
     c = axes[0].pcolor(np.reshape(z[0], (5, 5)), cmap='Reds_r')
     fig.colorbar(c, ax=axes[0], pad=0.01)
@@ -170,7 +307,7 @@ def plot_precision_maps(simulated=False):
     c = axes[1].pcolor(np.reshape(z[1], (5, 5)), cmap='Oranges_r')
     fig.colorbar(c, ax=axes[1], pad=0.01)
     axes[1].set_title('2 - 0.5 [$M_{\odot}$]')
-    axes[1].set_xlabel("cluster mass [$M_{\odot}$]", fontsize=14)
+    axes[1].set_xlabel("cluster mass [$kM_{\odot}$]", fontsize=14)
 
     c = axes[2].pcolor(np.reshape(z[2], (5, 5)), cmap='Blues_r')
     fig.colorbar(c, ax=axes[2], pad=0.01)
@@ -405,8 +542,8 @@ def plot_title_img():
     #plt.gca().add_patch(rect)
     plt.xlim(-0.019, 0.019)
     plt.ylim(-0.017, 0.017)
-    plt.xlabel('v_asc [arcsec/dt]', fontsize=16)
-    plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
+    plt.xlabel('v$_{x,\mathrm{HTP}}$ [arcsec/dt]', fontsize=16)
+    plt.ylabel('v$_{y,\mathrm{HTP}}$ [arcsec/dt]', fontsize=16)
     plt.ticklabel_format(axis='x',style='sci', scilimits=(0,0))
     plt.ticklabel_format(axis='y',style='sci', scilimits=(0,0))
 
@@ -444,6 +581,8 @@ def plot_title_img():
 
 def plot_f1_maps():
 
+    plt.rcParams.update({'font.size': 14})
+
     fig, axes = plt.subplots(1, 3, sharex=True, sharey=True, figsize=(12,5))
 
     df = pd.read_excel(config.output_base_path+r'\25_observations.xlsx',
@@ -454,7 +593,7 @@ def plot_f1_maps():
     angles = df['Angle'].unique()
     y = [a+0.5 for a in range(len(angles))]
 
-    plt.setp(axes, xticks=x, xticklabels=masses, yticks=y, yticklabels=angles)
+    plt.setp(axes, xticks=x, xticklabels=masses*0.001, yticks=y, yticklabels=angles)
 
     z = [0.635,0.8125,0.8476,0.925,0.9403,0.626,0.747,0.8098,0.8719,0.9163,0.45,0.621,0.7224,0.7979,0.8667,0.338,0.486,0.6061,0.7196,0.8117,0.39,0.518,0.619,0.7053,0.7637]
     z = np.reshape(z, (5, 5))
@@ -468,7 +607,7 @@ def plot_f1_maps():
     c = axes[1].pcolor(z, cmap='Oranges_r')
     fig.colorbar(c, ax=axes[1], pad=0.01)
     axes[1].set_title('2 - 0.5 [$M_{\odot}$]')
-    axes[1].set_xlabel("cluster mass [$M_{\odot}$]", fontsize=14)
+    axes[1].set_xlabel("cluster mass [$kM_{\odot}$]", fontsize=14)
 
     z = [0.712,0.944,0.9075,0.9340,0.9492,0.897,0.924,0.9278,0.9511,0.9556,0.744,0.9384,0.9507,0.9594,0.9671,0.838,0.907,0.9448,0.9585,0.9705,0.926,0.9622,0.9536,0.9641,0.9657]
     z = np.reshape(z, (5, 5))
@@ -509,48 +648,123 @@ def plot_clustering_map():
     #fig.savefig(config.output_base_path+'\\Clustering\\'+title+'.png', dpi=100)
     plt.show();
 
-def plot_fits():
+def plot_fits(plot_observed = False, plot_simulated = False, gc=True):
+
     from astropy.visualization import astropy_mpl_style
     plt.style.use(astropy_mpl_style)
     from astropy.utils.data import get_pkg_data_filename
     from astropy.io import fits
     from matplotlib.colors import LogNorm
     from matplotlib.patches import Rectangle
-    image_file = get_pkg_data_filename(r'scopesim_t0.fits')
+    if gc:
+        image_file = get_pkg_data_filename(r'scopesim_t0.fits')
+    else:
+        image_file = get_pkg_data_filename(r'scopesim_t0_ac.fits')#scopesim_t0_ac   scopesim_t0.fits
     image_data = fits.getdata(image_file, ext=0)
+
+    from numpy import unravel_index
+    max_index = unravel_index(image_data.argmax(), image_data.shape)
+    max_value = image_data[max_index[0],max_index[1]]
+    min_index = unravel_index(image_data.argmin(), image_data.shape)
+    min_value = image_data[min_index[0],min_index[1]]
+    print(max_index)
+
+    print(image_data)
+
+    print(max_value)
+    print(min_value)
+    #return
+
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 6), tight_layout = True)
+    ax1.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
+    ax2.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
+    ax3.tick_params(axis='both', which='both', bottom=False, top=False, labelbottom=False, right=False, left=False, labelleft=False)
+
+    cmap = 'hot'
+    norm = LogNorm(max_value/20000,max_value,clip=True)
+
+    if gc:
+        x_min_1 = 6800
+        y_min_1 = 6800
+        dxy_1 = 700
+        x_min_2 = 6826
+        y_min_2 = 7203
+        dxy_2 = 233
+    else:
+        x_min_1 = 6400
+        y_min_1 = 7000
+        dxy_1 = 700
+        x_min_2 = 6700
+        y_min_2 = 7203
+        dxy_2 = 233
 
     #ax1 = fig.add_subplot(1, 3, 1)
     ax1.set_title('Full Image')
     ax1.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
     ax1.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
-    ax1.imshow(image_data, norm=LogNorm(), cmap='viridis', origin='lower')
-    ax1.add_patch(Rectangle((6800,6800),700,700, facecolor="none", ec='k', lw=2))
+    ax1.imshow(image_data, norm=norm, cmap=cmap, origin='lower')
+    #ax1.imshow(image_data, norm=LogNorm(), cmap=cmap, origin='lower')
+    ax1.add_patch(Rectangle((x_min_1,y_min_1),dxy_1,dxy_1, facecolor="none", ec='w', lw=2))
 
     #ax2 = fig.add_subplot(1, 3, 2)
     ax2.set_title('21x Zoom')
-    ax2.set_xlim(6800,7500)
-    ax2.set_ylim(6800,7500)
+    ax2.set_xlim(x_min_1,x_min_1+dxy_1)
+    ax2.set_ylim(y_min_1,y_min_1+dxy_1)
     ax2.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
     ax2.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
-    ax2.imshow(image_data, norm=LogNorm(), cmap='viridis', origin='lower')
-    ax2.add_patch(Rectangle((6826,7203),233,233, facecolor="none", ec='k', lw=2))
+    ax2.imshow(image_data, norm=norm, cmap=cmap, origin='lower')
+    ax2.add_patch(Rectangle((x_min_2,y_min_2),dxy_2,dxy_2, facecolor="none", ec='w', lw=2))
 
     #ax3 = fig.add_subplot(1, 3, 3)
     ax3.set_title('64x Zoom')
-    ax3.set_xlim(6826, 6826 + 233)
-    ax3.set_ylim(7203, 7203 + 233)
-    ax3.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
-    ax3.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
-    im = ax3.imshow(image_data, norm=LogNorm(), cmap='viridis' , origin='lower')
+    ax3.set_xlim(x_min_2, x_min_2 + dxy_2)
+    ax3.set_ylim(y_min_2, y_min_2 + dxy_2)
+    im = ax3.imshow(image_data, norm=norm, cmap=cmap , origin='lower')
 
-    fig.supxlabel('x$_{HTP}$ [px]')
-    fig.supylabel('y$_{HTP}$ [px]')
+    if plot_simulated or plot_observed:
+        config.database_path = os.path.join(config.output_base_path,r"Database\Default_0_10000_ext.db")
+        db = Database()
+
+    if plot_simulated:
+        simulated_points = db.select_points(0, False)
+        sim_arr = np.vstack(simulated_points[:]).astype(float)
+        origin = 14976/2.
+        x = sim_arr[:,0]/config.pixelfactor + origin
+        y = sim_arr[:,1]/config.pixelfactor + origin
+        ax1.scatter(x, y, s=0.1, c='cyan', marker="x", label='simulated')
+        ax2.scatter(x, y, s=10, c='cyan', marker="x", label='simulated')
+        ax3.scatter(x, y, s=50, c='cyan', marker="x", label='simulated')
+
+    if plot_observed:
+        observed_points = db.select_points(0, True)
+        op_arr = np.vstack(observed_points[:]).astype(float)
+        origin = 14976/2.
+        x = op_arr[:,0]/config.pixelfactor + origin
+        y = op_arr[:,1]/config.pixelfactor + origin
+        ax1.scatter(x, y, s=0.1, facecolors='none', edgecolors='chartreuse', marker="o", label='observed')
+        ax2.scatter(x, y, s=10, facecolors='none', edgecolors='chartreuse', marker="o", label='observed')
+        ax3.scatter(x, y, s=50, facecolors='none', edgecolors='chartreuse', marker="o", label='observed')
+
+    if plot_simulated and plot_observed:
+        lgnd = ax1.legend(loc="upper right", scatterpoints=1, fontsize=10)
+        for lh in lgnd.legendHandles: 
+            lh._sizes = [30]
+            lh.set_alpha(1)
+
+    #fig.supxlabel()
+    #ax2.set_xlabel('x$_{HTP}$ [px]')
+    #fig.supylabel('y$_{HTP}$ [px]')
+    fig.tight_layout()
     plt.show()
 
 def main():
 
-    plot_fits()
+    #plot_3d_cluster()
+    plot_3d_fs()
+    #plot_fits(False,False,False)
+    #plot_fits(True,True)
+
+    #plot_title_img()
 
     #plot_number_hist()
     #plot_avg_2D_vel()
@@ -559,7 +773,7 @@ def main():
     #plot_title_img()
 
     #db = Database()
-    #plot_precision_maps(True)
+    #plot_precision_maps(False)
     #plot_f1_maps()
 
     #ErrorAnalysis.Vel2D_error()

@@ -55,6 +55,25 @@ void optimize_clustering(size_t simulation_id=1) {
 
 }
 
+void simulated_cluster_stars_mass_range() {
+
+	std::vector<int> masses = { 640,1600,4000,10000,25000 };
+	std::vector<int> degrees = { 180,25,10,5,0 };
+
+	for (int degree : degrees) {
+		for (int mass : masses)
+		{
+			std::string database_path = "Output/Database/Default_" + std::to_string(degree) + "_" + std::to_string(mass) + "_ext.db";
+			Constants::database_path = database_path;
+			Database db = Database(Constants::database_path);
+			db.print_simulated_cluster_info(1);
+		}
+	}
+	
+}
+
+
+
 void calc_dispersion() 
 {
 	std::vector<int> masses = { 640,1600,4000,10000,25000 };
@@ -67,28 +86,96 @@ void calc_dispersion()
 			Constants::database_path = database_path;
 			Database db = Database(Constants::database_path);
 
-			//std::cout << "andgle: " << degree << " mass: " << mass << std::endl;
-			//db.print_analysis_dt_velocity_2D();
-			for (int simulation_id = 1; simulation_id < 11; ++simulation_id) {
+			std::cout << "andgle: " << degree << " mass: " << mass << std::endl;
+			Analysis analysis = Analysis(1, &db);
+			analysis.generateHTPVelocity(1);			//db.print_analysis_dt_velocity_2D();
+			//for (int simulation_id = 1) {
 
-				db.print_clustering_info(simulation_id);
 
-				//Analysis analysis = Analysis(simulation_id, &db);
-				//std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulation_id, 0, false, true);
-				//std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulation_id, 0, true, false);
-				//double avgVelHTPCluster = analysis.average(clusterVelocities);
-				//double dispHTPCluster = analysis.dispersion(clusterVelocities, avgVelHTPCluster);
-				//double avgVelHTPFS = analysis.average(fsVelocities);
-				//double dispHTPFS = analysis.dispersion(fsVelocities, avgVelHTPFS);
-				//db.insertAnalysisdtVelocity2D(simulation_id, 0, avgVelHTPCluster, dispHTPCluster, avgVelHTPFS, dispHTPFS);
 
-			}
+			//	//db.print_clustering_info(simulation_id);
+
+			//	//Analysis analysis = Analysis(simulation_id, &db);
+			//	//std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulation_id, 0, false, true);
+			//	//std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulation_id, 0, true, false);
+			//	//double avgVelHTPCluster = analysis.average(clusterVelocities);
+			//	//double dispHTPCluster = analysis.dispersion(clusterVelocities, avgVelHTPCluster);
+			//	//double avgVelHTPFS = analysis.average(fsVelocities);
+			//	//double dispHTPFS = analysis.dispersion(fsVelocities, avgVelHTPFS);
+			//	//db.insertAnalysisdtVelocity2D(simulation_id, 0, avgVelHTPCluster, dispHTPCluster, avgVelHTPFS, dispHTPFS);
+
+			//}
 
 		}
 	}
 
 
 }
+
+void average_GCA_velocities() {
+	std::vector<int> masses = { 640,1600,4000,10000,25000 };
+	std::vector<int> degrees = { 180,25,10,5,0 };
+
+	std::cout << "andgle mass avg_cluster disp_cluster avg_fs disp_fs" << std::endl;
+
+	for (int degree : degrees) {
+		for (int mass : masses)
+		{
+			std::string database_path = "Output/Database/Default_" + std::to_string(degree) + "_" + std::to_string(mass) + "_ext.db";
+			Constants::database_path = database_path;
+			Database db = Database(Constants::database_path);
+
+			Analysis analysis = Analysis(1, &db);
+
+			double avgVel3DCluster_tot = 0;
+			double disp3DCluster_tot = 0;
+			double avgVel3DFS_tot = 0;
+			double disp3DFS_tot = 0;
+
+
+			for (int simulation_id = 1; simulation_id < 11; ++simulation_id) {
+
+				int timeStep = 0;
+
+				//std::vector<Star*> stars = db.select_stars(simulationID, timeStep);
+				std::vector<Vec3D> clusterVelocities = db.selectVelocities3D(simulation_id, timeStep, false, true);
+				std::vector<Vec3D> fsVelocities = db.selectVelocities3D(simulation_id, timeStep, true, false);
+				double avgVel3DCluster = analysis.average(clusterVelocities);
+				avgVel3DCluster_tot += avgVel3DCluster;
+				double disp3DCluster = analysis.dispersion(clusterVelocities, avgVel3DCluster);
+				disp3DCluster_tot += disp3DCluster;
+				double avgVel3DFS = analysis.average(fsVelocities);
+				avgVel3DFS_tot += avgVel3DFS;
+				double disp3DFS = analysis.dispersion(fsVelocities, avgVel3DFS);
+				disp3DFS_tot += disp3DFS;
+				db.insertAnalysisdtVelocity3D(simulation_id, timeStep, avgVel3DCluster, disp3DCluster, avgVel3DFS, disp3DFS);
+
+			}
+
+			avgVel3DCluster_tot = avgVel3DCluster_tot/10;
+			disp3DCluster_tot = disp3DCluster_tot/10;
+			avgVel3DFS_tot = avgVel3DFS_tot/10;
+			disp3DFS_tot = disp3DFS_tot/10;
+
+			std::cout <<  degree << " " << mass << " " << avgVel3DCluster_tot << " " << disp3DCluster_tot << " " << avgVel3DFS_tot << " " << disp3DFS_tot << std::endl;
+
+
+			//	//db.print_clustering_info(simulation_id);
+
+			//	//Analysis analysis = Analysis(simulation_id, &db);
+			//	//std::vector<Vec2D> clusterVelocities = db.selectVelocitiesHTP(simulation_id, 0, false, true);
+			//	//std::vector<Vec2D> fsVelocities = db.selectVelocitiesHTP(simulation_id, 0, true, false);
+			//	//double avgVelHTPCluster = analysis.average(clusterVelocities);
+			//	//double dispHTPCluster = analysis.dispersion(clusterVelocities, avgVelHTPCluster);
+			//	//double avgVelHTPFS = analysis.average(fsVelocities);
+			//	//double dispHTPFS = analysis.dispersion(fsVelocities, avgVelHTPFS);
+			//	//db.insertAnalysisdtVelocity2D(simulation_id, 0, avgVelHTPCluster, dispHTPCluster, avgVelHTPFS, dispHTPFS);
+
+		}
+
+	}
+}
+
 
 void do_it_all(size_t amount_of_times) {
 	Database db = Database(Constants::database_path);
@@ -411,7 +498,9 @@ int main() {
 			//std::cout << "confidence score: " << db.confidence_score(2) << std::endl;
 			//optimize_clustering();
 			//do_it_all(1);
-			calc_dispersion();
+			//calc_dispersion();
+			//average_GCA_velocities();
+			simulated_cluster_stars_mass_range();
 		}
 	}
 	return 0;

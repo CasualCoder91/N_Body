@@ -1341,6 +1341,48 @@ double Database::confidence_score(int simulation_id)
 	return (n_true_pos / (n_true_pos + n_unconf_pos + n_false_pos));
 }
 
+void Database::print_simulated_cluster_info(int simulation_id)
+{
+	auto execute_sql = [simulation_id, this](std::string sql)
+	{
+		sqlite3_stmt* st;
+		sqlite3_prepare_v2(db, sql.c_str(), static_cast<int>(sql.size()), &st, NULL);
+		sqlite3_bind_int(st, 1, simulation_id);
+		if (sqlite3_step(st) == SQLITE_ROW) {
+			std::cout << sqlite3_column_int(st, 0) << " ";
+		}
+		sqlite3_finalize(st);
+	};
+
+	auto set_mass_range = [](std::string sql, double min = -1, double max = -1) -> std::string
+	{
+		if (min > 0)
+		{
+			sql += " and mass >= " + std::to_string(min) + " ";
+		}
+		if (max > 0)
+		{
+			sql += " and mass < " + std::to_string(max) + " ";
+		}
+		return sql;
+	};
+
+	auto query_mass_range = [execute_sql, set_mass_range](std::string sql, std::vector<double> mass_ranges) {
+		execute_sql(sql);
+		execute_sql(set_mass_range(sql, mass_ranges[0]));
+		for (size_t i = 0; i < mass_ranges.size() - 1; ++i) {
+			execute_sql(set_mass_range(sql, mass_ranges[i + 1], mass_ranges[i]));
+		}
+	};
+
+	std::vector<double> mass_ranges = { 2, 0.5, 0.08 };//{ 2, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001 };
+
+	//simulated cluster stars in range
+	query_mass_range("select count(*) from star where isCluster = 1 and isObserved = 0 and id_simulation = ?1", mass_ranges);
+
+	std::cout << std::endl;
+}
+
 
 void Database::print_clustering_info(int simulation_id)
 {
@@ -1419,6 +1461,7 @@ void Database::print_clustering_info(int simulation_id)
 
 	std::cout << std::endl;
 }
+
 
 void Database::set_mass(const std::vector<Point>& points)
 {
