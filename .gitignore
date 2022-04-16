@@ -383,3 +383,4 @@ build/*
 /docs/_build/*
 !/docs/_build/latex/
 
+/Defensio/latex_project/Movie

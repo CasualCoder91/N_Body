@@ -4,6 +4,9 @@
 \setbeamertemplate{caption}[numbered]
 \usepackage{copyrightbox}
 
+\usepackage{siunitx}
+\DeclareSIUnit\solarmass{\ensuremath{M_\odot}}
+
 \title{Predicting the limits of the ELT}
 \subtitle{Defensio}
 \author[Alarich Herzner]{Alarich Herzner\\[1ex]  {\small Supervisor: Univ.-Prof. Jo\~ao Alves, PhD \\ Co-Supervisor: Dr. Kieran Leschinski, MSc}}
@@ -54,6 +57,7 @@ Estimate reliability limit for future IMF studies in the galactic centre using t
   \end{figure}
 \end{frame}
 
+\subsection{Motivation}
 
 \begin{frame}
 \begin{block}{Motivation}
@@ -87,5 +91,78 @@ Estimate reliability limit for future IMF studies in the galactic centre using t
 \item Measure performance
 \end{enumerate}
 \end{frame}
+
+\section{Simulation}
+
+\subsection{Cluster}
+
+\begin{frame}
+\frametitle{Parameters}
+using McLuster
+
+\begin{itemize}
+\item Plummer density profile
+\item virial equilibrium
+\item Kroupa IMF \SIrange{0.08}{100}{\solarmass}
+\item Metallicity  in range 0.5 - 2 solar
+\item No binaries
+\item N 1.3k - 40.4k
+\end{itemize}
+
+\end{frame}
+
+\subsubsection{Time integration}
+
+\begin{frame}
+\frametitle{1. Issue with large N}
+
+Direct summation \(O(N^2)\)
+\\[2ex]
+Barnes-Hut Algorithm \(O(N\log(N))\)
+\begin{itemize}
+ \item approximate with macro particles
+ \item \(\frac{width}{distance} < \theta_{max}\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\copyrightbox[b]{\includegraphics[width=0.65\linewidth]{Images/bh1.png}}
+                  {http://arborjs.org/docs/img/example-space.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{Images/Barnes–Hut check_1000.png}
+\end{figure}
+\end{frame}
+
+
+\subsection{Milky Way Potential}
+
+\begin{frame}
+
+Multi-component model
+
+\begin{itemize}
+\item Black hole: Keplerian potential
+\item Disk: Miyamoto Nagai potential
+\item Bulge: Hernquist potential
+\item Dark matter halo: Navarro–Frenk–White potential
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+
+
+
 
 \end{document}
