@@ -95,12 +95,22 @@ Estimate reliability limit for future IMF studies in the galactic centre using t
 
 \section{Simulation}
 
+\subsection{Data storage}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{Images/ERD.pdf}
+\end{figure}
+\end{frame}
+
+
 \subsection{Cluster}
 
 \begin{frame}
 \frametitle{Parameters}
-using McLuster
-
+McLuster by Andreas Kuepper with Kroupa, P. \& Baumgardt, H.
+\\[2ex]
 \begin{itemize}
 \item Plummer density profile
 \item virial equilibrium
@@ -261,8 +271,164 @@ Solve Jeans equations
 
 
 \begin{frame}
-\includegraphics[width=\linewidth]{Images/title_page.png}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{Images/title_page.png}
+\end{figure}
 \end{frame}
+
+\section{Observation}
+
+\subsection{Coordinate Systems}
+
+\begin{frame}
+\frametitle{Coordinate Systems}
+
+GalPot by Paul McMillan
+\\[2ex]
+\begin{description}
+\item[GCA] Galactocentric Cartesian
+\item[LSR] Local Standard of Rest
+\item[HCA] Heliocentric Cartesian
+\item[HTP] Heliocentric Telescope Polar
+\end{description}
+
+\end{frame}
+
+\subsection{Snapshots}
+
+\begin{frame}
+
+ScopeSim by Kieran Leschinski
+\\[2ex]
+Spectra
+\begin{itemize}
+\item Spectral type
+\item Pickles catalogue
+\item Apparent magnitude
+\item Extinction
+\item Weight of spectrum
+\end{itemize}
+\vspace{\baselineskip}
+Output FITS files
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Images/fits_snapshot.png}
+\end{figure}
+\end{frame}
+
+\subsection{Source Detection}
+
+\begin{frame}
+Photutils by Larry Bradley et al.
+\\[2ex]
+\begin{itemize}
+\item DAOStarFinder
+	\begin{itemize}
+	\item Threshold
+	\item 2D Gaussian kernel
+	\item Roundness
+	\item Mask
+	\end{itemize}
+
+\item Image Segmentation
+	\begin{itemize}
+	\item Connected pixels 
+	\item Threshold
+	\item Source Deblending
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/ISPhotutils_32BK_4THRE_3Kernel.png}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/masking.png}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/fits_extracted.png}
+\end{figure}
+\end{frame}
+
+\section{Analysis}
+
+\subsection{Preparation}
+\begin{frame}
+
+mlpack by Ryan Curtin et al.
+\\[2ex]
+\begin{itemize}
+\item Map observed stars 
+	\begin{itemize}
+	\item Range search
+	\end{itemize}
+\item Velocity approximation
+	\begin{itemize}
+	\item Nearest-neighbors search
+	\item max magnitude difference
+	\item compare with mapping
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\subsection{Clustering Algorithm}
+
+\begin{frame}
+
+\begin{block}{DBSCAN Algorithm}
+Density-based spatial clustering of applications with noise
+\end{block}
+
+Pros:
+\begin{itemize}
+\item noise
+\item amount of clusters
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Parameter optimization}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/DBSCAN_parameter_space.pdf}
+\end{figure}
+
+\end{frame}
+
+Parameter optimization
+
+F1 Score
+
+
+
+
+
+
+
+
+
+
 
 
 
