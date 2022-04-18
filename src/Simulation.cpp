@@ -22,6 +22,8 @@ int Simulation::getID(){
 
 void Simulation::run(bool reuse_cluster){
 
+	bool euler = false;
+
 	reuse_cluster = reuse_cluster && this->id != 1; // can only reuse the cluster if it already exists.
 
 	//Init stars
@@ -98,27 +100,36 @@ void Simulation::run(bool reuse_cluster){
 			root.calculateMassDistribution();
 
 			//Force clusterStars -- use if Euler
-			for (int j = 0; j < clusterStars.size(); ++j) {
-				clusterStars[j].acceleration.reset();
-				potential->applyForce(&clusterStars[j]);
-				root.applyForce(clusterStars[j].position, clusterStars[j].acceleration);
+			if (euler) {
+				for (int j = 0; j < clusterStars.size(); ++j) {
+					clusterStars[j].acceleration.reset();
+					potential->applyForce(&clusterStars[j]);
+					root.applyForce(clusterStars[j].position, clusterStars[j].acceleration);
+				}
+				integrator.euler(clusterStars);
 			}
-			integrator.euler(clusterStars);
-
-			//integrator.Leapfrog(clusterStars, &root, this->potential);
+			else {
+				integrator.Leapfrog(clusterStars, &root, this->potential);
+			}
 		}
 
 		//Force fieldStars -- use if Euler
-		if (fieldStars.size() > 0) {
-			for (int i = 0; i < fieldStars.size(); ++i) {
-				fieldStars[i].acceleration.reset();
-				potential->applyForce(&fieldStars[i]);
+		if (euler) {
+			if (fieldStars.size() > 0) {
+				for (int i = 0; i < fieldStars.size(); ++i) {
+					fieldStars[i].acceleration.reset();
+					potential->applyForce(&fieldStars[i]);
+				}
 			}
 		}
 
 		if (fieldStars.size() > 0) {
-			integrator.euler(fieldStars);
-			//integrator.Leapfrog(fieldStars, this->potential);
+			if (euler) {
+				integrator.euler(fieldStars);
+			}
+			else {
+				integrator.Leapfrog(fieldStars, this->potential);
+			}
 		}
 
 	}

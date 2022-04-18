@@ -63,25 +63,25 @@ void Integrator::RK4(std::vector<Star*> stars, MWPotential* potential){
 	}
 }
 
-void Integrator::Leapfrog(std::vector<Star*> stars, Node* root, MWPotential* potential){
+void Integrator::Leapfrog(std::vector<Star>& stars, Node* root, MWPotential* potential){
 	double spaceFactor = Constants::kmInpc * this->secInDay;
 	for (size_t i = 0; i < stars.size(); ++i) {
-		Vec3D xHalfStep = stars[i]->position + stars[i]->velocity * this->positionDetla2;
+		Vec3D xHalfStep = stars[i].position + stars[i].velocity * this->positionDetla2;
 		Vec3D aHalfStep;
 		root->applyForce(xHalfStep, aHalfStep);
 		potential->applyForce(xHalfStep, aHalfStep);
-		stars[i]->velocity = stars[i]->velocity + aHalfStep * this->dts;
-		stars[i]->position = xHalfStep + stars[i]->velocity * this->positionDetla2;
+		stars[i].velocity = stars[i].velocity + aHalfStep * this->dts;
+		stars[i].position = xHalfStep + stars[i].velocity * this->positionDetla2;
 	}
 }
 
-void Integrator::Leapfrog(std::vector<Star*> stars, MWPotential* potential){
+void Integrator::Leapfrog(std::vector<Star>& stars, MWPotential* potential){
 	double spaceFactor = Constants::kmInpc * this->secInDay;
 	for (size_t i = 0; i < stars.size(); ++i) {
-		Vec3D xHalfStep = stars[i]->position + stars[i]->velocity * this->dt2 * spaceFactor;
+		Vec3D xHalfStep = stars[i].position + stars[i].velocity * this->dt2 * spaceFactor;
 		Vec3D aHalfStep;
 		potential->applyForce(xHalfStep, aHalfStep);
-		stars[i]->velocity = stars[i]->velocity + aHalfStep * this->dt * this->secInDay;
-		stars[i]->position = xHalfStep + stars[i]->velocity * this->dt2 * spaceFactor;
+		stars[i].velocity = stars[i].velocity + aHalfStep * this->dt * this->secInDay;
+		stars[i].position = xHalfStep + stars[i].velocity * this->dt2 * spaceFactor;
 	}
 }

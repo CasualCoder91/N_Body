@@ -44,8 +44,8 @@ public:
     void RK4(std::vector<Star*> stars, Node* root, MWPotential* potential);
     void RK4(std::vector<Star*> stars, MWPotential* potential);
 
-    void Leapfrog(std::vector<Star*> stars, Node* root, MWPotential* potential);
-    void Leapfrog(std::vector<Star*> stars, MWPotential* potential);
+    void Leapfrog(std::vector<Star>& stars, Node* root, MWPotential* potential);
+    void Leapfrog(std::vector<Star>& stars, MWPotential* potential);
 private:
 
 };
