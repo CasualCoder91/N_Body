@@ -7,6 +7,7 @@
 
 \usepackage{siunitx}
 \DeclareSIUnit\solarmass{\ensuremath{M_\odot}}
+\DeclareSIUnit \parsec{pc}
 
 \title{Predicting the limits of the ELT}
 \subtitle{Defensio}
@@ -408,6 +409,22 @@ Pros:
 
 
 \begin{frame}
+\frametitle{F1 Score}
+\begin{equation*}
+F_1 = 2 \frac{P \cdot R}{P+R} = \frac{TP}{TP+0.5(FP+UP+FN)}
+\end{equation*}
+\vspace{\baselineskip}
+\begin{description}
+\item[TP] correctly classified as cluster star
+\item[FP] wrongly classified as cluster star
+\item[UP] not mapped star classified as cluster star
+\item[FN] wrongly classified as field star
+\end{description}
+
+
+\end{frame}
+
+\begin{frame}
 \frametitle{Parameter optimization}
 \begin{figure}
 \centering
@@ -416,10 +433,47 @@ Pros:
 
 \end{frame}
 
-Parameter optimization
 
-F1 Score
+\begin{frame}
+\frametitle{Results: F1}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/25_F1.pdf}
+\end{figure}
 
+\end{frame}
+
+
+\begin{frame}
+\begin{table}
+\centering
+\begin{tabular}{|r|r|r|r|}
+\hline
+Star \si{\solarmass} & Cluster \si{\kilo\solarmass}  & \% Found & F1 Score \\
+\hline
+<0.5     & 0.64  & 41       & 0.39 \\
+<0.5     & 1.60  & 40       & 0.52 \\
+<0.5     & 4.00  & 40       & 0.62 \\
+<0.5     & 10.00 & 35       & 0.71 \\
+<0.5     & 25.00 & 28       & 0.76 \\
+0.5 - 2     & 0.64  & 81       & 0.79 \\
+0.5 - 2     & 1.60  & 80       & 0.83 \\
+0.5 - 2     & 4.00  & 76       & 0.88 \\
+0.5 - 2     & 10.00 & 63       & 0.90 \\
+0.5 - 2     & 25.00 & 54       & 0.92 \\
+\hline
+\end{tabular}
+
+\end{table}
+\end{frame}
+
+
+\begin{frame}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/25_n_stars.pdf}
+\end{figure}
+\end{frame}
 
 
 
