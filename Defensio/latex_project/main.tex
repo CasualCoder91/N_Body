@@ -1,4 +1,6 @@
 \documentclass{beamer}
+%\setbeameroption{show notes}
+%\setbeameroption{hide notes}
 \usetheme{Warsaw}
 
 \setbeamertemplate{caption}[numbered]
@@ -20,20 +22,20 @@
 \titlepage
 \end{frame}
 
+\section{Introduction}
+
 \begin{frame}
 \frametitle{Outline}
-\tableofcontents
+\tableofcontents[hideallsubsections] 
 \end{frame}
 
-\section{Introduction}
+
 \subsection{Goals}
 
 \begin{frame}
-\frametitle{Goals}
 \begin{block}{Primary objective}
 Estimate reliability limit for future IMF studies in the galactic centre using the ELT!
 \end{block}
-... what?
 %\vspace{0.5cm}
 \end{frame}
 
@@ -123,20 +125,21 @@ McLuster by Andreas Kuepper with Kroupa, P. \& Baumgardt, H.
 
 \end{frame}
 
-\subsubsection{Time integration}
-
 \begin{frame}
-\frametitle{1. Issue with large N}
+\frametitle{Time integration}
 
-Direct summation \(O(N^2)\)
-\\[2ex]
-Barnes-Hut Algorithm \(O(N\log(N))\)
 \begin{itemize}
- \item approximate with macro particles
- \item \(\frac{width}{distance} < \theta_{max}\)
+\item Direct summation \(O(N^2)\)
+\item Barnes-Hut Algorithm \(O(N\log(N))\)
+	\begin{itemize}
+	 \item approximate with macro particles
+	 \item \(\frac{width}{distance} < \theta_{max}\)
+	\end{itemize}
+\item Softening
 \end{itemize}
 
 \end{frame}
+
 
 \begin{frame}
 \begin{figure}
@@ -158,15 +161,15 @@ Barnes-Hut Algorithm \(O(N\log(N))\)
 
 \begin{frame}
 
-Multi-component axis-symmetric potential
+Multi-component axis-symmetric potential \(\Phi \left ( R,z \right )\)
 
 \begin{itemize}
 \item components
 	\begin{itemize}
-	\item Black hole: Keplerian potential
-	\item Disk: Miyamoto Nagai potential
-	\item Bulge: Hernquist potential
-	\item Dark matter halo: Navarro–Frenk–White potential
+	\item Black hole: Keplerian potential \(\Phi_{bh} \left ( r \right )\)
+	\item Disk: Miyamoto Nagai potential \(\Phi_{disk} \left ( R,z \right )\)
+	\item Bulge: Hernquist potential \(\Phi_{bulge} \left ( r\right )\)
+	\item Dark matter halo: Navarro–Frenk–White potential \(\Phi_{halo} \left ( r \right )\)
 	\end{itemize}
 \item needed for
 	\begin{itemize}
@@ -185,6 +188,8 @@ Multi-component axis-symmetric potential
 \includegraphics[width=0.9\linewidth]{Images/cone.pdf}
 \end{figure}
 \end{frame}
+
+%talk about boundary conditions
 
 \subsection{Field stars}
 
@@ -487,7 +492,6 @@ Star \si{\solarmass} & Cluster \si{\kilo\solarmass}  & \% Found & F1 Score \\
 \end{table}
 \end{frame}
 
-
 \begin{frame}
 \begin{figure}
 \centering
@@ -496,9 +500,17 @@ Star \si{\solarmass} & Cluster \si{\kilo\solarmass}  & \% Found & F1 Score \\
 \end{frame}
 
 
+\begin{frame}
+\frametitle{general remarks on performance}
+\begin{itemize}
+\item Pass and loop by reference
+\item Multithreading (OpenMP)
+\item Choice of language
+\item Define (mathematical) constants
+\item C++ : emplace\_back VS push\_back
+\end{itemize}
 
-
-
+\end{frame}
 
 
 
