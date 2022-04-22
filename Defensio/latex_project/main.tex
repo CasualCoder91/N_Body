@@ -1,6 +1,7 @@
 \documentclass{beamer}
 %\setbeameroption{show notes}
 %\setbeameroption{hide notes}
+\setbeamercovered{transparent} 
 \usetheme{Warsaw}
 
 \setbeamertemplate{caption}[numbered]
@@ -115,12 +116,12 @@ Estimate reliability limit for future IMF studies in the galactic centre using t
 McLuster by Andreas Kuepper with Kroupa, P. \& Baumgardt, H.
 \\[2ex]
 \begin{itemize}
-\item Plummer density profile
-\item virial equilibrium
-\item Kroupa IMF \SIrange{0.08}{100}{\solarmass}
-\item Metallicity  in range 0.5 - 2 solar
-\item No binaries
-\item N 1.3k - 40.4k
+\item<1-> Plummer density profile
+\item<2-> virial equilibrium
+\item<3-> Kroupa IMF \SIrange{0.08}{100}{\solarmass}
+\item<4-> Metallicity  in range 0.5 - 2 solar
+\item<5-> No binaries
+\item<6-> N 1.3k - 40.4k
 \end{itemize}
 
 \end{frame}
@@ -129,13 +130,14 @@ McLuster by Andreas Kuepper with Kroupa, P. \& Baumgardt, H.
 \frametitle{Time integration}
 
 \begin{itemize}
-\item Direct summation \(O(N^2)\)
-\item Barnes-Hut Algorithm \(O(N\log(N))\)
+\item<1-> Direct summation \(O(N^2)\)
+\item<2-> Barnes-Hut Algorithm \(O(N\log(N))\)
 	\begin{itemize}
 	 \item approximate with macro particles
 	 \item \(\frac{width}{distance} < \theta_{max}\)
 	\end{itemize}
-\item Softening
+\item<3-> Softening
+\item<4-> Time step size
 \end{itemize}
 
 \end{frame}
@@ -285,13 +287,14 @@ Solve Jeans equations
 
 \begin{frame}
 \begin{enumerate}
-\item Integrate equations of motion
+\item<1-> Integrate equations of motion
 	\begin{itemize}
 	\item Euler
 	\item Velocity Verlet
 	\end{itemize}
-\item Write to Database every x timesteps
-\item Test total Energy
+\item<2-> Write to Database every x timesteps
+\item<3-> Test total Energy
+\item<4-> Boundary conditions?
 \end{enumerate}
 \end{frame}
 
