@@ -85,17 +85,17 @@ Estimate reliability limit for future IMF studies in the galactic centre using t
 \end{frame}
 
 
-\subsection{Action Plan}
-
-\begin{frame}
-\frametitle{Action Plan}
-\begin{enumerate}
-\item Simulate stars
-\item Observe stars
-\item Analyze
-\item Measure performance
-\end{enumerate}
-\end{frame}
+%\subsection{Action Plan}
+%
+%\begin{frame}
+%\frametitle{Action Plan}
+%\begin{enumerate}
+%\item Simulate stars
+%\item Observe stars
+%\item Analyze
+%\item Measure performance
+%\end{enumerate}
+%\end{frame}
 
 \section{Simulation}
 
@@ -121,7 +121,7 @@ McLuster by Andreas Kuepper with Kroupa, P. \& Baumgardt, H.
 \item<3-> Kroupa IMF \SIrange{0.08}{100}{\solarmass}
 %\item<4-> Metallicity  in range 0.5 - 2 solar
 %\item<5-> No binaries
-\item<6-> N 1.3k - 40.4k
+\item<4-> N 1.3k - 40.4k
 \end{itemize}
 
 \end{frame}
@@ -163,20 +163,20 @@ McLuster by Andreas Kuepper with Kroupa, P. \& Baumgardt, H.
 
 \begin{frame}
 
-Multi-component axis-symmetric potential \(\Phi \left ( R,z \right )\)
+Multi-component axis-symmetric potential \(\Phi \left ( R,z \right )\) and corresponding density.
 
 \begin{itemize}
-\item components
+\item<1-> needed for
+	\begin{itemize}
+	\item Force from analytic derivatives
+	\item Initial conditions for field stars
+	\end{itemize}
+\item<2-> components
 	\begin{itemize}
 	\item Black hole: Keplerian potential \(\Phi_{bh} \left ( r \right )\)
 	\item Disk: Miyamoto Nagai potential \(\Phi_{disk} \left ( R,z \right )\)
 	\item Bulge: Hernquist potential \(\Phi_{bulge} \left ( r\right )\)
 	\item Dark matter halo: Navarro–Frenk–White potential \(\Phi_{halo} \left ( r \right )\)
-	\end{itemize}
-\item needed for
-	\begin{itemize}
-	\item Force from analytic derivatives
-	\item Initial conditions for field stars
 	\end{itemize}
 \end{itemize}
 
@@ -190,8 +190,6 @@ Multi-component axis-symmetric potential \(\Phi \left ( R,z \right )\)
 \includegraphics[width=0.9\linewidth]{Images/cone.pdf}
 \end{figure}
 \end{frame}
-
-%talk about boundary conditions
 
 \subsection{Field stars}
 
@@ -227,6 +225,7 @@ Sample mass functions
 \begin{itemize}
 \item rejection sampling
 \item inverse transformation sampling
+\item N 0.7k - 351.2k
 \end{itemize}
 
 \begin{figure}
@@ -332,11 +331,12 @@ ScopeSim by Kieran Leschinski
 \\[2ex]
 Spectra
 \begin{itemize}
-\item Spectral type
+%\item Spectral type
 \item Pickles catalogue
-\item Apparent magnitude
+\item From mass and distance
+%\item Apparent magnitude
 \item Extinction
-\item Weight of spectrum
+%\item Weight of spectrum
 \end{itemize}
 \vspace{\baselineskip}
 Output FITS files
