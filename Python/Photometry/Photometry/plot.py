@@ -236,7 +236,11 @@ def plot_points_velocity(b_observed_points=True,b_simulated_points=True,b_false_
     if(b_false_negative):
         false_negative = db.select_false_negative()
         fn_arr = np.vstack(false_negative[:]).astype(float)
-        plt.scatter(fn_arr[:,2], fn_arr[:,3], s=1, c='yellow', marker="x", label='false negative')
+        plt.scatter(fn_arr[:,2], fn_arr[:,3], s=1, c='black', marker="x", label='false negative')
+
+    #false_positive = db.select_false_positive()
+    #fp_arr = np.vstack(false_positive[:]).astype(float)
+    #plt.scatter(fp_arr[:,2], fp_arr[:,3], s=1, c='black', marker="x", label='false positive')
 
     plt.xlabel('v_asc [arcsec/dt]', fontsize=16)
     plt.ylabel('v_dec [arcsec/dt]', fontsize=16)
@@ -759,8 +763,10 @@ def plot_fits(plot_observed = False, plot_simulated = False, gc=True):
 
 def main():
 
+    config.database_path = os.path.join(config.output_base_path,r"Database\Default_180_640_ext.db")
+    plot_points_velocity(True,True,True)
     #plot_3d_cluster()
-    plot_3d_fs()
+    #plot_3d_fs()
     #plot_fits(False,False,False)
     #plot_fits(True,True)
 

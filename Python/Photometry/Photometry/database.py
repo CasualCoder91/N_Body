@@ -213,7 +213,21 @@ class Database:
         inner join position on obs.id = position.id_star 
         LEFT JOIN velocity on velocity.id_star = obs.id AND position.timestep = velocity.timestep
         where obs.idCluster = -1 and sim.isCluster = 1 
-        and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 and obs.mass<0.01""", (config.simulation_id,))
+        and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 """, (config.simulation_id,))
+        result = cur.fetchall()
+        array = np.ndarray((len(result),),dtype=object)
+        for i, line in enumerate(result):
+            array[i] = Point(id=line[0],position=line[2:4],velocity=line[4:6],magnitude=line[7],cluster_id=line[8])
+        return array
+
+    def select_false_positive(self):
+        cur = self.conn.cursor()
+        cur.execute("""select obs.id, position.timestep, position.aHTP, position.dHTP, velocity.aHTP, velocity.dHTP, obs.isCluster, obs.magnitude, obs.idCluster
+        from star sim inner join star obs on obs.fkStar = sim.id 
+        inner join position on obs.id = position.id_star 
+        LEFT JOIN velocity on velocity.id_star = obs.id AND position.timestep = velocity.timestep
+        where obs.idCluster > -1 and sim.isCluster = 0 
+        and position.timestep = 0 and obs.id_simulation = ?1 and sim.id_simulation = ?1 """, (config.simulation_id,))
         result = cur.fetchall()
         array = np.ndarray((len(result),),dtype=object)
         for i, line in enumerate(result):
